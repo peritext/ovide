@@ -331,6 +331,7 @@
   "Explanation about entryType": "The type of entry may be processed differently by some rendering templates",
   "Explanation about mediaUrl": "Accepted URLS: online .mp4 files, youtube, vimeo, dailymotion, soundcloud, facebook, twitch",
   "Explanation about rgbImageAssetId": "This image will be used for rendering the item in some usecases for screen editions",
+  "Explanation about html": "You can add embed code from external services, or even write custom HTML or SVG code",
   "Explanation html": "Paste here html code to run in order to render the item",
   "Features.EditionUiWrapper.Contents": "Contents",
   "Features.EditionUiWrapper.Editions": "Editions",
