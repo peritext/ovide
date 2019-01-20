@@ -44,7 +44,7 @@ import config from '../../../config';
 /**
  * Shared variables
  */
-const MAX_TITLE_LEN = 15;
+const MAX_TITLE_LEN = 30;
 
 const SectionCard = ( {
   section,
