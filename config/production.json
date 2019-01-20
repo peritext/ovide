@@ -1,0 +1,10 @@
+{
+  "youtubeAPIKey": "my youtube api key",
+  "maxSectionLevel": 4,
+  "maxResourceSize": 5000000,
+  "maxFolderSize": 60000000,
+  "maxProductionSize": 600000000,
+  "maxBatchNumber": 50,
+  "urlPrefix": "",
+  "webAppPrefix": "ovide/"
+}

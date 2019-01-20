@@ -1,0 +1,375 @@
+/**
+ * This module provides a layout component for displaying the summary view
+ * @module ovide/features/SummaryView
+ */
+/**
+ * Imports Libraries
+ */
+import React from 'react';
+import PropTypes from 'prop-types';
+import { arrayMove } from 'react-sortable-hoc';
+import { v4 as genId } from 'uuid';
+import ReactTooltip from 'react-tooltip';
+import {
+  Button,
+  Column,
+  Delete,
+  Container,
+  Content,
+  Collapsable,
+  Icon,
+  Level,
+  LevelItem,
+  LevelLeft,
+  StatusMarker,
+  StretchedLayoutContainer,
+  StretchedLayoutItem,
+  Title,
+} from 'quinoa-design-library/components/';
+
+/**
+ * Imports Project utils
+ */
+import { translateNameSpacer } from '../../../helpers/translateUtils';
+import { createDefaultSection } from '../../../helpers/schemaUtils';
+import { abbrevString } from '../../../helpers/misc';
+
+/**
+ * Imports Components
+ */
+import MetadataForm from '../../../components/MetadataForm';
+import NewSectionForm from '../../../components/NewSectionForm';
+import ConfirmToDeleteModal from '../../../components/ConfirmToDeleteModal';
+import SortableSectionsList from './SortableSectionsList';
+
+const SummaryViewLayout = ( {
+  editedProduction: production,
+  metadataOpen,
+  newSectionOpen,
+  promptedToDeleteSectionId,
+  isSorting,
+
+  actions: {
+    updateProductionMetadata,
+    setNewSectionOpen,
+    setPromptedToDeleteSectionId,
+    setIsSorting,
+    setMetadataOpen,
+
+    createSection,
+    deleteSection,
+    updateSectionsOrder,
+    setSectionLevel,
+  },
+  goToSection
+}, { t } ) => {
+
+  /**
+   * Variables definition
+   */
+  const {
+    metadata: {
+      title,
+      subtitle,
+      authors,
+      abstract
+    },
+    sections,
+    sectionsOrder,
+    id: productionId,
+  } = production;
+
+  /**
+   * Local functions
+   */
+  const translate = translateNameSpacer( t, 'Features.SummaryView' );
+
+  /**
+   * Computed variables
+   */
+  const sectionsList = sectionsOrder.filter( ( sectionId ) => sections[sectionId] ).map( ( sectionId ) => sections[sectionId] );
+  const defaultSection = createDefaultSection();
+  const defaultSectionMetadata = defaultSection.metadata;
+
+  /**
+   * Callbacks handlers
+   */
+  const handleMetadataEditionToggle = () => {
+    setMetadataOpen( !metadataOpen );
+  };
+
+  const handleMetadataSubmit = ( { payload: { metadata } } ) => {
+    const payload = {
+      productionId,
+      metadata,
+    };
+    updateProductionMetadata( payload );
+    setMetadataOpen( false );
+  };
+
+  const handleNewSectionSubmit = ( metadata ) => {
+    const newSection = {
+      ...defaultSection,
+      metadata,
+      id: genId()
+    };
+
+    createSection( {
+      sectionId: newSection.id,
+      section: newSection,
+      productionId,
+      sectionIndex: sectionsList.length - 1
+    } );
+    setNewSectionOpen( false );
+    goToSection( newSection.id );
+  };
+
+  const handleDeleteSection = ( thatSectionId ) => {
+    setPromptedToDeleteSectionId( thatSectionId );
+  };
+  const handleDeleteSectionExecution = ( thatSectionId ) => {
+    deleteSection( {
+      sectionId: thatSectionId,
+      productionId,
+      blockId: thatSectionId,
+      blockType: 'sections'
+    } );
+  };
+
+  const handleDeleteSectionConfirm = () => {
+    handleDeleteSectionExecution( promptedToDeleteSectionId );
+    setPromptedToDeleteSectionId( undefined );
+  };
+
+  const handleSortEnd = ( { oldIndex, newIndex } ) => {
+    setIsSorting( false );
+    const sectionsIds = sectionsList.map( ( section ) => section.id );
+    const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex );
+    updateSectionsOrder( {
+      productionId,
+      sectionsOrder: newSectionsOrder
+    } );
+    ReactTooltip.rebuild();
+  };
+
+  const handleSectionIndexChange = ( oldIndex, newIndex ) => {
+    const sectionsIds = sectionsList.map( ( section ) => section.id );
+    const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex );
+    updateSectionsOrder( {
+      productionId,
+      sectionsOrder: newSectionsOrder
+    } );
+    setIsSorting( false );
+  };
+
+  const handleSetSectionLevel = ( { sectionId, level } ) => {
+    setSectionLevel( {
+      productionId,
+      sectionId,
+      level,
+    } );
+  };
+
+  const handleCloseNewSection = () => setNewSectionOpen( false );
+  const handleOpenNewSection = () => setNewSectionOpen( true );
+  const handleActiveIsSorting = () => setIsSorting( true );
+
+  return (
+    <Container style={ { position: 'relative', height: '100%' } }>
+      <StretchedLayoutContainer
+        isFluid
+        isDirection={ 'horizontal' }
+        isAbsolute
+      >
+        <StretchedLayoutItem
+          style={ { marginTop: '1rem' } }
+          isFluid
+          isFlex={ 1 }
+          isFlowing
+        >
+          <Column>
+            <Level style={ { marginBottom: '.4rem' } }>
+              <Collapsable
+                maxHeight={ '100%' }
+                isCollapsed={ metadataOpen }
+              >
+                <Title isSize={ 3 }>
+                  {abbrevString( title, 60 )}
+                </Title>
+                {subtitle &&
+                  <Title isSize={ 5 }>
+                    <i>{abbrevString( subtitle, 60 )}</i>
+                  </Title>
+                }
+                <div style={ { maxHeight: '15rem', overflow: 'auto' } }>
+                  {
+                      authors.map( ( author, index ) => (
+                        <Level key={ index }>
+                          <LevelLeft>
+                            <LevelItem>
+                              <Icon
+                                isSize={ 'small' }
+                                isAlign={ 'left' }
+                                className={ 'fa fa-user' }
+                              />
+                            </LevelItem>
+                            <LevelItem>
+                              {typeof author === 'string' ? abbrevString( author, 60 ) : `${abbrevString( author.given, 60 )} ${abbrevString( author.family, 60 )}`}
+                            </LevelItem>
+                          </LevelLeft>
+                        </Level>
+                      ) )
+                    }
+                </div>
+                <Content>
+                  <i>{abbrevString( abstract, 300 )}</i>
+                </Content>
+              </Collapsable>
+            </Level>
+
+            <Level isFullWidth>
+              <Button
+                isFullWidth
+                isColor={ metadataOpen ? 'primary' : 'info' }
+                onClick={ handleMetadataEditionToggle }
+              >
+
+                {
+                  <StretchedLayoutContainer
+                    isAbsolute
+                    style={ { alignItems: 'center', justifyContent: 'space-around', padding: '1rem' } }
+                    isDirection={ 'horizontal' }
+                  >
+                    <StretchedLayoutItem>
+                      <StatusMarker />
+                    </StretchedLayoutItem>
+                    <StretchedLayoutItem isFlex={ 1 }>
+                      {metadataOpen ? translate( 'Close production settings' ) : translate( 'Edit production settings' )}
+                    </StretchedLayoutItem>
+                    {metadataOpen &&
+                      <StretchedLayoutItem>
+                        <Delete isSize={ 'medium' } />
+                      </StretchedLayoutItem>
+                    }
+                  </StretchedLayoutContainer>
+                }
+              </Button>
+            </Level>
+            <Collapsable
+              isCollapsed={ !metadataOpen }
+              maxHeight={ '100%' }
+            >
+              {
+                metadataOpen &&
+                <div style={ { marginTop: '1rem' } }>
+                  <MetadataForm
+                    production={ production }
+                    onSubmit={ handleMetadataSubmit }
+                    onCancel={ handleMetadataEditionToggle }
+                  />
+                </div>
+              }
+            </Collapsable>
+            <Level />
+            <Level />
+            <Level />
+          </Column>
+        </StretchedLayoutItem>
+        {
+          newSectionOpen ?
+            <StretchedLayoutItem
+              isFluid
+              isFlex={ 2 }
+              isFlowing
+            >
+              <Column isWrapper>
+                <Column isWrapper>
+                  <StretchedLayoutContainer
+                    isAbsolute
+                    isDirection={ 'vertical' }
+                  >
+                    <StretchedLayoutItem>
+                      <Title isSize={ 2 }>
+                        <StretchedLayoutContainer
+                          style={ { paddingTop: '1rem' } }
+                          isDirection={ 'horizontal' }
+                        >
+                          <StretchedLayoutItem isFlex={ 11 }>
+                            {translate( 'New section' )}
+                          </StretchedLayoutItem>
+                          <StretchedLayoutItem>
+                            <Delete onClick={ handleCloseNewSection } />
+                          </StretchedLayoutItem>
+                        </StretchedLayoutContainer>
+                      </Title>
+                      <Level />
+                    </StretchedLayoutItem>
+                    <StretchedLayoutItem isFlex={ 1 }>
+                      <NewSectionForm
+                        metadata={ { ...defaultSectionMetadata } }
+                        onSubmit={ handleNewSectionSubmit }
+                        onCancel={ handleCloseNewSection }
+                      />
+                    </StretchedLayoutItem>
+                  </StretchedLayoutContainer>
+                </Column>
+              </Column>
+            </StretchedLayoutItem>
+            :
+            <StretchedLayoutItem
+              isFluid
+              isFlex={ 2 }
+              isFlowing
+            >
+              <Column>
+                <Column>
+                  <Title isSize={ 2 }>
+                    {translate( 'Summary' )}
+                  </Title>
+                </Column>
+                <Level>
+                  <Column>
+                    <Button
+                      onClick={ handleOpenNewSection }
+                      isFullWidth
+                      isColor={ 'primary' }
+                    >
+                      {translate( 'New section' )}
+                    </Button>
+                  </Column>
+                </Level>
+                <SortableSectionsList
+                  items={ sectionsList }
+                  production={ production }
+                  onSortEnd={ handleSortEnd }
+                  renderNoItem={ () => <div>{translate( 'No sections to display' )}</div> }
+                  goToSection={ goToSection }
+                  setSectionIndex={ handleSectionIndexChange }
+                  onSortStart={ handleActiveIsSorting }
+                  isSorting={ isSorting }
+                  onDelete={ handleDeleteSection }
+                  setSectionLevel={ handleSetSectionLevel }
+                  useDragHandle
+                />
+              </Column>
+            </StretchedLayoutItem>
+        }
+
+        <ConfirmToDeleteModal
+          isActive={ promptedToDeleteSectionId !== undefined }
+          deleteType={ 'section' }
+          production={ production }
+          id={ promptedToDeleteSectionId }
+          onClose={ () => setPromptedToDeleteSectionId( undefined ) }
+          onDeleteConfirm={ handleDeleteSectionConfirm }
+        />
+      </StretchedLayoutContainer>
+    </Container>
+    );
+};
+
+SummaryViewLayout.contextTypes = {
+  t: PropTypes.func,
+};
+
+export default SummaryViewLayout;

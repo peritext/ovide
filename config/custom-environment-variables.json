@@ -1,0 +1,9 @@
+{
+  "youtubeAPIKey": "YOUTUBE_API_KEY",
+  "urlPrefix": "URL_PREFIX",
+  "maxSectionLevel": "MAX_SECTION_LEVEL",
+  "maxResourceSize": "MAX_RESOURCE_SIZE",
+  "maxFolderSize": "MAX_FOLDER_SIZE",
+  "maxProductionSize": "MAX_STORY_SIZE",
+  "maxBatchNumber": "MAX_BATCH_NUMBER"
+}

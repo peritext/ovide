@@ -1,0 +1,35 @@
+
+
+.navbar:not([class*=is-]) .navbar-burger span
+{
+    background: black;
+}
+
+.navbar.hero-header
+{
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+@media (max-width: 768px)
+{
+    .navbar.hero-header
+    {
+        padding-left: 1rem;
+    }
+}
+
+.navbar.in-chunks-edition
+{
+    .hero-header
+    {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .container.is-fluid
+    {
+        margin-right: 0;
+        margin-left: .5rem;
+    }
+}

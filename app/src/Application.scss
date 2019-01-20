@@ -1,0 +1,201 @@
+/**
+ * style definitions for the root component
+ *
+ * @module ovide
+ */
+@import './parameters.scss';
+
+#mount{
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  background: white;
+}
+
+.ovide-Layout{
+  min-height: 100vh;
+}
+
+input[type="radio"],
+input[type="checkbox"]
+{
+  margin-right: .5rem;
+}
+
+.aside-edition-container{
+  min-width: 0;
+  &.is-collapsed{
+    width: 5rem;
+    
+  }
+  &:not(.is-collapsed){
+    min-width: 30%;
+  }
+}
+
+.column,
+.columns,
+.stretched-layout-container,
+.stretched-layout-item
+{
+  transition: all .2s ease;
+}
+
+.csl-entry{
+  margin-bottom: 1em;
+}
+
+.modal{
+  &.is-active{
+    z-index: 1000;
+    .modal-card{
+      max-height: calc(100% - 9rem);
+    }
+  }
+  .modal-card-title{
+    font-size: 2rem;
+  }
+}
+
+
+
+.scholar-draft-SideToolbar{
+  z-index: 2;
+}
+
+.bibtex-editor{
+  padding: 1rem;
+  color: white;
+  background: darkgrey;
+}
+
+@media screen and (max-width: 1087px) {
+  .aside-edition-container{
+  &:not(.is-collapsed){
+      min-width: 40%;
+
+    }
+  }
+}
+
+.ReactVirtualized__Grid{
+  outline: none;
+}
+
+.button{
+  text-transform: lowercase;
+}
+
+.__react_component_tooltip{
+  z-index: 10000!important;
+}
+
+.drop-zone{
+  transition: all .5s ease;
+  &.active{
+    background: rgba(0,0,0,.1);
+  }
+}
+
+.aside-actions .button > span{
+  max-width: 100%;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  text-align: left;
+}
+
+.ovide-AssetPreview .preview-container .content{
+  max-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.contextualization-editor-container{
+  .preview-container{
+    max-height: 80vh!important;
+  }
+}
+
+// ::-webkit-scrollbar {
+//     width: .3rem;
+// }
+ 
+// ::-webkit-scrollbar-track {
+//     // -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+// }
+ 
+// ::-webkit-scrollbar-thumb {
+//   background-color: #29B6F6;
+//   outline: 1px solid #29B6F6;
+// }
+
+.navbar .navbar-item > span{
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.hero.is-success .navbar-burger{
+  color: black;
+}
+
+.hero.is-success .navbar-menu{
+  background: inherit;
+  .navbar-item{
+    color: black;
+  }
+}
+
+@media print
+{
+  .navbar,
+  .aside-edition-container,
+  .aside-design-container,
+  .button,
+  .editor-footer,
+  .icon,
+  .modal,
+  .nav,
+  .__react_component_tooltip
+  {
+    display: none!important;
+  }
+  div,
+  section{
+    padding: 0!important;
+    margin: 0!important;
+    overflow: visible!important;
+    background: white!important;
+    position: relative!important;
+    left: unset!important;
+    top: unset!important;
+    width: unset!important;
+    height: unset!important;
+    display: block!important;
+  }
+  *{
+    font-size: unset!important;
+  }
+  .stretched-layout-container{
+    flex-direction: column!important;
+  }
+  .card{
+    width: unset!important;
+    border: none!important;
+    box-shadow: none!important;
+  }
+  p,
+  li,
+  blockquote,
+  div.public-DraftStyleDefault-block
+  {
+    font-size: 10px!important;
+    line-height: 15px!important;
+    margin-bottom: 15px!important;
+  }
+}

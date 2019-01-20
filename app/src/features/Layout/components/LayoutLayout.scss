@@ -1,0 +1,21 @@
+/**
+ * style definitions for the Layout component
+ *
+ * @module ovide/features/Layout
+ */
+
+
+.ovide-Layout
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    // display: flex;
+    // flex-flow: column nowrap;
+    // justify-contents: spread;
+
+    overflow: hidden;
+
+    width: 100%;
+    height: 100%;
+}

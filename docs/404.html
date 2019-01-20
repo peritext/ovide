@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Ovide</title>
+    <meta name="description" content="transcribe > annotate > remix > publish audio and video contents" />
+    <!-- opengraph properties -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Ovide" />
+    <meta property="og:description" content="A rich and structured content editor." />
+    <meta property="og:image" content="https://peritext.github.io/ovide/screenshot.png" />
+    <meta property="og:image:width" content="1280" />
+    <meta property="og:image:height" content="738" />
+    <meta property="og:site_name" content="Ovide" />
+    <!-- end opengraph properties -->
+
+    <!-- schema meta -->
+    <meta itemprop="name" content="Ovide"/>
+    <meta itemprop="description" content="A rich and structured content editor."/>
+    <!-- end schema meta -->
+
+    <!-- DC meta -->
+    <meta property="DC.Title" content="Ovide"/>
+    <meta name="DCTERMS.audience" content="researchers" />
+    <meta name="DCTERMS.audience" content="students" />
+    <meta name="DCTERMS.audience" content="journalists" />
+    <meta name="DC.subject" xml:lang="en-GB" content="publishing" />
+    <!-- end DC meta -->
+
+    <!-- META TWITTER -->
+    <meta name="twitter:card" value="summary"/>
+    <meta name="twitter:site" content="https://peritext.github.io/ovide/"/>
+    <meta name="twitter:title" content="Ovide"/>
+    <meta name="twitter:description" content="A rich and structured content editor."/>
+    <meta name="twitter:image" content="https://peritext.github.io/ovide/screenshot.png" />
+    <!-- end meta twitter-->
+
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="57x57" href="https://peritext.github.io/ovide/apple-icon-57x57.png"/>
+    <link rel="apple-touch-icon" sizes="60x60" href="https://peritext.github.io/ovide/apple-icon-60x60.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="https://peritext.github.io/ovide/apple-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="76x76" href="https://peritext.github.io/ovide/apple-icon-76x76.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="https://peritext.github.io/ovide/apple-icon-114x114.png"/>
+    <link rel="apple-touch-icon" sizes="120x120" href="https://peritext.github.io/ovide/apple-icon-120x120.png"/>
+    <link rel="apple-touch-icon" sizes="144x144" href="https://peritext.github.io/ovide/apple-icon-144x144.png"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="https://peritext.github.io/ovide/apple-icon-152x152.png"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="https://peritext.github.io/ovide/apple-icon-180x180.png"/>
+    <link rel="icon" type="image/png" sizes="192x192"  href="https://peritext.github.io/ovide/android-icon-192x192.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="https://peritext.github.io/ovide/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="96x96" href="https://peritext.github.io/ovide/favicon-96x96.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="https://peritext.github.io/ovide/favicon-16x16.png"/>
+    <link rel="manifest" href="https://peritext.github.io/ovide/manifest.json"/>
+    <meta name="msapplication-TileColor" content="#ffffff"/>
+    <meta name="msapplication-TileImage" content="https://peritext.github.io/ovide/ms-icon-144x144.png"/>
+    <meta name="theme-color" content="#ffffff"/>
+  </head>
+  <body>
+    <script type="text/javascript">
+      /////////////////////////////////////////////////////////////////////////
+      // React for GitHub Pages - https://github.com/rafrex/react-github-pages
+      ///////////////////////////////////////////////////////////////////////
+      // Remove '&' from text and replace with '%26'
+      function noAmp(text) {
+        return text.split('&').join('%26');
+      }
+      // Incase browser doesn't support window.location.origin
+      function getOrigin() {
+        if (window.location.origin) return window.location.origin;
+        return window.location.protocol + "//" + window.location.hostname +
+          (window.location.port ? ':' + window.location.port : '');
+      }
+      var origin = getOrigin();
+      var pathname = noAmp(window.location.pathname.split('/').join('%2F'));
+      var query = noAmp(window.location.search.slice(1));
+      var hash = noAmp(window.location.hash.slice(1));
+      var redirectTo = origin + '/ovide' + '/?' +
+        'redirect=true' +
+        '&pathname=' + pathname +
+        '&query=' + query +
+        '&hash=' + hash;
+      console.log('redirect to', redirectTo);
+      window.location.replace(redirectTo);
+    </script>
+  </body>
+</html>

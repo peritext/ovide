@@ -1,0 +1,30 @@
+
+
+@import '../../parameters.scss';
+
+
+.ovide-SchemaForm{
+
+  .schema-item{
+    background: rgba(0,0,0,0.01);
+
+    padding: .5rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    // .column{
+    //   max-width: 50%;
+    // }
+  }
+
+  .items-list{
+    li{
+      list-style-type: none;
+    }
+    &.checkbox-list{
+      padding: 0;
+      li{
+        margin: 0;
+      }
+    }
+  }
+}

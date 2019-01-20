@@ -1,0 +1,49 @@
+.ovide-ResourceCard
+{
+    .bib-wrapper
+    {
+        .Bibliography
+        {
+            .csl-entry
+            {
+                position: relative;
+
+                overflow: hidden;
+
+                max-height: 9rem;
+
+                word-break: break-all;
+                &:before
+                {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+
+                    width: 100%;
+                    height: 100%;
+
+                    content: '';
+                }
+            }
+            a
+            {
+                pointer-events: none;
+            }
+        }
+    }
+    .preview-container
+    {
+        overflow: hidden;
+    }
+
+    .ReactTable
+    {
+        .-pagination
+        {
+            display: none;
+        }
+        .rt-tbody{
+            overflow-y: hidden;
+        }
+    }
+}

@@ -1,0 +1,25 @@
+#
+*-lock.json
+
+# Dependency directories
+node_modules
+
+# Optional npm cache directory
+.npm
+
+# mac files
+.DS_Store
+
+# config
+config.dev.json
+config.prod.json
+
+# bundles and builds
+app/build
+app/bundles
+dist
+docs/build/stats.json
+app/electronBuild
+config/custom-environment-variables.json
+config/default.json
+config/production.json
