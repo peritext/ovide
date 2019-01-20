@@ -78,17 +78,27 @@ export default class DatesPicker extends Component {
       start,
       end
     } = this.state;
-    this.setState( {
-      isEdited: false
-    } );
+
+    const finalStart = start ? start.valueOf() : this.props.dates && this.props.dates.start;
+    const finalEnd = end ? end.valueOf() : this.props.dates && this.props.dates.end;
+
     this.props.onChange( {
-      start: start ? start.valueOf() : this.props.dates && this.props.dates.start,
-      end: end ? end.valueOf() : this.props.dates && this.props.dates.end,
+      start: finalStart,
+      end: finalEnd,
+    } );
+    this.setState( {
+      isEdited: false,
+      start,
+      end,
     } );
   }
 
-  handleDelete = () => {
+  handleDelete = ( ) => {
     this.props.onChange( undefined );
+    this.setState( {
+      start: undefined,
+      end: undefined,
+    } );
   }
 
   handleCancel = () => {
@@ -101,7 +111,8 @@ export default class DatesPicker extends Component {
 
   onFocusChange = ( focusedInput ) => {
     this.setState( {
-      focusedInput
+      focusedInput,
+      isEdited: focusedInput ? true : false
     } );
     if ( !focusedInput ) {
       this.handleSubmit();
@@ -129,7 +140,6 @@ export default class DatesPicker extends Component {
     } = this;
 
     const translate = translateNameSpacer( t, 'Components.DatesPicker' );
-
     const isInitialized = dates && dates.start;
 
     const silentEvent = ( e ) => {
@@ -152,30 +162,34 @@ export default class DatesPicker extends Component {
                   </button>
                 }
         </div>
-        <div className={ 'level' }>
+        <div
+          onKeyUp={ silentEvent }
+          onClick={ silentEvent }
+          className={ 'level' }
+        >
           {
-                  isInitialized || isEdited ?
-                    <DateRangePicker
-                      openDirection={ 'down' }
-                      startDate={ start }
-                      startDateId={ `${id} start` }
-                      isOutsideRange={ isOutsideRange }
-                      startDatePlaceholderText={ translate( 'start date' ) }
-                      endDatePlaceholderText={ translate( 'end date' ) }
-                      displayFormat={ 'DD/MM/YYYY' }
-                      endDate={ end }
-                      endDateId={ `${id} end` }
-                      onDatesChange={ handleChange }
-                      onFocusChange={ onFocusChange }
-                      focusedInput={ focusedInput }
-                    />
-                    :
-                    null
-                }
+          isInitialized || isEdited ?
+            <DateRangePicker
+              openDirection={ 'down' }
+              startDate={ start }
+              startDateId={ `${id} start` }
+              isOutsideRange={ isOutsideRange }
+              startDatePlaceholderText={ translate( 'start date' ) }
+              endDatePlaceholderText={ translate( 'end date' ) }
+              displayFormat={ 'DD/MM/YYYY' }
+              endDate={ end }
+              endDateId={ `${id} end` }
+              onDatesChange={ handleChange }
+              onFocusChange={ onFocusChange }
+              focusedInput={ focusedInput }
+            />
+            :
+            null
+        }
         </div>
         <div className={ 'level' }>
           {
-            isInitialized &&
+            isInitialized && !isEdited &&
             <button
               className={ 'button is-danger' }
               onClick={ handleDelete }
