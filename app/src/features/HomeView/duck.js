@@ -17,7 +17,7 @@ import { getStatePropFromActionSet } from '../../helpers/reduxUtils';
 import {
   requestProductions,
   requestProductionCreation,
-  // requestProduction,
+  requestProduction,
   requestProductionDeletion,
 
   /*
@@ -194,9 +194,17 @@ export const duplicateProduction = ( payload ) => ( {
   type: DUPLICATE_PRODUCTION,
   payload,
   promise: () => {
-    return requestProductionCreation( {
-      ...payload.production,
-      id: genId()
+
+    return new Promise( ( resolve, reject ) => {
+      requestProduction( payload.production.id )
+        .then( ( { data: { production } } ) => {
+          return requestProductionCreation( {
+          ...production,
+          id: genId()
+          } );
+        } )
+        .then( resolve )
+        .catch( reject );
     } );
   },
 } );

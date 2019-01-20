@@ -429,12 +429,15 @@ class HomeViewLayout extends Component {
                                 } );
                                 break;
                               case 'duplicate':
-                                duplicateProduction( { production } )
-                                .then( ( res ) => {
-                                  if ( res.result ) {
-                                    setOverrideProductionMode( 'create' );
-                                  }
-                                } );
+                                duplicateProduction( { production } );
+
+                                /*
+                                 * .then( ( res ) => {
+                                 *   if ( res.result ) {
+                                 *     setOverrideProductionMode( 'create' );
+                                 *   }
+                                 * } );
+                                 */
                                 break;
                               case 'delete':
                                 setProductionDeleteId( production.id );

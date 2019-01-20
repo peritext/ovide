@@ -80,7 +80,7 @@ export const createAssetInDb = ( asset ) => {
              * console.log( 'create', asset );
              * console.log('convert', asset.data);
              */
-            blob = b64toBlob( asset.data.split( `data:${asset.mimetype};base64,` )[1] );
+            blob = b64toBlob( ( asset.data || '' ).split( `data:${asset.mimetype};base64,` )[1] );
             break;
           case 'application/json':
           case 'text/csv':
@@ -127,7 +127,7 @@ export const updateAssetInDb = ( asset ) => {
           case 'image/jpg':
           case 'image/gif':
           case 'image/tiff':
-            blob = b64toBlob( asset.data.split( `data:${asset.mimetype};base64,` )[1] );
+            blob = b64toBlob( ( asset.data || '' ).split( `data:${asset.mimetype};base64,` )[1] );
             break;
           case 'application/json':
           case 'text/csv':
