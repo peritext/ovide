@@ -491,7 +491,7 @@ class HomeViewLayout extends Component {
                     <Notification isColor={ 'info' }>
                       <Title isSize={ 5 }>{this.translate( 'Welcome to Ovide!' )}</Title>
                       <p>
-                        {this.translate( 'Please notice that this web version is for testing purpose only: your data is stored on your browser local storage, which means that it can be easily erased by browser cleaning operations. Please download the desktop version below for substantial work beyond playing with this tool.' )}
+                        {this.translate( 'web-notice' )}
                       </p>
                       <p style={ { marginTop: '2rem', marginBottom: '2rem' } }>
                         {this.translate( 'Do you allow Ovide to use your web browser local storage to store your work with this web version ?' )}

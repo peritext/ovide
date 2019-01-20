@@ -12,10 +12,8 @@
   "Components.AuthorsManager.New author": "Nouvel.le auteur.e",
   "Components.AuthorsManager.affiliation": "affiliation",
   "Components.AuthorsManager.family": "nom de famille",
-
   "Explanation about citation style": "Définir le style de citation à utiliser pour formatter les citations bibliographiques de cette édition",
   "Explanation about citation locale": "Définir la langue de citation à utiliser pour formatter les citations bibliographiques de cette édition",
-
   "Components.AuthorsManager.given": "prénom",
   "Components.AuthorsManager.role": "rôle",
   "Components.ProductionCard.Last modification": "Dernière modification",
@@ -787,5 +785,6 @@
   "Features.EditionView.Publication date": "Date de publication",
   "Features.EditionView.Explanation about the publication date": "Choisir la date de publication qui sera affichée dans les métadonnées",
   "Features.EditionView.Publication custom authors": "Auteurs spécifiques à la publication",
-  "Features.EditionView.Explanation about the publication custom authors": "Par défaut les auteurs de la production seront utilisés"
+  "Features.EditionView.Explanation about the publication custom authors": "Par défaut les auteurs de la production seront utilisés",
+  "Features.HomeView.web-notice": "Veuillez noter qu'Ovide est actuellement au stade alpha, ce qui signifie qu'il s'agit d'une version instable qui pourrait encore présenter des bugs importants."
 }
