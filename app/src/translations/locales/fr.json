@@ -252,7 +252,7 @@
   "Components.MetadataForm.Explanation about the production subtitle": "Titre complémentaire optionel, possiblement plus précis et plus long",
   "Components.MetadataForm.Explanation about the production title": "Titre principal utilisé pour le titre des pages, les couvertures, et l'indexation",
   "Components.MetadataForm.Production Abstract": "Résumé de la production",
-  "Components.MetadataForm.Production could not be created": "Le production n'a pas pu être créé",
+  "Components.MetadataForm.Production could not be created": "La production n'a pas pu être créée",
   "Components.MetadataForm.Production subtitle": "Sous-titre de la production",
   "Components.MetadataForm.Production title is required": "Il est obligatoire de donner un titre à la production",
   "Components.MetadataForm.Production title": "Titre de la production",
