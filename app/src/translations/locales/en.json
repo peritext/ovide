@@ -789,6 +789,7 @@
   "Features.EditionView.see mentions": "see mentions",
   "Features.EditionView.See mentions": "See mentions",
   "Features.LibraryView.Last update:": "Last update:",
+  "Features.LibraryView.Delete an item": "Delete an item",
   "Features.LibraryView.most mentioned": "most mentioned",
   "Features.EditionView.Publication date": "Publication date",
   "Features.EditionView.Explanation about the publication date": "This date will be used by the metadata of the edition",
