@@ -250,7 +250,7 @@
   "Components.MetadataForm.Explanation about the production subtitle": "Titre complémentaire optionel, possiblement plus précis et plus long",
   "Components.MetadataForm.Explanation about the production title": "Titre principal utilisé pour le titre des pages, les couvertures, et l'indexation",
   "Components.MetadataForm.Production Abstract": "Résumé de la production",
-  "Components.MetadataForm.Production could not be created": "Le production n'a pas pu être créé",
+  "Components.MetadataForm.Production could not be created": "La production n'a pas pu être créée",
   "Components.MetadataForm.Production subtitle": "Sous-titre de la production",
   "Components.MetadataForm.Production title is required": "Il est obligatoire de donner un titre à la production",
   "Components.MetadataForm.Production title": "Titre de la production",
@@ -801,5 +801,6 @@
   "Components.ExportModal.Export to HTML": "Exporter en HTML",
   "Components.ExportModal.explanation about export to HTML": "télécharger votre production sous la forme d'un fichier HTML sans styles pour pouvoir l'exploiter dans d'autres environnements (blogs, ...)",
   "Components.ExportModal.Export to markdown": "Exporter en markdown",
-  "Components.ExportModal.explanation about export to markdown": "télécharger votre production sous la forme d'un fichier markdown, format d'encodage léger utilisé par de nombreux outils de publication et d'écriture, ainsi que des outils de conversion de fichiers comme pandoc"
+  "Components.ExportModal.explanation about export to markdown": "télécharger votre production sous la forme d'un fichier markdown, format d'encodage léger utilisé par de nombreux outils de publication et d'écriture, ainsi que des outils de conversion de fichiers comme pandoc",
+  "Features.HomeView.web-notice": "Veuillez noter qu'Ovide est actuellement au stade alpha, ce qui signifie qu'il s'agit d'une version instable qui pourrait encore présenter des bugs importants."
 }
