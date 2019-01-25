@@ -21,7 +21,7 @@ import icons from 'quinoa-design-library/src/themes/millet/icons';
  * Imports Project utils
  */
 import { translateNameSpacer } from '../../helpers/translateUtils';
-
+import ExplainedLabel from '../ExplainedLabel';
 const ExportModal = ( {
   activeOptionId,
   onClose,
@@ -48,17 +48,32 @@ const ExportModal = ( {
                 options={ [
                         {
                           id: 'json',
-                          label: translate( 'Export your production to backup it (peritext JSON format)' ),
+                          label: (
+                            <ExplainedLabel
+                              title={translate('Export to JSON')}
+                              explanation={translate('explanation about export to JSON')}
+                            />
+                          ),
                           iconUrl: activeOptionId === 'json' ? icons.takeAway.white.svg : icons.takeAway.black.svg
                         },
                         {
                           id: 'html',
-                          label: translate( 'Export your production to plain HTML (for use in another project)' ),
+                          label: (
+                            <ExplainedLabel
+                              title={translate('Export to HTML')}
+                              explanation={translate('explanation about export to HTML')}
+                            />
+                          ),
                           iconUrl: activeOptionId === 'html' ? icons.takeAway.white.svg : icons.takeAway.black.svg
                         },
                         {
                           id: 'markdown',
-                          label: translate( 'Export your production to markdown (for use in another project)' ),
+                          label: (
+                            <ExplainedLabel
+                              title={translate('Export to markdown')}
+                              explanation={translate('explanation about export to markdown')}
+                            />
+                          ),
                           iconUrl: activeOptionId === 'markdown' ? icons.takeAway.white.svg : icons.takeAway.black.svg
                         },
 
