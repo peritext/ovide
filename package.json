@@ -187,7 +187,7 @@
     "peritext-core": "git+https://github.com/peritext/peritext-core.git",
     "peritext-generator-html-multi": "^0.1.1",
     "peritext-generator-html-singlepage": "^0.1.0",
-    "peritext-schemas": "^0.1.2",
+    "peritext-schemas": "^0.1.3",
     "peritext-template-deucalion": "^0.1.3",
     "peritext-template-pyrrah": "^0.1.8",
     "peritext-utils": "^0.1.2",
