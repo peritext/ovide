@@ -366,7 +366,7 @@ class SectionEditor extends Component {
             hydrated: true
           } );
           // console.log( 'clearing in component did mount', this.props.activeSection.contents );
-          setTimeout( () => this.clearNotesAndContext( this.props ) );
+          setTimeout( () => this.clearNotesAndContext( this.props ), 1000 );
         } );
       } );
 
