@@ -9,7 +9,7 @@ import { combineReducers } from 'redux';
 import { createStructuredSelector } from 'reselect';
 import { v4 as genId } from 'uuid';
 
-import { createDefaultProduction, validateProduction } from '../../helpers/schemaUtils';
+import { createDefaultProduction, validateProduction, convertQuinoaStoryToProduction } from '../../helpers/schemaUtils';
 
 import { getFileAsText } from '../../helpers/fileLoader';
 import { getStatePropFromActionSet } from '../../helpers/reduxUtils';
@@ -152,6 +152,15 @@ export const importProduction = ( file, callback ) => ( {
                 }
                 catch ( jsonError ) {
                   return reject( 'malformed json' );
+                }
+
+                /**
+                 *  add a fonio story import hook here
+                 * - transform data-intensive resources according to the assets system
+                 * - map metadata of objects (sections, resources, authors)
+                 */
+                if ( production.type === 'quinoa-story' ) {
+                  production = convertQuinoaStoryToProduction( production );
                 }
                 const validation = validateProduction( production );
                 if ( validation.valid ) {
