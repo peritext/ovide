@@ -519,7 +519,7 @@
   "Features.HomeView.Create a production": "Créer une production",
   "Features.HomeView.Create new production": "Créer une nouvelle production",
   "Features.HomeView.Do you allow Ovide to use your web browser local storage to store your work with this web version ?": "Autorisez-vous Ovide à utiliser le stockage local de votre navigateur pour sauvegarder votre travail pour cette version web ?",
-  "Features.HomeView.Drop a ovide file": "Déposer un fichier Ovide",
+  "Features.HomeView.Drop a ovide file": "Déposer un fichier .json ici (exporté précédemment depuis Ovide)",
   "Features.HomeView.Import an existing production": "Importer une production existante",
   "Features.HomeView.It is built around the <a rel=\"noopener\" target=\"blank\" href=\"{peritextUrl}\">peritext ecosystem</a> and the <a rel=\"noopener\" target=\"blank\" href=\"{quinoaUrl}\">quinoa project</a>.": "Il est construit sur les épaules de <a rel=\"noopener\" target=\"blank\" href=\"{peritextUrl}\">l'écosystème peritext</a> et du <a rel=\"noopener\" target=\"blank\" href=\"{quinoaUrl}\">projet quinoa</a>.",
   "Features.HomeView.New Production": "Nouvelle production",
