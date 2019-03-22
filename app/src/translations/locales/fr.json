@@ -797,9 +797,9 @@
   "Features.EditionView.Explanation about the publication custom authors": "Par défaut les auteurs de la production seront utilisés",
   "Features.HomeView.web-notice": "Veuillez noter que cette version web est à usage de test uniquement : vos données seront sauvegardées sur le stockage local de votre navigateur, ce qui signifie qu'elles pourront facilement être supprimées par des opérations de nettoyage du navigateur (ex. supprimer les données de navigation). Veuillez télécharger la version bureau pour un travail substantiel.",
   "Components.ExportModal.Export to JSON": "Exporter en JSON",
-  "Components.ExportModal.explanation about export to JSON": "télécharger votre production sous la forme d'un fichier de travail que vous pourrez utiliser pour sauvegarder/versionner votre travail, et/ou le réimporter dans Ovide plus tard ou sur une autre version de l'outil",
+  "Components.ExportModal.explanation about export to JSON": "télécharger votre production sous une forme brute, de manière à sauvegarder/versionner votre travail, le réimporter dans Ovide plus tard, l'éditer sur une autre version de l'outil",
   "Components.ExportModal.Export to HTML": "Exporter en HTML",
-  "Components.ExportModal.explanation about export to HTML": "télécharger votre production sous la forme d'un fichier HTML sans styles pour pouvoir l'exploiter dans d'autres environnements (blogs, ...)",
+  "Components.ExportModal.explanation about export to HTML": "télécharger votre production sous la forme d'un fichier HTML brut pour pouvoir l'exploiter dans d'autres environnements (sites web, blogs, CMS ...)",
   "Components.ExportModal.Export to markdown": "Exporter en markdown",
   "Components.ExportModal.explanation about export to markdown": "télécharger votre production sous la forme d'un fichier markdown, format d'encodage léger utilisé par de nombreux outils de publication et d'écriture, ainsi que des outils de conversion de fichiers comme pandoc",
   "Features.HomeView.web-notice": "Veuillez noter qu'Ovide est actuellement au stade alpha, ce qui signifie qu'il s'agit d'une version instable qui pourrait encore présenter des bugs importants."

@@ -44,14 +44,14 @@ const ExportModal = ( {
               <BigSelect
                 activeOptionId={ activeOptionId }
                 onChange={ onChange }
-                boxStyle={ { minHeight: '12rem', textAlign: 'center' } }
+                boxStyle={ { cursor: 'pointer', minHeight: '12rem', textAlign: 'center' } }
                 options={ [
                         {
                           id: 'json',
                           label: (
                             <ExplainedLabel
-                              title={translate('Export to JSON')}
-                              explanation={translate('explanation about export to JSON')}
+                              title={ translate( 'Export to JSON' ) }
+                              explanation={ translate( 'explanation about export to JSON' ) }
                             />
                           ),
                           iconUrl: activeOptionId === 'json' ? icons.takeAway.white.svg : icons.takeAway.black.svg
@@ -60,8 +60,8 @@ const ExportModal = ( {
                           id: 'html',
                           label: (
                             <ExplainedLabel
-                              title={translate('Export to HTML')}
-                              explanation={translate('explanation about export to HTML')}
+                              title={ translate( 'Export to HTML' ) }
+                              explanation={ translate( 'explanation about export to HTML' ) }
                             />
                           ),
                           iconUrl: activeOptionId === 'html' ? icons.takeAway.white.svg : icons.takeAway.black.svg
@@ -70,8 +70,8 @@ const ExportModal = ( {
                           id: 'markdown',
                           label: (
                             <ExplainedLabel
-                              title={translate('Export to markdown')}
-                              explanation={translate('explanation about export to markdown')}
+                              title={ translate( 'Export to markdown' ) }
+                              explanation={ translate( 'explanation about export to markdown' ) }
                             />
                           ),
                           iconUrl: activeOptionId === 'markdown' ? icons.takeAway.white.svg : icons.takeAway.black.svg
