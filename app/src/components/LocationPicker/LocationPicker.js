@@ -113,7 +113,7 @@ export default class LocationPickerContainer extends Component {
     } );
   }
 
-  handleAddressSubmit = () => {
+  handleAddressSubmit = ( event ) => {
     event.preventDefault();
     geocodeByAddress( this.state.address )
       .then( ( results ) => getLatLng( results[0] ) )
