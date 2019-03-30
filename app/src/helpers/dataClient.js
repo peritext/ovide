@@ -75,12 +75,7 @@ export const createAssetInDb = ( asset ) => {
           case 'image/jpg':
           case 'image/gif':
           case 'image/tiff':
-
-            /*
-             * console.log( 'create', asset );
-             * console.log('convert', asset.data);
-             */
-            blob = b64toBlob( ( asset.data || '' ).split( `data:${asset.mimetype};base64,` )[1] );
+            blob = b64toBlob( ( asset.data || '' ).split( 'base64,' )[1] );
             break;
           case 'application/json':
           case 'text/csv':

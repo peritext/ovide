@@ -101,6 +101,10 @@ export const convertQuinoaStoryToProduction = ( story ) => {
       };
     }
  else if ( newResource.metadata.type === 'image' ) {
+
+      /**
+       * @todo there is still an issue with images imports which are not displayed
+       */
       data = resource.data.base64 || '';
       assetId = genId();
       asset = {
