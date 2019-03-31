@@ -196,7 +196,7 @@ export default class PaginatedList extends Component {
         >
           {
           defaultColumns === 1 ?
-            <FlipMove>
+            <FlipMove style={ { minHeight: '100%' } }>
               {
             displayedItems.length ?
               displayedItems.map( renderItem )

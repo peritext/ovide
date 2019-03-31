@@ -27,6 +27,7 @@ import HomeView from './features/HomeView/components';
 import SectionView from './features/SectionView/components';
 import SummaryView from './features/SummaryView/components';
 import LibraryView from './features/LibraryView/components';
+import GlossaryView from './features/GlossaryView/components';
 import EditionsView from './features/EditionsView/components';
 import EditionView from './features/EditionView/components';
 import NotFound from './components/NotFound/NotFound.js';
@@ -48,6 +49,11 @@ const EditionRoutes = ( { match } ) => {
         exact
         path={ `${match.path}:productionId/library` }
         component={ LibraryView }
+      />
+      <Route
+        exact
+        path={ `${match.path}:productionId/glossary` }
+        component={ GlossaryView }
       />
       <Route
         exact

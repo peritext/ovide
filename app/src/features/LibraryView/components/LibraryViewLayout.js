@@ -209,7 +209,7 @@ class LibraryViewLayout extends Component {
               }
               return 1;
             case 'most mentioned':
-              if ( resourcesNumberOfMentionsMap[a.id] > resourcesNumberOfMentionsMap[b.id] ) {
+              if ( ( resourcesNumberOfMentionsMap[a.id] || 0 ) > ( resourcesNumberOfMentionsMap[b.id] || 0 ) ) {
                 return -1;
               }
               return 1;

@@ -181,6 +181,11 @@ const EditionUiWrapperLayout = ( {
               isActive: navLocation === 'library',
               content: translate( 'Library' ),
             },
+            {
+              href: `/productions/${productionId}/glossary`,
+              isActive: navLocation === 'glossary',
+              content: translate( 'Glossary' ),
+            },
             // link to design view
             {
               href: `/productions/${productionId}/editions`,

@@ -47,6 +47,8 @@ class EditionUiWrapperContainer extends Component {
     switch ( path ) {
       case '/productions/:productionId/library':
         return 'library';
+        case '/productions/:productionId/glossary':
+        return 'glossary';
       case '/productions/:productionId/editions':
         return 'editions';
       case '/productions/:productionId/editions/:editionId':

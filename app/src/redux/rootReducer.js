@@ -15,6 +15,7 @@ import home from '../features/HomeView/duck';
 import summary from '../features/SummaryView/duck';
 import section from '../features/SectionView/duck';
 import library from '../features/LibraryView/duck';
+import glossary from '../features/GlossaryView/duck';
 import editions from '../features/EditionsView/duck';
 import edition from '../features/EditionView/duck';
 
@@ -34,6 +35,7 @@ export default combineReducers( {
   library,
   editions,
   edition,
+  glossary,
 
   editionUiWrapper,
   editedProduction,

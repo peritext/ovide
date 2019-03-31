@@ -835,7 +835,9 @@ export const deleteContextualizationFromId = ( {
               }
               return {
                 ...block,
-                entityRanges: block.entityRanges.filter( ( range ) => range.key !== entityKey )
+                entityRanges: block.entityRanges.filter( ( range ) => {
+                  return contents.entityMap[range.key] && range.key !== entityKey;
+                 } )
               };
             } ).filter( ( b ) => b ),
             entityMap: Object.keys( result.entityMap ).reduce( ( newMap, thatEntityKey ) => {
@@ -854,7 +856,6 @@ export const deleteContextualizationFromId = ( {
         return result;
       }, { ...contents } );
 
-      // console.log('final result', newContents.entityMap);
       return { result: newContents, changed };
     };
 
