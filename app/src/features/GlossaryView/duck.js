@@ -41,6 +41,8 @@ const SET_MENTIONS_SEARCH_STRING = 'SET_MENTIONS_SEARCH_STRING';
 const SET_MENTION_DELETE_STEP = 'SET_MENTION_DELETE_STEP';
 const SET_IS_BATCH_CREATING = 'SET_IS_BATCH_CREATING';
 const SET_MENTION_CREATION_STEP = 'SET_MENTION_CREATION_STEP';
+const SET_MENTIONS_TO_DELETE_NUMBER = 'SET_MENTIONS_TO_DELETE_NUMBER';
+const SET_MENTIONS_TO_CREATE_NUMBER = 'SET_MENTIONS_TO_CREATE_NUMBER';
 
 /**
  * lock system
@@ -133,6 +135,16 @@ export const setMentionCreationStep = ( payload ) => ( {
   payload,
 } );
 
+export const setMentionsToDeleteNumber = ( payload ) => ( {
+  type: SET_MENTIONS_TO_DELETE_NUMBER,
+  payload,
+} );
+
+export const setMentionsToCreateNumber = ( payload ) => ( {
+  type: SET_MENTIONS_TO_CREATE_NUMBER,
+  payload,
+} );
+
 /**
  * ===================================================
  * REDUCERS
@@ -169,6 +181,8 @@ const UI_DEFAULT_STATE = {
   mentionsSearchString: '',
   mentionCreatingStep: 0,
   isBatchCreating: false,
+  mentionsToDeleteNumber: 0,
+  mentionsToCreateNumber: 0,
 };
 
 /**
@@ -201,6 +215,8 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_MENTION_DELETE_STEP:
     case SET_MENTION_CREATION_STEP:
     case SET_IS_BATCH_CREATING:
+    case SET_MENTIONS_TO_CREATE_NUMBER:
+    case SET_MENTIONS_TO_DELETE_NUMBER:
       const propName = getStatePropFromActionSet( action.type );
       return {
         ...state,
@@ -258,6 +274,8 @@ const mentionsSearchString = ( state ) => state.ui.mentionsSearchString;
 const mentionDeleteStep = ( state ) => state.ui.mentionDeleteStep;
 const mentionCreationStep = ( state ) => state.ui.mentionCreationStep;
 const isBatchCreating = ( state ) => state.ui.isBatchCreating;
+const mentionsToCreateNumber = ( state ) => state.ui.mentionsToCreateNumber;
+const mentionsToDeleteNumber = ( state ) => state.ui.mentionsToDeleteNumber;
 
 /**
  * The selector is a set of functions for accessing this feature's state
@@ -282,4 +300,6 @@ export const selector = createStructuredSelector( {
   mentionDeleteStep,
   isBatchCreating,
   mentionCreationStep,
+  mentionsToCreateNumber,
+  mentionsToDeleteNumber,
 } );

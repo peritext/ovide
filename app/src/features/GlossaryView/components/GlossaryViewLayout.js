@@ -97,6 +97,7 @@ class GlossaryViewLayout extends Component {
       selectedResourcesIds,
       resourcesPromptedToDelete,
       editedResourceId,
+
       actions: {
         setOptionsVisible,
         setMainColumnMode,
@@ -127,6 +128,7 @@ class GlossaryViewLayout extends Component {
         setResourceDeleteStep,
         setEditedResourceId,
         setMentionMode,
+
       },
       deleteResource,
     } = this.props;
@@ -503,7 +505,6 @@ class GlossaryViewLayout extends Component {
             assetsToDeleteIds.reduce( ( cur, assetId ) => {
                 return cur.then( () => {
                   const asset = production.assets[assetId];
-                  // console.log( 'order to delete asset', asset );
                   return deleteAsset( {
                     productionId,
                     assetId,
@@ -657,9 +658,7 @@ class GlossaryViewLayout extends Component {
         const handleDeleteSelection = () => setResourcesPromptedToDelete( [ ...selectedResourcesIds ] );
         const renderNoResource = () => <Column>{translate( 'No item in your glossary yet' )}</Column>;
         const renderResourceInList = ( resource ) => {
-          // console.log('get related assets ids');
           const relatedAssetsIds = getRelatedAssetsIds( resource.data );
-          // console.log('related assets ids', relatedAssetsIds, 'assets', assets);
           const relatedAssets = relatedAssetsIds.map( ( id ) => production.assets[id] ).filter( ( a ) => a );
           const handleEdit = ( e ) => {
             e.stopPropagation();
@@ -688,7 +687,6 @@ class GlossaryViewLayout extends Component {
               }
               setSelectedResourcesIds( newSelectedResourcesIds );
           };
-          // console.log('related assets', relatedAssets);
           return (
             <ResourceCard
               isActive={ isSelected }
@@ -717,9 +715,10 @@ class GlossaryViewLayout extends Component {
           <StretchedLayoutContainer
             isAbsolute
             className={ 'column' }
+            style={ { paddingLeft: 0 } }
           >
             <StretchedLayoutItem>
-              <Column style={ { paddingRight: 0 } }>
+              <Column style={ { paddingLeft: 0 } }>
                 <GlossaryFiltersBar
                   filterValues={ filterValues }
                   onDeleteSelection={ handleDeleteSelection }
@@ -798,7 +797,6 @@ class GlossaryViewLayout extends Component {
         createContextualizer,
       },
     } = this.props;
-    console.log( 'add prospect', prospect );
     const productionId = production.id;
     const resourceId = selectedResourcesIds[0];
     // create contextualizer
@@ -853,7 +851,6 @@ class GlossaryViewLayout extends Component {
         return block;
       } )
     };
-    console.log( 'new contents', newContents, newContents.blocks.find( ( b ) => b.key === prospect.blockKey ) );
     const newSection = {
       ...section,
     };
@@ -903,7 +900,6 @@ class GlossaryViewLayout extends Component {
         } );
       } ) )
       .then( () => {
-        // console.log( 'prospect added', contextualizationId, prospect.blockKey );
         resolve();
       } )
       .catch( ( error ) => {
@@ -1009,6 +1005,8 @@ class GlossaryViewLayout extends Component {
       mentionsSearchString,
       isBatchCreating,
       mentionCreationStep,
+      mentionsToDeleteNumber,
+      mentionsToCreateNumber,
       actions: {
         setMentionMode,
         setMentionsSearchString,
@@ -1016,6 +1014,8 @@ class GlossaryViewLayout extends Component {
         setIsBatchDeleting,
         setIsBatchCreating,
         setMentionCreationStep,
+        setMentionsToDeleteNumber,
+        setMentionsToCreateNumber,
       },
 
     } = this.props;
@@ -1040,6 +1040,7 @@ class GlossaryViewLayout extends Component {
 
     const addProspects = ( prospects ) => {
       setIsBatchCreating( true );
+      setMentionsToCreateNumber( prospects.length );
       setTimeout( () => {
         return prospects.reduce( ( cur, prospect, index ) =>
           cur.then( () =>
@@ -1065,6 +1066,7 @@ class GlossaryViewLayout extends Component {
 
     const removeMentions = ( mentions ) => {
       setIsBatchDeleting( true );
+      setMentionsToDeleteNumber( mentions.length );
       setTimeout( () => {
         return mentions.reduce( ( cur, mention, index ) =>
           cur.then( () =>
@@ -1097,7 +1099,10 @@ class GlossaryViewLayout extends Component {
         >
 
           <StretchedLayoutItem isFlex={ '3' }>
-            <Column isWrapper>
+            <Column
+              style={ { paddingLeft: 0 } }
+              isWrapper
+            >
               {this.renderMainColumn()}
             </Column>
           </StretchedLayoutItem>
@@ -1110,9 +1115,13 @@ class GlossaryViewLayout extends Component {
           >
             <StretchedLayoutContainer
               className={ 'column' }
+              style={ { paddingRight: 0 } }
               isAbsolute
             >
-              <Column isWrapper>
+              <Column
+                style={ { paddingRight: 0 } }
+                isWrapper
+              >
                 {
                 selectedResourcesIds.length === 0 ?
                   <Column style={ {
@@ -1144,6 +1153,8 @@ class GlossaryViewLayout extends Component {
                     addProspects={ addProspects }
                     removeMention={ removeMention }
                     removeMentions={ removeMentions }
+                    mentionsToDeleteNumber={ mentionsToDeleteNumber }
+                    mentionsToCreateNumber={ mentionsToCreateNumber }
                     production={ production }
                     onSearchStringChange={ setMentionsSearchString }
                     searchString={ mentionsSearchString }

@@ -183,6 +183,8 @@ class AsideGlossary extends Component {
                 addProspects,
                 removeMention,
                 removeMentions,
+                mentionsToDeleteNumber,
+                mentionsToCreateNumber,
                 setMentionMode,
                 searchString,
                 production,
@@ -367,19 +369,19 @@ class AsideGlossary extends Component {
             </StretchedLayoutContainer>
             <ModalCard
               isActive={ isBatchDeleting }
-              headerContent={ translate( [ 'Deleting a mention', 'Deleting {n} mentions', 'n' ], { n: mentionDeleteStep + mentions.length } ) }
+              headerContent={ translate( [ 'Deleting a mention', 'Deleting {n} mentions', 'n' ], { n: mentionsToDeleteNumber } ) }
               mainContent={
                 <div>
-                  {translate( 'Deleting mention {k} of {n}', { k: mentionDeleteStep + 1, n: mentionDeleteStep + mentions.length } )}
+                  {translate( 'Deleting mention {k} of {n}', { k: mentionDeleteStep + 1, n: mentionsToDeleteNumber } )}
                 </div>
               }
             />
             <ModalCard
               isActive={ isBatchCreating }
-              headerContent={ translate( [ 'Creating a mention', 'Creating {n} mentions', 'n' ], { n: mentionCreationStep + prospections.length } ) }
+              headerContent={ translate( [ 'Creating a mention', 'Creating {n} mentions', 'n' ], { n: mentionsToCreateNumber } ) }
               mainContent={
                 <div>
-                  {translate( 'Creating mention {k} of {n}', { k: mentionCreationStep + 1, n: mentionCreationStep + prospections.length } )}
+                  {translate( 'Creating mention {k} of {n}', { k: mentionCreationStep + 1, n: mentionsToCreateNumber } )}
                 </div>
               }
             />

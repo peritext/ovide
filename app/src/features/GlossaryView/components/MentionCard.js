@@ -40,9 +40,12 @@ const buildMentionRawContent = ( {
 } ) => {
     const section = production.sections[mention.sectionId];
     const contents = mention.contentId === 'main' ? section.contents : section.notes[mention.contentId];
-    const matchEntityKey = `${+Object.keys( contents.entityMap ).pop() + 1 }`;
+    if ( !contents || !contents.entityMap || !contents.blocks ) {
+      return undefined;
+    }
+    const matchEntityKey = `${+Object.keys( contents.entityMap || {} ).pop() + 1 }`;
     const entitiesDedupMap = {};
-    const contextualizationEntityKey = Object.keys( contents.entityMap )
+    const contextualizationEntityKey = Object.keys( contents.entityMap || {} )
         .find( ( entityKey ) => contents.entityMap[entityKey].type === 'INLINE_ASSET' && contents.entityMap[entityKey].data.asset.id === mention.contextualizationId );
         const finalContents = {
         ...contents,
