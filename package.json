@@ -232,7 +232,7 @@
     "reselect": "^3.0.1",
     "sass-convert": "^0.5.2",
     "sass-loader": "^6.0.6",
-    "scholar-draft": "^0.2.52",
+    "scholar-draft": "^0.2.55",
     "turndown": "^5.0.1",
     "uuid": "^3.2.1",
     "vega-lite": "^3.0.0-rc11"

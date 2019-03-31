@@ -474,7 +474,7 @@ const pasteFromInside = ( {
                 const editorState = editorStates[contentId]
                   || EditorState.createWithContent(
                       convertFromRaw( newNotes[contentId].contents ),
-                      editor.mainEditor.createDecorator()
+                      editor.mainEditor.createLocalDecorator()
                     );
                 newContentState = editorState.getCurrentContent();
                 newContentState = newContentState.createEntity( entity.entity.type, entity.entity.mutability, { ...entity.entity.data } );
@@ -588,10 +588,10 @@ const pasteFromInside = ( {
         ...editors,
         [noteId]: noteId === editorFocus ?
             EditorState.forceSelection(
-              EditorState.createWithContent( convertFromRaw( newNotes[noteId].contents ), editor.mainEditor.createDecorator() ),
+              EditorState.createWithContent( convertFromRaw( newNotes[noteId].contents ), editor.mainEditor.createLocalDecorator() ),
               editorStates[editorFocus].getSelection()
             )
-            : EditorState.createWithContent( convertFromRaw( newNotes[noteId].contents ), editor.mainEditor.createDecorator() )
+            : EditorState.createWithContent( convertFromRaw( newNotes[noteId].contents ), editor.mainEditor.createLocalDecorator() )
       };
     }, { [activeSectionId]: mainEditorState
     } );

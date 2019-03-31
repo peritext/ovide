@@ -838,7 +838,7 @@ class SectionEditor extends Component {
       ...fEditors,
       [nd]: editorStates[nd] || EditorState.createWithContent(
               convertFromRaw( notes[nd].contents ),
-              this.editor.mainEditor.createDecorator()
+              this.editor.mainEditor.createLocalDecorator()
             )
     } ), {
       [sectionId]: mainEditorState
@@ -932,7 +932,7 @@ class SectionEditor extends Component {
     if ( activeSection.contents && activeSection.contents.entityMap ) {
       mainContents = EditorState.createWithContent(
               convertFromRaw( activeSection.contents ),
-              this.editor.mainEditor.createDecorator()
+              this.editor.mainEditor.createLocalDecorator()
             );
     }
     else mainContents = this.editor.generateEmptyEditor();
@@ -950,7 +950,7 @@ class SectionEditor extends Component {
            const editor = activeSection.notes[noteId].contents && activeSection.notes[noteId].contents.entityMap ?
              EditorState.createWithContent(
                convertFromRaw( activeSection.notes[noteId].contents ),
-               this.editor.mainEditor.createDecorator()
+               this.editor.mainEditor.createLocalDecorator()
              )
              : this.editor.generateEmptyEditor();
            return {
