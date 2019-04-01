@@ -99,7 +99,8 @@ export const convertQuinoaStoryToProduction = ( story ) => {
       newResource.data = {
         mediaUrl: resource.data.url
       };
-    } else if ( newResource.metadata.type === 'glossary' ) {
+    }
+ else if ( newResource.metadata.type === 'glossary' ) {
       newResource.data = {
         ...resource.data,
         entryType: 'notion'

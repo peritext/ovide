@@ -54,7 +54,6 @@ import DownloadDesktop from '../../../components/DownloadDesktop';
  */
 import config from '../../../config';
 
-
 /**
  * Shared variables
  */
