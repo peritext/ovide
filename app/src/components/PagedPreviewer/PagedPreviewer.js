@@ -51,7 +51,7 @@ class PreviewWrapper extends Component {
 ${additionalHTML}
     <script>this.ready=new Promise(function($){document.addEventListener('DOMContentLoaded',$,{once:true})})</script>
 
-    <script src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
+    <script src="https://unpkg.com/pagedjs@0.1.30/dist/paged.polyfill.js"></script>
     <!-- using a custom pagedjs for scaffolding (@todo report bugs found and fixes) -->
     <!--<script src="${inElectron ? '' : webAppPrefix}resources/pagedjs.js"></script>-->
 
