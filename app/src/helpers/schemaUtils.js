@@ -99,8 +99,13 @@ export const convertQuinoaStoryToProduction = ( story ) => {
       newResource.data = {
         mediaUrl: resource.data.url
       };
+    } else if ( newResource.metadata.type === 'glossary' ) {
+      newResource.data = {
+        ...resource.data,
+        entryType: 'notion'
+      };
     }
- else if ( newResource.metadata.type === 'image' ) {
+    else if ( newResource.metadata.type === 'image' ) {
 
       /**
        * @todo there is still an issue with images imports which are not displayed
