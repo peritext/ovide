@@ -38,6 +38,9 @@ const buildProspectRawContent = ( {
 } ) => {
     const section = production.sections[prospect.sectionId];
     const contents = prospect.contentId === 'main' ? section.contents : section.notes[prospect.contentId];
+    if ( !contents || !contents.entityMap ) {
+      return;
+    }
     const matchEntityKey = `${+( Object.keys( contents.entityMap ).pop() || 0 ) + 1 }`;
     const entitiesDedupMap = {};
     const finalContents = {
