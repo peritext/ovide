@@ -54,6 +54,7 @@ import DownloadDesktop from '../../../components/DownloadDesktop';
  */
 import config from '../../../config';
 
+
 /**
  * Shared variables
  */
@@ -304,7 +305,7 @@ class HomeViewLayout extends Component {
                         color: 'white',
                         fontWeight: 400
                       } }
-                    >alpha
+                    >{__OVIDE_VERSION__}
                     </span>
                   </span>
                 </Title>
