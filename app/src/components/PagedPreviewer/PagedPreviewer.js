@@ -49,7 +49,14 @@ class PreviewWrapper extends Component {
       PagedJS previewer
     </title>
 ${additionalHTML}
-    <script>this.ready=new Promise(function($){document.addEventListener('DOMContentLoaded',$,{once:true})})</script>
+<!-- toaster lib -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+<script>this.ready=new Promise(function($){
+      console.info('document ready, begining to prepare it');
+      document.addEventListener('DOMContentLoaded',$,{once:true})
+    })</script>
 
     <script src="https://unpkg.com/pagedjs@0.1.30/dist/paged.polyfill.js"></script>
     <!-- using a custom pagedjs for scaffolding (@todo report bugs found and fixes) -->
@@ -67,6 +74,7 @@ Paged.registerHandlers(class extends Paged.Handler {
   }
 
   beforeParsed(content) {
+    console.info('spotting footnotes');
     var footnotes = content.querySelectorAll('.footnote');
 
     for (var footnote of footnotes) {
@@ -92,7 +100,18 @@ Paged.registerHandlers(class extends Paged.Handler {
     }
   }
 
+  afterParsed() {
+    console.info('parsing finished, rendering the pages');
+    console.group('rendering pages');
+    Toastify({
+      text: "Rendering pages",
+      duration: 2000
+    }).showToast();
+  }
+
   afterPageLayout(pageFragment, page, breakToken) {
+    console.info('page %s is rendered', page.position + 1);
+
     function hasItemParent(node) {
       if (node.parentElement === null) {
         return false;
@@ -114,6 +133,12 @@ Paged.registerHandlers(class extends Paged.Handler {
   }
 
   afterRendered(pages) {
+    console.groupEnd('rendering pages');
+    Toastify({
+      text: "Attaching footnotes to " + pages.length + " pages",
+      duration: 1000
+    }).showToast();
+    console.info('rendering done, attaching footnotes to %s pages', pages.length);
     for (var page of pages) {
       var footnotes = page.element.querySelectorAll('.footnote');
       if (footnotes.length === 0) {
@@ -169,6 +194,12 @@ Paged.registerHandlers(class extends Paged.Handler {
         paragraphSecondPage.parentElement.style.setProperty('list-style', 'inherit', 'important');
       }
     }
+    console.info('footnotes positionning done');
+    Toastify({
+      text: "Rendering finished !",
+      duration: 3000
+    }).showToast();
+
   }
 });/* end register handlers */
            
