@@ -159,7 +159,7 @@ const deleteProduction = ( { productionId } ) => {
 
 const packProduction = ( {
   html = '',
-  filename = 'dicto-production.zip',
+  filename = 'peritext-production.zip',
   mediasToSave = [],
 } ) => new Promise( ( resolve ) => {
   const tempPath = path.join( userDataPath, '/temp' );

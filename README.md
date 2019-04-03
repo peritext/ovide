@@ -15,7 +15,7 @@ It is provided both as a [web](https://www.peritext.github.io/ovide) and [deskto
 
 # Installation for use
 
-You can [test Ovide online](https://peritext.github.io/ovide/) or go the [releases](https://github.com/peritext/ovide/releases) page in order to download Ovide desktop version for your Operation System.
+You can [test Ovide online](https://peritext.github.io/ovide/) or go the [releases](https://github.com/peritext/ovide/releases) page in order to download Ovide desktop version for your Operating System.
 
 # Installation for development
 
