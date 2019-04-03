@@ -529,7 +529,7 @@
   "Features.HomeView.It is built around the <a rel=\"noopener\" target=\"blank\" href=\"{peritextUrl}\">peritext ecosystem</a> and the <a rel=\"noopener\" target=\"blank\" href=\"{quinoaUrl}\">quinoa project</a>.": "It is built on the shoulders of the <a rel=\"noopener\" target=\"blank\" href=\"{peritextUrl}\">peritext ecosystem</a> and the <a rel=\"noopener\" target=\"blank\" href=\"{quinoaUrl}\">quinoa project</a>.",
   "Features.HomeView.New Production": "New Production",
   "Features.HomeView.New production": "New production",
-  "Features.HomeView.No": "No",
+  "Features.HomeView.No": "No, show me desktop versions",
   "Features.HomeView.Override exist production": "Override exist production",
   "Features.HomeView.Override production": "Override production",
   "Features.HomeView.Ovide is an experimental writing and publishing tool. It is made for context-intensive, distributed, scholarly publishing endeavours.": "Ovide is an experimental writing and publishing tool. It is made for context-intensive and polymorphic scholarly publishing activities.",
