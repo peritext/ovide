@@ -38,6 +38,8 @@ import AuthorsManager from '../../../components/AuthorsManager';
 import ExplainedLabel from '../../../components/ExplainedLabel';
 import DebouncedInput from '../../../components/DebouncedInput';
 import DebouncedTextarea from '../../../components/DebouncedTextarea';
+import StretchedLayoutContainer from 'quinoa-design-library/components/StretchedLayoutContainer';
+import StretchedLayoutItem from 'quinoa-design-library/components/StretchedLayoutItem';
 
 class AsideEditionContents extends Component {
   constructor( props ) {
@@ -105,6 +107,7 @@ class AsideEditionContents extends Component {
       publicationSubtitle,
       publicationDate,
       publicationAuthors = [],
+      allowAnnotation = false,
       plan = {},
       bibType,
     } = data;
@@ -220,6 +223,15 @@ class AsideEditionContents extends Component {
         data: {
           ...edition.data,
           publicationSubtitle: newPublicationTitle
+        }
+      } );
+    };
+    const handleAllowAnnotationChange = ( newAllowAnnotation ) => {
+      handleEditionChange( {
+        ...edition,
+        data: {
+          ...edition.data,
+          allowAnnotation: newAllowAnnotation
         }
       } );
     };
@@ -356,6 +368,42 @@ class AsideEditionContents extends Component {
                   </Field>
                 </Column>
               </Level>
+
+              {template.meta.options.allowAnnotation &&
+              <Level>
+                <Column>
+                  <Field>
+                    <Control>
+                      <ExplainedLabel
+                        title={ translate( 'Allow annotation' ) }
+                        explanation={ translate( 'Explanation about allow annotation' ) }
+                      />
+                      <StretchedLayoutContainer isDirection={ 'horizontal' }>
+                        <StretchedLayoutItem>
+                          <Button
+                            onClick={ () => handleAllowAnnotationChange( true ) }
+
+                            isColor={ allowAnnotation ? 'primary' : 'warning' }
+                          >
+                            {translate( 'yes' )}
+                          </Button>
+                        </StretchedLayoutItem>
+                        <StretchedLayoutItem>
+                          <Button
+                            onClick={ () => handleAllowAnnotationChange( false ) }
+
+                            isColor={ !allowAnnotation ? 'primary' : 'warning' }
+                          >
+                            {translate( 'no' )}
+                          </Button>
+                        </StretchedLayoutItem>
+                      </StretchedLayoutContainer>
+
+                    </Control>
+                  </Field>
+                </Column>
+              </Level>
+              }
 
               <Level>
                 <Column style={ { maxWidth: '100%' } }>

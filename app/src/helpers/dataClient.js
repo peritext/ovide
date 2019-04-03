@@ -681,6 +681,7 @@ export const requestEditionDownload = ( {
   const templateId = edition && edition.metadata && edition.metadata.templateId;
   const editionId = edition && edition.id;
   const title = production.metadata.title;
+  console.log( 'request' );
 
   if ( !inElectron && generatorId === 'single-page-html' && peritextConfig.htmlBuilds && peritextConfig.htmlBuilds[generatorId] && peritextConfig.htmlBuilds[generatorId][templateId] ) {
     return new Promise( ( resolve, reject ) => {
@@ -698,7 +699,7 @@ export const requestEditionDownload = ( {
         return requestHTMLBuild( { generatorId, templateId } );
       } )
       .then( ( { data: template } ) => {
-        const HTMLMetadata = buildHTMLMetadata( production );
+        const HTMLMetadata = buildHTMLMetadata( production, edition );
         const html = template
           .replace( '${metadata}', HTMLMetadata )
           .replace( '${productionJSON}', JSON.stringify( productionBundle ) )
