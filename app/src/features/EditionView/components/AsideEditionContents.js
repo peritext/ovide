@@ -384,7 +384,7 @@ class AsideEditionContents extends Component {
                             onClick={ () => handleAllowAnnotationChange( true ) }
 
                             isColor={ allowAnnotation ? 'primary' : 'info' }
-                            style={{ cursor: allowAnnotation ? 'default' : 'pointer' }}
+                            style={ { cursor: allowAnnotation ? 'default' : 'pointer' } }
                           >
                             {translate( 'allow annotation' )}
                           </Button>
@@ -393,7 +393,7 @@ class AsideEditionContents extends Component {
                           <Button
                             onClick={ () => handleAllowAnnotationChange( false ) }
 
-                            style={{ cursor: !allowAnnotation ? 'default' : 'pointer' }}
+                            style={ { cursor: !allowAnnotation ? 'default' : 'pointer' } }
                             isColor={ !allowAnnotation ? 'primary' : 'info' }
                           >
                             {translate( 'do not allow annotation' )}

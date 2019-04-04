@@ -235,6 +235,7 @@
     "scholar-draft": "^0.2.55",
     "turndown": "^5.0.1",
     "uuid": "^3.2.1",
-    "vega-lite": "^3.0.0-rc11"
+    "vega-lite": "^3.0.0-rc11",
+    "xml-js": "^1.6.11"
   }
 }

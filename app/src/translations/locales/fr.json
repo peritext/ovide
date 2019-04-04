@@ -854,5 +854,7 @@
   "Features.GlossaryView.Last update:": "Dernière mise à jour :",
   "Features.GlossaryView.settings": "paramètres",
   "Features.EditionView.allow annotation": "permettre l'annotation",
-  "Features.EditionView.do not allow annotation": "ne pas permettre"
+  "Features.EditionView.do not allow annotation": "ne pas permettre",
+  "Components.ExportModal.Export to TEI": "Export to TEI",
+  "Components.ExportModal.explanation about export to TEI": "Exporter la production en TEI (spécification open edition), un format standard pour l'encodage des textes scientifiques"
 }

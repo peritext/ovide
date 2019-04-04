@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { renderToStaticMarkup } from 'react-dom/server';
 import TurndownService from 'turndown';
 import { ReferencesManager } from 'react-citeproc';
+import convert from 'xml-js';
 
 import Renderer from 'peritext-template-pyrrah/dist/components/Renderer';
 import { getRelatedAssetsIds } from './assetsUtils';
@@ -26,6 +27,27 @@ const turn = new TurndownService();
  */
 export const cleanProductionForExport = ( production ) => {
   return production;
+};
+
+export const buildTEIMetadata = ( production = { metadata: {} } ) => {
+  const { metadata } = production;
+  return {
+    fileDesc: {
+      titleStmt: {
+        title: metadata.title,
+        author: metadata.authors.map( ( author ) => ( {
+          name: `${author.given } ${ author.family}`,
+          affiliation: author.affiliation,
+          roleName: {
+            _attributes: {
+              type: 'function'
+            },
+            _text: author.role
+          }
+        } ) )
+      }
+    }
+  };
 };
 
 export const buildHTMLMetadata = ( production = { metadata: {} } ) => {
@@ -303,4 +325,83 @@ export const bundleProjectAsMarkdown = ( { production, requestAssetData } ) => {
       } )
       .catch( reject );
   } );
+};
+
+
+/**
+ * @todo finish TEI exports
+ * doc : https://github.com/OpenEdition/tei.openedition/wiki/Composer-un-document-en-TEI-pour-Lodel-1.0#teiheader
+ * remaining :
+ * - abstract language to infer from ovide lang
+ * - notes handling
+ * - check that contextualizations are rendered properly
+ * - add feedback in UI (this one can be long)
+ */
+export const bundleProjectAsTEI = ( { production, requestAssetData } ) => {
+  return new Promise( ( resolve, reject ) => {
+    bundleProjectAsJSON( { production, requestAssetData } )
+      .then( ( productionJSON ) => {
+        const citations = buildCitations( productionJSON );
+        const js = {
+          _declaration: {
+            _attributes: {
+              version: '1.0',
+              encoding: 'utf-8'
+            },
+          },
+
+            TEI: {
+              _attributes: {
+                'xmlns': 'http://www.tei-c.org/ns/1.0',
+                'xmlns:rng': 'http://relaxng.org/ns/structure/1.0'
+              },
+              teiHeader: buildTEIMetadata( production ),
+              text: {
+                front: {
+                  div: {
+                    _attributes: {
+                      'type': 'abstract',
+                      'xml:lang': 'fr'
+                    },
+                    p: ( production.metadata.abstract || '' ).split( '\n\n' )
+                  }
+                },
+                body: {
+                  div: productionJSON.sectionsOrder.map( ( sectionId ) => {
+                    const section = productionJSON.sections[sectionId];
+                    const contents = renderToStaticMarkup(
+                          <ReferencesManager
+                            key={ sectionId }
+                            style={ defaultCitationStyle }
+                            locale={ defaultCitationLocale }
+                            items={ citations.citationItems }
+                            citations={ citations.citationData }
+                          >
+                            <SectionRenderer
+                              production={ productionJSON }
+                              section={ productionJSON.sections[sectionId] }
+                            />
+                          </ReferencesManager>
+                    );
+                    const contentsJS = convert.xml2js( `<div>${ contents }</div>`, { compact: true, spaces: 4 } );
+                    return {
+                      head: {
+                        _attributes: {
+                          subtype: 'level1',
+                        },
+                        _text: section.metadata.title,
+                      },
+                      contents: contentsJS
+                    };
+                  } )
+                }
+              }
+            }
+        };
+        const xml = convert.js2xml( js, { compact: true } );
+        resolve( xml );
+      } )
+      .catch( reject );
+  } );
+
 };

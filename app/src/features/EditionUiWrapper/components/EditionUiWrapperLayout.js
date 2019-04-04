@@ -26,6 +26,7 @@ import {
   bundleProjectAsJSON,
   bundleProjectAsHTML,
   bundleProjectAsMarkdown,
+  bundleProjectAsTEI,
 } from '../../../helpers/projectBundler';
 import {
   abbrevString
@@ -122,6 +123,13 @@ const EditionUiWrapperLayout = ( {
         bundleProjectAsMarkdown( { production: editedProduction, requestAssetData } )
           .then( ( markdownBundle ) => {
             downloadFile( markdownBundle, 'md', title );
+          } )
+          .catch( onRejection );
+        break;
+      case 'tei':
+        bundleProjectAsTEI( { production: editedProduction, requestAssetData } )
+          .then( ( teiBundle ) => {
+            downloadFile( teiBundle, 'xml', title );
           } )
           .catch( onRejection );
         break;

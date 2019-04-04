@@ -76,6 +76,16 @@ const ExportModal = ( {
                           ),
                           iconUrl: activeOptionId === 'markdown' ? icons.takeAway.white.svg : icons.takeAway.black.svg
                         },
+                        {
+                          id: 'tei',
+                          label: (
+                            <ExplainedLabel
+                              title={ translate( 'Export to TEI' ) }
+                              explanation={ translate( 'explanation about export to TEI' ) }
+                            />
+                          ),
+                          iconUrl: activeOptionId === 'tei' ? icons.takeAway.white.svg : icons.takeAway.black.svg
+                        },
 
                       ] }
               />
