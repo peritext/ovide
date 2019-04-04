@@ -383,18 +383,20 @@ class AsideEditionContents extends Component {
                           <Button
                             onClick={ () => handleAllowAnnotationChange( true ) }
 
-                            isColor={ allowAnnotation ? 'primary' : 'warning' }
+                            isColor={ allowAnnotation ? 'primary' : 'info' }
+                            style={{ cursor: allowAnnotation ? 'default' : 'pointer' }}
                           >
-                            {translate( 'yes' )}
+                            {translate( 'allow annotation' )}
                           </Button>
                         </StretchedLayoutItem>
                         <StretchedLayoutItem>
                           <Button
                             onClick={ () => handleAllowAnnotationChange( false ) }
 
-                            isColor={ !allowAnnotation ? 'primary' : 'warning' }
+                            style={{ cursor: !allowAnnotation ? 'default' : 'pointer' }}
+                            isColor={ !allowAnnotation ? 'primary' : 'info' }
                           >
-                            {translate( 'no' )}
+                            {translate( 'do not allow annotation' )}
                           </Button>
                         </StretchedLayoutItem>
                       </StretchedLayoutContainer>

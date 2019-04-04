@@ -829,7 +829,6 @@
   "Features.GlossaryView.Filters": "Filtres",
   "Features.GlossaryView.all items": "tous les items",
   "Components.ResourceForm.Add glossary to the library": "Ajouter une entrée de glossaire",
-
   "Features.GlossaryView.only unused items (not mentionned anywhere in the production)": "items inutilisés seulement",
   "Features.GlossaryView.No item in your glossary yet": "Pas d'entrées correspondantes",
   "Features.GlossaryView.New glossary item": "Nouvelle entrée de glossaire",
@@ -844,11 +843,16 @@
   "Features.GlossaryView.Remove {n} mentions": "Supprimer {n} mentions",
   "Features.GlossaryView.Deleting {n} mentions": "Suppression de {n} mentions",
   "Features.GlossaryView.Deleting one mention": "Suppression d'une mention",
-
   "Features.GlossaryView.No mentions yet for this glossary entry": "Pas de mentions correspondantes",
   "Features.GlossaryView.No unmentionned matches for \"{s}\"": "Pas d'extrait non-mentionné pour \"{s}\"",
-
   "Features.GlossaryView.Creating {n} mentions": "Création de {n} mentions",
-  "Features.GlossaryView.Creating one mention": "Création d'une mention"
-
+  "Features.GlossaryView.Creating one mention": "Création d'une mention",
+  "Features.EditionView.Allow annotation": "Permettre l'annotation",
+  "Features.EditionView.Explanation about allow annotation": "Permettre aux lecteurs et lectrices d'annoter l'édition grâce au service hypothes.is",
+  "Features.GlossaryView.untitled resource": "ressource sans titre",
+  "Features.GlossaryView.one mention in contents": "une mention dans les contenus",
+  "Features.GlossaryView.Last update:": "Dernière mise à jour :",
+  "Features.GlossaryView.settings": "paramètres",
+  "Features.EditionView.allow annotation": "permettre l'annotation",
+  "Features.EditionView.do not allow annotation": "ne pas permettre"
 }

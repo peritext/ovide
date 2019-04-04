@@ -841,13 +841,18 @@
   "Features.GlossaryView.Remove {n} mentions": "Remove {n} mentions",
   "Features.GlossaryView.Deleting {n} mentions": "Deleting {n} mentions",
   "Features.GlossaryView.Deleting one mention": "Deleting one mention",
-
   "Features.GlossaryView.No mentions yet for this glossary entry": "No corresponding mentions",
   "Features.GlossaryView.Search text parts in the above box in your production to mention with the glossary entry": "Search text parts in the above box in your production to mention with the glossary entry",
   "Features.GlossaryView.No unmentionned matches for \"{s}\"": "No unmentionned matches for \"{s}\"",
-
   "Features.GlossaryView.Creating {n} mentions": "Creating {n} mentions",
   "Features.GlossaryView.Creating one mention": "Creating one mention",
-
-  "Features.GlossaryView.one mention": "one mention"
+  "Features.GlossaryView.one mention": "one mention",
+  "Features.EditionView.Allow annotation": "Allow annotation",
+  "Features.EditionView.Explanation about allow annotation": "Allow readers to annotate the edition thanks to the hypothes.is service",
+  "Features.GlossaryView.untitled resource": "untitled resource",
+  "Features.GlossaryView.one mention in contents": "one mention in contents",
+  "Features.GlossaryView.Last update:": "Last update:",
+  "Features.GlossaryView.settings": "settings",
+  "Features.EditionView.allow annotation": "allow annotation",
+  "Features.EditionView.do not allow annotation": "do not allow annotation"
 }
