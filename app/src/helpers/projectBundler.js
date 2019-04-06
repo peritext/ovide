@@ -327,7 +327,6 @@ export const bundleProjectAsMarkdown = ( { production, requestAssetData } ) => {
   } );
 };
 
-
 /**
  * @todo finish TEI exports
  * doc : https://github.com/OpenEdition/tei.openedition/wiki/Composer-un-document-en-TEI-pour-Lodel-1.0#teiheader
@@ -370,18 +369,18 @@ export const bundleProjectAsTEI = ( { production, requestAssetData } ) => {
                   div: productionJSON.sectionsOrder.map( ( sectionId ) => {
                     const section = productionJSON.sections[sectionId];
                     const contents = renderToStaticMarkup(
-                          <ReferencesManager
-                            key={ sectionId }
-                            style={ defaultCitationStyle }
-                            locale={ defaultCitationLocale }
-                            items={ citations.citationItems }
-                            citations={ citations.citationData }
-                          >
-                            <SectionRenderer
-                              production={ productionJSON }
-                              section={ productionJSON.sections[sectionId] }
-                            />
-                          </ReferencesManager>
+                      <ReferencesManager
+                        key={ sectionId }
+                        style={ defaultCitationStyle }
+                        locale={ defaultCitationLocale }
+                        items={ citations.citationItems }
+                        citations={ citations.citationData }
+                      >
+                        <SectionRenderer
+                          production={ productionJSON }
+                          section={ productionJSON.sections[sectionId] }
+                        />
+                      </ReferencesManager>
                     );
                     const contentsJS = convert.xml2js( `<div>${ contents }</div>`, { compact: true, spaces: 4 } );
                     return {

@@ -855,6 +855,6 @@
   "Features.GlossaryView.settings": "paramètres",
   "Features.EditionView.allow annotation": "permettre l'annotation",
   "Features.EditionView.do not allow annotation": "ne pas permettre",
-  "Components.ExportModal.Export to TEI": "Export to TEI",
+  "Components.ExportModal.Export to TEI": "Exporter en TEI (alpha)",
   "Components.ExportModal.explanation about export to TEI": "Exporter la production en TEI (spécification open edition), un format standard pour l'encodage des textes scientifiques"
 }
