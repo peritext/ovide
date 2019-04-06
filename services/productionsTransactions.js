@@ -125,6 +125,7 @@ const updateProductionPart = ( { action } ) => {
   return new Promise( ( resolve, reject ) => {
     const productionId = action.payload.productionId;
     let newProduction;
+    console.log( 'update production part', action );
     getProduction( { productionId } )
       .then( ( { production } ) => {
         const state = {

@@ -69,9 +69,10 @@ module.exports = function( state = STORIES_DEFAULT_STATE, action ) {
                   {},
                   state[payload.productionId][collection],
                   {
-                    [payload[target].id]: payload[target]
+                    [payload[target].id]: payload[target],
                   }
-                )
+                ),
+                lastUpdateAt: payload.lastUpdateAt,
               }
             )
           }
@@ -102,6 +103,21 @@ module.exports = function( state = STORIES_DEFAULT_STATE, action ) {
    * 2.Handling more custom actions
    */
   switch ( action.type ) {
+    case 'UPDATE_PRODUCTION_METADATA':
+    return Object.assign(
+      {},
+      state,
+      {
+        [payload.productionId]: Object.assign(
+          {},
+          state[payload.productionId],
+          {
+            metadata: payload.metadata,
+            lastUpdateAt: payload.lastUpdateAt,
+          }
+        )
+      }
+    );
     default:
       return state;
     }
