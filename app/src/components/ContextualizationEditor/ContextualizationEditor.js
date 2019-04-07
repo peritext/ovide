@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   Delete,
   StretchedLayoutContainer,
+  Level,
   StretchedLayoutItem,
   Title,
 } from 'quinoa-design-library/components/';
@@ -157,6 +158,7 @@ class ContextualizationEditor extends Component {
           style={ { overflow: 'auto' } }
           isFlex={ 1 }
         >
+          <Level />
           <Form
             translate={ translate }
             contextualizer={ contextualizer }
