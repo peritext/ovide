@@ -59,12 +59,14 @@ const ProductionCard = ( {
               data-for={ 'tooltip' }
               data-tip={ ( production.metadata.title || '' ).length > MAX_STR_LEN ? production.metadata.title : undefined }
               isSize={ 8 }
+              style={{wordBreak: 'normal'}}
             >
               <Link
                 style={ { color: 'inherit' } }
                 to={ `productions/${production.id}` }
               >
-                <b>{abbrevString( production.metadata.title, MAX_STR_LEN )}</b>
+                <b
+                >{abbrevString( production.metadata.title, MAX_STR_LEN )}</b>
               </Link>
 
             </Column>

@@ -221,9 +221,11 @@ const SummaryViewLayout = ( {
                       ) )
                     }
                 </div>
+                <Level />
                 <Content>
                   <i>{abbrevString( abstract, 300 )}</i>
                 </Content>
+                <Level />
               </Collapsable>
             </Level>
 
