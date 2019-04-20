@@ -300,7 +300,7 @@ class HomeViewLayout extends Component {
                         borderRadius: '.5rem',
                         fontSize: '.7rem',
                         padding: '.4rem',
-                        background: '#8cc63f',
+                        background: 'lightgrey',
                         color: 'white',
                         fontWeight: 400
                       } }
