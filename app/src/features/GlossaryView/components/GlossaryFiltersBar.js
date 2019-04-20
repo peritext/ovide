@@ -37,8 +37,11 @@ const GlossaryFiltersBar = ( {
       isMobile
       style={ { flexFlow: 'row wrap' } }
     >
-      <Title isSize={ 5 }>
-        {translate( 'Your glossary entries' )}
+      <Title
+        style={ { paddingLeft: '1rem', paddingTop: '.5rem' } }
+        isSize={ 5 }
+      >
+        {translate( 'Production glossary entries' )}
         <HelpPin>
           {translate( 'This view allows you to manage your glossary entries and to handle where to mention them in your sections contents' )}
         </HelpPin>

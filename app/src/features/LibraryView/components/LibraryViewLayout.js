@@ -19,6 +19,7 @@ import {
   HelpPin,
   Level,
   ModalCard,
+  Title,
   StretchedLayoutContainer,
   StretchedLayoutItem,
 } from 'quinoa-design-library/components';
@@ -707,7 +708,6 @@ class LibraryViewLayout extends Component {
         return (
           <StretchedLayoutContainer isAbsolute>
             <StretchedLayoutItem>
-              <Level />
               <Column style={ { paddingRight: 0 } }>
                 <LibraryFiltersBar
                   filterValues={ filterValues }
@@ -807,6 +807,7 @@ class LibraryViewLayout extends Component {
         <StretchedLayoutContainer
           isFluid
           isDirection={ 'horizontal' }
+          style={ { paddingLeft: '1rem' } }
           isAbsolute
         >
           <StretchedLayoutItem
@@ -814,7 +815,12 @@ class LibraryViewLayout extends Component {
             isFlex={ '1' }
           >
             <Column>
-              <Level />
+              <Title
+                isSize={ 5 }
+                style={ { paddingTop: '.5rem' } }
+              >
+                {translate( 'Production library' )}
+              </Title>
               <Level>
                 <Content>
                   {translate( 'Your library contains all the items that can be used within the production.' )}
@@ -824,7 +830,7 @@ class LibraryViewLayout extends Component {
                 <Button
                   isFullWidth
                   onClick={ handleNewResourceClick }
-                  isColor={ mainColumnMode === 'new' ? 'primary' : 'info' }
+                  isColor={ mainColumnMode === 'new' ? 'primary' : 'primary' }
                 >
                   {translate( 'New item' )}
                 </Button>

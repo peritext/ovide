@@ -21,7 +21,6 @@ import {
   Level,
   LevelItem,
   LevelLeft,
-  StatusMarker,
   StretchedLayoutContainer,
   StretchedLayoutItem,
   Title,
@@ -187,13 +186,13 @@ const SummaryViewLayout = ( {
           isFlex={ 1 }
           isFlowing
         >
-          <Column>
+          <Column style={ { paddingLeft: '1.8rem' } }>
             <Level style={ { marginBottom: '.4rem' } }>
               <Collapsable
                 maxHeight={ '100%' }
                 isCollapsed={ metadataOpen }
               >
-                <Title isSize={ 3 }>
+                <Title isSize={ 2 }>
                   {abbrevString( title, 60 )}
                 </Title>
                 {subtitle &&
@@ -232,7 +231,7 @@ const SummaryViewLayout = ( {
             <Level isFullWidth>
               <Button
                 isFullWidth
-                isColor={ metadataOpen ? 'primary' : 'info' }
+                isColor={ metadataOpen ? 'primary' : 'primary' }
                 onClick={ handleMetadataEditionToggle }
               >
 
@@ -242,9 +241,7 @@ const SummaryViewLayout = ( {
                     style={ { alignItems: 'center', justifyContent: 'space-around', padding: '1rem' } }
                     isDirection={ 'horizontal' }
                   >
-                    <StretchedLayoutItem>
-                      <StatusMarker />
-                    </StretchedLayoutItem>
+
                     <StretchedLayoutItem isFlex={ 1 }>
                       {metadataOpen ? translate( 'Close production settings' ) : translate( 'Edit production settings' )}
                     </StretchedLayoutItem>
@@ -323,9 +320,12 @@ const SummaryViewLayout = ( {
               isFlex={ 2 }
               isFlowing
             >
-              <Column>
+              <Column style={ { paddingRight: 0 } }>
                 <Column>
-                  <Title isSize={ 2 }>
+                  <Title
+                    style={ { paddingTop: '.2rem' } }
+                    isSize={ 2 }
+                  >
                     {translate( 'Summary' )}
                   </Title>
                 </Column>

@@ -856,5 +856,10 @@
   "Features.EditionView.allow annotation": "allow annotation",
   "Features.EditionView.do not allow annotation": "do not allow annotation",
   "Components.ExportModal.Export to TEI": "Export to TEI (alpha)",
-  "Components.ExportModal.explanation about export to TEI": "Export your production to open-edition-flavoured TEI, a standard format for academic text encoding"
+  "Components.ExportModal.explanation about export to TEI": "Export your production to open-edition-flavoured TEI, a standard format for academic text encoding",
+  "Features.EditionsView.Production editions": "Production editions",
+  "Features.EditionsView.This view allows you to manage several ways of publishing your production": "This view allows you to manage several ways of publishing your production",
+  "Features.GlossaryView.Production glossary entries": "Production glossary entries",
+  "Features.LibraryView.Production library": "Production library",
+  "Features.LibraryView.This view allows you to manage all the resources of this production": "This view allows you to manage all the resources of this production"
 }

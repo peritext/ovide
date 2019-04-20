@@ -528,7 +528,7 @@ class AsideEditionContents extends Component {
               <Column>
                 <Button
                   onClick={ handleToggleSummaryEdited }
-                  isColor={ summaryEdited ? 'primary' : 'info' }
+                  isColor={ summaryEdited ? 'primary' : 'primary' }
                   isFullWidth
                 >
                   {summaryEdited ? translate( 'Close summary edition' ) : translate( 'Edit summary' )}

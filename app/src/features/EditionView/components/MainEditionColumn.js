@@ -292,8 +292,8 @@ const MainEditionColumn = ( {
       <div
         style={ {
           position: 'absolute',
-          right: '1rem',
-          bottom: '1rem'
+          right: '1.5rem',
+          bottom: '1.5rem'
         } }
       >
         {availableGenerators.length > 0 &&

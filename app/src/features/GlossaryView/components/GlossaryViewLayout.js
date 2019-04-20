@@ -715,7 +715,7 @@ class GlossaryViewLayout extends Component {
           <StretchedLayoutContainer
             isAbsolute
             className={ 'column' }
-            style={ { paddingLeft: 0 } }
+            style={ { paddingLeft: '1rem' } }
           >
             <StretchedLayoutItem>
               <Column style={ { paddingLeft: 0 } }>
@@ -758,7 +758,7 @@ class GlossaryViewLayout extends Component {
                 <Button
                   isFullWidth
                   onClick={ handleNewResourceClick }
-                  isColor={ mainColumnMode === 'new' ? 'primary' : 'info' }
+                  isColor={ mainColumnMode === 'new' ? 'primary' : 'primary' }
                 >
                   {translate( 'New glossary item' )}
                 </Button>

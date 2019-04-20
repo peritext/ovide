@@ -292,7 +292,10 @@ class AsideGlossary extends Component {
             <StretchedLayoutContainer isAbsolute>
               <StretchedLayoutItem>
                 <Column>
-                  <Title isSize={ 5 }>{
+                  <Title
+                    style={ { paddingTop: '.5rem' } }
+                    isSize={ 5 }
+                  >{
                             resource &&
                             resource.data &&
                             resource.data.name &&

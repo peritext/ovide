@@ -300,7 +300,7 @@ class HomeViewLayout extends Component {
                         borderRadius: '.5rem',
                         fontSize: '.7rem',
                         padding: '.4rem',
-                        background: '#56D6CD',
+                        background: '#8cc63f',
                         color: 'white',
                         fontWeight: 400
                       } }
@@ -340,7 +340,7 @@ class HomeViewLayout extends Component {
                   <Button
                     isFullWidth
                     onClick={ handleToggleNewProductionOpened }
-                    isColor={ newProductionOpen ? 'primary' : 'info' }
+                    isColor={ newProductionOpen ? 'primary' : 'primary' }
                   >
                     {this.translate( 'New production' )}
                   </Button>
@@ -362,7 +362,9 @@ class HomeViewLayout extends Component {
               isSize={ '2/3' }
             >
               {productionsList.length > 0 &&
-              <Column>
+              <Column
+                style={ { paddingTop: '1.5rem' } }
+              >
                 <StretchedLayoutContainer
                   isFluid
                   isDirection={ 'horizontal' }

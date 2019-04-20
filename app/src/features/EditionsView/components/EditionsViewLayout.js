@@ -15,6 +15,7 @@ import {
   Container,
   Content,
   Level,
+  Title,
   ModalCard,
   StretchedLayoutContainer,
   StretchedLayoutItem,
@@ -228,7 +229,6 @@ class EditionsViewLayout extends Component {
       return (
         <StretchedLayoutContainer isAbsolute>
           <StretchedLayoutItem>
-            <Level />
             <Column style={ { paddingRight: 0 } }>
               <EditionsFiltersBar
                 filterValues={ filterValues }
@@ -323,19 +323,24 @@ class EditionsViewLayout extends Component {
           <StretchedLayoutItem
             className={ 'is-hidden-mobile' }
             isFlex={ '1' }
+            style={ { paddingLeft: '1rem' } }
           >
             <Column>
-              <Level />
-              <Level>
-                <Content>
-                  {translate( 'Editions view aside' )}
-                </Content>
-              </Level>
+              <Title
+                isSize={ 5 }
+                style={ { paddingTop: '.5rem' } }
+              >
+                {translate( 'Production editions' )}
+
+              </Title>
+              <Content>
+                {translate( 'Editions view aside' )}
+              </Content>
               <Level>
                 <Button
                   isFullWidth
                   onClick={ handleNewEditionClick }
-                  isColor={ newEditionPrompted ? 'primary' : 'info' }
+                  isColor={ newEditionPrompted ? 'primary' : 'primary' }
                 >
                   {translate( 'New edition' )}
                 </Button>
