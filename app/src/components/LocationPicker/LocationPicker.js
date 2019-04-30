@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
-import GMap from 'google-map-react';
+
+import Map from 'pigeon-maps'
+import Overlay from 'pigeon-overlay'
 
 import getConfig from '../../helpers/getConfig';
-const { googleApiKey } = getConfig();
+const { 
+  googleApiKey,
+} = getConfig();
 import { translateNameSpacer } from '../../helpers/translateUtils';
 
 import {
@@ -130,7 +134,9 @@ export default class LocationPickerContainer extends Component {
       } );
   }
 
-  onMapChange = ( { center: { lat, lng } } ) => {
+  onMapChange = ( { center } ) => {
+    const lat = center[0];
+    const lng = center[1];
     this.setState( {
       latitude: lat,
       longitude: lng,
@@ -329,27 +335,25 @@ export default class LocationPickerContainer extends Component {
           latitude && longitude &&
           <StretchedLayoutItem isFlex={ 1 }>
             <div style={ { width: '100%', height: '20rem' } }>
-              <GMap
-                bootstrapURLKeys={ { key: [ googleApiKey ] } }
-                defaultCenter={ { lat: latitude, lng: longitude } }
-                defaultZoom={ 11 }
-                onChange={ onMapChange }
-              >
-                {
-                  location &&
-                  location.latitude &&
-                  location.latitude !== latitude &&
-                  location.longitude !== longitude &&
-                  <PrevMarker
-                    lat={ location.latitude }
-                    lng={ location.longitude }
-                  />
-                }
-                <Marker
-                  lat={ latitude }
-                  lng={ longitude }
-                />
-              </GMap>
+              <Map
+                  center={ [ latitude, longitude ] }
+                  zoom={ 11 }
+                  onBoundsChanged={ onMapChange }
+                >
+                  {
+                        location &&
+                                location.latitude &&
+                                location.latitude !== latitude &&
+                                location.longitude !== longitude &&
+                                <Overlay anchor={ [ location.latitude, location.longitude ] }>
+                                  <PrevMarker />
+                                </Overlay>
+                                
+                      }
+                  <Overlay anchor={ [ latitude, longitude ] }>
+                    <Marker />
+                  </Overlay> 
+              </Map>
             </div>
           </StretchedLayoutItem>
         }
