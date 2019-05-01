@@ -16,6 +16,9 @@ import {
 } from 'quinoa-design-library/components/';
 import Helmet from 'react-helmet';
 import stringify from 'fast-json-stable-stringify';
+import ReduxToastr from 'react-redux-toastr';
+
+import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
 
 /**
  * Imports Project utils
@@ -234,6 +237,14 @@ const EditionUiWrapperLayout = ( {
         onChange={ handleExportToFile }
       />
       <ReactTooltip id={ 'tooltip' } />
+      <ReduxToastr
+        timeOut={ 5000 }
+        newestOnTop={ false }
+        position={ 'top-right' }
+        transitionIn={ 'fadeIn' }
+        transitionOut={ 'fadeOut' }
+        closeOnToastrClick
+      />
     </StretchedLayoutContainer>
   );
 };

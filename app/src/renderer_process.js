@@ -34,6 +34,10 @@ const routerHistory = createMemoryHistory();
 const store = configureStore( initialState );
 syncHistoryWithStore( store, routerHistory );
 
+ipcRenderer.on( 'MAIN_ACTION', ( event, action ) => {
+  store.dispatch( action );
+} );
+
 /**
  * Getting default lang from browser or local storage
  */

@@ -84,7 +84,7 @@ app.on('ready', async () => {
     const socket = Socket('main-win', Transport(ipcMain, mainWindow));
     socket.open();
     // console.log('done:open sockets');
-    bindSocketToRoutes(socket, socketRoutes);
+    bindSocketToRoutes(socket, socketRoutes, mainWindow);
     // console.log('done:bind sockets to routes');
 
     socket.on('event:ready', () => {

@@ -33,6 +33,8 @@ const SET_SUMMARY_EDITED = 'SET_SUMMARY_EDITED';
 const GET_CITATION_STYLES_LIST = 'GET_CITATION_STYLES_LIST';
 const GET_CITATION_LOCALES_LIST = 'GET_CITATION_LOCALES_LIST';
 
+const GENERATOR_MESSAGE = 'GENERATOR_MESSAGE';
+
 /**
  * ===================================================
  * ACTION CREATORS
@@ -89,6 +91,7 @@ const UI_DEFAULT_STATE = {
   referenceTypesVisible: false,
   downloadModalOpen: false,
   summaryEdited: false,
+  lastGeneratorMessage: undefined,
 };
 
 /**
@@ -110,6 +113,11 @@ function ui( state = UI_DEFAULT_STATE, action ) {
       return {
         ...state,
         [propName]: payload
+      };
+    case GENERATOR_MESSAGE:
+      return {
+        ...state,
+        lastGeneratorMessage: payload
       };
     default:
       return state;
@@ -172,6 +180,7 @@ const editionAsideTabMode = ( state ) => state.ui.editionAsideTabMode;
 const editionAsideTabCollapsed = ( state ) => state.ui.editionAsideTabCollapsed;
 const downloadModalOpen = ( state ) => state.ui.downloadModalOpen;
 const summaryEdited = ( state ) => state.ui.summaryEdited;
+const lastGeneratorMessage = ( state ) => state.ui.lastGeneratorMessage;
 
 const citationStylesList = ( state ) => state.data.citationStylesList;
 const citationLocalesList = ( state ) => state.data.citationLocalesList;
@@ -189,4 +198,5 @@ export const selector = createStructuredSelector( {
   loadedAssets,
   downloadModalOpen,
   summaryEdited,
+  lastGeneratorMessage
 } );

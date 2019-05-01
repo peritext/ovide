@@ -101,6 +101,7 @@ class EditionViewContainer extends Component {
   componentWillReceiveProps = ( nextProps ) => {
     const {
       editedProduction: prevEditedProduction,
+      lastGeneratorMessage,
       match: {
         params: {
           editionId: prevEditionId
@@ -109,6 +110,7 @@ class EditionViewContainer extends Component {
     } = this.props;
     const {
       editedProduction: nextEditedProduction,
+      lastGeneratorMessage: newGeneratorMessage,
       match: {
         params: {
           editionId: nextEditionId
@@ -120,6 +122,11 @@ class EditionViewContainer extends Component {
     if ( prevEditedProduction !== nextEditedProduction || prevEdition !== nextEdition ) {
       this.updateAssetsData( nextProps, nextEdition );
     }
+
+    if ( lastGeneratorMessage !== newGeneratorMessage && newGeneratorMessage ) {
+      this.displayGeneratorMessage( newGeneratorMessage );
+    }
+
   }
 
   componentWillUnmount = () => {
@@ -204,6 +211,59 @@ class EditionViewContainer extends Component {
     }
   }
 
+  displayGeneratorMessage = ( mes ) => {
+    const {
+      message,
+      type,
+      payload
+    } = mes;
+    const consoleType = type === 'success' ? 'info' : type;
+    console[consoleType]( message );
+    const translate = translateNameSpacer( this.context.t, 'Features.EditionView' );
+
+    switch ( message.trim() ) {
+      case 'starting generation':
+      toastr[type]( translate( 'starting generation' ), { timeOut: 1000 } );
+        break;
+      case 'loading assets':
+      toastr[type]( translate( 'loading assets' ), { timeOut: 1000 } );
+        break;
+      case 'loading template':
+      toastr[type]( translate( 'loading template' ), { timeOut: 1000 } );
+        break;
+      case 'packing assets':
+      toastr[type]( translate( 'packing assets' ), { timeOut: 1000 } );
+        break;
+      case 'packing asset':
+
+        /*
+         * if (payload.currentIndex%10 === 0) {
+         *   toastr[type](translate('packing asset {n}/{m}', {n: payload.currentIndex + 1, m: payload.totalIndex}),  {timeOut: 1000});
+         * }
+         */
+        break;
+      case 'building website':
+      toastr[type]( translate( 'building website' ), { timeOut: 1000 } );
+        break;
+      case 'creating archive':
+      toastr[type]( translate( 'creating archive' ), { timeOut: 1000 } );
+        break;
+      case 'archive created':
+      toastr[type]( translate( 'archive created' ), { timeOut: 1000 } );
+        break;
+      case 'cleaning temporary files':
+      toastr[type]( translate( 'cleaning temporary files' ), { timeOut: 1000 } );
+        break;
+      case 'archive error':
+        toastr[type]( translate( 'archive error' ), { timeOut: 3000 } );
+        break;
+      default:
+        toastr[type]( message, { timeOut: 1000 } );
+        break;
+    }
+    toastr[type]( message, { timeOut: 300 } );
+  }
+
   downloadEdition = ( generator = {}, locale = {} ) => {
     const {
       props: {
@@ -214,7 +274,8 @@ class EditionViewContainer extends Component {
         },
         editedProduction: production,
       },
-      context: { t }
+      context: { t },
+      onFeedback,
     } = this;
     const edition = production.editions[editionId];
     const { id: generatorId } = generator;
@@ -229,6 +290,7 @@ class EditionViewContainer extends Component {
          title: 'Download edition',
          defaultPath: `${production.metadata.title }.${ generator.outputFormat}`,
        }, ( outputPath ) => {
+         setTimeout( () => {
           toastr.info( translate( 'Bundling the edition for download' ), translate( 'You will be notified when your file is ready.' ) );
           requestEditionDownload( {
             production,
@@ -236,6 +298,7 @@ class EditionViewContainer extends Component {
             locale,
             outputPath,
             generatorId,
+            onFeedback,
           } )
           .then( () => {
             toastr.success( translate( 'The edition was downloaded successfully' ) );
@@ -244,6 +307,8 @@ class EditionViewContainer extends Component {
             console.error( 'error during saving !', err );/* eslint no-console: 0 */
             toastr.error( translate( 'An error occured during edition download' ) );
           } );
+         } );
+
       } );
 
     }
@@ -253,7 +318,8 @@ class EditionViewContainer extends Component {
           edition,
           contextualizers,
           locale,
-          generatorId
+          generatorId,
+          onFeedback,
         } );
     }
   }

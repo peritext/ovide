@@ -68,8 +68,13 @@ const deleteAsset = ( { productionId, asset } ) => {
 };
 
 const getAssetData = ( { productionId, asset = {} } ) => {
+  // console.log( 'get asset data', asset );
   return new Promise( ( resolve, reject ) => {
-    // console.log( 'request asset data in get asset data, asset is', asset );
+
+    /*
+     * console.log( 'get asset data in promise', asset );
+     * console.log( 'request asset data in get asset data, asset is', asset );
+     */
     const { id, filename } = asset;
     const dirPath = `${contentPath}/${productionId}/assets/${id}`;
     const address = `${dirPath}/${filename}`;
@@ -81,22 +86,28 @@ const getAssetData = ( { productionId, asset = {} } ) => {
           case 'image/jpg':
           case 'image/gif':
           case 'image/tiff':
-            return readFile( address, 'base64' )
+            // console.log( 'read image %s', address );
+            readFile( address, 'base64' )
               .then( ( base64 ) => {
                 const data = `data:${asset.mimetype};base64,${base64}`;
+                // console.log( 'parsed, resolve' );
                 resolve( data );
               } )
               .catch( reject );
+              break;
           case 'application/json':
           // also csv because stored as json
           case 'text/csv':/* eslint no-fallthrough : 0 */
           case 'text/tsv':
           case 'text/comma-separated-values':
           case 'text/tab-separated-values':
-            return readFile( address, 'utf8' )
+            // console.log( 'get table', address );
+            readFile( address, 'utf8' )
                     .then( ( str ) => {
+                      // console.log( 'got it, parse' );
                       try {
                         const data = JSON.parse( str );
+                        // console.log( 'parsed, resolve' );
                         resolve( data );
                       }
                       catch ( error ) {
@@ -104,15 +115,18 @@ const getAssetData = ( { productionId, asset = {} } ) => {
                       }
                     } )
                     .catch( reject );
+                    break;
 
           case 'text/plain':
           case 'text/html':
-            return readFile( address, 'utf8' )
+            readFile( address, 'utf8' )
               .then( resolve )
               .catch( reject );
+            break;
           default:
-            return readFile( address, asset.data, 'binary' )
+            readFile( address, asset.data, 'binary' )
                       .then( resolve ).catch( reject );
+            break;
         }
       } );
   } );

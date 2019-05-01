@@ -221,7 +221,6 @@ export const requestAssetDeletion = ( productionId, asset ) => {
  * @return {Promise} response promise
  */
 export const requestAssetData = ( productionId, asset ) => {
-
   if ( inElectron ) {
     return new Promise( ( resolve, reject ) => {
       requestToMain( 'get-asset-data', { productionId, asset } )
@@ -676,7 +675,7 @@ export const requestEditionDownload = ( {
     edition,
     production,
     generatorId,
-    locale = {}
+    locale = {},
   } = props;
   const templateId = edition && edition.metadata && edition.metadata.templateId;
   const editionId = edition && edition.id;
@@ -728,6 +727,7 @@ export const requestEditionDownload = ( {
 
   }
   else if ( inElectron ) {
+    console.log( 'request generate edition with props', props );
     return requestToMain( 'generate-edition', {
       ...props
     } );

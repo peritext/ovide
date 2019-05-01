@@ -36,7 +36,7 @@ const generateEdition = ( {
   outputPath,
   generatorId,
   html
-} ) => {
+}, socket, mainWindow ) => {
   return new Promise( ( resolve, reject ) => {
 
     if ( generatorId === 'single-page-html' && html ) {
@@ -47,7 +47,9 @@ const generateEdition = ( {
     }
 
     const generator = peritextConfig.generators[generatorId];
-
+    const onFeedback = ( payload ) => {
+      mainWindow.webContents.send( 'MAIN_ACTION', { type: 'GENERATOR_MESSAGE', payload } );
+    };
     generator.generateOutput( {
       production,
       edition,
@@ -57,6 +59,7 @@ const generateEdition = ( {
       outputPath,
       tempDirPath,
       peritextConfig,
+      onFeedback,
       assetsPath: `${contentPath}/${production.id}/assets/`,
       requestAssetData: getAssetData,
       basePath: path.resolve( `${__dirname }/../` ),
@@ -66,6 +69,7 @@ const generateEdition = ( {
     } )
     // clean temp files
     .then( () => {
+      // console.log( 'clean temp files' );
       return remove( tempDirPath );
     } )
     .then( () => {

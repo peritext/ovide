@@ -118,6 +118,62 @@ module.exports = function( state = STORIES_DEFAULT_STATE, action ) {
         )
       }
     );
+    case 'UPDATE_PRODUCTION_SETTINGS':
+    return Object.assign(
+      {},
+      state,
+      {
+        [payload.productionId]: Object.assign(
+          {},
+          state[payload.productionId],
+          {
+            settings: payload.settings,
+            lastUpdateAt: payload.lastUpdateAt,
+          }
+        )
+      }
+    );
+    case 'UPDATE_SECTIONS_ORDER':
+    const oldSectionsOrder = [ ...state[payload.productionId].production.sectionsOrder ];
+    const newSectionsOrder = [ ...payload.sectionsOrder ];
+    let resolvedSectionsOrder = [ ...payload.sectionsOrder ];
+
+      /*
+       * new order is bigger than older order
+       * (probably because a user deleted a section in the meantime)
+       * --> we filter the new order with only existing sections
+       */
+      if ( newSectionsOrder.length > oldSectionsOrder.length ) {
+          resolvedSectionsOrder = newSectionsOrder.filter(
+            ( newSectionId ) => oldSectionsOrder.indexOf( newSectionId ) > -1
+          );
+
+      /*
+       * new order is smaller than older order
+       * (probably because a user created a section in the meantime)
+       * --> we add created sections to the new sections order
+       */
+      }
+      else if ( newSectionsOrder.length < oldSectionsOrder.length ) {
+        resolvedSectionsOrder = [
+          ...newSectionsOrder,
+          ...oldSectionsOrder.slice( newSectionsOrder.length )
+        ];
+      }
+      return Object.assign(
+        {},
+        state,
+        {
+          [payload.productionId]: Object.assign(
+            {},
+            state[payload.productionId],
+            {
+              sectionsOrder: resolvedSectionsOrder,
+              lastUpdateAt: payload.lastUpdateAt,
+            }
+          )
+        }
+      );
     default:
       return state;
     }

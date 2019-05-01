@@ -866,5 +866,15 @@
   "Features.LibraryView.This view allows you to manage all the resources of this production": "This view allows you to manage all the resources of this production",
   "Components.LocationPicker.Address": "Address",
   "Components.LocationPicker.Input a place to search": "Input a place to search",
-  "Components.LocationPicker.Update location from map position": "Update position"
+  "Components.LocationPicker.Update location from map position": "Update position",
+  "Features.EditionView.starting generation": "starting generation",
+  "Features.EditionView.loading assets": "loading assets",
+  "Features.EditionView.loading template": "loading template",
+  "Features.EditionView.packing assets": "packing assets",
+  "Features.EditionView.packing asset {n}/{m}": "packing asset {n}/{m}",
+  "Features.EditionView.building website": "building website",
+  "Features.EditionView.creating archive": "creating archive to download",
+  "Features.EditionView.archive created": "archive created",
+  "Features.EditionView.cleaning temporary files": "cleaning temporary files",
+  "Features.EditionView.archive error": "archive error"
 }
