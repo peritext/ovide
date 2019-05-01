@@ -475,7 +475,7 @@ class ResourceForm extends Component {
                   {
                     showTitle &&
                     <StretchedLayoutItem>
-                      <Column style={{paddingTop: 0}}>
+                      <Column style={ { paddingTop: 0 } }>
                         <Title isSize={ 3 }>
                           <StretchedLayoutContainer isDirection={ 'horizontal' }>
                             <StretchedLayoutItem isFlex={ 1 }>

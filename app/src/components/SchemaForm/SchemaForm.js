@@ -101,7 +101,8 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                   onChange={ onDateChange }
                 />
               );
-            } else if ( model.enum ) {
+            }
+ else if ( model.enum ) {
                 if ( model.enum.length > 1 ) {
                   return (
                     <Select
