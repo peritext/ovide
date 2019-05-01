@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from 'react-places-autocomplete';
 
-import Map from 'pigeon-maps'
-import Overlay from 'pigeon-overlay'
+import Map from 'pigeon-maps';
+import Overlay from 'pigeon-overlay';
 
-import getConfig from '../../helpers/getConfig';
-const { 
-  googleApiKey,
-} = getConfig();
+import { getPlacesSuggestions } from '../../helpers/geoCoder';
 import { translateNameSpacer } from '../../helpers/translateUtils';
 
 import {
@@ -16,6 +12,9 @@ import {
   StretchedLayoutContainer,
   StretchedLayoutItem,
 } from 'quinoa-design-library/components/';
+
+import './LocationPicker.scss';
+import LocationPickerSuggestions from './LocationPickerSuggestions';
 
 const Marker = () =>
   (
@@ -62,6 +61,9 @@ export default class LocationPickerContainer extends Component {
       latitude: props.location && props.location.latitude,
       longitude: props.location && props.location.longitude,
       address: props.location && props.location.address,
+      zoomLevel: 11,
+      showSuggestions: false,
+      suggestions: []
     };
   }
 
@@ -117,32 +119,24 @@ export default class LocationPickerContainer extends Component {
     } );
   }
 
-  handleAddressSubmit = ( event ) => {
+  handleAddressSubmit = ( query ) => {
     event.preventDefault();
-    geocodeByAddress( this.state.address )
-      .then( ( results ) => getLatLng( results[0] ) )
-      .then( ( coordinates ) => {
-        const { lat, lng } = coordinates;
-        this.setState( {
-          latitude: lat,
-          longitude: lng
-        } );
-        this.handleSubmit( true );
-      } )
-      .catch( () => {
-
+    getPlacesSuggestions( query )
+      .then( ( suggestions ) => {
+        this.setState( { suggestions } );
       } );
   }
 
-  onMapChange = ( { center } ) => {
+  onMapChange = ( { center, zoom } ) => {
     const lat = center[0];
     const lng = center[1];
     this.setState( {
       latitude: lat,
       longitude: lng,
-      isEdited: true
+      isEdited: true,
+      zoomLevel: zoom,
     } );
-    this.handleSubmit( true );
+    // this.handleSubmit( true );
   }
 
   handleSubmit = ( isEdited = false ) => {
@@ -190,7 +184,10 @@ export default class LocationPickerContainer extends Component {
         isEdited,
         latitude,
         longitude,
+        zoomLevel,
         address = '',
+        suggestions = [],
+        showSuggestions,
       },
       props: {
         location,
@@ -223,6 +220,50 @@ export default class LocationPickerContainer extends Component {
 
     const onLatitudeChange = ( e ) => !isNaN( +e.target.value ) && setLatitude( +e.target.value );
     const onLongitudeChange = ( e ) => !isNaN( +e.target.value ) && setLongitude( +e.target.value );
+    const handleAddressChange = ( e ) => {
+      const val = e.target.value;
+      setAddress( val );
+      if ( !showSuggestions ) {
+        this.setState( { showSuggestions: true } );
+      }
+      handleAddressSubmit( val );
+    };
+    const onSuggestionsBlur = () => {
+      this.setState( { showSuggestions: false } );
+    };
+    const handleSuggestionChoice = ( { lat, lon, area } ) => {
+      let newZoomLevel = 2;
+
+      if ( area < 20 ) {
+        newZoomLevel = 9;
+      }
+ else if ( area < 50 ) {
+        newZoomLevel = 8;
+      }
+ else if ( area < 100 ) {
+        newZoomLevel = 7;
+      }
+ else if ( area < 400 ) {
+        newZoomLevel = 5;
+      }
+ else if ( area < 2000 ) {
+        newZoomLevel = 4;
+      }
+ else if ( area < 3000 ) {
+        newZoomLevel = 3;
+      }
+      setLatitude( lat );
+      setLongitude( lon );
+      this.setState( { showSuggestions: false, zoomLevel: newZoomLevel } );
+    };
+
+    const onAlignOnMapPosition = () => {
+      this.handleSubmit();
+    };
+
+    const bindLocationInputAnchor = ( locationInputAnchor ) => {
+      this.locationInputAnchor = locationInputAnchor;
+    };
     return (
       <div
         onClick={ silentEvent }
@@ -244,38 +285,28 @@ export default class LocationPickerContainer extends Component {
             isEdited ?
               <StretchedLayoutContainer isDirection={ 'vertical' }>
                 <StretchedLayoutItem isFlex={ 1 }>
-                  <h6 className={ 'title is-6' }>
-                    {translate( 'Search location by address' )}
-                  </h6>
-                  <form
-                    onSubmit={ handleAddressSubmit }
-                    className={ 'stretched-columns' }
-                  >
-                    <StretchedLayoutContainer isDirection={ 'horizontal' }>
-                      <StretchedLayoutItem>
-                        <PlacesAutocomplete
-                          className={ 'input' }
-                          inputProps={ {
-                              value: address,
-                              placeholder: translate( 'input an address' ),
-                              onChange: setAddress,
-                              onSubmit: handleAddressSubmit
-                            } }
-                        />
-                      </StretchedLayoutItem>
-                      <StretchedLayoutItem>
-                        <Button
-                          style={ { height: '100%', marginLeft: '1rem' } }
-                          isColor={ 'info' }
-                          onClick={ handleAddressSubmit }
-                        >
-                          <span className={ 'icon' }>
-                            <i className={ 'fas fa-search' } />
-                          </span>
-                        </Button>
-                      </StretchedLayoutItem>
-                    </StretchedLayoutContainer>
-                  </form>
+                  <div className={ 'field' }>
+                    <label className={ 'label' }>{translate( 'Address' )}</label>
+                    <div className={ 'control' }>
+                      <input
+                        ref={ bindLocationInputAnchor }
+                        value={ address }
+                        onChange={ handleAddressChange }
+                        placeholder={ translate( 'Input a place to search' ) }
+                        className={ 'input location-picker-input' }
+                      />
+                      {
+                          suggestions.length && showSuggestions ?
+                            <LocationPickerSuggestions
+                              anchor={ this.locationInputAnchor }
+                              onBlur={ onSuggestionsBlur }
+                              onSuggestionChoice={ handleSuggestionChoice }
+                              { ...{ suggestions } }
+                            />
+                          : null
+                        }
+                    </div>
+                  </div>
                 </StretchedLayoutItem>
               </StretchedLayoutContainer>
               : null
@@ -291,11 +322,10 @@ export default class LocationPickerContainer extends Component {
                   <div className={ 'control' }>
                     <input
                       className={ 'input' }
-                      value={ latitude || '' }
+                      value={ location.latitude || '' }
                       placeholder={ translate( 'input latitude' ) }
                       onChange={ onLatitudeChange }
                     />
-
                   </div>
                 </div>
 
@@ -304,7 +334,7 @@ export default class LocationPickerContainer extends Component {
                   <div className={ 'control' }>
                     <input
                       className={ 'input' }
-                      value={ longitude || '' }
+                      value={ location.longitude || '' }
                       placeholder={ translate( 'input longitude' ) }
                       onChange={ onLongitudeChange }
                     />
@@ -333,27 +363,43 @@ export default class LocationPickerContainer extends Component {
           </StretchedLayoutItem>
           {
           latitude && longitude &&
-          <StretchedLayoutItem isFlex={ 1 }>
+          <StretchedLayoutItem
+            isFlex={ 1 }
+            style={ { position: 'relative' } }
+          >
             <div style={ { width: '100%', height: '20rem' } }>
               <Map
-                  center={ [ latitude, longitude ] }
-                  zoom={ 11 }
-                  onBoundsChanged={ onMapChange }
-                >
-                  {
+                center={ [ latitude, longitude ] }
+                zoom={ zoomLevel }
+                onBoundsChanged={ onMapChange }
+              >
+                {
                         location &&
-                                location.latitude &&
-                                location.latitude !== latitude &&
-                                location.longitude !== longitude &&
-                                <Overlay anchor={ [ location.latitude, location.longitude ] }>
-                                  <PrevMarker />
-                                </Overlay>
-                                
-                      }
-                  <Overlay anchor={ [ latitude, longitude ] }>
-                    <Marker />
-                  </Overlay> 
+                        location.latitude &&
+                        location.latitude !== latitude &&
+                        location.longitude !== longitude &&
+                        <Overlay anchor={ [ latitude, longitude ] }>
+                          <PrevMarker />
+                        </Overlay>
+
+                  }
+                <Overlay anchor={ [ location.latitude, location.longitude ] }>
+                  <Marker />
+                </Overlay>
               </Map>
+            </div>
+            <div>
+              {
+                location &&
+                location.latitude &&
+                location.latitude !== latitude &&
+                location.longitude !== longitude &&
+                <Button
+                  style={ { position: 'absolute', bottom: '1rem', right: '1rem' } }
+                  onClick={ onAlignOnMapPosition }
+                >{translate( 'Update location from map position' )}
+                </Button>
+              }
             </div>
           </StretchedLayoutItem>
         }

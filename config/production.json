@@ -1,5 +1,6 @@
 {
   "youtubeAPIKey": "my youtube api key",
+  "maptilerKey": "my maptiler key here",
   "maxSectionLevel": 4,
   "maxResourceSize": 5000000,
   "maxFolderSize": 60000000,

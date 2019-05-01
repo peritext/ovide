@@ -23,7 +23,8 @@ As a prerequisite you will need [git](https://git-scm.com/) and [nodejs](https:/
 
 Then:
 
-1. Get a google api key in google dev console -> https://console.developers.google.com then enable youtube and maps apis.
+1. Get a google api key in google dev console -> https://console.developers.google.com then enable youtube api (for automatic metadata retrieval for video resources)
+2. Get a maptiler key (for glossary geolocalization server) - https://cloud.maptiler.com/geocoding/
 3. Open a terminal/bash and type the following lines :
 
 ```
