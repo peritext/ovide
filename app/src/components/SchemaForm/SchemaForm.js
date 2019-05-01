@@ -101,6 +101,28 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                   onChange={ onDateChange }
                 />
               );
+            } else if ( model.enum ) {
+                if ( model.enum.length > 1 ) {
+                  return (
+                    <Select
+                      name={ key }
+                      value={ value }
+                      onChange={ ( e ) => onChange( path, e.value ) }
+                      clearable={ false }
+                      searchable={ false }
+                      options={
+                        model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
+                      }
+                    /> );
+              }
+              // only one value enumerable --> informative
+              else {
+                return (
+                  <p>
+                    <span className={ 'tag' }>{value}</span>
+                  </p>
+                );
+              }
             }
             // ... a plain number
             return (
@@ -237,7 +259,6 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
             }
           // value is a string ...
           case 'string':
-
             // pointing to an asset id
             if ( key.indexOf( 'AssetId' ) > -1 ) {
 

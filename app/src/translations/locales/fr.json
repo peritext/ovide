@@ -69,6 +69,8 @@
   "displayInTableOfContents": "afficher dans la table des matières",
   "Explanation about displayInTableOfContents": "choisir si ce bloc doit être affiché dans la table des matières",
   "displayPageNumber": "afficher les numéros de page",
+  "level": "niveaux de titre",
+  "Explanation about level": "choisir quels niveaux de titres afficher (avec 0, seuls les titres de sections seront affichés)",
   "Explanation about displayPageNumber": "choisir si les numéros de page doivent être affichés pour ce bloc",
   "Explanation about notesPosition": "choisir comment afficher les notes dans les contenus",
   "mapStyle": "vous pouvez personnaliser le fond de carte de cette vue",
@@ -861,5 +863,8 @@
   "Features.EditionsView.This view allows you to manage several ways of publishing your production": "Cette vue vous perrmet de prendre en charge plusieurs formes de publication de la production",
   "Features.GlossaryView.Production glossary entries": "Entrées de glossaire de la production",
   "Features.LibraryView.Production library": "Bibliothèque de la production",
-  "Features.LibraryView.This view allows you to manage all the resources of this production": "Cette vue vous permet de gérer l'ensemble des ressources de la production"
+  "Features.LibraryView.This view allows you to manage all the resources of this production": "Cette vue vous permet de gérer l'ensemble des ressources de la production",
+  "Components.LocationPicker.Address": "Adresse",
+  "Components.LocationPicker.Input a place to search": "Entrer un lieu à rechercher",
+  "Components.LocationPicker.Update location from map position": "Mettre à jour la position"
 }

@@ -377,6 +377,8 @@
   "displayInTableOfContents": "display in table of content",
   "Explanation about displayInTableOfContents": "choose whether to display this block in table of contents",
   "displayPageNumber": "display page number",
+  "level": "titles level",
+  "Explanation about level": "choose what level of titles to display in the table of content (with 0, only section titles will be displayed)",
   "Explanation about displayPageNumber": "choose whether to display page numbers for this block",
   "Explanation about notesPosition": "choose how to display notes specified in the contents",
   "mapStyle": "you can customize the map background of the view",
@@ -861,5 +863,8 @@
   "Features.EditionsView.This view allows you to manage several ways of publishing your production": "This view allows you to manage several ways of publishing your production",
   "Features.GlossaryView.Production glossary entries": "Production glossary entries",
   "Features.LibraryView.Production library": "Production library",
-  "Features.LibraryView.This view allows you to manage all the resources of this production": "This view allows you to manage all the resources of this production"
+  "Features.LibraryView.This view allows you to manage all the resources of this production": "This view allows you to manage all the resources of this production",
+  "Components.LocationPicker.Address": "Address",
+  "Components.LocationPicker.Input a place to search": "Input a place to search",
+  "Components.LocationPicker.Update location from map position": "Update position"
 }
