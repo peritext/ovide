@@ -132,7 +132,6 @@
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.1",
     "webpack-dev-server": "^3.1.14",
-    "worker-loader": "^2.0.0",
     "wrench": "^1.5.9"
   },
   "dependencies": {
@@ -205,6 +204,7 @@
     "react-dropzone": "^4.2.8",
     "react-flip-move": "^3.0.2",
     "react-form": "^3.5.6",
+    "react-frame-component": "^4.1.0",
     "react-helmet": "^5.2.0",
     "react-hotkeys": "^0.10.0",
     "react-key-handler": "^1.0.1",

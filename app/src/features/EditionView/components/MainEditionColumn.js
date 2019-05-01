@@ -166,6 +166,7 @@ class PreviewWrapper extends Component {
           top: 0, } }
           Component={ FinalComponent }
           additionalHTML={ edition.data.additionalHTML }
+          updateTrigger={ production }
         />
       );
     }
