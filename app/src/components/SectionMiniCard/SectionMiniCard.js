@@ -47,6 +47,7 @@ const SectionMiniCard = ( {
   onDeleteSection,
   onOpenSettings,
   setSectionLevel,
+  disableMove,
 
   setSectionIndex,
   sectionIndex,
@@ -181,6 +182,7 @@ const SectionMiniCard = ( {
                     }
                   } }
                 moveComponentToolTip={ translate( 'Move section in summary' ) }
+                hideMainButton={ disableMove }
                 MoveComponent={ SortableHandle( () =>
                     (
                       <span

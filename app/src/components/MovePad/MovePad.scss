@@ -63,6 +63,7 @@
       }
     }
   }
+  &.hideMainButton
 
   .chevron-icon-left{
     .icon{
@@ -113,9 +114,9 @@
     top: $unit * 2;
   }
 
-  &.has-main-button-hidden{
-    .chevron-icon-down{
-      top: $unit;
-    }
-  }
+  // &.has-main-button-hidden{
+  //   .chevron-icon-down{
+  //     top: $unit;
+  //   }
+  // }
 }

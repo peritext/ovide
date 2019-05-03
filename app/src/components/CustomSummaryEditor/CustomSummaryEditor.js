@@ -14,10 +14,12 @@ import {
   Title,
   StretchedLayoutContainer,
   StretchedLayoutItem,
+  Level,
 } from 'quinoa-design-library/components';
 import arrayMove from 'array-move';
 
-import SortableMiniSectionsList from '../SortableMiniSectionsList';
+// import SortableMiniSectionsList from '../SortableMiniSectionsList';
+import SectionMiniCard from '../SectionMiniCard';
 
 export default class CustomSummaryEditor extends Component {
   static contextTypes = {
@@ -210,7 +212,28 @@ export default class CustomSummaryEditor extends Component {
                         style={ { overflow: 'auto' } }
                         isFlex={ 1 }
                       >
-                        <SortableMiniSectionsList
+                        {
+                          actionableSummary.map( ( section ) => {
+                            return (
+                              <Level key={ section.id }>
+                                <Column
+                                  isSize={ 12 - section.metadata.level }
+                                  isOffset={ section.metadata.level }
+                                >
+                                  <SectionMiniCard
+                                    section={ section }
+                                    setSectionIndex={ handleSetSectionIndex }
+                                    maxSectionIndex={ summary.length - 1 }
+                                    setSectionLevel={ handleSetSectionLevel }
+                                    onDeleteSection={ handleDelete }
+                                    disableMove
+                                  />
+                                </Column>
+                              </Level>
+                            );
+                          } )
+                        }
+                        {/* <SortableMiniSectionsList
                           productionId={ production.id }
                           items={ actionableSummary }
                           onSortEnd={ handleOnSortEnd }
@@ -219,7 +242,7 @@ export default class CustomSummaryEditor extends Component {
                           setSectionLevel={ handleSetSectionLevel }
                           onDeleteSection={ handleDelete }
                           useDragHandle
-                        />
+                        /> */}
 
                       </StretchedLayoutItem>
                     </StretchedLayoutContainer>
