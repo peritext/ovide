@@ -1,6 +1,6 @@
 /**
  * This module provides a preview for paged content, thanks to the awesome pagedjs polyfill
- * @module ovide/components/PagedPreviewer
+ * @module ovide/components/returnlPreviewer
  * @todo find a way to do the same thing while having better manners
  */
 /**
@@ -33,8 +33,8 @@ class PreviewWrapper extends Component {
       } );
   }
 
-  shouldComponentUpdate = ( { updateTrigger } ) => {
-    return updateTrigger !== this.props.updateTrigger;
+  shouldComponentUpdate = ( { updateTrigger }, { pagedScript } ) => {
+    return updateTrigger !== this.props.updateTrigger || this.state.pagedScript !== pagedScript;
   }
 
   render = () => {
@@ -49,17 +49,26 @@ class PreviewWrapper extends Component {
 
     const injectRenderer = ( thatDocument ) => {
       // 1. swap body content to have sections as direct children (paged js requirement)
-      let htmlContent = thatDocument.body.children[0].querySelector( '.frame-content > div' ).innerHTML;
-      thatDocument.body.innerHTML = htmlContent;
-      // 2. extract styles from content
-      const stylesRegexp = /<style.*>([\w\W\n]*)<\/style>/gm;
+      const container = thatDocument.body.children[0].querySelector( '.frame-content > div' );
       let additionalStyles = '';
-      let match;
-      while ( ( match = stylesRegexp.exec( htmlContent ) ) !== null ) {
-        additionalStyles += match[1];
-        htmlContent = htmlContent.slice( 0, match.index ) + htmlContent.slice( match.index + match[0].length );
-        match.index = -1;
+      if ( container ) {
+        let htmlContent = container.innerHTML;
+        // thatDocument.body.innerHTML = htmlContent;
+
+        // 2. extract styles from content
+        const stylesRegexp = /<style.*>([\w\W\n]*)<\/style>/gm;
+        let match;
+          while ( ( match = stylesRegexp.exec( htmlContent ) ) !== null ) {
+            additionalStyles += match[1];
+            htmlContent = htmlContent.slice( 0, match.index ) + htmlContent.slice( match.index + match[0].length );
+            match.index = -1;
+        }
+        thatDocument.body.innerHTML = htmlContent;
       }
+      if ( thatDocument.body.lastChild && !thatDocument.body.lastChild.tagName ) {
+        thatDocument.body.lastChild.remove();
+      }
+
       // add toaster lib
       const toasterScript = thatDocument.createElement( 'script' );
       toasterScript.type = 'text/javascript';
@@ -88,9 +97,13 @@ class PreviewWrapper extends Component {
           ${additionalStyles}`;
       thatDocument.getElementsByTagName( 'head' )[0].appendChild( previewStyle );
 
-      const additionalHTMLElement = thatDocument.createElement( 'div' );
-      additionalHTMLElement.innerHTML = additionalHTML;
-      thatDocument.getElementsByTagName( 'body' )[0].appendChild( additionalHTMLElement );
+      thatDocument.head.innerHTML = thatDocument.head.innerHTML + additionalHTML;
+
+      /*
+       * const additionalHTMLElement = thatDocument.createElement( 'div' );
+       * additionalHTMLElement.innerHTML = additionalHTML;
+       * thatDocument.getElementsByTagName( 'head' )[0].appendChild( additionalHTMLElement );
+       */
     };
 
     return (

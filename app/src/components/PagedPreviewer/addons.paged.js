@@ -3,7 +3,8 @@
 /**
  * DOM observer use to retrigger the resize script when changing content in the page
  */
-const observeDOM = ( function() {
+if (!window.observeDOM) {
+window.observeDOM = ( function() {
     const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
     return function( obj, callback ) {
@@ -24,6 +25,7 @@ const observeDOM = ( function() {
       }
     };
   } )();
+}
 
 if ( window.Paged ) {
 
@@ -37,7 +39,6 @@ if ( window.Paged ) {
           super( chunker, polisher, caller );
 
           this.splittedParagraphRefs = [];
-          console.log( 'in constructor' );
         }
 
         beforeParsed( content ) {
@@ -195,7 +196,7 @@ if ( window.Paged ) {
           const style = `scale(${ scale }) translate(${ translateVal }px, 0)`;
           pages.style.transform = style;
         }
- else {
+        else {
           pages.style.transform = 'none';
         }
       }
@@ -208,7 +209,6 @@ if ( window.Paged ) {
       console.log( 'paged is rendering' );
       resizer();
     } );
-
     observeDOM( document.body, resizer );
 
   }

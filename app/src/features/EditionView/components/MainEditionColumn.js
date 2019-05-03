@@ -7,12 +7,12 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { render } from 'react-dom';
 import {
   Button,
   Icon,
   Column,
 } from 'quinoa-design-library/components/';
+import Frame, { FrameContextConsumer } from 'react-frame-component';
 
 /**
  * Imports Project utils
@@ -54,7 +54,7 @@ class PreviewWrapper extends Component {
 
   componentDidMount = () => {
     this.loadAssets( this.props );
-    setTimeout( () => this.update( this.props, this.state ) );
+    // setTimeout( () => this.update( this.props, this.state ) );
   }
 
   componentWillReceiveProps = ( nextProps ) => {
@@ -63,8 +63,8 @@ class PreviewWrapper extends Component {
       || this.props.lang !== nextProps.lang
       || this.props.edition !== nextProps.edition
     ) {
-      this.loadAssets( nextProps )
-      .then( () => this.update( this.props, this.state ) );
+      this.loadAssets( nextProps );
+      // .then( () => this.update( this.props, this.state ) );
     }
   }
 
@@ -102,9 +102,6 @@ class PreviewWrapper extends Component {
     } );
   }
 
-  update = ( /*props, state*/ ) => {
-
-  }
   render = () => {
     const { props, state } = this;
 
@@ -139,7 +136,7 @@ class PreviewWrapper extends Component {
 
     const renderingMode = edition.metadata.type;
 
-    let FinalComponent = () => (
+    const FinalComponent = () => (
       <ContextProvider
         getResourceDataUrl={ getResourceDataUrl }
         renderingMode={ renderingMode }
@@ -170,53 +167,36 @@ class PreviewWrapper extends Component {
         />
       );
     }
-    setTimeout( () => {
-      const contentDocument = this.iframe && this.iframe.contentDocument;
-      FinalComponent = (
-        <ContextProvider
-          getResourceDataUrl={ getResourceDataUrl }
-          renderingMode={ renderingMode }
-        >
-          <Edition
-            {
-              ...{
-                production,
-                edition,
-                lang,
-                locale,
-                contextualizers,
-                previewMode: true,
-                usedDocument: contentDocument,
-              }
-            }
-          />
-        </ContextProvider>
-      );
-      // const contentWindow = this.iframe && this.iframe.contentWindow;
-      if ( contentDocument ) {
-        let mount = contentDocument.getElementById( 'mount' );
-        if ( !mount ) {
-          mount = contentDocument.createElement( 'div' );
-          mount.id = 'mount';
-          contentDocument.body.appendChild( mount );
-        }
-        render(
-          FinalComponent
-        , mount );
-      }
-    } );
-
-    const bindRef = ( iframe ) => {
-      this.iframe = iframe;
-    };
-
     return (
-      <iframe
+      <Frame
         name={ 'preview' }
         id={ 'preview' }
         style={ { width: '100%', height: '100%' } }
-        ref={ bindRef }
-      />
+      >
+        <FrameContextConsumer>
+          {( { document/*, window*/ } ) => (
+
+            <ContextProvider
+              getResourceDataUrl={ getResourceDataUrl }
+              renderingMode={ renderingMode }
+            >
+              <Edition
+                {
+                  ...{
+                    production,
+                    edition,
+                    usedDocument: document,
+                    lang,
+                    contextualizers,
+                    previewMode: true,
+                    locale,
+                  }
+                }
+              />
+            </ContextProvider>
+            )}
+        </FrameContextConsumer>
+      </Frame>
     );
   }
 }
