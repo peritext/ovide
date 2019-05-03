@@ -259,7 +259,7 @@ const UI_DEFAULT_STATE = {
   /**
    * sorting mode of the productions (['last modification', 'creation date', 'title'])
    */
-  sortingMode: 'title',
+  sortingMode: 'edited recently',
 
   /**
    * id of a production to display as a resume/readonly way
