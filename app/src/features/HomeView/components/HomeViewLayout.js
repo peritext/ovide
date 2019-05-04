@@ -101,6 +101,9 @@ class HomeViewLayout extends Component {
 
       rgpdAgreementPrompted,
 
+      isImporting,
+      isDeleting,
+
       actions: {
         createProduction,
         // overrideProduction,
@@ -108,6 +111,8 @@ class HomeViewLayout extends Component {
         deleteProduction,
         fetchProductions,
         importProduction,
+        setIsImporting,
+        setIsDeleting,
         setNewProductionTabMode,
         setNewProductionOpen,
         setSortingMode,
@@ -162,7 +167,12 @@ class HomeViewLayout extends Component {
                                   // setRgpdAgreementPrompted( false );
     };
     const handleDeleteProduction = ( ) => {
-      deleteProduction( { productionId: productionDeleteId, production: productions[productionDeleteId] } );
+      setIsDeleting( true );
+      setTimeout( () => {
+        deleteProduction( { productionId: productionDeleteId, production: productions[productionDeleteId] }, () => {
+          setIsDeleting( false );
+        } );
+      } );
     };
     const handleDropFiles = ( files ) => {
       if ( !files || !files.length ) {
@@ -172,37 +182,23 @@ class HomeViewLayout extends Component {
         setErrorMessage( { type: 'IMPORT_PRODUCTION_FAIL', error: 'file is too large' } );
         return;
       }
-      // console.log( 'import production', files[0], importProduction );
-      importProduction( files[0], ( err ) => {
-        if ( err ) {
-          console.error( err );/* eslint no-console: 0 */
-          toastr.error( this.translate( 'The production could not be imported' ) );
+      setIsImporting( true );
+      setTimeout( () => {
+        // console.log( 'import production', files[0], importProduction );
+        importProduction( files[0], ( err ) => {
+          setIsImporting( false );
+          if ( err ) {
+            console.error( err );/* eslint no-console: 0 */
+            toastr.error( this.translate( 'The production could not be imported' ) );
 
-        }
-        else {
-          setNewProductionOpen( false );
-          fetchProductions();
-        }
+          }
+          else {
+            setNewProductionOpen( false );
+            fetchProductions();
+          }
 
+        } );
       } );
-
-      /*
-       * .then( ( res ) => {
-       *   const productionImported = res.result;
-       *   if ( productionImported ) {
-       *    // override an existing production (which has the same id)
-       *     const existant = productionsList.find( ( production ) => production.id === productionImported.id );
-       *     // has preexisting production, prompt for override
-       *     if ( existant !== undefined ) {
-       *       setOverrideImport( true );
-       *     }
-       *     else {
-       *       setOverrideImport( false );
-       *       setOverrideProductionMode( 'create' );
-       *     }
-       *   }
-       * } );
-       */
     };
     const handleCreateNewProduction = ( payload ) => {
       const startingSectionId = genId();
@@ -573,6 +569,20 @@ class HomeViewLayout extends Component {
           headerContent={ this.translate( 'Download ovide for desktop (still free)' ) }
           mainContent={
             <DownloadDesktop />
+          }
+        />
+        <ModalCard
+          isActive={ isImporting }
+          headerContent={ this.translate( 'Please wait' ) }
+          mainContent={
+            <div>{this.translate( 'Importing production' )}</div>
+          }
+        />
+        <ModalCard
+          isActive={ isDeleting }
+          headerContent={ this.translate( 'Please wait' ) }
+          mainContent={
+            <div>{this.translate( 'Deleting production' )}</div>
           }
         />
         <ModalCard

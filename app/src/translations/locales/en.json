@@ -896,5 +896,8 @@
   "Components.DatesPicker.Start date": "Start date",
   "Components.DatesPicker.End date": "End date",
   "Components.DatesParts.none": "none",
-  "Features.EditionView.duplicate this edition": "duplicate this edition"
+  "Features.EditionView.duplicate this edition": "duplicate this edition",
+  "Features.HomeView.Please wait": "Please wait",
+  "Features.HomeView.Importing production": "Importing production",
+  "Features.HomeView.Deleting production": "Deleting production"
 }

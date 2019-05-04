@@ -48,6 +48,8 @@ const SET_PRODUCTION_DELETE_ID = 'SET_PRODUCTION_DELETE_ID';
 const SET_OVERRIDE_IMPORT = 'SET_OVERRIDE_IMPORT';
 const SET_OVERRIDE_PRODUCTION_MODE = 'SET_OVERRIDE_PRODUCTION_MODE';
 const SET_DOWNLOAD_MODAL_VISIBLE = 'SET_DOWNLOAD_MODAL_VISIBLE';
+const SET_IS_IMPORTING = 'SET_IS_IMPORTING';
+const SET_IS_DELETING = 'SET_IS_DELETING';
 
 export const FETCH_PRODUCTIONS = 'FETCH_PRODUCTIONS';
 export const CREATE_PRODUCTION = 'CREATE_PRODUCTION';
@@ -68,6 +70,14 @@ const SET_NEW_PRODUCTION_METADATA = 'NEW_PRODUCTION_METADATA';
  */
 export const setTabMode = ( payload ) => ( {
   type: SET_TAB_MODE,
+  payload
+} );
+export const setIsImporting = ( payload ) => ( {
+  type: SET_IS_IMPORTING,
+  payload
+} );
+export const setIsDeleting = ( payload ) => ( {
+  type: SET_IS_DELETING,
   payload
 } );
 export const setNewProductionOpen = ( payload ) => ( {
@@ -218,11 +228,26 @@ export const duplicateProduction = ( payload ) => ( {
   },
 } );
 
-export const deleteProduction = ( payload ) => ( {
+export const deleteProduction = ( payload, callback ) => ( {
   type: DELETE_PRODUCTION,
   payload,
   promise: () => {
-    return requestProductionDeletion( payload.productionId, payload.production );
+    return new Promise( ( resolve, reject ) => {
+      requestProductionDeletion( payload.productionId, payload.production )
+        .then( ( result ) => {
+          if ( typeof callback === 'function' ) {
+            callback( null );
+          }
+          resolve( result );
+        } )
+        .catch( ( error ) => {
+          if ( typeof callback === 'function' ) {
+            callback( error );
+          }
+          reject( error );
+        } );
+
+    } );
   },
 } );
 
@@ -302,6 +327,10 @@ const UI_DEFAULT_STATE = {
   overrideProductionMode: undefined,
 
   downloadModalVisible: false,
+
+  isImporting: false,
+
+  isDeleting: false,
 };
 
 /**
@@ -325,6 +354,8 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_OVERRIDE_IMPORT:
     case SET_OVERRIDE_PRODUCTION_MODE:
     case SET_DOWNLOAD_MODAL_VISIBLE:
+    case SET_IS_IMPORTING:
+    case SET_IS_DELETING:
       propName = getStatePropFromActionSet( action.type );
       return {
         ...state,
@@ -502,6 +533,8 @@ const deleteProductionStatus = ( state ) => state.ui.deleteProductionStatus;
 const overrideImport = ( state ) => state.ui.overrideImport;
 const overrideProductionMode = ( state ) => state.ui.overrideProductionMode;
 const downloadModalVisible = ( state ) => state.ui.downloadModalVisible;
+const isImporting = ( state ) => state.ui.isImporting;
+const isDeleting = ( state ) => state.ui.isDeleting;
 
 const newProduction = ( state ) => state.data.newProduction;
 const productions = ( state ) => state.data.productions;
@@ -526,4 +559,6 @@ export const selector = createStructuredSelector( {
   overrideImport,
   overrideProductionMode,
   productions,
+  isImporting,
+  isDeleting,
 } );
