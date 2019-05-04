@@ -1,0 +1,11 @@
+.dates-parts{
+    display: flex;
+    flex-flow: row nowrap;
+
+    .field-container{
+        &.is-disabled{
+            opacity: 0.5;
+            pointer-events: none;
+        }
+    }
+}

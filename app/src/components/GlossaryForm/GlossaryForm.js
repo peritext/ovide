@@ -57,7 +57,15 @@ export default class GlossaryForm extends Component {
     const handleNewNameChange = ( e ) => onChange( { ...defaultData, name: e.target.value } );
     const handleNewDescriptionChange = ( e ) => onChange( { ...defaultData, description: e.target.value } );
     const handleLocationChange = ( newLocation ) => onChange( { ...defaultData, location: newLocation } );
-    const handleDatesChange = ( newDates ) => onChange( { ...defaultData, dates: newDates } );
+    const handleDatesChange = ( newDates ) => {
+      onChange( {
+        ...defaultData,
+        dates: {
+          ...dates,
+          ...newDates
+        }
+      } );
+    };
     const handleNewEntryTypeChange = ( e ) => {
       const newType = e.target.value;
       onChange( { ...defaultData, entryType: newType, location: {}, dates: {} } );
