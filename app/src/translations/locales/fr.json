@@ -894,5 +894,7 @@
   "Components.DatesParts.Month": "Mois",
   "Components.DatesParts.Day": "Jour",
   "Components.DatesPicker.Start date": "Date de début",
-  "Components.DatesPicker.End date": "Date de fin"
+  "Components.DatesPicker.End date": "Date de fin",
+  "Components.DatesParts.none": "none",
+  "Features.EditionView.duplicate this edition": "dupliquer cette édition"
 }

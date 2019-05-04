@@ -185,6 +185,35 @@ class EditionsViewLayout extends Component {
       const renderEditionInList = ( edition ) => {
           const handleEdit = () => {
           };
+          const handleDuplicate = ( e ) => {
+            e.stopPropagation();
+            let editionTitle = edition.metadata.title;
+            let number = editionTitle.match( /\d+/ );
+
+            if ( number ) {
+              number = +number[0];
+              number += 1;
+              editionTitle = editionTitle.replace( /\d+/, number );
+            }
+ else {
+              number = 1;
+              editionTitle = `${editionTitle} ${number}`;
+            }
+
+            const newEdition = {
+              ...edition,
+              metadata: {
+                ...edition.metadata,
+                title: editionTitle,
+              },
+              id: genId(),
+            };
+            createEdition( {
+              edition: newEdition,
+              editionId: newEdition.id,
+              productionId,
+            } );
+          };
           const handleDelete = ( e ) => {
             e.stopPropagation();
             setPromptedToDeleteEditionId( edition.id );
@@ -197,6 +226,7 @@ class EditionsViewLayout extends Component {
               onClick={ handleClick }
               onEdit={ handleEdit }
               onDelete={ handleDelete }
+              onDuplicate={ handleDuplicate }
               href={ `/productions/${productionId}/editions/${edition.id}` }
               edition={ edition }
               key={ edition.id }

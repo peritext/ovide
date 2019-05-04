@@ -49,6 +49,7 @@ class EditionCard extends Component {
         // onEdit,
         onDelete,
         onClick,
+        onDuplicate,
       },
       context: {
         t,
@@ -126,6 +127,15 @@ class EditionCard extends Component {
                     data-tip={ translate( 'edit this edition' ) }
                   >
                     <CenteredIcon src={ icons.edit.black.svg } />
+                  </Button>
+                  <Button
+                    onClick={ onDuplicate }
+                    data-place={ 'left' }
+                    data-effect={ 'solid' }
+                    data-for={ 'tooltip' }
+                    data-tip={ translate( 'duplicate this edition' ) }
+                  >
+                    <CenteredIcon src={ icons.asset.black.svg } />
                   </Button>
 
                   <Button
