@@ -56,7 +56,9 @@ export default class GlossaryForm extends Component {
 
     const handleNewNameChange = ( e ) => onChange( { ...defaultData, name: e.target.value } );
     const handleNewDescriptionChange = ( e ) => onChange( { ...defaultData, description: e.target.value } );
-    const handleLocationChange = ( newLocation ) => onChange( { ...defaultData, location: newLocation } );
+    const handleLocationChange = ( newLocation ) => {
+      onChange( { ...defaultData, location: newLocation } );
+    };
     const handleDatesChange = ( newDates ) => {
       onChange( {
         ...defaultData,

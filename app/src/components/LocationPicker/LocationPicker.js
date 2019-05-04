@@ -29,7 +29,10 @@ const Marker = () =>
             display: 'flex',
             flexFlow: 'column nowrap',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            position: 'absolute',
+            left: ' -.8rem',
+            top: '-.8rem',
           } }
     >
       <i className={ 'fas fa-map-marker' } />
@@ -61,7 +64,7 @@ export default class LocationPickerContainer extends Component {
       latitude: props.location && props.location.latitude,
       longitude: props.location && props.location.longitude,
       address: props.location && props.location.address,
-      zoomLevel: 11,
+      zoomLevel: 2,
       showSuggestions: false,
       suggestions: []
     };
@@ -184,13 +187,14 @@ export default class LocationPickerContainer extends Component {
         isEdited,
         latitude,
         longitude,
-        zoomLevel,
+        zoomLevel = 10,
         address = '',
         suggestions = [],
         showSuggestions,
       },
       props: {
         location,
+        onChange,
       },
       context: { t },
       toggleEdited,
@@ -237,28 +241,47 @@ export default class LocationPickerContainer extends Component {
       if ( area < 20 ) {
         newZoomLevel = 9;
       }
- else if ( area < 50 ) {
+      else if ( area < 50 ) {
         newZoomLevel = 8;
       }
- else if ( area < 100 ) {
+      else if ( area < 100 ) {
         newZoomLevel = 7;
       }
- else if ( area < 400 ) {
+      else if ( area < 400 ) {
         newZoomLevel = 5;
       }
- else if ( area < 2000 ) {
+      else if ( area < 2000 ) {
         newZoomLevel = 4;
       }
- else if ( area < 3000 ) {
+      else if ( area < 3000 ) {
         newZoomLevel = 3;
       }
-      setLatitude( lat );
-      setLongitude( lon );
-      this.setState( { showSuggestions: false, zoomLevel: newZoomLevel } );
+
+      /*
+       * setLatitude( lat );
+       * setLongitude( lon );
+       */
+
+      this.setState( {
+        showSuggestions: false,
+        zoomLevel: newZoomLevel,
+        latitude: lat,
+        longitude: lon,
+       } );
+       onChange( {
+        ...location,
+
+        latitude: lat,
+        longitude: lon
+      } );
     };
 
     const onAlignOnMapPosition = () => {
-      this.handleSubmit();
+      onChange( {
+        ...location,
+        latitude,
+        longitude,
+      } );
     };
 
     const bindLocationInputAnchor = ( locationInputAnchor ) => {
@@ -345,7 +368,7 @@ export default class LocationPickerContainer extends Component {
               null
           }
             {
-            latitude ?
+            ( location.latitude || location.longitude ) ?
               <div
                 style={ { marginTop: '1rem' } }
                 className={ '' }
@@ -362,46 +385,40 @@ export default class LocationPickerContainer extends Component {
           }
           </StretchedLayoutItem>
           {
-          latitude && longitude &&
-          <StretchedLayoutItem
-            isFlex={ 1 }
-            style={ { position: 'relative' } }
-          >
-            <div style={ { width: '100%', height: '20rem' } }>
-              <Map
-                center={ [ latitude, longitude ] }
-                zoom={ zoomLevel }
-                onBoundsChanged={ onMapChange }
-              >
-                {
-                        location &&
-                        location.latitude &&
-                        location.latitude !== latitude &&
-                        location.longitude !== longitude &&
-                        <Overlay anchor={ [ latitude, longitude ] }>
-                          <PrevMarker />
-                        </Overlay>
+            <StretchedLayoutItem
+              isFlex={ 1 }
+              style={ { position: 'relative' } }
+            >
+              <div style={ { width: '100%', height: '20rem' } }>
+                <Map
+                  center={ [ latitude || 0, longitude || 0 ] }
+                  zoom={ zoomLevel }
+                  onBoundsChanged={ onMapChange }
+                >
+                  {
+
+                    <Overlay anchor={ [ latitude || 0, longitude || 0 ] }>
+                      <PrevMarker />
+                    </Overlay>
 
                   }
-                <Overlay anchor={ [ location.latitude, location.longitude ] }>
-                  <Marker />
-                </Overlay>
-              </Map>
-            </div>
-            <div>
-              {
-                location &&
-                location.latitude &&
-                location.latitude !== latitude &&
-                location.longitude !== longitude &&
-                <Button
-                  style={ { position: 'absolute', bottom: '1rem', right: '1rem' } }
-                  onClick={ onAlignOnMapPosition }
-                >{translate( 'Update location from map position' )}
-                </Button>
+                  {location.latitude ?
+                    <Overlay anchor={ [ location.latitude, location.longitude ] }>
+                      <Marker />
+                    </Overlay>
+                : null}
+                </Map>
+              </div>
+              <div>
+                {
+                  <Button
+                    style={ { position: 'absolute', top: '1rem', right: '1rem' } }
+                    onClick={ onAlignOnMapPosition }
+                  >{translate( 'Update location from map position' )}
+                  </Button>
               }
-            </div>
-          </StretchedLayoutItem>
+              </div>
+            </StretchedLayoutItem>
         }
         </StretchedLayoutContainer>
 
