@@ -594,7 +594,8 @@ class SectionViewContainer extends Component {
       },
       editedProduction,
     } = this.props;
-    return editedProduction.sectionsOrder.filter( ( id ) => id !== sectionId )
+    return editedProduction.sectionsOrder
+      .filter( ( id ) => id !== sectionId && editedProduction.sections[id] )
       .map( ( id ) => ( {
         id,
         ...editedProduction.sections[id].metadata
