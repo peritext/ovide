@@ -12,7 +12,7 @@ const getCitationLocales = () => {
 };
 
 const getCitationLocale = ( { localeId } ) => {
-  return Promise.resolve( localesMap[localeId] );
+  return Promise.resolve( localesMap[localeId].data );
 };
 
 const getCitationStyles = () => {
@@ -20,7 +20,7 @@ const getCitationStyles = () => {
 };
 
 const getCitationStyle = ( { styleId } ) => {
-  return Promise.resolve( stylesMap[styleId] );
+  return Promise.resolve( stylesMap[styleId].data );
 };
 
 const getHTMLBuild = ( { generatorId, templateId } ) => {
