@@ -978,7 +978,7 @@ export const updateCitationStyle = ( payload ) => {
     requestCitationStyle( payload.citationStyleId )
       .then( ( { data } ) => {
         const citationStyle = {
-          data,
+          ...data,
           title: payload.title,
           id: payload.citationStyleId,
         };
@@ -1007,7 +1007,7 @@ export const updateCitationLocale = ( payload ) => {
     requestCitationLocale( payload.citationLocaleId )
       .then( ( { data } ) => {
         const citationLocale = {
-          data,
+          ...data,
           names: payload.names,
           id: payload.citationLocaleId,
         };
