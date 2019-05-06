@@ -2,6 +2,29 @@
 
 *Written according to [Keep a changelog](https://keepachangelog.com/en/1.0.0/) guidelines and [semantic versioning](https://semver.org/)*.
 
+# [1.0.0-alpha.3](https://github.com/peritext/ovide/tree/1.0.0-alpha.3) - 2019-05-06
+
+# Added
+
+* allow annotation support with hypothes.is
+* feedback messages when generating outputs
+* feedback messages when creating or deleting productions
+* edition duplication feature
+
+# Changed
+
+* improve edition ui
+* improve date and location edition
+* improve paged preview performance and resilience
+* improve templates and generators
+
+# Fixed
+
+* fix critical saving bugs in electron version
+* fix citation style change bug
+* fix diverse minor bugs
+* fix diverse translation issues
+
 # [1.0.0-alpha.2](https://github.com/peritext/ovide/tree/1.0.0-alpha.2) - 2019-04-01
 
 # Added
