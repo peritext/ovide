@@ -21,9 +21,12 @@ import arrayMove from 'array-move';
 // import SortableMiniSectionsList from '../SortableMiniSectionsList';
 import SectionMiniCard from '../SectionMiniCard';
 
+import { translateNameSpacer } from '../../helpers/translateUtils';
+
 export default class CustomSummaryEditor extends Component {
   static contextTypes = {
-    production: PropTypes.object
+    production: PropTypes.object,
+    t: PropTypes.object,
   }
 
   constructor( props ) {
@@ -50,14 +53,16 @@ export default class CustomSummaryEditor extends Component {
         value = {}
       },
       props: {
-        translate,
         value: propsValue = { active: false },
         onChange
       },
       context: {
-        production = {}
+        production = {},
+        t
       }
     } = this;
+
+    const translate = translateNameSpacer(t, 'Components.CustomSummaryEditor')
 
     const { active = false, summary = [] } = value;
 
@@ -168,7 +173,7 @@ export default class CustomSummaryEditor extends Component {
       <div>
         <div style={ { display: 'flex', flexFlow: 'row nowrap', alignItems: 'center' } }>
           {propsValue.active ? translate( 'Custom summary activated' ) : translate( 'Custom summary deactivated' )}
-          <Button onClick={ toggleEdited }>
+          <Button onClick={ toggleEdited } style={{marginLeft: '1rem'}}>
             {translate( 'Edit' )}
           </Button>
         </div>

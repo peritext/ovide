@@ -74,6 +74,7 @@ class EditionViewContainer extends Component {
   static childContextTypes = {
     production: PropTypes.object,
     googleApiKey: PropTypes.string,
+    production: PropTypes.object,
   }
 
   static contextTypes = {
@@ -86,7 +87,7 @@ class EditionViewContainer extends Component {
 
   getChildContext = () => ( {
       production: this.props.editedProduction,
-      googleApiKey: config.googleApiKey
+      googleApiKey: config.googleApiKey,
   } )
 
   componentDidMount = () => {

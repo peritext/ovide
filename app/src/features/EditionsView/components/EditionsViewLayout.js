@@ -137,28 +137,10 @@ class EditionsViewLayout extends Component {
     };
 
     const handleNewEditionSubmit = ( edition ) => {
-      const templateId = edition.metadata.templateId;
-      const template = templates.find( ( thatTemplate ) => thatTemplate.meta.id === templateId );
-      const { meta: { defaultPlan } } = template;
-      const plan = {
-        ...defaultPlan,
-        summary: defaultPlan.summary.map( ( el ) => ( {
-          ...el,
-          id: genId()
-        } ) )
-      };
       const newEdition = {
         ...edition,
-        data: {
-          ...edition.data,
-          plan
-        },
         id: genId()
       };
-
-      newEdition.data.bibType = template.meta.defaultBibType;
-      newEdition.data.additionalHTML = template.meta.defaultAdditionalHTML || '';
-
       createEdition( {
         edition: newEdition,
         editionId: newEdition.id,
@@ -195,7 +177,7 @@ class EditionsViewLayout extends Component {
               number += 1;
               editionTitle = editionTitle.replace( /\d+/, number );
             }
- else {
+            else {
               number = 1;
               editionTitle = `${editionTitle} ${number}`;
             }

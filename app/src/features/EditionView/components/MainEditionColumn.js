@@ -21,7 +21,7 @@ import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { loadAssetsForEdition } from '../../../helpers/projectBundler';
 import { requestAssetData } from '../../../helpers/dataClient';
 import PagedPreviewer from '../../../components/PagedPreviewer';
-import SummaryEditor from './SummaryEditor';
+import SummaryEditor from '../../../components/SummaryEditor';
 
 // import { processCustomCss } from '../../../helpers/postcss';
 

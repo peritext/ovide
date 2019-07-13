@@ -9,6 +9,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import {v4 as genId} from 'uuid';
 // import { isEmpty } from 'lodash';
 import { Form, Text, TextArea } from 'react-form';
 import {
@@ -42,6 +43,7 @@ import {
  * Imports Components
  */
 import ExplainedLabel from '../../components/ExplainedLabel';
+import CustomSummaryEditor from '../../components/CustomSummaryEditor';
 
 /**
  * Shared variables
@@ -60,7 +62,8 @@ class EditionForm extends Component {
     super( props );
     const edition = props.edition || createDefaultEdition();
     this.state = {
-      edition
+      edition,
+      customSummary: { active: false, summary: [] }
     };
     this.translate = translateNameSpacer( context.t, 'Components.EditionForm' );
   }
@@ -111,29 +114,46 @@ class EditionForm extends Component {
         availableTemplates,
       },
       state: {
-        edition = {}
+        edition = {},
+        customSummary,
       },
       translate,
     } = this;
 
-    const handleSubmit = ( candidates ) => {
+    const handleSubmit = ( candidate ) => {
+      const templateId = candidate.metadata.templateId;
+      const template = this.props.availableTemplates.find( ( thatTemplate ) => thatTemplate.meta.id === templateId );
+      const { meta: { defaultPlan } } = template;
+      const plan = {
+        ...defaultPlan,
+        summary: defaultPlan.summary.map( ( el ) => {
+          if (el.type === 'sections') {
+            return  {
+              ...el,
+              data: {
+                ...el.data,
+                customSummary: this.state.customSummary
+              },
+              id: genId()
+            }
+          }
+          return  {
+            ...el,
+            id: genId()
+          } 
+        } )
+      };
+      const newEdition = {
+        ...candidate,
+        data: {
+          ...candidate.data,
+          plan
+        },
+      };
 
-      /*
-       * const edition = {
-       *   ...candidates,
-       *   data: {
-       *     ...candidates.data,
-       *     plan: {
-       *       ...candidates.data.plan,
-       *       summary: candidates.data.plan.summary.map( ( el ) => ( {
-       *         ...el,
-       *         id: genId()
-       *       } ) )
-       *     }
-       *   }
-       * };
-       */
-      onSubmit( candidates );
+      newEdition.data.bibType = template.meta.defaultBibType;
+      newEdition.data.additionalHTML = template.meta.defaultAdditionalHTML || '';
+      onSubmit( newEdition );
     };
 
     const handleEditionTypeChange = ( thatType, formApi ) => {
@@ -185,6 +205,12 @@ class EditionForm extends Component {
         white: require( '../../sharedAssets/deucalion.white.png' ),
       }
     };
+    
+    const handleUpdateCustomSummary = (newCustomSummary) => {
+      this.setState({
+        customSummary: newCustomSummary
+      })
+    }
 
     return (
       <Form
@@ -352,6 +378,31 @@ class EditionForm extends Component {
                               field={ 'metadata.description' }
                               placeholder={ translate( 'Edition description' ) }
                             />
+                          </Control>
+                        </Field>
+                      </Column>
+                    </Column>}
+                    <Level />
+
+                    {formApi.getValue( 'metadata.type' ) &&
+                    <Column>
+                      <Column>
+                        <Field>
+                          <Control>
+                            <Label>
+                              {translate( 'Edition sections summary' )}
+                              <HelpPin place={ 'right' }>
+                                {translate( 'Explanation about the edition sections summary' )}
+                              </HelpPin>
+                            </Label>
+                            <div>
+                              <CustomSummaryEditor
+                                summaryEdited
+                                translate={ translate }
+                                value={ customSummary }
+                                onChange={ handleUpdateCustomSummary }
+                              />
+                            </div>
                           </Control>
                         </Field>
                       </Column>
