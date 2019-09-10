@@ -80,7 +80,10 @@ export const buildCitations = ( assets, props ) => {
     const citationItems = Object.keys( bibContextualizations )
       .reduce( ( finalCitations, key1 ) => {
         const bibCit = bibContextualizations[key1];
-        const citations = resourceToCslJSON( bibCit.resource );
+        const citations = [
+          ...resourceToCslJSON( bibCit.resource ),
+          ...(bibCit.additionalResources ? bibCit.additionalResources.map(res => resourceToCslJSON( res )) : [])
+        ].flat();
         const newCitations = citations.reduce( ( final2, citation ) => {
           return {
             ...final2,
@@ -98,12 +101,15 @@ export const buildCitations = ( assets, props ) => {
       .map( ( bibCit, index ) => {
         const key1 = bibCit.id;
         const contextualization = contextualizations[key1];
-
+        const targets = [
+          ...resourceToCslJSON( bibCit.resource ),
+          ...(bibCit.additionalResources ? bibCit.additionalResources.map(res => resourceToCslJSON( res )) : [])
+        ].flat();
         const contextualizer = contextualizers[contextualization.contextualizerId];
-        const resource = resources[contextualization.resourceId];
+        // const resource = resources[contextualization.resourceId];
         return {
           citationID: key1,
-          citationItems: resourceToCslJSON( resource ).map( ( ref ) => ( {
+          citationItems: targets.map( ( ref ) => ( {
             locator: contextualizer.locator,
             prefix: contextualizer.prefix,
             suffix: contextualizer.suffix,
