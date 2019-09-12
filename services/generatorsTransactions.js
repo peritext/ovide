@@ -62,9 +62,8 @@ const generateEdition = ( {
       onFeedback,
       assetsPath: `${contentPath}/${production.id}/assets/`,
       requestAssetData: getAssetData,
-      basePath: path.resolve( `${__dirname }/../` ),
+      templatesBundlesPath: path.resolve( `${__dirname }/../app/htmlBuilds/single-page-html/` ),
       config: {
-        googleApiKey: config.googleApiKey
       }
     } )
     // clean temp files
