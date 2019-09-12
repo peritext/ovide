@@ -1,9 +1,8 @@
 /* eslint-disable */
 const React = require('react');
-const render = require('react-dom').hydrate;
+const hydrate = require('react-dom').hydrate;
 const peritextConfig = require('../../app/src/peritextConfig.render');
 const config = require('config');
-window.googleApiKey = config.googleApiKey;
 
 // Note: this module needs an html #mount element somewhere in the html in which
 // it is invoked.
@@ -29,7 +28,7 @@ const renderProduction = function (production, editionId, locale, useBrowserRout
   if (template) {
     const Production = template.components.Edition;
     const edition = production.editions[editionId];
-    render(React.createElement(Production, {
+    hydrate(React.createElement(Production, {
       production: production, 
       edition: edition, 
       locale: locale, 

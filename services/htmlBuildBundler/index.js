@@ -80,7 +80,6 @@ const buildProductionApplication = ( { templateId, generatorId } ) => {
 ${bundle}
     </script>
     <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@1"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBSfycBqpNHM0ieFYBhNW24h7mgQ2CTjQ&libraries=places"></script>
   </body>
 </html>
     `;
