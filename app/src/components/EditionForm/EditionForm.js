@@ -9,7 +9,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import {v4 as genId} from 'uuid';
+import { v4 as genId } from 'uuid';
 // import { isEmpty } from 'lodash';
 import { Form, Text, TextArea } from 'react-form';
 import {
@@ -127,20 +127,20 @@ class EditionForm extends Component {
       const plan = {
         ...defaultPlan,
         summary: defaultPlan.summary.map( ( el ) => {
-          if (el.type === 'sections') {
-            return  {
+          if ( el.type === 'sections' ) {
+            return {
               ...el,
               data: {
                 ...el.data,
                 customSummary: this.state.customSummary
               },
               id: genId()
-            }
+            };
           }
-          return  {
+          return {
             ...el,
             id: genId()
-          } 
+          };
         } )
       };
       const newEdition = {
@@ -205,12 +205,12 @@ class EditionForm extends Component {
         white: require( '../../sharedAssets/deucalion.white.png' ),
       }
     };
-    
-    const handleUpdateCustomSummary = (newCustomSummary) => {
-      this.setState({
+
+    const handleUpdateCustomSummary = ( newCustomSummary ) => {
+      this.setState( {
         customSummary: newCustomSummary
-      })
-    }
+      } );
+    };
 
     return (
       <Form

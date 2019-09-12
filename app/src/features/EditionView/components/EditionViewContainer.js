@@ -73,8 +73,6 @@ class EditionViewContainer extends Component {
 
   static childContextTypes = {
     production: PropTypes.object,
-    googleApiKey: PropTypes.string,
-    production: PropTypes.object,
   }
 
   static contextTypes = {
@@ -87,7 +85,6 @@ class EditionViewContainer extends Component {
 
   getChildContext = () => ( {
       production: this.props.editedProduction,
-      googleApiKey: config.googleApiKey,
   } )
 
   componentDidMount = () => {
@@ -232,9 +229,12 @@ class EditionViewContainer extends Component {
       case 'loading template':
       toastr[type]( translate( 'loading template' ), { timeOut: 1000 } );
         break;
-      case 'packing assets':
-      toastr[type]( translate( 'packing assets' ), { timeOut: 1000 } );
-        break;
+
+      /*
+       * case 'packing assets':
+       * toastr[type]( translate( 'packing assets' ), { timeOut: 1000 } );
+       *   break;
+       */
       case 'packing asset':
 
         /*
@@ -247,7 +247,7 @@ class EditionViewContainer extends Component {
       toastr[type]( translate( 'building website' ), { timeOut: 1000 } );
         break;
       case 'creating archive':
-      toastr[type]( translate( 'creating archive' ), { timeOut: 1000 } );
+      toastr[type]( translate( 'creating archive' ), { timeOut: 2000 } );
         break;
       case 'archive created':
       toastr[type]( translate( 'archive created' ), { timeOut: 1000 } );
@@ -262,7 +262,7 @@ class EditionViewContainer extends Component {
         toastr[type]( message, { timeOut: 1000 } );
         break;
     }
-    toastr[type]( message, { timeOut: 300 } );
+    // toastr[type]( message, { timeOut: 300 } );
   }
 
   downloadEdition = ( generator = {}, locale = {} ) => {

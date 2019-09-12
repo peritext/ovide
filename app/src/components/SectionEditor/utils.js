@@ -89,7 +89,7 @@ export const computeAssets = ( props ) => {
           ...contextualization,
           resource,
           additionalResources: contextualization.additionalResources ?
-            contextualization.additionalResources.map(id => resources[id])
+            contextualization.additionalResources.map( ( thatId ) => resources[thatId] )
            : [],
           contextualizer,
           type: contextualizer ? contextualizer.type : INLINE_ASSET

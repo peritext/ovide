@@ -41,7 +41,7 @@ export const buildCitations = ( assets, props ) => {
   const {
     production: {
       contextualizations,
-      resources,
+      // resources,
       contextualizers
     },
     activeSection
@@ -82,7 +82,7 @@ export const buildCitations = ( assets, props ) => {
         const bibCit = bibContextualizations[key1];
         const citations = [
           ...resourceToCslJSON( bibCit.resource ),
-          ...(bibCit.additionalResources ? bibCit.additionalResources.map(res => resourceToCslJSON( res )) : [])
+          ...( bibCit.additionalResources ? bibCit.additionalResources.map( ( res ) => resourceToCslJSON( res ) ) : [] )
         ].flat();
         const newCitations = citations.reduce( ( final2, citation ) => {
           return {
@@ -103,7 +103,7 @@ export const buildCitations = ( assets, props ) => {
         const contextualization = contextualizations[key1];
         const targets = [
           ...resourceToCslJSON( bibCit.resource ),
-          ...(bibCit.additionalResources ? bibCit.additionalResources.map(res => resourceToCslJSON( res )) : [])
+          ...( bibCit.additionalResources ? bibCit.additionalResources.map( ( res ) => resourceToCslJSON( res ) ) : [] )
         ].flat();
         const contextualizer = contextualizers[contextualization.contextualizerId];
         // const resource = resources[contextualization.resourceId];

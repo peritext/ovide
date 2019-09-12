@@ -61,9 +61,9 @@ class EditionsViewContainer extends Component {
     super( props );
   }
 
-  getChildContext = () => ({
+  getChildContext = () => ( {
     production: this.props.editedProduction,
-  })
+  } )
 
   componentDidMount = () => {
     const productionId = this.props.match.params.productionId;

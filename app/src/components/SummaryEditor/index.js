@@ -1,3 +1,3 @@
-import SummaryEditor from './SummaryEditor'
+import SummaryEditor from './SummaryEditor';
 
 export default SummaryEditor;

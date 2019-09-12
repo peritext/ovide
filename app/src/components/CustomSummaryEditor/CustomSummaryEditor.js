@@ -62,7 +62,7 @@ export default class CustomSummaryEditor extends Component {
       }
     } = this;
 
-    const translate = translateNameSpacer(t, 'Components.CustomSummaryEditor')
+    const translate = translateNameSpacer( t, 'Components.CustomSummaryEditor' );
 
     const { active = false, summary = [] } = value;
 
@@ -173,7 +173,10 @@ export default class CustomSummaryEditor extends Component {
       <div>
         <div style={ { display: 'flex', flexFlow: 'row nowrap', alignItems: 'center' } }>
           {propsValue.active ? translate( 'Custom summary activated' ) : translate( 'Custom summary deactivated' )}
-          <Button onClick={ toggleEdited } style={{marginLeft: '1rem'}}>
+          <Button
+            onClick={ toggleEdited }
+            style={ { marginLeft: '1rem' } }
+          >
             {translate( 'Edit' )}
           </Button>
         </div>

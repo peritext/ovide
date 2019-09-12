@@ -11,7 +11,6 @@ const {
    */
   remove,
 } = require( 'fs-extra' );
-const config = require( 'config' );
 
 const peritextConfigMain = require( '../app/src/peritextConfig.main' );
 const peritextConfigRender = require( '../app/src/peritextConfig.render' );

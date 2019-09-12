@@ -282,7 +282,7 @@ export const bundleProjectAsHTML = ( { production, requestAssetData } ) => {
     bundleProjectAsJSON( { production, requestAssetData } )
       .then( ( productionJSON ) => {
         const headContent = buildHTMLMetadata( productionJSON );
-        const citations = buildCitations( {production: productionJSON} );
+        const citations = buildCitations( { production: productionJSON } );
 
         const contents = renderToStaticMarkup(
           production.sectionsOrder.map( ( sectionId ) => {
@@ -340,7 +340,7 @@ export const bundleProjectAsTEI = ( { production, requestAssetData } ) => {
   return new Promise( ( resolve, reject ) => {
     bundleProjectAsJSON( { production, requestAssetData } )
       .then( ( productionJSON ) => {
-        const citations = buildCitations( {production: productionJSON} );
+        const citations = buildCitations( { production: productionJSON } );
         const js = {
           _declaration: {
             _attributes: {
