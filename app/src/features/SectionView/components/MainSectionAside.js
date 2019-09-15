@@ -351,7 +351,7 @@ const MainSectionAside = ( {
       <Column style={ { position: 'relative', height: '100%', width: '100%', background: 'white', zIndex: 3 } }>
         <StretchedLayoutContainer isAbsolute>
           <StretchedLayoutItem
-            style={ { height: '100%' } }
+            style={ { height: '100%', width: '100%', position: 'absolute' } }
             isFlex={ 1 }
           >
             <Column style={ { position: 'relative', height: '100%', width: '100%' } }>

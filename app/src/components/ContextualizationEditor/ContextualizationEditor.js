@@ -138,7 +138,7 @@ class ContextualizationEditor extends Component {
     return (
       <StretchedLayoutContainer
         isDirection={ 'vertical' }
-        style={ { height: '100%', overflow: 'hidden' } }
+        style={ { height: '100%', overflow: 'hidden', position: 'relative', paddingRight: '1rem' } }
       >
         <StretchedLayoutItem>
           <StretchedLayoutContainer
@@ -155,7 +155,7 @@ class ContextualizationEditor extends Component {
           </StretchedLayoutContainer>
         </StretchedLayoutItem>
         <StretchedLayoutItem
-          style={ { overflow: 'auto' } }
+          style={ { overflowY: 'auto', overflowX: 'hidden' } }
           isFlex={ 1 }
         >
           <Level />

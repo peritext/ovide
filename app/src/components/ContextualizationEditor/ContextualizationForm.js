@@ -241,6 +241,7 @@ export default class ContextualizationForm extends Component {
                     key={ index }
                     isColor={ contextualizer.type === type && 'primary' }
                     onClick={ handleClick }
+                    isFullWidth
                   >
                     {translate( type )}
                   </Button>
