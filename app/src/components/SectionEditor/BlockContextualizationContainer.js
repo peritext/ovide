@@ -220,7 +220,7 @@ class BlockContainer extends Component {
             isRounded
             isColor={ 'danger' }
             onClick={ handleDeleteRequest }
-            data-for={ 'tooltip' }
+            data-for={ 'block-tooltip' }
             data-place={ 'right' }
             data-effect={ 'solid' }
             data-tip={ translate( 'delete mention (the item will not be deleted from the library)' ) }
@@ -231,7 +231,7 @@ class BlockContainer extends Component {
             isRounded
             isColor={ 'info' }
             onClick={ handleEditContextualizationRequest }
-            data-for={ 'tooltip' }
+            data-for={ 'block-tooltip' }
             data-place={ 'right' }
             data-effect={ 'solid' }
             data-tip={ translate( 'edit mention parameters' ) }
@@ -242,7 +242,7 @@ class BlockContainer extends Component {
             isRounded
             onClick={ handleEditRequest }
             isColor={ 'primary' }
-            data-for={ 'tooltip' }
+            data-for={ 'block-tooltip' }
             data-place={ 'right' }
             data-effect={ 'solid' }
             data-tip={ translate( `edit ${resource.metadata.type}` ) }
@@ -268,7 +268,7 @@ class BlockContainer extends Component {
         />,
         <ReactTooltip
           key={ 2 }
-          id={ 'tooltip' }
+          id={ 'block-tooltip' }
         />
 
       ] : null
