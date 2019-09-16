@@ -13,6 +13,7 @@ import {
   Column,
 } from 'quinoa-design-library/components/';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
+import debounceRender from 'react-debounce-render';
 
 /**
  * Imports Project utils
@@ -39,7 +40,7 @@ class ContextProvider extends Component {
   }
 }
 
-class PreviewWrapper extends Component {
+class PreviewWrapperInitial extends Component {
 
   static contextTypes = {
     getResourceDataUrl: PropTypes.func,
@@ -48,7 +49,8 @@ class PreviewWrapper extends Component {
   constructor( props ) {
     super( props );
     this.state = {
-      assets: {}
+      assets: {},
+      activeViewId: undefined,
     };
   }
 
@@ -115,7 +117,10 @@ class PreviewWrapper extends Component {
     } = props;
 
     const {
-      assets = {}
+      assets = {},
+      viewClass,
+      viewId,
+      viewParams,
     } = state;
 
     if ( !template || !initialProduction ) {
@@ -135,6 +140,10 @@ class PreviewWrapper extends Component {
     const { getResourceDataUrl } = this.context;
 
     const renderingMode = edition.metadata.type;
+
+    const onActiveViewChange = ( params ) => {
+      this.setState( params );
+    };
 
     const FinalComponent = () => (
       <ContextProvider
@@ -190,6 +199,11 @@ class PreviewWrapper extends Component {
                     contextualizers,
                     previewMode: true,
                     locale,
+
+                    viewClass,
+                    viewId,
+                    viewParams,
+                    onActiveViewChange,
                   }
                 }
               />
@@ -200,6 +214,8 @@ class PreviewWrapper extends Component {
     );
   }
 }
+
+const PreviewWrapper = debounceRender( PreviewWrapperInitial, 2000, { leading: false } );
 
 const MainEditionColumn = ( {
   production,
@@ -289,6 +305,7 @@ const MainEditionColumn = ( {
             isAlign={ 'left' }
             className={ 'fa fa-download' }
           />
+          <span style={ { paddingLeft: '.5rem' } }>{ translate( 'download this edition' ) }</span>
         </Button>
         }
         {
@@ -298,12 +315,14 @@ const MainEditionColumn = ( {
             onClick={ handleClickOnPrint }
             data-for={ 'tooltip' }
             data-tip={ translate( 'print this edition' ) }
+            style={ { marginLeft: '.5rem' } }
           >
             <Icon
               isSize={ 'small' }
               isAlign={ 'left' }
               className={ 'fa fa-print' }
             />
+            <span style={ { paddingLeft: '.5rem' } }>{ translate( 'print this edition' ) }</span>
           </Button>
         }
 
