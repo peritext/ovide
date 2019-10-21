@@ -366,33 +366,25 @@ export const retrieveMediaMetadata = ( url, credentials = {} ) => {
     // case youtube
     if ( url.match( youtubeRegexp ) ) {
       // must provide a youtube simple api key
-      if ( credentials.youtubeAPIKey ) {
-        let videoId = url.match( /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/ );
-        if ( videoId !== null ) {
-           videoId = videoId[1];
-           // for a simple metadata retrieval we can use this route that includes the api key
-            const endPoint = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${credentials.youtubeAPIKey}`;
-            get( endPoint )
-            .then( ( res ) => {
-              const info = res.data && res.data.items && res.data.items[0] && res.data.items[0].snippet;
-              return resolve( {
-                  url,
-                  metadata: {
-                    description: info.description,
-                    source: `${info.channelTitle } (youtube: ${url})`,
-                    title: info.title,
-                    videoUrl: url,
-                    authors: [ info.channelTitle ]
-                  }
-                } );
-            } )
-            .catch( ( e ) => reject( e ) );
-        }
-        else {
-          return resolve( { url, metadata: {
-          videoUrl: url
-        } } );
-        }
+      let videoId = url.match( /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/ );
+      if ( videoId !== null ) {
+          videoId = videoId[1];
+          // for a simple metadata retrieval we can use this route that includes the api key
+          const endPoint = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`;
+          get( endPoint )
+          .then( ( res ) => {
+            const info = res.data;
+            return resolve( {
+                url,
+                metadata: {
+                  source: `Youtube: ${url}`,
+                  title: info.title,
+                  videoUrl: url,
+                  authors: [ { family: info.author_name, given: '', affiliation: '', role: 'uploader' } ]
+                }
+              } );
+          } )
+          .catch( ( e ) => reject( e ) );
       }
       else {
         return resolve( { url, metadata: {
@@ -412,7 +404,8 @@ export const retrieveMediaMetadata = ( url, credentials = {} ) => {
             source: `${data.author_name } (vimeo: ${url})`,
             title: data.title,
             description: data.description,
-            videoUrl: url
+            videoUrl: url,
+            authors: [ { family: data.author_name, given: '', affiliation: '', role: 'uploader' } ]
           }
         } );
       } )

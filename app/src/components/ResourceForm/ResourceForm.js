@@ -34,7 +34,7 @@ import icons from 'quinoa-design-library/src/themes/millet/icons';
 import config from '../../config';
 import { translateNameSpacer } from '../../helpers/translateUtils';
 import {
-  // retrieveMediaMetadata,
+  retrieveMediaMetadata,
   retrieveWebpageMetadata,
   loadImage,
   inferMetadata,
@@ -68,7 +68,6 @@ import { resourcesSchemas } from '../../peritextConfig.render';
  * Shared variables
  */
 const resourceTypes = Object.keys( resourcesSchemas );
-// const credentials = { youtubeAPIKey: config.youtubeAPIKey };
 const { maxResourceSize } = config;
 const realMaxFileSize = base64ToBytesLength( maxResourceSize );
 
@@ -267,6 +266,34 @@ class DataForm extends Component {
           </Field>
         </div>
       );
+    case 'video':
+        if ( resourcesSchemas[resourceType] ) {
+          const wrapDataChange = ( data, b ) => {
+            if ( data.mediaUrl !== formApi.getValue( 'data.mediaUrl' ) ) {
+              retrieveMediaMetadata( data.mediaUrl )
+                .then( ( { metadata } ) => {
+                  Object.keys( metadata )
+                    .forEach( ( key ) => {
+                      const existing = formApi.getValue( `metadata.${key}` );
+                      if ( ( !existing || ( typeof existing === 'string' && !existing.trim().length ) || ( Array.isArray( existing ) && !existing.length ) ) && metadata[key] ) {
+                        formApi.setValue( `metadata.${key}`, metadata[key] );
+                      }
+                    } );
+                } );
+            }
+            handleDataChange( data, b );
+          };
+          return (
+            <SchemaForm
+              schema={ resourcesSchemas[resourceType] }
+              document={ formApi.getValue( 'data' ) }
+              assets={ assets }
+              onAssetChange={ onAssetChange }
+              translate={ translate }
+              onAfterChange={ wrapDataChange }
+            />
+          );
+        }
     default:
       if ( resourcesSchemas[resourceType] ) {
         return (
