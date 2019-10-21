@@ -118,7 +118,13 @@ if ( window.Paged ) {
             duration: 1000
           } ).showToast();
           console.info( 'rendering done, attaching footnotes to %s pages', pages.length );
+          let footnoteIndex = 1;
           for ( const page of pages ) {
+            // reset note number when changing section
+            if (page.element.className.includes('pagedjs_section_first_page')) {
+              console.log('reset footnote number');
+              footnoteIndex = 1;
+            }
             const footnotes = page.element.querySelectorAll( '.footnote' );
             if ( footnotes.length === 0 ) {
               continue;
@@ -140,7 +146,6 @@ if ( window.Paged ) {
 
             footnoteArea.className = 'footnote-area';
             pageContent.appendChild( footnoteArea );
-            let footnoteIndex = 0;
             for ( const footnote of footnotes ) {
               footnoteIndex++;
               const handler = footnote.parentElement;
