@@ -10,6 +10,8 @@ const htmlToReactParser = new Parser();
 import defaultStyle from 'raw-loader!../sharedAssets/bibAssets/apa.csl';
 import defaultLocale from 'raw-loader!../sharedAssets/bibAssets/english-locale.xml';
 
+import {resourceToCslJSON} from 'peritext-utils';
+
 const { INLINE_ASSET, BLOCK_ASSET } = constants;
 
 /**
@@ -146,7 +148,7 @@ export const buildCitations = ( assets, props ) => {
     const citationItems = Object.keys( bibContextualizations )
       .reduce( ( finalCitations, key1 ) => {
         const bibCit = bibContextualizations[key1];
-        const citations = bibCit.resource.data;
+        const citations = resourceToCslJSON(bibCit.resource);
         const newCitations = citations.reduce( ( final2, citation ) => {
           return {
             ...final2,
@@ -169,7 +171,7 @@ export const buildCitations = ( assets, props ) => {
         const resource = resources[contextualization.resourceId];
         return {
           citationID: key1,
-          citationItems: resource.data.map( ( ref ) => ( {
+          citationItems: resourceToCslJSON( resource ).map( ( ref ) => ( {
             locator: contextualizer.locator,
             prefix: contextualizer.prefix,
             suffix: contextualizer.suffix,
