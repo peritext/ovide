@@ -2,15 +2,15 @@ const resourceSchemas = require( 'peritext-schemas/resource' );
 const peritextConfig = {
 
   contextualizers: {
-      bib: require( 'peritext-contextualizer-bib' ),
-      webpage: require( 'peritext-contextualizer-webpage' ),
-      glossary: require( 'peritext-contextualizer-glossary' ),
-      embed: require( 'peritext-contextualizer-embed' ),
-      video: require( 'peritext-contextualizer-video' ),
-      image: require( 'peritext-contextualizer-image' ),
-      sourceCode: require( 'peritext-contextualizer-source-code' ),
-      vegaLite: require( 'peritext-contextualizer-vegalite' ),
-      table: require( 'peritext-contextualizer-table' ),
+      // bib: require( 'peritext-contextualizer-bib' ),
+      // webpage: require( 'peritext-contextualizer-webpage' ),
+      // glossary: require( 'peritext-contextualizer-glossary' ),
+      // embed: require( 'peritext-contextualizer-embed' ),
+      // video: require( 'peritext-contextualizer-video' ),
+      // image: require( 'peritext-contextualizer-image' ),
+      // sourceCode: require( 'peritext-contextualizer-source-code' ),
+      // vegaLite: require( 'peritext-contextualizer-vegalite' ),
+      // table: require( 'peritext-contextualizer-table' ),
     },
   templates: [
     require( 'peritext-template-pyrrah' ).default,
@@ -37,13 +37,15 @@ const peritextConfig = {
     },
   },
   resourcesSchemas: {
-    bib: resourceSchemas.definitions.bib,
-    glossary: resourceSchemas.definitions.glossary,
-    webpage: resourceSchemas.definitions.webpage,
-    image: resourceSchemas.definitions.image,
-    table: resourceSchemas.definitions.table,
-    video: resourceSchemas.definitions.video,
-    embed: resourceSchemas.definitions.embed,
+    section: resourceSchemas.definitions.section,
+
+    // bib: resourceSchemas.definitions.bib,
+    // glossary: resourceSchemas.definitions.glossary,
+    // webpage: resourceSchemas.definitions.webpage,
+    // image: resourceSchemas.definitions.image,
+    // table: resourceSchemas.definitions.table,
+    // video: resourceSchemas.definitions.video,
+    // embed: resourceSchemas.definitions.embed,
   },
 };
 
