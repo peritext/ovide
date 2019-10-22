@@ -54,9 +54,9 @@ export const addTextAtCurrentSelection = ( text, contentId, props ) => {
       newSection = {
         ...activeSection,
         notes: {
-          ...activeSection.notes,
+          ...activeSection.data.contents.notes,
           [contentId]: {
-            ...activeSection.notes[contentId],
+            ...activeSection.data.contents.notes[contentId],
             contents: convertToRaw( newEditorState.getCurrentContent() )
           }
         }

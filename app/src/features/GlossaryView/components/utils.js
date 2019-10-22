@@ -74,10 +74,10 @@ export const getCitationModels = ( production ) => {
       // isolate all contextualizations quoted inside editors
       const quotedEntities = sectionsOrder.reduce( ( finalResult, sectionId ) => {
           const activeSection = sections[sectionId];
-          return activeSection.notesOrder.reduce( ( contents, noteId ) => [
+          return activeSection.data.contents.notesOrder.reduce( ( contents, noteId ) => [
             ...contents,
-            activeSection.notes[noteId].contents,
-        ], [ activeSection.contents ] )
+            activeSection.data.contents.notes[noteId].contents,
+        ], [ activeSection.data.contents.contents ] )
         .reduce( ( entities, contents ) =>
             [
             ...entities,

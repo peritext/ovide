@@ -119,10 +119,10 @@ export const buildCitations = ( assets, props ) => {
      * Citations preparation
      */
     // isolate all contextualizations quoted inside editors
-    const quotedEntities = activeSection.notesOrder.reduce( ( contents, noteId ) => [
+    const quotedEntities = activeSection.data.contents.notesOrder.reduce( ( contents, noteId ) => [
       ...contents,
-      activeSection.notes[noteId].contents,
-    ], [ activeSection.contents ] )
+      activeSection.data.contents.notes[noteId].contents,
+    ], [ activeSection.data.contents.contents ] )
     .reduce( ( entities, contents ) =>
       [
         ...entities,

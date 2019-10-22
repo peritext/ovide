@@ -921,7 +921,7 @@ export const computePastedData = ( {
   } );
 
   let mainEditorState = editorStates[activeSectionId];
-  let notesOrder = activeSection.notesOrder;
+  let notesOrder = activeSection.data.contents.notesOrder;
 
   /**
    * PUSH CLIPBOARD CONTENTS TO RELATED EDITOR STATE

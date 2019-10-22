@@ -227,9 +227,9 @@ function production( state = PRODUCTION_DEFAULT_STATE, action ) {
             sections: {
               ...state.production.sections,
               [payload.sectionId]: {
-                ...state.production.sections[payload.sectionId],
+                ...state.production.resources[payload.sectionId],
                 metadata: {
-                  ...state.production.sections[payload.sectionId].metadata,
+                  ...state.production.resources[payload.sectionId].metadata,
                   level: payload.level
                 },
                 lastUpdateAt: payload.lastUpdateAt,
@@ -274,7 +274,7 @@ function production( state = PRODUCTION_DEFAULT_STATE, action ) {
                 }
                 else return {
                   ...thatResult,
-                  [thatSectionId]: state.production.sections[thatSectionId]
+                  [thatSectionId]: state.production.resources[thatSectionId]
                 };
               }, {} ),
             contextualizations,

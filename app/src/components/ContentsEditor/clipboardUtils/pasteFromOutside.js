@@ -284,9 +284,9 @@ export const handlePasting = ( {
           newSection = {
             ...activeSection,
             notes: {
-              ...activeSection.notes,
+              ...activeSection.data.contents.notes,
               [activeEditorStateId]: {
-                ...activeSection.notes[activeEditorStateId],
+                ...activeSection.data.contents.notes[activeEditorStateId],
                 contents,
               }
             }

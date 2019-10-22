@@ -36,8 +36,8 @@ const buildProspectRawContent = ( {
     prospect,
     production
 } ) => {
-    const section = production.sections[prospect.sectionId];
-    const contents = prospect.contentId === 'main' ? section.contents : section.notes[prospect.contentId];
+    const section = production.resources[prospect.sectionId];
+    const contents = prospect.contentId === 'main' ? section.data.contents.contents : section.data.contents.notes[prospect.contentId];
     if ( !contents || !contents.entityMap ) {
       return;
     }
@@ -141,7 +141,7 @@ class ProspectionCard extends Component {
                 <Content>
                   <MatchRenderer raw={ raw } />
                 </Content>
-                <p><i>{production.sections[prospect.sectionId].metadata.title}</i></p>
+                <p><i>{production.resources[prospect.sectionId].metadata.title}</i></p>
               </StretchedLayoutItem>
               <StretchedLayoutItem>
                 <Button

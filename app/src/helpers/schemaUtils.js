@@ -43,7 +43,7 @@ export const createDefaultSection = ( ) => {
   const res = defaults( resourceSchema );
   res.metadata.type = 'section';
   const data = {
-    ...res.data,
+    // ...res.data,
     contents: {
       contents: {},
       notes: {},
@@ -86,7 +86,7 @@ export const convertQuinoaStoryToProduction = ( story ) => {
     authors: convertQuinoaAuthors( story.metadata.authors )
   };
   const sections = Object.keys( story.sections ).reduce( ( res, sectionId ) => {
-    const section = story.sections[sectionId];
+    const section = story.resources[sectionId];
     return {
       ...res,
       [sectionId]: {

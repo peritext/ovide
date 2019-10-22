@@ -508,7 +508,7 @@ export const summonAsset = ( contentId, resourceId, props, config ) => {
     } = actions;
     const { contextualizers } = config;
 
-    const activeSection = production.sections[sectionId];
+    const activeSection = production.resources[sectionId];
     const resource = production.resources[resourceId];
 
     const editorStateId = contentId === 'main' ? sectionId : contentId;
@@ -678,9 +678,9 @@ export const summonAsset = ( contentId, resourceId, props, config ) => {
       newSection = {
         ...activeSection,
         notes: {
-          ...activeSection.notes,
+          ...activeSection.data.contents.notes,
           [contentId]: {
-            ...activeSection.notes[contentId],
+            ...activeSection.data.contents.notes[contentId],
             contents: convertToRaw( newEditorState.getCurrentContent() )
           }
         }
@@ -800,9 +800,9 @@ export const deleteContextualizationFromId = ( {
                       } : {
                         ...section,
                         notes: {
-                          ...section.notes,
+                          ...section.data.contents.notes,
                           [contentId]: {
-                            ...section.notes[contentId],
+                            ...section.data.contents.notes[contentId],
                             contents: convertToRaw( newEditorState.getCurrentContent() )
                           }
                         }
@@ -889,15 +889,15 @@ export const deleteUncitedContext = ( sectionId, props ) => {
 
   const { id: productionId } = editedProduction;
   const cleanedSection = {
-    ...editedProduction.sections[sectionId],
-    notes: cleanUncitedNotes( editedProduction.sections[sectionId] )
+    ...editedProduction.resources[sectionId],
+    notes: cleanUncitedNotes( editedProduction.resources[sectionId] )
   };
   updateSection( { productionId, sectionId, section: cleanedSection, userId } );
 
-  const citedContextualizationIds = Object.keys( cleanedSection.notes ).reduce( ( contents, noteId ) => [
+  const citedContextualizationIds = Object.keys( cleanedSection.data.contents.notes ).reduce( ( contents, noteId ) => [
     ...contents,
-    editedProduction.sections[sectionId].notes[noteId].contents,
-  ], [ editedProduction.sections[sectionId].contents ] )
+    editedProduction.resources[sectionId].notes[noteId].contents,
+  ], [ editedProduction.resources[sectionId].contents ] )
   .reduce( ( entities, contents ) =>
     [
       ...entities,

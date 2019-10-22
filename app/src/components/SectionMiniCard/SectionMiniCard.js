@@ -43,6 +43,7 @@ const SectionMiniCard = ( {
   cardStyle = {},
   isActive,
   section,
+  level,
   productionId,
   onDeleteSection,
   onOpenSettings,
@@ -149,19 +150,19 @@ const SectionMiniCard = ( {
                   } }
                 chevronsData={ {
                     left: {
-                      tooltip: translate( 'Title level {n}', { n: section.metadata.level } ),
-                      isDisabled: section.metadata.level === 0,
+                      tooltip: translate( 'Title level {n}', { n: level } ),
+                      isDisabled: level === 0,
                       onClick: ( e ) => {
                         e.stopPropagation();
-                        setSectionLevel( { sectionId: section.id, level: section.metadata.level - 1 } );
+                        setSectionLevel( { sectionId: section.id, level: level - 1 } );
                       }
                     },
                     right: {
-                      tooltip: translate( 'Title level {n}', { n: section.metadata.level + 2 } ),
-                      isDisabled: section.metadata.level >= config.maxSectionLevel - 1,
+                      tooltip: translate( 'Title level {n}', { n: level + 2 } ),
+                      isDisabled: level >= config.maxSectionLevel - 1,
                       onClick: ( e ) => {
                         e.stopPropagation();
-                        setSectionLevel( { sectionId: section.id, level: section.metadata.level + 1 } );
+                        setSectionLevel( { sectionId: section.id, level: level + 1 } );
                       }
                     },
                     up: {

@@ -135,20 +135,20 @@ class AsideGlossary extends Component {
 
         const { contextualizations, resources } = production;
         const matches = production.sectionsOrder.reduce( ( result, sectionId ) => {
-            const section = production.sections[sectionId];
+            const section = production.resources[sectionId];
             return [
                 ...result,
                 ...findProspectionMatches( {
-                    contents: section.contents,
+                    contents: section.data.contents.contents,
                     sectionId,
                     contentId: 'main',
                     value,
                     contextualizations,
                     resources,
                 } ),
-                ...section.notesOrder.reduce( ( res, noteId ) =>
+                ...section.data.contents.notesOrder.reduce( ( res, noteId ) =>
                     [ ...res, ...findProspectionMatches( {
-                        contents: section.notes[noteId].contents,
+                        contents: section.data.contents.notes[noteId].contents,
                         sectionId,
                         noteId,
                         value,
@@ -217,8 +217,8 @@ class AsideGlossary extends Component {
     const mentions = relatedContextualizationsIds.map( ( contextualizationId ) => {
         const contextualization = production.contextualizations[contextualizationId];
         const sectionId = contextualization.sectionId;
-        const section = production.sections[sectionId];
-        const editors = [ 'main', ...production.sections[sectionId].notesOrder ];
+        const section = production.resources[sectionId];
+        const editors = [ 'main', ...production.resources[sectionId].notesOrder ];
         let mention = {
           sectionId,
           contextualizationId,
@@ -226,10 +226,10 @@ class AsideGlossary extends Component {
         editors.find( ( editorId ) => {
             let contents;
             if ( editorId === 'main' ) {
-                contents = section.contents;
+                contents = section.data.contents.contents;
             }
             else {
-                contents = section.notes[editorId].contents;
+                contents = section.data.contents.notes[editorId].contents;
             }
             return Object.keys( contents.entityMap ).find( ( entityKey ) => {
                 const entity = contents.entityMap[entityKey];
@@ -258,8 +258,8 @@ class AsideGlossary extends Component {
     } )
     .filter( ( mention ) => {
       if ( searchString.length > MIN_SEARCH_LENGTH && mention.contentId && mention.blockKey ) {
-        const section = production.sections[mention.sectionId];
-        const contents = mention.contentId === 'main' ? section.contents : section.notes[mention.contentId].contents;
+        const section = production.resources[mention.sectionId];
+        const contents = mention.contentId === 'main' ? section.data.contents.contents : section.data.contents.notes[mention.contentId].contents;
         const block = contents.blocks.find( ( thatBlock ) => thatBlock.key === mention.blockKey );
         return block.text.toLowerCase().includes( searchStringLower );
       }

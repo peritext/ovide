@@ -69,7 +69,6 @@ const AsideSectionContents = ( {
    * Local functions
    */
   const translate = translateNameSpacer( t, 'Features.SectionView' );
-
   if ( asideTabCollapsed ) {
         return null;
       }

@@ -140,7 +140,7 @@ const SummaryViewLayout = ( {
           productionId,
           sectionsOrder: newSectionsOrder
         }, ( thatErr ) => {
-          if (!thatErr) {
+          if ( !thatErr ) {
             setNewSectionOpen( false );
             goToSection( newSection.id );
         }

@@ -354,16 +354,16 @@ class ContentsEditor extends Component {
       activeSection
     } = this.props;
     const { id: sectionId } = activeSection;
-    // console.log( 'did mount', sectionId, activeSection.contents );
-    if ( sectionId && activeSection.contents ) {
+    // console.log( 'did mount', sectionId, activeSection.data.contents.contents );
+    if ( sectionId && activeSection.data && activeSection.data.contents ) {
       setTimeout( () => {
-        this.hydrateEditorStates( activeSection );
+        this.hydrateEditorStates( activeSection.data && activeSection.data.contents, sectionId );
         this.updateStateFromProps( this.props );
         setTimeout( () => {
           this.setState( {
             hydrated: true
           } );
-          // console.log( 'clearing in component did mount', this.props.activeSection.contents );
+          // console.log( 'clearing in component did mount', this.props.activeSection.data.contents.contents );
           setTimeout( () => this.clearNotesAndContext( this.props ), 1000 );
         } );
       } );
@@ -405,7 +405,7 @@ class ContentsEditor extends Component {
         hydrated: false
       } );
       // hydrate editors with new section
-      this.hydrateEditorStates( activeSection );
+      this.hydrateEditorStates( activeSection.data.contents, activeSection.id );
       setTimeout( () => {
         this.props.setEditorFocus( 'main' );
         this.setState( {
@@ -581,7 +581,7 @@ class ContentsEditor extends Component {
 
         }
         else if ( entityAtSelection.getType() === SECTION_POINTER ) {
-          const targetSection = this.props.production && this.props.production.sections[entityAtSelection.getData().sectionId];
+          const targetSection = this.props.production && this.props.production.resources[entityAtSelection.getData().sectionId];
           const title = ( targetSection && targetSection.metadata.title ) || this.translate( 'deleted section' );
           try {
               const selection = window.getSelection();
@@ -647,9 +647,9 @@ class ContentsEditor extends Component {
       /*
        * const newSection = {
        *   ...prevSection,
-       *   notes: prevSection.notesOrder.reduce((res, noteId) => ({
+       *   notes: prevSection.data.contents.notesOrder.reduce((res, noteId) => ({
        *     ...res,
-       *     [noteId]: prevSection.notes[noteId]
+       *     [noteId]: prevSection.data.contents.notes[noteId]
        *   }), {})
        * };
        * delete unused contextualizations
@@ -659,7 +659,7 @@ class ContentsEditor extends Component {
 
        /*
         * update all raw contents
-        * const notesIds = Object.keys(prevSection.notes);
+        * const notesIds = Object.keys(prevSection.data.contents.notes);
         * notesIds.forEach(noteId => this.updateSectionRawContent(noteId, props.production.id, props.activeSection.id));
         * this.updateSectionRawContent('main', props.production.id, props.activeSection.id);
         */
@@ -767,14 +767,21 @@ class ContentsEditor extends Component {
 
       /*
        * remove note
-       * const notes = activeSection.notes;
+       * const notes = activeSection.data.contents.notes;
        * delete notes[id]; // commented for keeping it for undo-redo purposes
        * update section
        */
       updateSection( {
         ...activeSection,
-        contents: convertToRaw( newEditorState.getCurrentContent() ),
-        notesOrder: activeSection.notesOrder.filter( ( thatNoteId ) => thatNoteId !== id )
+        data: {
+          ...activeSection.data,
+          contents: {
+            ...activeSection.data.contents,
+            contents: convertToRaw( newEditorState.getCurrentContent() ),
+            notesOrder: activeSection.data.contents.notesOrder.filter( ( thatNoteId ) => thatNoteId !== id )
+          }
+        }
+
         // notes
       } );
       // update editor
@@ -801,10 +808,10 @@ class ContentsEditor extends Component {
     // add related entity in main editor
     const mainEditorState = insertNoteInEditor( editorStates[sectionId], id );
     // prepare notes with immutable editorState
-    const activeNotes = Object.keys( activeSection.notes ).reduce( ( fNotes, nd ) => ( {
+    const activeNotes = Object.keys( activeSection.data.contents.notes ).reduce( ( fNotes, nd ) => ( {
       ...fNotes,
       [nd]: {
-        ...activeSection.notes[nd]
+        ...activeSection.data.contents.notes[nd]
       }
     } ), {} );
     // add note
@@ -821,19 +828,26 @@ class ContentsEditor extends Component {
       notesOrder
     } = updateNotesFromEditor( mainEditorState, notes );
     // notes = newNotes;
+
     const newSection = {
       ...activeSection,
-      notesOrder,
-      contents: convertToRaw( mainEditorState.getCurrentContent() ),
-      notes: Object.keys( notes ).reduce( ( fNotes, nd ) => ( {
-        ...fNotes,
-        [nd]: {
-          ...notes[nd],
-          contents: notes[nd].contents || convertToRaw( this.editor.generateEmptyEditor().getCurrentContent() ),
-          editorState: undefined
+      data: {
+        ...activeSection.data,
+        contents: {
+          notesOrder,
+          contents: convertToRaw( mainEditorState.getCurrentContent() ),
+          notes: Object.keys( notes ).reduce( ( fNotes, nd ) => ( {
+            ...fNotes,
+            [nd]: {
+              ...notes[nd],
+              contents: notes[nd].contents || convertToRaw( this.editor.generateEmptyEditor().getCurrentContent() ),
+              editorState: undefined
+            }
+          } ), {} )
         }
-      } ), {} )
+      }
     };
+
     const newEditors = Object.keys( notes ).reduce( ( fEditors, nd ) => ( {
       ...fEditors,
       [nd]: editorStates[nd] || EditorState.createWithContent(
@@ -843,6 +857,7 @@ class ContentsEditor extends Component {
     } ), {
       [sectionId]: mainEditorState
     } );
+
     // update contents
     this.props.updateSection( newSection );
     // update editors
@@ -926,12 +941,12 @@ class ContentsEditor extends Component {
     requestAsset( editorId, selection );
   }
 
-  hydrateEditorStates = ( activeSection ) => {
-    // console.log( 'avant', activeSection.contents, activeSection.contents && activeSection.contents.entityMap );
+  hydrateEditorStates = ( contents, resourceId ) => {
+    // console.log( 'avant', activeSection.data.contents.contents, activeSection.data.contents.contents && activeSection.data.contents.contents.entityMap );
     let mainContents;
-    if ( activeSection.contents && activeSection.contents.entityMap ) {
+    if ( contents.contents && contents.contents.entityMap ) {
       mainContents = EditorState.createWithContent(
-              convertFromRaw( activeSection.contents ),
+              convertFromRaw( contents.contents ),
               this.editor.mainEditor.createLocalDecorator()
             );
     }
@@ -944,12 +959,12 @@ class ContentsEditor extends Component {
      * block entities
      * @todo investigate
      */
-     const editors = Object.keys( activeSection.notes || {} )
+     const editors = Object.keys( contents.notes || {} )
          // notes' editor states hydratation
         .reduce( ( eds, noteId ) => {
-           const editor = activeSection.notes[noteId].contents && activeSection.notes[noteId].contents.entityMap ?
+           const editor = contents.notes[noteId].contents && contents.notes[noteId].contents.entityMap ?
              EditorState.createWithContent(
-               convertFromRaw( activeSection.notes[noteId].contents ),
+               convertFromRaw( contents.notes[noteId].contents ),
                this.editor.mainEditor.createLocalDecorator()
              )
              : this.editor.generateEmptyEditor();
@@ -960,7 +975,7 @@ class ContentsEditor extends Component {
          },
          // main editor state hydratation
          {
-           [activeSection.id]: mainContents
+           [resourceId]: mainContents
          } );
     // console.log( 'après', convertToRaw( editors[activeSection.id].getCurrentContent() ) );
 
@@ -970,7 +985,7 @@ class ContentsEditor extends Component {
   }
 
   updateSectionRawContent = ( editorStateId, productionId, sectionId ) => {
-    const section = this.props.production.sections[sectionId];
+    const section = this.props.production.resources[sectionId];
 
     const finalEditorStateId = editorStateId === 'main' ? sectionId : editorStateId;
     const finalEditorState = this.props.editorStates[finalEditorStateId];
@@ -989,19 +1004,32 @@ class ContentsEditor extends Component {
     if ( editorStateId === 'main' ) {
       newSection = {
         ...section,
-        contents: rawContent
+        data: {
+          ...section.data,
+          contents: {
+            ...section.data.contents,
+            contents: rawContent
+          }
+        }
       };
     }
     else {
       newSection = {
         ...section,
-        notes: {
-          ...section.notes,
-          [editorStateId]: {
-            ...section.notes[editorStateId],
-            contents: rawContent
+        data: {
+          ...section.data,
+          contents: {
+            ...section.data.contents,
+            notes: {
+              ...section.data.contents.notes,
+              [editorStateId]: {
+                ...section.data.contents.notes[editorStateId],
+                contents: rawContent
+              }
+            }
           }
         }
+
       };
     }
 
@@ -1025,7 +1053,7 @@ class ContentsEditor extends Component {
   removeFormattingForSelection = () => {
     const { editorFocus, editorStates, activeSection } = this.props;
     const { id: sectionId } = activeSection;
-    const editorState = editorFocus === 'main' ? editorStates[sectionId] : activeSection.notes[editorFocus].contents;
+    const editorState = editorFocus === 'main' ? editorStates[sectionId] : activeSection.data.contents.notes[editorFocus].contents;
     // const styles = editorState.getCurrentInlineStyle().toList().toJS();
     const styles = [
       'BOLD',
@@ -1333,8 +1361,12 @@ class ContentsEditor extends Component {
     }
 
     const {
-      notes: inputNotes,
-      notesOrder,
+      data: {
+        contents: {
+          notes: inputNotes,
+          notesOrder,
+        }
+      },
       id: sectionId,
     } = activeSection;
 

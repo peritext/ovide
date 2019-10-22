@@ -41,10 +41,10 @@ const ConfirmToDeleteModal = ( {
   let message;
   let citedContext;
   if ( deleteType === 'section' ) {
-    message = ( production && production.sections[id] ) ? translate(
+    message = ( production && production.resources[id] ) ? translate(
       'Are you sure you want to delete the section "{s}" ? All its content will be lost without possible recovery.',
       {
-        s: production.sections[id].metadata.title
+        s: production.resources[id].metadata.title
       }
     ) : translate( 'Are you sure you want to delete this section ?' );
   }

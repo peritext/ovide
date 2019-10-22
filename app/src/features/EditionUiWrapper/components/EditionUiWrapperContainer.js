@@ -63,7 +63,7 @@ class EditionUiWrapperContainer extends Component {
     }
   }
 
-  getActiveSectionTitle = ( production, sectionId ) => production.sections[sectionId].metadata.title;
+  getActiveSectionTitle = ( production, sectionId ) => production.resources[sectionId].metadata.title;
 
   getActiveEditionTitle = ( production, editionId ) => production.editions[editionId].metadata.title;
 

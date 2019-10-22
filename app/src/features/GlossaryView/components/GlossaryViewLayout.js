@@ -253,7 +253,7 @@ class GlossaryViewLayout extends Component {
 
       if ( relatedContextualizationsIds.length ) {
         const changedSections = relatedContextualizationsSectionIds.reduce( ( tempSections, sectionId ) => {
-          const section = tempSections[sectionId] || production.sections[sectionId];
+          const section = tempSections[sectionId] || production.resources[sectionId];
           const sectionRelatedContextualizations = relatedContextualizations.filter( ( c ) => c.sectionId === sectionId );
           let sectionChanged;
           const newSection = {
@@ -264,18 +264,18 @@ class GlossaryViewLayout extends Component {
                 sectionChanged = true;
               }
               return result;
-            }, { ...section.contents } ),
-            notes: Object.keys( section.notes ).reduce( ( temp1, noteId ) => ( {
+            }, { ...section.data.contents.contents } ),
+            notes: Object.keys( section.data.contents.notes ).reduce( ( temp1, noteId ) => ( {
               ...temp1,
               [noteId]: {
-                ...section.notes[noteId],
+                ...section.data.contents.notes[noteId],
                 contents: sectionRelatedContextualizations.reduce( ( temp, cont ) => {
                   const { changed, result } = removeContextualizationReferenceFromRawContents( temp, cont.id );
                   if ( changed && !sectionChanged ) {
                     sectionChanged = true;
                   }
                   return result;
-                }, { ...section.notes[noteId].contents } )
+                }, { ...section.data.contents.notes[noteId].contents } )
               }
             } ), {} )
           };
@@ -337,7 +337,7 @@ class GlossaryViewLayout extends Component {
 
         if ( relatedContextualizationsIds.length ) {
           const changedSections = relatedContextualizationsSectionIds.reduce( ( tempSections, sectionId ) => {
-            const section = tempSections[sectionId] || production.sections[sectionId];
+            const section = tempSections[sectionId] || production.resources[sectionId];
             const sectionRelatedContextualizations = relatedContextualizations.filter( ( c ) => c.sectionId === sectionId );
             let sectionChanged;
             const newSection = {
@@ -348,18 +348,18 @@ class GlossaryViewLayout extends Component {
                   sectionChanged = true;
                 }
                 return result;
-              }, { ...( section.contents || {} ) } ),
-              notes: Object.keys( section.notes ).reduce( ( temp1, noteId ) => ( {
+              }, { ...( section.data.contents.contents || {} ) } ),
+              notes: Object.keys( section.data.contents.notes ).reduce( ( temp1, noteId ) => ( {
                 ...temp1,
                 [noteId]: {
-                  ...section.notes[noteId],
+                  ...section.data.contents.notes[noteId],
                   contents: sectionRelatedContextualizations.reduce( ( temp, cont ) => {
                     const { changed, result } = removeContextualizationReferenceFromRawContents( temp, cont.id );
                     if ( changed && !sectionChanged ) {
                       sectionChanged = true;
                     }
                     return result;
-                  }, { ...section.notes[noteId].contents } )
+                  }, { ...section.data.contents.notes[noteId].contents } )
                 }
               } ), {} )
             };
@@ -814,9 +814,9 @@ class GlossaryViewLayout extends Component {
       sectionId: prospect.sectionId,
     };
     // update section
-    const section = production.sections[prospect.sectionId];
+    const section = production.resources[prospect.sectionId];
     const { notes } = section;
-    const contents = prospect.contentId === 'main' ? section.contents : notes[prospect.contentId].contents;
+    const contents = prospect.contentId === 'main' ? section.data.contents.contents : notes[prospect.contentId].contents;
     const key = +( Object.keys( contents.entityMap ).pop() || 0 ) + 1;
 //     console.log('block before', JSON.parse(JSON.stringify(contents.blocks.find(b => b.key === prospect.blockKey))))
 
@@ -855,10 +855,10 @@ class GlossaryViewLayout extends Component {
       ...section,
     };
     if ( prospect.contentId === 'main' ) {
-      newSection.contents = newContents;
+      newSection.data.contents.contents = newContents;
     }
     else {
-      newSection.notes[prospect.contentId].contents = newContents;
+      newSection.data.contents.notes[prospect.contentId].contents = newContents;
     }
     // trigger the changes
     return new Promise( ( resolve, reject ) => {
@@ -926,18 +926,18 @@ class GlossaryViewLayout extends Component {
     const contextualizerId = production.contextualizations[contextualizationId].contextualizer;
 
     // update section
-    const section = production.sections[sectionId];
+    const section = production.resources[sectionId];
     const newSection = {
       ...section,
     };
     if ( contentId ) {
-      const contents = contentId === 'main' ? section.contents : section.notes[contentId].contents;
+      const contents = contentId === 'main' ? section.data.contents.contents : section.data.contents.notes[contentId].contents;
       const { result: newContents } = removeContextualizationReferenceFromRawContents( contents, contextualizationId );
       if ( contentId === 'main' ) {
-        newSection.contents = newContents;
+        newSection.data.contents.contents = newContents;
       }
       else {
-        newSection.notes[contentId].contents = newContents;
+        newSection.data.contents.notes[contentId].contents = newContents;
       }
     }
 

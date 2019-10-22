@@ -59,7 +59,7 @@ import { resourcesSchemas } from '../../../peritextConfig.render';
  */
 const { maxBatchNumber, maxResourceSize } = config;
 const realMaxFileSize = base64ToBytesLength( maxResourceSize );
-const resourceTypes = Object.keys( resourcesSchemas );
+const resourceTypes = Object.keys( resourcesSchemas ).filter( ( key ) => key !== 'section' );
 
 class LibraryViewLayout extends Component {
 
@@ -173,7 +173,7 @@ class LibraryViewLayout extends Component {
 
     const actualResourcesPromptedToDelete = resourcesPromptedToDelete;
 
-    const resourcesList = Object.keys( resources ).map( ( resourceId ) => resources[resourceId] );
+    const resourcesList = Object.keys( resources ).map( ( resourceId ) => resources[resourceId] ).filter( ( r ) => r.metadata.type !== 'section' );
 
     let visibleResources = searchString.length === 0 ? resourcesList : searchResources( resourcesList, searchString );
 
@@ -263,7 +263,7 @@ class LibraryViewLayout extends Component {
 
       if ( relatedContextualizationsIds.length ) {
         const changedSections = relatedContextualizationsSectionIds.reduce( ( tempSections, sectionId ) => {
-          const section = tempSections[sectionId] || production.sections[sectionId];
+          const section = tempSections[sectionId] || production.resources[sectionId];
           const sectionRelatedContextualizations = relatedContextualizations.filter( ( c ) => c.sectionId === sectionId );
           let sectionChanged;
           const newSection = {
@@ -274,18 +274,18 @@ class LibraryViewLayout extends Component {
                 sectionChanged = true;
               }
               return result;
-            }, { ...section.contents } ),
-            notes: Object.keys( section.notes ).reduce( ( temp1, noteId ) => ( {
+            }, { ...section.data.contents.contents } ),
+            notes: Object.keys( section.data.contents.notes ).reduce( ( temp1, noteId ) => ( {
               ...temp1,
               [noteId]: {
-                ...section.notes[noteId],
+                ...section.data.contents.notes[noteId],
                 contents: sectionRelatedContextualizations.reduce( ( temp, cont ) => {
                   const { changed, result } = removeContextualizationReferenceFromRawContents( temp, cont.id );
                   if ( changed && !sectionChanged ) {
                     sectionChanged = true;
                   }
                   return result;
-                }, { ...section.notes[noteId].contents } )
+                }, { ...section.data.contents.notes[noteId].contents } )
               }
             } ), {} )
           };
@@ -347,7 +347,7 @@ class LibraryViewLayout extends Component {
 
         if ( relatedContextualizationsIds.length ) {
           const changedSections = relatedContextualizationsSectionIds.reduce( ( tempSections, sectionId ) => {
-            const section = tempSections[sectionId] || production.sections[sectionId];
+            const section = tempSections[sectionId] || production.resources[sectionId];
             const sectionRelatedContextualizations = relatedContextualizations.filter( ( c ) => c.sectionId === sectionId );
             let sectionChanged;
             const newSection = {
@@ -358,18 +358,18 @@ class LibraryViewLayout extends Component {
                   sectionChanged = true;
                 }
                 return result;
-              }, { ...( section.contents || {} ) } ),
-              notes: Object.keys( section.notes ).reduce( ( temp1, noteId ) => ( {
+              }, { ...( section.data.contents.contents || {} ) } ),
+              notes: Object.keys( section.data.contents.notes ).reduce( ( temp1, noteId ) => ( {
                 ...temp1,
                 [noteId]: {
-                  ...section.notes[noteId],
+                  ...section.data.contents.notes[noteId],
                   contents: sectionRelatedContextualizations.reduce( ( temp, cont ) => {
                     const { changed, result } = removeContextualizationReferenceFromRawContents( temp, cont.id );
                     if ( changed && !sectionChanged ) {
                       sectionChanged = true;
                     }
                     return result;
-                  }, { ...section.notes[noteId].contents } )
+                  }, { ...section.data.contents.notes[noteId].contents } )
                 }
               } ), {} )
             };
