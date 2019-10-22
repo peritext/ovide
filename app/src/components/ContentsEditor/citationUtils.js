@@ -38,15 +38,17 @@ export const getCitationModels = ( production ) => {
  * @return {object} formatted data
  */
 
-// export const buildCitations = ( assets, props ) => {
-//   const {
-//     production: {
-//       contextualizations,
-//       // resources,
-//       contextualizers
-//     },
-//     activeSection
-//   } = props;
+/*
+ * export const buildCitations = ( assets, props ) => {
+ *   const {
+ *     production: {
+ *       contextualizations,
+ *       // resources,
+ *       contextualizers
+ *     },
+ *     activeSection
+ *   } = props;
+ */
 
 //     /*
 //      * Citations preparation
@@ -77,51 +79,55 @@ export const getCitationModels = ( production ) => {
 //       )
 //     .map( ( assetKey ) => assets[assetKey] );
 
-//     // build citations items data
-//     const citationItems = Object.keys( bibContextualizations )
-//       .reduce( ( finalCitations, key1 ) => {
-//         const bibCit = bibContextualizations[key1];
-//         const citations = [
-//           ...resourceToCslJSON( bibCit.resource ),
-//           ...( bibCit.additionalResources ? bibCit.additionalResources.map( ( res ) => resourceToCslJSON( res ) ) : [] )
-//         ].flat();
-//         const newCitations = citations.reduce( ( final2, citation ) => {
-//           return {
-//             ...final2,
-//             [citation.id]: citation
-//           };
-//         }, {} );
-//         return {
-//           ...finalCitations,
-//           ...newCitations,
-//         };
-//       }, {} );
+/*
+ *     // build citations items data
+ *     const citationItems = Object.keys( bibContextualizations )
+ *       .reduce( ( finalCitations, key1 ) => {
+ *         const bibCit = bibContextualizations[key1];
+ *         const citations = [
+ *           ...resourceToCslJSON( bibCit.resource ),
+ *           ...( bibCit.additionalResources ? bibCit.additionalResources.map( ( res ) => resourceToCslJSON( res ) ) : [] )
+ *         ].flat();
+ *         const newCitations = citations.reduce( ( final2, citation ) => {
+ *           return {
+ *             ...final2,
+ *             [citation.id]: citation
+ *           };
+ *         }, {} );
+ *         return {
+ *           ...finalCitations,
+ *           ...newCitations,
+ *         };
+ *       }, {} );
+ */
 
-//     // build citations's citations data
-//     const citationInstances = bibContextualizations // Object.keys(bibContextualizations)
-//       .map( ( bibCit, index ) => {
-//         const key1 = bibCit.id;
-//         const contextualization = contextualizations[key1];
-//         const targets = [
-//           ...resourceToCslJSON( bibCit.resource ),
-//           ...( bibCit.additionalResources ? bibCit.additionalResources.map( ( res ) => resourceToCslJSON( res ) ) : [] )
-//         ].flat();
-//         const contextualizer = contextualizers[contextualization.contextualizerId];
-//         // const resource = resources[contextualization.resourceId];
-//         return {
-//           citationID: key1,
-//           citationItems: targets.map( ( ref ) => ( {
-//             locator: contextualizer.locator,
-//             prefix: contextualizer.prefix,
-//             suffix: contextualizer.suffix,
-//             // ...contextualizer,
-//             id: ref.id,
-//           } ) ),
-//           properties: {
-//             noteIndex: index + 1
-//           }
-//         };
-//       } ).filter( ( c ) => c );
+/*
+ *     // build citations's citations data
+ *     const citationInstances = bibContextualizations // Object.keys(bibContextualizations)
+ *       .map( ( bibCit, index ) => {
+ *         const key1 = bibCit.id;
+ *         const contextualization = contextualizations[key1];
+ *         const targets = [
+ *           ...resourceToCslJSON( bibCit.resource ),
+ *           ...( bibCit.additionalResources ? bibCit.additionalResources.map( ( res ) => resourceToCslJSON( res ) ) : [] )
+ *         ].flat();
+ *         const contextualizer = contextualizers[contextualization.contextualizerId];
+ *         // const resource = resources[contextualization.resourceId];
+ *         return {
+ *           citationID: key1,
+ *           citationItems: targets.map( ( ref ) => ( {
+ *             locator: contextualizer.locator,
+ *             prefix: contextualizer.prefix,
+ *             suffix: contextualizer.suffix,
+ *             // ...contextualizer,
+ *             id: ref.id,
+ *           } ) ),
+ *           properties: {
+ *             noteIndex: index + 1
+ *           }
+ *         };
+ *       } ).filter( ( c ) => c );
+ */
 
 //     /*
 //      * map them to the clumsy formatting needed by citeProc
@@ -149,5 +155,7 @@ export const getCitationModels = ( production ) => {
 //        */
 //     ] );
 
-//     return { citationItems, citationData };
-// };
+/*
+ *     return { citationItems, citationData };
+ * };
+ */

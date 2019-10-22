@@ -12,11 +12,6 @@ import resourceSchema from 'peritext-schemas/resource';
 const ajv = new Ajv();
 ajv.addMetaSchema( require( 'ajv/lib/refs/json-schema-draft-06.json' ) );
 
-const sectionSchema = {
-  ...productionSchema.properties.sections.patternProperties['[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'],
-  ...productionSchema.definitions,
-};
-
 const editionSchema = {
   ...productionSchema.definitions.edition,
 };
@@ -43,7 +38,23 @@ export const defaults = ( schema ) => def( schema );
 
 export const createDefaultProduction = () => defaults( productionSchema );
 
-export const createDefaultSection = () => defaults( sectionSchema );
+export const createDefaultSection = ( ) => {
+  // const dataSchema = resourceSchema.definitions.section;
+  const res = defaults( resourceSchema );
+  res.metadata.type = 'section';
+  const data = {
+    ...res.data,
+    contents: {
+      contents: {},
+      notes: {},
+      notesOrder: []
+    }
+  };
+  return {
+    ...res,
+    data
+  };
+};
 
 export const createDefaultResource = ( type = 'webpage' ) => {
   const dataSchema = resourceSchema.definitions[type];

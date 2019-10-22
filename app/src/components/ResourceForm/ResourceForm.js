@@ -67,7 +67,7 @@ import { resourcesSchemas } from '../../peritextConfig.render';
 /**
  * Shared variables
  */
-const resourceTypes = Object.keys( resourcesSchemas );
+const resourceTypes = Object.keys( resourcesSchemas ).filter( ( key ) => key !== 'section' );
 const { maxResourceSize } = config;
 const realMaxFileSize = base64ToBytesLength( maxResourceSize );
 

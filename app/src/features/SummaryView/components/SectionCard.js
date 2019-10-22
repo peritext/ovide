@@ -48,6 +48,7 @@ const MAX_TITLE_LEN = 30;
 
 const SectionCard = ( {
   section,
+  level,
   goTo,
   setSectionLevel,
   sectionIndex,
@@ -90,10 +91,10 @@ const SectionCard = ( {
         onDelete( section.id );
         break;
       case 'higher':
-        setSectionLevel( { sectionId: section.id, level: section.metadata.level - 1 } );
+        setSectionLevel( { resourceId: section.id, level: level - 1 } );
         break;
       case 'lower':
-        setSectionLevel( { sectionId: section.id, level: section.metadata.level + 1 } );
+        setSectionLevel( { resourceId: section.id, level: level + 1 } );
         break;
       case 'edit':
       default:
@@ -190,14 +191,14 @@ const SectionCard = ( {
                     } }
                   chevronsData={ {
                       left: {
-                        tooltip: translate( 'Title level {n}', { n: section.metadata.level } ),
-                        isDisabled: section.metadata.level === 0,
-                        onClick: () => setSectionLevel( { sectionId: section.id, level: section.metadata.level - 1 } )
+                        tooltip: translate( 'Title level {n}', { n: level } ),
+                        isDisabled: level === 0,
+                        onClick: () => setSectionLevel( { sectionId: section.id, level: level - 1 } )
                       },
                       right: {
-                        tooltip: translate( 'Title level {n}', { n: section.metadata.level + 2 } ),
-                        isDisabled: section.metadata.level >= config.maxSectionLevel - 1,
-                        onClick: () => setSectionLevel( { sectionId: section.id, level: section.metadata.level + 1 } )
+                        tooltip: translate( 'Title level {n}', { n: level + 2 } ),
+                        isDisabled: level >= config.maxSectionLevel - 1,
+                        onClick: () => setSectionLevel( { sectionId: section.id, level: level + 1 } )
                       },
                       up: {
                         isDisabled: sectionIndex === 0,

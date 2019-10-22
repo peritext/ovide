@@ -148,32 +148,9 @@ function production( state = PRODUCTION_DEFAULT_STATE, action ) {
       if ( !state.production ) {
         return state;
       }
-      const oldSectionsOrder = [ ...state.production.sectionsOrder ];
       newSectionsOrder = [ ...payload.sectionsOrder ];
-      let resolvedSectionsOrder = [ ...payload.sectionsOrder ];
+      const resolvedSectionsOrder = [ ...payload.sectionsOrder ];
 
-      /*
-       * new order is bigger than older order
-       * (probably because a user deleted a section in the meantime)
-       * --> we filter the new order with only existing sections
-       */
-      if ( newSectionsOrder.length > oldSectionsOrder.length ) {
-          resolvedSectionsOrder = newSectionsOrder.filter(
-            ( newSectionId ) => oldSectionsOrder.indexOf( newSectionId ) > -1
-          );
-
-      /*
-       * new order is smaller than older order
-       * (probably because a user created a section in the meantime)
-       * --> we add created sections to the new sections order
-       */
-      }
-      else if ( newSectionsOrder.length < oldSectionsOrder.length ) {
-        resolvedSectionsOrder = [
-          ...newSectionsOrder,
-          ...oldSectionsOrder.slice( newSectionsOrder.length )
-        ];
-      }
       return {
           ...state,
           production: {

@@ -19,27 +19,28 @@ import SectionCard from './SectionCard';
 import PaginatedList from '../../../components/PaginatedList';
 
 const SortableItem = SortableElement( ( {
-  value: section,
+  value,
   production,
   goToSection,
   onDelete,
   setSectionLevel,
-  reverseSectionLockMap = {},
   isSorting,
   sectionIndex,
   // sectionIndex,
   maxSectionIndex,
   setSectionIndex,
 } ) => {
+    const { resource, level } = value;
     return (
       <Level style={ { marginBottom: 0, width: '100%' } }>
         <Column
-          isSize={ 12 - section.metadata.level }
-          isOffset={ section.metadata.level }
+          isSize={ 12 - level }
+          isOffset={ level }
         >
           <SectionCard
-            section={ section }
+            section={ resource }
             minified={ isSorting }
+            level={ level }
             sectionIndex={ sectionIndex }
             maxSectionIndex={ maxSectionIndex }
             goTo={ goToSection }
@@ -47,7 +48,6 @@ const SortableItem = SortableElement( ( {
             onDelete={ onDelete }
             setSectionIndex={ setSectionIndex }
             setSectionLevel={ setSectionLevel }
-            lockData={ reverseSectionLockMap[section.id] }
           />
         </Column>
       </Level>
@@ -65,15 +65,15 @@ const SortableSectionsList = SortableContainer( ( {
       items={ items }
       defaultColumns={ 1 }
       renderNoItem={ renderNoItem }
-      renderItem={ ( section, index ) => {
+      renderItem={ ( { resource, level }, index ) => {
           return (
             <SortableItem
               { ...props }
-              key={ section.id/*`item-${index}`*/ }
+              key={ resource.id }
               maxSectionIndex={ items.length - 1 }
               sectionIndex={ index }
               index={ index }
-              value={ section }
+              value={ { resource, level } }
             />
           );
         } }
