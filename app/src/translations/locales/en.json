@@ -333,7 +333,7 @@
   "Explanation about rgbImageAssetId": "This image will be used for rendering the item in some usecases for screen editions",
   "Explanation about html": "You can add embed code from external services, or even write custom HTML or SVG code",
   "Explanation html": "Paste here html code to run in order to render the item",
-  "Features.EditionUiWrapper.Contents": "Contents",
+  "Features.EditionUiWrapper.Contents": "Sections",
   "Features.EditionUiWrapper.Editions": "Editions",
   "Features.EditionUiWrapper.Export": "Export",
   "Features.EditionUiWrapper.Home": "Home",

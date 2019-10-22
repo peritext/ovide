@@ -403,7 +403,7 @@
   "Components.UploadModal.Analyzing contents...": "Analyse des contenus ...",
   "Components.UploadModal.Please wait...": "Un instant ...",
   "Components.UploadModal.\"{f}\" is too big": "\"{f}\" est trop volumineux",
-  "Features.EditionUiWrapper.Contents": "Contenus",
+  "Features.EditionUiWrapper.Contents": "Sections",
   "Features.EditionUiWrapper.Editions": "Editions",
   "Features.EditionUiWrapper.Export": "Exporter",
   "Features.EditionUiWrapper.Home": "Accueil",
