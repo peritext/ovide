@@ -294,6 +294,7 @@ class DataForm extends Component {
             />
           );
         }
+        break;
     default:
       if ( resourcesSchemas[resourceType] ) {
         return (
