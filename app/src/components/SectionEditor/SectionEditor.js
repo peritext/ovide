@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 import { debounce } from 'lodash';
 import { v4 as generateId } from 'uuid';
 import ReactTooltip from 'react-tooltip';
-import { ReferencesManager } from 'react-citeproc';
 import {
   EditorState,
   convertToRaw,
@@ -59,9 +58,8 @@ import {
 } from './utils';
 
 import {
-  getCitationModels,
   buildCitations,
-} from './citationUtils';
+} from '../../helpers/citationUtils';
 
 import {
   updateNotesFromSectionEditor,
@@ -387,6 +385,7 @@ class SectionEditor extends Component {
     // wrapped in setTimeout to prevent firefox "DOM Not found" bug
     setTimeout( () => {
       this.props.setEditorFocus( 'main' );
+      this.updateStateFromProps( this.props );
     } );
   }
 
@@ -466,6 +465,7 @@ class SectionEditor extends Component {
 
   componentDidCatch( error, info ) {
     console.error( error, info );/* eslint no-console: 0 */
+    this.updateStateFromProps( this.props );
   }
 
   /**
@@ -1200,6 +1200,73 @@ class SectionEditor extends Component {
     return false;
   }
 
+  getNotePointer = () => NotePointer;
+
+  getAssetComponent = ( asset ) => {
+    if ( asset ) {
+      const { contextualizer: { type } } = asset;
+      return inlineAssetComponents[type];
+    }
+
+    return null;
+  }
+
+  getInlineAssetComponents = () => {
+    return inlineAssetComponents;
+  }
+
+  getAdditionalEntities = () => {
+    return [
+      {
+        strategy: this.findDraftDropPlaceholder,
+        component: ( { children } ) =>
+          (
+            <Tag
+              style={ { pointerEvents: 'none' } }
+              className={ 'is-rounded' }
+              isColor={ 'dark' }
+            >
+              {this.translate( 'loading' )}
+              <span style={ { display: 'none' } }>{children}</span>
+            </Tag>
+          )
+      },
+      {
+        strategy: this.findLink,
+        component: ( { children, url } ) => {
+          return (
+            <span className={ 'native-link' }>
+              <span className={ 'link-content' }>
+                <span>{children}</span>
+                <span className={ 'pin-container' }>
+                  <HelpPin>
+                    {this.translate( 'native link to {u}', { u: url } )}
+                  </HelpPin>
+                </span>
+              </span>
+            </span>
+          );
+        }
+      },
+      {
+        strategy: this.findInternalLink,
+        component: ( { children/*, sectionId*/ } ) => {
+          return (
+            <span className={ 'internal-link' }>
+              <span className={ 'internal-link-content' }>
+                <span
+                  style={ { color: '#197212' } }
+                >{children}
+                </span>
+
+              </span>
+            </span>
+          );
+        }
+      }
+    ];
+  }
+
   /**
    * Renders the component
    * @return {ReactElement} component - the component
@@ -1219,6 +1286,7 @@ class SectionEditor extends Component {
       onEditorChange: handleEditorChange,
       handleEditorPaste,
       ElementLayoutComponent,
+      getAssetComponent,
       // onEditCursoredInternalLink,
     } = this;
     const {
@@ -1248,16 +1316,18 @@ class SectionEditor extends Component {
       clipboard,
       assets = {},
       assetChoiceProps = {},
-      citations,
+      // citations,
       customContext,
       linkPopupData,
       hydrated,
     } = state;
 
-    const {
-        citationItems,
-        citationData
-      } = citations;
+    /*
+     * const {
+     *     citationItems,
+     *     citationData
+     *   } = citations;
+     */
     if ( !production || !activeSection ) {
       return null;
     }
@@ -1297,7 +1367,10 @@ class SectionEditor extends Component {
         const content = editedEditorState.getCurrentContent();
         const selectedBlockKey = selection.getStartKey();
         const selectedBlock = content.getBlockForKey( selectedBlockKey );
-        const entityKey = selectedBlock.getEntityAt( selection.getStartOffset() );
+        let entityKey;
+        if ( selectedBlock ) {
+          entityKey = selectedBlock.getEntityAt( selection.getStartOffset() );
+        }
         if ( entityKey ) {
           const entityData = content.getEntity( entityKey ).getData();
           if ( entityData.asset && entityData.asset.id ) {
@@ -1318,9 +1391,11 @@ class SectionEditor extends Component {
       RealAssetComponent = this.internalLinkButton;
     }
 
-    // define citation style and locales, falling back on defaults if needed
-    const { style, locale } = getCitationModels( production );
-    // additional inline entities to display in the editor
+    /*
+     * define citation style and locales, falling back on defaults if needed
+     * const { style, locale } = getCitationModels( production );
+     * additional inline entities to display in the editor
+     */
     const additionalInlineEntities = [
       {
         strategy: this.findDraftDropPlaceholder,
@@ -1404,11 +1479,11 @@ class SectionEditor extends Component {
       }
       cancelAssetRequest();
       summonAsset( targetedEditorId, id );
-      setEditorFocus( undefined );
+      setTimeout( () => setEditorFocus( undefined ) );
       setTimeout( () => {
         setEditorFocus( targetedEditorId );
         this.updateStateFromProps( this.props );
-        setTimeout( () => this.updateStateFromProps( this.props ) );
+        // setTimeout( () => this.updateStateFromProps( this.props ) );
       }, timers.medium );
     };
     const blockAssetTypes = [ 'image', 'table', 'video', 'embed' ];
@@ -1524,7 +1599,52 @@ class SectionEditor extends Component {
           className={ `editor-wrapper ${shouldHidePlaceholder ? 'hide-placeholder' : ''}` }
           onScroll={ handleScroll }
         >
-          <ReferencesManager
+          <Editor
+            AssetButtonComponent={ RealAssetComponent }
+            AssetChoiceComponent={ ResourceSearchWidget }
+            NotePointerComponent={ NotePointer }
+            editorPlaceholder={ placeholderText }
+            inlineEntities={ additionalInlineEntities }
+            onAssetChange={ handleDataChange }
+            onAssetChoice={ handleAssetChoice }
+            onAssetRequest={ handleAssetRequest }
+            onAssetRequestCancel={ handleAssetRequestCancel }
+            onBlur={ handleBlur }
+            onClick={ handleClick }
+            onDragOver={ handleDragOver }
+            onDrop={ handleDrop }
+            onEditorChange={ handleEditorChange }
+            onNoteAdd={ addNote }
+            onNoteDelete={ deleteNote }
+            onNotePointerMouseClick={ handleNotePointerMouseClick }
+            ref={ bindEditorRef }
+            BibliographyComponent={ null }
+            assets={ assets }
+            customContext={ customContext }
+            handlePastedText={ handleEditorPaste }
+            mainEditorState={ mainEditorState }
+            notes={ notes }
+            notesOrder={ notesOrder }
+
+            {
+                ...{
+                   clipboard,
+                   focusedEditorId,
+                   inlineButtons,
+                   messages,
+                   assetRequestContentId,
+                   assetRequestPosition,
+                   assetChoiceProps,
+                   NoteLayout,
+                   NoteButtonComponent,
+                   ElementLayoutComponent,
+                   inlineAssetComponents,
+                   blockAssetComponents,
+                   getAssetComponent,
+                }
+              }
+          />
+          {/*<ReferencesManager
             style={ style }
             locale={ locale }
             items={ citationItems }
@@ -1575,7 +1695,7 @@ class SectionEditor extends Component {
               }
 
             />
-          </ReferencesManager>
+          </ReferencesManager>*/}
         </div>
         {
           linkPopupData &&
