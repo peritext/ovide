@@ -67,6 +67,8 @@ export const CREATE_CONTEXTUALIZATION = 'CREATE_CONTEXTUALIZATION';
 export const UPDATE_CONTEXTUALIZATION = 'UPDATE_CONTEXTUALIZATION';
 export const DELETE_CONTEXTUALIZATION = 'DELETE_CONTEXTUALIZATION';
 
+export const CREATE_PRODUCTION_OBJECTS = 'CREATE_PRODUCTION_OBJECTS';
+
 export const CREATE_EDITION = 'CREATE_EDITION';
 export const UPDATE_EDITION = 'UPDATE_EDITION';
 export const DELETE_EDITION = 'DELETE_EDITION';
@@ -473,6 +475,30 @@ function production( state = PRODUCTION_DEFAULT_STATE, action ) {
     /**
      * CONTEXTUALIZATION RELATED
      */
+    case CREATE_PRODUCTION_OBJECTS:
+      if ( !state.production ) {
+        return state;
+      }
+      const {
+        contextualizations: newContextualizations,
+        contextualizers: newContextualizers,
+        lastUpdateAt,
+      } = payload;
+      return {
+        ...state,
+        production: {
+          ...state.production,
+          contextualizations: {
+            ...state.production.contextualizations,
+            ...newContextualizations,
+          },
+          contextualizers: {
+            ...state.production.contextualizers,
+            ...newContextualizers,
+          },
+          lastUpdateAt,
+        }
+      };
     // contextualizations CUD
     case UPDATE_CONTEXTUALIZATION:
     case CREATE_CONTEXTUALIZATION:
@@ -716,6 +742,17 @@ export const updateProduction = ( TYPE, payload, callback ) => {
         }
       };
       break;
+      case CREATE_PRODUCTION_OBJECTS:
+        payloadSchema = {
+          ...DEFAULT_PAYLOAD_SCHEMA,
+          properties: {
+            ...DEFAULT_PAYLOAD_SCHEMA.properties,
+            contextualizations: productionSchema.properties.contextualizations,
+            contextualizers: productionSchema.properties.contextualizers,
+          },
+          definitions: productionSchema.definitions,
+        };
+        break;
     case CREATE_CONTEXTUALIZATION:
     case UPDATE_CONTEXTUALIZATION:
       payloadSchema = {
@@ -968,6 +1005,8 @@ export const deleteContextualizer = ( payload, callback ) => updateProduction( D
 export const createContextualization = ( payload, callback ) => updateProduction( CREATE_CONTEXTUALIZATION, payload, callback );
 export const updateContextualization = ( payload, callback ) => updateProduction( UPDATE_CONTEXTUALIZATION, payload, callback );
 export const deleteContextualization = ( payload, callback ) => updateProduction( DELETE_CONTEXTUALIZATION, payload, callback );
+
+export const createProductionObjects = ( payload, callback ) => updateProduction( CREATE_PRODUCTION_OBJECTS, payload, callback );
 
 export const createEdition = ( payload, callback ) => updateProduction( CREATE_EDITION, payload, callback );
 export const updateEdition = ( payload, callback ) => updateProduction( UPDATE_EDITION, payload, callback );

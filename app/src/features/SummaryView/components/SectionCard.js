@@ -69,7 +69,7 @@ const SectionCard = ( {
 
   const sectionTitle = (
     <span
-      data-for={ 'tooltip' }
+      data-for={ 'card-tooltip' }
       data-place={ 'right' }
       data-html
       data-tip={ `<div class="content"><h5 style="color: white">${section.metadata.title}</h5><p>${computeSectionFirstWords( section )}</p></div>` }
@@ -139,7 +139,7 @@ const SectionCard = ( {
                     <Link
                       to={ `/productions/${production.id}/sections/${section.id}` }
                       data-tip={ section.metadata.title.length > MAX_TITLE_LEN ? section.metadata.title : undefined }
-                      data-for={ 'tooltip' }
+                      data-for={ 'card-tooltip' }
                       data-place={ 'bottom' }
                     >
                       <span>
@@ -162,7 +162,7 @@ const SectionCard = ( {
                     onClick={ handleEdit }
                     data-effect={ 'solid' }
                     data-place={ 'left' }
-                    data-for={ 'tooltip' }
+                    data-for={ 'card-tooltip' }
                     data-tip={ translate( 'edit section' ) }
                   >
                     <CenteredIcon src={ icons.edit.black.svg } />
@@ -171,7 +171,7 @@ const SectionCard = ( {
                     onClick={ handleDelete }
                     data-effect={ 'solid' }
                     data-place={ 'left' }
-                    data-for={ 'tooltip' }
+                    data-for={ 'card-tooltip' }
                     data-tip={ translate( 'delete this section' ) }
                   >
                     <CenteredIcon src={ icons.remove.black.svg } />

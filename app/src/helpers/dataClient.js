@@ -191,6 +191,9 @@ export const requestAssetUpdate = ( productionId, asset ) => {
 
 export const requestAssetDeletion = ( productionId, asset ) => {
   // console.log( 'asset deletion before update queue' );
+  if ( !asset ) {
+    return Promise.resolve();
+  }
   return addToUpdateQueue( () => {
     if ( inElectron ) {
       return requestToMain( 'delete-asset', { productionId, asset } );

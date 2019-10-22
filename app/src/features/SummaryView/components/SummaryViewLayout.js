@@ -366,6 +366,7 @@ const SummaryViewLayout = ( {
           onDeleteConfirm={ handleDeleteSectionConfirm }
         />
       </StretchedLayoutContainer>
+      <ReactTooltip id={ 'card-tooltip' } />
     </Container>
     );
 };

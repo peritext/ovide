@@ -148,6 +148,22 @@ module.exports = function( state = STORIES_DEFAULT_STATE, action ) {
    * 2.Handling more custom actions
    */
   switch ( action.type ) {
+    case 'CREATE_PRODUCTION_OBJECTS':
+      return Object.assign(
+        {},
+        state,
+        {
+          [payload.productionId]: Object.assign(
+            {},
+            state[payload.productionId],
+            {
+              contextualizations: Object.assign( {}, state[payload.productionId].contextualizations, payload.contextualizations ),
+              contextualizers: Object.assign( {}, state[payload.productionId].contextualizers, payload.contextualizers ),
+              lastUpdateAt: payload.lastUpdateAt,
+            }
+          ),
+        }
+      );
     case 'SET_SECTION_LEVEL':
       return Object.assign(
         {},

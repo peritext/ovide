@@ -63,6 +63,7 @@ const MainSectionColumn = ( {
   createContextualizer,
   createResource,
   uploadResource,
+  createProductionObjects,
 
   setEditorPastingStatus,
   editorPastingStatus,
@@ -353,6 +354,8 @@ const MainSectionColumn = ( {
                       ...{
                         internalLinkModalFocusData,
                         setInternalLinkModalFocusData,
+                        createProductionObjects,
+                        createAsset,
                       }
                     }
                   />

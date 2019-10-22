@@ -12,6 +12,7 @@ const handlePaste = function( html ) {
       // state,
       editor,
       // onEditorChange
+      updateSectionRawContent,
     } = this;
     // ensuring this is happening while editing the content
     if ( !props.editorFocus ) {
@@ -26,12 +27,14 @@ const handlePaste = function( html ) {
       createContextualization,
       createContextualizer,
       createResource,
+      createAsset,
       updateDraftEditorsStates,
       updateDraftEditorState,
       updateSection,
       userId,
       setEditorPastingStatus,
       setEditorFocus,
+      createProductionObjects,
     } = props;
 
     const {
@@ -78,6 +81,8 @@ const handlePaste = function( html ) {
         updateDraftEditorState,
 
         setEditorPastingStatus,
+        createProductionObjects,
+        createAsset,
 
         userId,
         activeEditorStateId,
@@ -100,12 +105,16 @@ const handlePaste = function( html ) {
         updateSection,
         createContextualization,
         createContextualizer,
-        userId,
+        createResource,
         updateDraftEditorsStates,
         activeSection,
         productionId,
         editorFocus,
         setEditorPastingStatus,
+        createProductionObjects,
+        setEditorFocus,
+        updateSectionRawContent,
+        createAsset,
 
         production,
         editor,

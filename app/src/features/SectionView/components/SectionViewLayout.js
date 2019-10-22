@@ -136,6 +136,7 @@ const SectionViewLayout = ( {
     setProductionIsSaved,
     setErrorMessage,
     setSelectedContextualizationId,
+    createProductionObjects,
     setEditedResourceId,
 
     createAsset,
@@ -497,7 +498,6 @@ const SectionViewLayout = ( {
   const handleAbortGlossaryCreation = () => setGlossaryModalFocusData( undefined );
    const handleAbortInternalLinkCreation = () => setInternalLinkModalFocusData( undefined );
   const handleCloseShortcuts = () => setShortcutsHelpVisible( false );
-
   return (
     <StretchedLayoutContainer
       isAbsolute
@@ -602,6 +602,7 @@ const SectionViewLayout = ( {
                 updateDraftEditorState,
                 updateResource,
                 uploadStatus,
+                createProductionObjects,
 
                 updateContextualization,
                 editedContextualizationId,
