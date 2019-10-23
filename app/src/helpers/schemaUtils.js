@@ -96,18 +96,30 @@ export const convertQuinoaStoryToProduction = ( story ) => {
     authors: convertQuinoaAuthors( story.metadata.authors )
   };
   const sections = Object.keys( story.sections ).reduce( ( res, sectionId ) => {
-    const section = story.resources[sectionId];
+    const section = story.sections[sectionId];
     return {
       ...res,
       [sectionId]: {
-        ...section,
+        id: section.id,
+        // ...section,
         metadata: {
           ...section.metadata,
           authors: section.metadata.authors.map( convertQuinoaStoryToProduction )
+        },
+        data: {
+          contents: {
+            contents: section.contents,
+            notes: section.notes,
+            notesOrder: section.notesOrder
+          }
         }
       }
     };
   }, {} );
+  const sectionsOrder = story.sectionsOrder.map(sectionId => ({
+    resourceId: sectionId,
+    level: story.sections[sectionId].metadata.level
+  }));
   const assets = {};
   const resources = Object.keys( story.resources ).reduce( ( res, resourceId ) => {
     const resource = story.resources[resourceId];
@@ -121,10 +133,15 @@ export const convertQuinoaStoryToProduction = ( story ) => {
         mediaUrl: resource.data.url
       };
     }
- else if ( newResource.metadata.type === 'glossary' ) {
+    else if ( newResource.metadata.type === 'glossary' ) {
       newResource.data = {
         ...resource.data,
         entryType: 'notion'
+      };
+    }
+    else if ( newResource.metadata.type === 'bib' ) {
+      newResource.data = {
+        citations: resource.data,
       };
     }
     else if ( newResource.metadata.type === 'image' ) {
@@ -169,19 +186,39 @@ export const convertQuinoaStoryToProduction = ( story ) => {
         dataAssetId: assetId
       };
     }
+    newResource.data.contents = {
+      contents: {},
+      notes: {},
+      notesOrder: []
+    }
     return {
       ...res,
       [resourceId]: newResource
     };
-  }, {} );
+  }, {
+    ...sections
+  } );
+  const contextualizations = Object.keys(story.contextualizations).reduce((res, contextualizationId) => {
+    const contextualization = story.contextualizations[contextualizationId];
+    return {
+      ...res,
+      [contextualizationId]: {
+        ...contextualization,
+        sourceId: contextualization.resourceId,
+        targetId: contextualization.sectionId,
+        resourceId: undefined,
+        sectionId: undefined
+      }
+    }
+  }, {})
   return {
     ...production,
     id: genId(),
     metadata: productionMetadata,
-    sectionsOrder: story.sectionsOrder,
+    sectionsOrder,
     sections,
     resources,
-    contextualizations: story.contextualizations,
+    contextualizations,
     contextualizers: story.contextualizers,
     assets,
   };

@@ -168,10 +168,10 @@ class SectionViewContainer extends Component {
           }
         } ), {} )
       };
-      this.props.actions.updateSection( {
-        sectionId: prevSectionId,
+      this.props.actions.updateResource( {
+        resourceId: prevSectionId,
         productionId: prevProductionId,
-        section: newSection
+        resource: newSection
       } );
       this.props.actions.resetDraftEditorsStates();
       this.props.actions.setEmbedResourceAfterCreation( false );
@@ -537,10 +537,10 @@ class SectionViewContainer extends Component {
       console.warn( 'could not update editor %s', editorStateId );/* eslint no-console: 0 */
     }
 
-     this.props.actions.updateSection( {
+     this.props.actions.updateResource( {
       productionId,
-      sectionId,
-      section: newSection,
+      resourceId: sectionId,
+      resource: newSection,
     } );
   }
 

@@ -4,6 +4,8 @@
   "Components.AssetPreview.Source": "Source",
   "Components.AssetPreview.Unnamed resource": "Unnamed item",
   "Components.AuthorsManager.": "",
+  "Features.SummaryView.Sections": "Sections",
+
   "Components.AuthorsManager.Add an author": "Add an author",
   "Components.AuthorsManager.Authors": "Authors",
   "Components.AuthorsManager.Explanation about the production authors": "Authors can include writers, editors, designers, and collaborators",
