@@ -100,8 +100,6 @@ const SectionViewLayout = ( {
     setPromptedToDeleteResourceId,
     setUploadStatus,
 
-    updateSection,
-
     updateContextualization,
 
     updateSectionsOrder,
@@ -212,7 +210,7 @@ const SectionViewLayout = ( {
   let editedContextualization;
   if ( editedContextualizationId && production.contextualizations[editedContextualizationId] ) {
     const candidate = production.contextualizations[editedContextualizationId];
-    if ( production.resources[candidate.resourceId] ) {
+    if ( production.resources[candidate.sourceId] ) {
       editedContextualization = candidate;
     }
   }
@@ -321,11 +319,11 @@ const SectionViewLayout = ( {
     };
     const relatedContextualizations = Object.keys( production.contextualizations ).map( ( c ) => production.contextualizations[c] )
         .filter( ( contextualization ) => {
-          return contextualization.resourceId === promptedToDeleteResourceId;
+          return contextualization.sourceId === promptedToDeleteResourceId;
         } );
 
     const relatedContextualizationsIds = relatedContextualizations.map( ( c ) => c.id );
-    const relatedContextualizationsSectionIds = relatedContextualizations.map( ( c ) => c.sectionId );
+    const relatedContextualizationsSectionIds = relatedContextualizations.map( ( c ) => c.targetId );
 
     const changedContentStates = {};
     if ( relatedContextualizationsIds.length ) {

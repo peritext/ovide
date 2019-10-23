@@ -90,7 +90,6 @@ function production( state = PRODUCTION_DEFAULT_STATE, action ) {
   let contextualizers;
   let contextualizersToDeleteIds;
   let contextualizationsToDeleteIds;
-  let newSectionsOrder;
   let editions;
   switch ( action.type ) {
     case `${ACTIVATE_PRODUCTION}_SUCCESS`:
@@ -140,7 +139,6 @@ function production( state = PRODUCTION_DEFAULT_STATE, action ) {
       if ( !state.production ) {
         return state;
       }
-      newSectionsOrder = [ ...payload.sectionsOrder ];
       const resolvedSectionsOrder = [ ...payload.sectionsOrder ];
 
       return {
@@ -216,7 +214,7 @@ function production( state = PRODUCTION_DEFAULT_STATE, action ) {
       // spot all objects to delete
       Object.keys( contextualizations )
         .forEach( ( contextualizationId ) => {
-          if ( contextualizations[contextualizationId].resourceId === payload.resourceId ) {
+          if ( contextualizations[contextualizationId].sourceId === payload.resourceId ) {
             contextualizationsToDeleteIds.push( contextualizationId );
             contextualizersToDeleteIds.push( contextualizations[contextualizationId].contextualizerId );
           }
@@ -505,7 +503,7 @@ export const updateProduction = ( TYPE, payload, callback ) => {
   updateEditionHistoryMap( payload.productionId );
   // TODO: refactor validation schema more modular
   let payloadSchema = DEFAULT_PAYLOAD_SCHEMA;
-  const sectionSchema = productionSchema.properties.sections.patternProperties['[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'];
+  // const sectionSchema = productionSchema.properties.sections.patternProperties['[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'];
   switch ( TYPE ) {
     case UPDATE_PRODUCTION_METADATA:
       payloadSchema = {

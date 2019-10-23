@@ -418,7 +418,7 @@ export const processCopy = ( {
       if ( data.asset && data.asset.id ) {
         const contextualization = production.contextualizations[data.asset.id];
         const contextualizer = production.contextualizers[contextualization.contextualizerId];
-        const resource = production.resources[contextualization.resourceId];
+        const resource = production.resources[contextualization.sourceId];
         switch ( contextualizer.type ) {
           case 'webpage':
             return {

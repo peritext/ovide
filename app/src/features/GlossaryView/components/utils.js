@@ -25,7 +25,7 @@ export const computeAssets = ( props ) => {
     .reduce( ( ass, id ) => {
       const contextualization = contextualizations[id];
       const contextualizer = contextualizers[contextualization.contextualizerId];
-      const resource = resources[contextualization.resourceId];
+      const resource = resources[contextualization.sourceId];
       if ( contextualizer && resource ) {
         return {
           ...ass,
@@ -64,7 +64,6 @@ export const getCitationModels = ( production ) => {
         resources,
         contextualizers,
         sectionsOrder,
-        sections,
       },
     } = props;
 
@@ -72,8 +71,8 @@ export const getCitationModels = ( production ) => {
        * Citations preparation
        */
       // isolate all contextualizations quoted inside editors
-      const quotedEntities = sectionsOrder.reduce( ( finalResult, sectionId ) => {
-          const activeSection = sections[sectionId];
+      const quotedEntities = sectionsOrder.reduce( ( finalResult, { resourceId } ) => {
+          const activeSection = resources[resourceId];
           return activeSection.data.contents.notesOrder.reduce( ( contents, noteId ) => [
             ...contents,
             activeSection.data.contents.notes[noteId].contents,
@@ -124,7 +123,7 @@ export const getCitationModels = ( production ) => {
           const contextualization = contextualizations[key1];
 
           const contextualizer = contextualizers[contextualization.contextualizerId];
-          const resource = resources[contextualization.resourceId];
+          const resource = resources[contextualization.sourceId];
           return {
             citationID: key1,
             citationItems: resourceToCslJSON( resource ).map( ( ref ) => ( {
@@ -211,7 +210,7 @@ export const findProspectionMatches = ( {
                                 ) {
                                     const contextualizationId = entity.data.asset.id;
                                     const contextualization = contextualizations[contextualizationId];
-                                    if ( contextualization && resources[contextualization.resourceId] ) {
+                                    if ( contextualization && resources[contextualization.sourceId] ) {
 
                                         /*
                                          * console.log('kill',

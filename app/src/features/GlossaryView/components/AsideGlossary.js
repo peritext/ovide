@@ -134,13 +134,13 @@ class AsideGlossary extends Component {
       const { production } = this.props;
 
         const { contextualizations, resources } = production;
-        const matches = production.sectionsOrder.reduce( ( result, sectionId ) => {
-            const section = production.resources[sectionId];
+        const matches = production.sectionsOrder.reduce( ( result, { resourceId } ) => {
+            const section = production.resources[resourceId];
             return [
                 ...result,
                 ...findProspectionMatches( {
                     contents: section.data.contents.contents,
-                    sectionId,
+                    sectionId: resourceId,
                     contentId: 'main',
                     value,
                     contextualizations,
@@ -149,7 +149,7 @@ class AsideGlossary extends Component {
                 ...section.data.contents.notesOrder.reduce( ( res, noteId ) =>
                     [ ...res, ...findProspectionMatches( {
                         contents: section.data.contents.notes[noteId].contents,
-                        sectionId,
+                        sectionId: resourceId,
                         noteId,
                         value,
                         contextualizations,
@@ -211,14 +211,14 @@ class AsideGlossary extends Component {
         const translate = translateNameSpacer( t, 'Features.GlossaryView' );
 
         const relatedContextualizationsIds = Object.keys( production.contextualizations )
-        .filter( ( contextualizationId ) => production.contextualizations[contextualizationId].resourceId === resourceId );
+        .filter( ( contextualizationId ) => production.contextualizations[contextualizationId].sourceId === resourceId );
 
         const searchStringLower = searchString.toLowerCase();
     const mentions = relatedContextualizationsIds.map( ( contextualizationId ) => {
         const contextualization = production.contextualizations[contextualizationId];
-        const sectionId = contextualization.sectionId;
+        const sectionId = contextualization.targetId;
         const section = production.resources[sectionId];
-        const editors = [ 'main', ...production.resources[sectionId].notesOrder ];
+        const editors = [ 'main', ...production.resources[sectionId].data.contents.notesOrder ];
         let mention = {
           sectionId,
           contextualizationId,

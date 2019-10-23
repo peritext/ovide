@@ -170,8 +170,8 @@ class EditionViewContainer extends Component {
           [
             ...total,
             ...Object.keys( contextualizations )
-            .filter( ( contId ) => contextualizations[contId].sectionId === sectionId )
-            .map( ( contId ) => resources[contextualizations[contId].resourceId] )
+            .filter( ( contId ) => contextualizations[contId].targetId === sectionId )
+            .map( ( contId ) => resources[contextualizations[contId].sourceId] )
           ]
         , [] )
       );

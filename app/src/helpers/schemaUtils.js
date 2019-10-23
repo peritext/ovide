@@ -62,7 +62,14 @@ export const createDefaultResource = ( type = 'webpage' ) => {
   const data = defaults( dataSchema );
   return {
     ...res,
-    data
+    data: {
+      ...data,
+      contents: {
+        contents: {},
+        notes: {},
+        notesOrder: []
+      }
+    }
   };
 };
 

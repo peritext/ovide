@@ -66,9 +66,9 @@ export default (
   };
   const contextualization = {
     id: contextualizationId,
-    resourceId,
     contextualizerId,
-    sectionId: activeSectionId,
+    sourceId: resourceId,
+    targetId: activeSectionId,
     type: 'webpage',
   };
 

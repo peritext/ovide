@@ -160,7 +160,7 @@ class ResourceCard extends Component {
         };
         break;
     }
-    const url = resource.data.url || Array.isArray( resource.data ) && resource.data[0] && resource.data[0].URL;
+    const url = resource.data.url || Array.isArray( resource.data.citations ) && resource.data.citations[0] && resource.data.citations[0].URL;
 
     /**
      * Callbacks handlers

@@ -170,6 +170,9 @@ class ResourceSearchWidget extends Component {
      * Computed variables
      */
     const allowedOptions = options.filter( ( option ) => {
+      if ( option.metadata.type === 'section' ) {
+        return false;
+      }
       if ( this.props.contentId !== 'main' ) {
         return blockAssetTypes.indexOf( option.metadata.type ) === -1;
       }

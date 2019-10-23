@@ -28,7 +28,7 @@ export const addTextAtCurrentSelection = ( text, contentId, props ) => {
       sectionId,
       editorStates,
       updateDraftEditorState,
-      updateSection,
+      updateResource,
     } = props;
     const editorState = contentId === 'main' ? editorStates[sectionId] : editorStates[contentId];
     const editorStateId = contentId === 'main' ? sectionId : contentId;
@@ -47,22 +47,34 @@ export const addTextAtCurrentSelection = ( text, contentId, props ) => {
     if ( contentId === 'main' ) {
       newSection = {
         ...activeSection,
-        contents: convertToRaw( newEditorState.getCurrentContent() )
-      };
-    }
-    else {
-      newSection = {
-        ...activeSection,
-        notes: {
-          ...activeSection.data.contents.notes,
-          [contentId]: {
-            ...activeSection.data.contents.notes[contentId],
+        data: {
+          ...activeSection.data,
+          contents: {
+            ...activeSection.data.contents,
             contents: convertToRaw( newEditorState.getCurrentContent() )
           }
         }
       };
     }
-    updateSection( activeProductionId, sectionId, newSection );
+    else {
+      newSection = {
+        ...activeSection,
+        data: {
+          ...activeSection.data,
+          contents: {
+            ...activeSection.data.contents,
+            notes: {
+              ...activeSection.data.contents.notes,
+              [contentId]: {
+                ...activeSection.data.contents.notes[contentId],
+                contents: convertToRaw( newEditorState.getCurrentContent() )
+              }
+            }
+          }
+        }
+      };
+    }
+    updateResource( { productionId: activeProductionId, resourceId: sectionId, resource: newSection } );
   };
 
 /**
@@ -81,7 +93,7 @@ export const computeAssets = ( props ) => {
   .reduce( ( ass, id ) => {
     const contextualization = contextualizations[id];
     const contextualizer = contextualizers[contextualization.contextualizerId];
-    const resource = resources[contextualization.resourceId];
+    const resource = resources[contextualization.sourceId];
     if ( contextualizer && resource ) {
       return {
         ...ass,

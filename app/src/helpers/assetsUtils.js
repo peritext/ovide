@@ -503,7 +503,7 @@ export const summonAsset = ( contentId, resourceId, props, config ) => {
       createContextualizer,
       createContextualization,
       updateDraftEditorState,
-      updateSection,
+      updateResource,
       setEditorFocus,
     } = actions;
     const { contextualizers } = config;
@@ -589,7 +589,6 @@ export const summonAsset = ( contentId, resourceId, props, config ) => {
      * for different resources (e.g. comparating datasets)
      * and we can handle multi-modality in a smarter way.
      */
-
     // todo : consume model to do that
     const contextualizerId = genId();
     const contextualizer = {
@@ -601,9 +600,9 @@ export const summonAsset = ( contentId, resourceId, props, config ) => {
     const contextualizationId = genId();
     const contextualization = {
       id: contextualizationId,
-      resourceId,
+      sourceId: resourceId,
       contextualizerId,
-      sectionId
+      targetId: sectionId
     };
     // console.log( 'future contextualization', contextualization );
 
@@ -671,17 +670,29 @@ export const summonAsset = ( contentId, resourceId, props, config ) => {
     if ( contentId === 'main' ) {
       newSection = {
         ...activeSection,
-        contents: convertToRaw( newEditorState.getCurrentContent() )
+        data: {
+          ...activeSection.data,
+          contents: {
+            ...activeSection.data.contents,
+            contents: convertToRaw( newEditorState.getCurrentContent() )
+          }
+        }
       };
     }
     else {
       newSection = {
         ...activeSection,
-        notes: {
-          ...activeSection.data.contents.notes,
-          [contentId]: {
-            ...activeSection.data.contents.notes[contentId],
-            contents: convertToRaw( newEditorState.getCurrentContent() )
+        data: {
+          ...activeSection.data,
+          contents: {
+            ...activeSection.data.contents,
+            notes: {
+              ...activeSection.data.contents.notes,
+              [contentId]: {
+                ...activeSection.data.contents.notes[contentId],
+                contents: convertToRaw( newEditorState.getCurrentContent() )
+              }
+            }
           }
         }
       };
@@ -708,8 +719,9 @@ export const summonAsset = ( contentId, resourceId, props, config ) => {
     )
     .then( () =>
       new Promise( ( resolve, reject ) => {
+
         // update immutable editor state
-        updateSection( { productionId, sectionId, section: newSection, userId }, ( err ) => {
+        updateResource( { productionId, resourceId: sectionId, resource: newSection, userId }, ( err ) => {
           if ( err ) {
             return reject( err );
           }
@@ -914,7 +926,7 @@ export const deleteUncitedContext = ( sectionId, props ) => {
   const uncitedContextualizations = Object.keys( editedProduction.contextualizations )
                                         .map( ( id ) => editedProduction.contextualizations[id] )
                                         .filter( ( contextualization ) => {
-                                          return contextualization.sectionId === sectionId && citedContextualizationIds.indexOf( contextualization.id ) === -1;
+                                          return contextualization.targetId === sectionId && citedContextualizationIds.indexOf( contextualization.id ) === -1;
                                         } );
   uncitedContextualizations.forEach( ( contextualization ) => {
     const { contextualizerId, id: contextualizationId } = contextualization;

@@ -113,7 +113,7 @@ export const loadAssetsForEdition = ( {
        * get related assets ids
        * @todo get section-level assets when summary will be customizable in order to fetch only used assets
        */
-      const relatedResources = uniq( contextualizations.map( ( obj ) => obj.contextualization.resourceId ) )
+      const relatedResources = uniq( contextualizations.map( ( obj ) => obj.contextualization.sourceId ) )
         .map( ( resourceId ) => resources[resourceId] );
       const relatedAssetsIds = uniq(
         flatten(

@@ -143,9 +143,6 @@ class LibraryViewLayout extends Component {
     const {
       resources = {},
       id: productionId,
-      metadata: {
-        coverImage = {}
-      },
       assets
     } = production;
 
@@ -157,7 +154,6 @@ class LibraryViewLayout extends Component {
     /**
      * Computed variables
      */
-    const coverImageId = coverImage.resourceId;
 
     const activeFilters = Object.keys( filterValues ).filter( ( key ) => filterValues[key] );
     const statusFilterValues = [
@@ -180,7 +176,7 @@ class LibraryViewLayout extends Component {
     const resourcesNumberOfMentionsMap = {};
     const citedResources = uniq( Object.keys( production.contextualizations )
               .map( ( contextualizationId ) => {
-                const thisResourceId = production.contextualizations[contextualizationId].resourceId;
+                const thisResourceId = production.contextualizations[contextualizationId].sourceId;
                 resourcesNumberOfMentionsMap[thisResourceId] = resourcesNumberOfMentionsMap[thisResourceId] ?
                   resourcesNumberOfMentionsMap[thisResourceId] + 1 : 1;
                 return thisResourceId;
@@ -228,7 +224,7 @@ class LibraryViewLayout extends Component {
     if ( actualResourcesPromptedToDelete.length ) {
       endangeredContextualizationsLength = actualResourcesPromptedToDelete.reduce( ( sum, resourceId ) => {
         return sum + Object.keys( production.contextualizations )
-                .filter( ( contextualizationId ) => production.contextualizations[contextualizationId].resourceId === resourceId )
+                .filter( ( contextualizationId ) => production.contextualizations[contextualizationId].sourceId === resourceId )
                 .length;
       }, 0 );
     }
@@ -256,15 +252,15 @@ class LibraryViewLayout extends Component {
       };
       // deleting entities in content states
       const relatedContextualizations = Object.keys( production.contextualizations ).map( ( c ) => production.contextualizations[c] )
-        .filter( ( contextualization ) => contextualization.resourceId === realResourceId );
+        .filter( ( contextualization ) => contextualization.sourceId === realResourceId );
 
       const relatedContextualizationsIds = relatedContextualizations.map( ( c ) => c.id );
-      const relatedContextualizationsSectionIds = uniq( relatedContextualizations.map( ( c ) => c.sectionId ) );
+      const relatedContextualizationsSectionIds = uniq( relatedContextualizations.map( ( c ) => c.targetId ) );
 
       if ( relatedContextualizationsIds.length ) {
         const changedSections = relatedContextualizationsSectionIds.reduce( ( tempSections, sectionId ) => {
           const section = tempSections[sectionId] || production.resources[sectionId];
-          const sectionRelatedContextualizations = relatedContextualizations.filter( ( c ) => c.sectionId === sectionId );
+          const sectionRelatedContextualizations = relatedContextualizations.filter( ( c ) => c.targetId === sectionId );
           let sectionChanged;
           const newSection = {
             ...section,
@@ -339,16 +335,16 @@ class LibraryViewLayout extends Component {
         // deleting entities in content states
         const relatedContextualizations = Object.keys( production.contextualizations ).map( ( c ) => production.contextualizations[c] )
           .filter( ( contextualization ) => {
-            return contextualization.resourceId === resourceId;
+            return contextualization.sourceId === resourceId;
           } );
 
         const relatedContextualizationsIds = relatedContextualizations.map( ( c ) => c.id );
-        const relatedContextualizationsSectionIds = uniq( relatedContextualizations.map( ( c ) => c.sectionId ) );
+        const relatedContextualizationsSectionIds = uniq( relatedContextualizations.map( ( c ) => c.targetId ) );
 
         if ( relatedContextualizationsIds.length ) {
           const changedSections = relatedContextualizationsSectionIds.reduce( ( tempSections, sectionId ) => {
             const section = tempSections[sectionId] || production.resources[sectionId];
-            const sectionRelatedContextualizations = relatedContextualizations.filter( ( c ) => c.sectionId === sectionId );
+            const sectionRelatedContextualizations = relatedContextualizations.filter( ( c ) => c.targetId === sectionId );
             let sectionChanged;
             const newSection = {
               ...section,
@@ -553,11 +549,12 @@ class LibraryViewLayout extends Component {
       case 'new':
         const handleSubmit = ( resource, newAssets ) => {
           const resourceId = genId();
+
           let title;
           if ( resource.metadata.type === 'bib' ) {
-            title = resource.data && resource.data.length && resource.data[0].title;
+            title = resource.data && resource.data.citations && resource.data.citations.length && resource.data.citations[0].title;
           }
- else {
+          else {
             title = ( !resource.metadata.title.length && Object.keys( newAssets ).length ) ?
                   newAssets[Object.keys( newAssets )[0]].filename
                   :
@@ -581,6 +578,8 @@ class LibraryViewLayout extends Component {
               errors: []
             } );
             setTimeout( () => {
+              console.log( 'bib', resource );
+
               createBibData( resource, this.props )
                 .then( () => {
                   setUploadStatus( undefined );
@@ -693,7 +692,6 @@ class LibraryViewLayout extends Component {
               onClick={ handleClick }
               onEdit={ handleEdit }
               onDelete={ handleDelete }
-              coverImageId={ coverImageId }
               numberOfMentions={ resourcesNumberOfMentionsMap[resource.id] }
               resource={ resource }
               assets={ relatedAssets }

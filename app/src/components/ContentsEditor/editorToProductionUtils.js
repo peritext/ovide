@@ -70,7 +70,7 @@ export const updateContextualizationsFromEditor = ( props ) => {
     // regroup all eligible contextualizations
     const sectionContextualizations = Object.keys( production.contextualizations )
       .filter( ( id ) => {
-        return production.contextualizations[id].sectionId === activeSectionId;
+        return production.contextualizations[id].targetId === activeSectionId;
       } )
       .reduce( ( final, id ) => ( {
         ...final,

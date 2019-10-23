@@ -102,7 +102,7 @@ export default class CustomSummaryEditor extends Component {
 
     const { sectionsOrder = [], resources = {} } = production;
 
-    const existingSummary = sectionsOrder.map( ( {resourceId, level} ) => {
+    const existingSummary = sectionsOrder.map( ( { resourceId, level } ) => {
       if ( resources[resourceId] ) {
         const thatSection = resources[resourceId];
         return {
@@ -221,7 +221,7 @@ export default class CustomSummaryEditor extends Component {
                       >
                         {
                           actionableSummary.map( ( section, index ) => {
-                            const onDelete = () => handleDelete(section.id)
+                            const onDelete = () => handleDelete( section.id );
                             return (
                               <Level key={ section.id }>
                                 <Column
@@ -230,7 +230,7 @@ export default class CustomSummaryEditor extends Component {
                                 >
                                   <SectionMiniCard
                                     section={ section }
-                                    level={section.metadata.level}
+                                    level={ section.metadata.level }
                                     sectionIndex={ index }
                                     setSectionIndex={ handleSetSectionIndex }
                                     maxSectionIndex={ summary.length - 1 }

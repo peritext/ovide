@@ -99,6 +99,7 @@ const retrieveCopiedAssets = () => {
   }
   catch ( err ) {
     console.error( 'could not retreive copied resources, reason: ', err );/* eslint no-console: 0 */
+    console.error( 'local storage initial item: ', localStorage.getItem( 'ovide/copied-assets' ) );
   }
   return copiedResources;
 };
@@ -148,8 +149,8 @@ export const filterInvalidContextualizations = ( {
   const filteredContextualizations = contextualizationsList.filter( ( contextualization ) => {
     let isValid = true;
     // resource does not exist anymore -> try to fetch it from copiedResources (retrieved from local storage previously)
-    if ( !productionResources[contextualization.resourceId] ) {
-      const savedResource = ( copiedResources || [] ).find( ( resource ) => resource.id === contextualization.resourceId );
+    if ( !productionResources[contextualization.sourceId] ) {
+      const savedResource = ( copiedResources || [] ).find( ( resource ) => resource.id === contextualization.sourceId );
       if ( savedResource ) {
         const relatedAssetsIds = getRelatedAssetsIds( savedResource );
         relatedAssetsIds.some( ( assetId ) => {
@@ -638,7 +639,7 @@ export const computePastedData = ( {
           ...thatContextualization,
           // use new contextualizer id
           contextualizerId: contextualizersIdTransformationMap[thatContextualization.contextualizerId],
-          sectionId: activeSection.id,
+          targetId: activeSection.id,
           id: contextualizationId
         };
     } );
@@ -720,7 +721,7 @@ export const computePastedData = ( {
   if ( unusedContextualizationsIds.length ) {
     resourcesToCreate = resourcesToCreate.filter( ( resource ) => {
       const resourceId = resource.id;
-      const stillHasContextualizations = newContextualizations.find( ( thatContextualization ) => thatContextualization.resourceId === resourceId );
+      const stillHasContextualizations = newContextualizations.find( ( thatContextualization ) => thatContextualization.sourceId === resourceId );
       if ( stillHasContextualizations ) {
         return true;
       }

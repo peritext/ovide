@@ -52,7 +52,7 @@ const ConfirmToDeleteModal = ( {
     const { contextualizations } = production;
     citedContext = Object.keys( contextualizations )
                   .map( ( contextId ) => contextualizations[contextId] )
-                  .filter( ( d ) => d.resourceId === id );
+                  .filter( ( d ) => d.sourceId === id );
 
     message = ( production && production.resources[id] ) ? translate(
       'Are you sure you want to delete the resource "{s}" ?',

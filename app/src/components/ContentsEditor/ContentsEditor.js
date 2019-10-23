@@ -557,7 +557,7 @@ class ContentsEditor extends Component {
           if ( !contextualization ) {
             return;
           }
-          const resource = this.props.production.resources[contextualization.resourceId];
+          const resource = this.props.production.resources[contextualization.sourceId];
           if ( resource && resource.metadata.type === 'webpage' ) {
             try {
               const selection = window.getSelection();
@@ -925,7 +925,7 @@ class ContentsEditor extends Component {
             const entityData = content.getEntity( entityKey ).getData();
             if ( entityData.asset && entityData.asset.id ) {
               const contextualization = production.contextualizations[entityData.asset.id];
-              const resource = production.resources[contextualization.resourceId];
+              const resource = production.resources[contextualization.sourceId];
               return startExistingResourceConfiguration( resource.id );
             }
           }
@@ -1407,7 +1407,7 @@ class ContentsEditor extends Component {
           const entityData = content.getEntity( entityKey ).getData();
           if ( entityData.asset && entityData.asset.id ) {
             const contextualization = production.contextualizations[entityData.asset.id];
-            const resource = production.resources[contextualization.resourceId];
+            const resource = production.resources[contextualization.sourceId];
             cursorOnResourceType = resource.metadata.type;
           }
           else if ( content.getEntity( entityKey ).getType() === SECTION_POINTER ) {

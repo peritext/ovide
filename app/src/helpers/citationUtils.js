@@ -140,7 +140,7 @@ export const buildCitations = ( assets, props ) => {
     const bibContextualizations = quotedEntities
     .filter( ( assetKey ) =>
         assets[assetKey].type === 'bib'
-        && assets[assetKey].sectionId === activeSection.id
+        && assets[assetKey].targetId === activeSection.id
       )
     .map( ( assetKey ) => assets[assetKey] );
 
@@ -168,7 +168,7 @@ export const buildCitations = ( assets, props ) => {
         const contextualization = contextualizations[key1];
 
         const contextualizer = contextualizers[contextualization.contextualizerId];
-        const resource = resources[contextualization.resourceId];
+        const resource = resources[contextualization.sourceId];
         return {
           citationID: key1,
           citationItems: resourceToCslJSON( resource ).map( ( ref ) => ( {

@@ -358,7 +358,7 @@ const MainSectionAside = ( {
               <ContextualizationEditor
                 isActive={ editedContextualization !== undefined }
                 contextualization={ editedContextualization }
-                resource={ editedContextualization && production.resources[editedContextualization.resourceId] }
+                resource={ editedContextualization && production.resources[editedContextualization.sourceId] }
                 contextualizer={ editedContextualization && production.contextualizers[editedContextualization.contextualizerId] }
                 onClose={ handleCloseEditedContextualization }
                 updateContextualizer={ updateContextualizer }
