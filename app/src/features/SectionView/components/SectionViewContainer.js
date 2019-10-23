@@ -296,6 +296,7 @@ class SectionViewContainer extends Component {
             currentFileName: next.name,
             errors: this.props.uploadStatus.errors
           } );
+          console.log( 'create resource data for', next );
           return createResourceData( next, this.props )
           .then( ( res ) => {
             if ( res && !res.success ) errors.push( res );

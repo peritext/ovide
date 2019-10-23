@@ -290,10 +290,12 @@ class DataForm extends Component {
             }
             handleDataChange( data, b );
           };
+
           return (
             <SchemaForm
               schema={ resourcesSchemas[resourceType] }
               document={ formApi.getValue( 'data' ) }
+              omitProps={ [ 'contents' ] }
               assets={ assets }
               onAssetChange={ onAssetChange }
               translate={ translate }

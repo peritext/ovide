@@ -31,6 +31,7 @@ const handlePaste = function( html ) {
       updateDraftEditorsStates,
       updateDraftEditorState,
       updateSection,
+      updateResource,
       userId,
       setEditorPastingStatus,
       setEditorFocus,
@@ -79,6 +80,7 @@ const handlePaste = function( html ) {
         createContextualization,
         createContextualizer,
         updateDraftEditorState,
+        updateResource,
 
         setEditorPastingStatus,
         createProductionObjects,
@@ -115,6 +117,7 @@ const handlePaste = function( html ) {
         setEditorFocus,
         updateSectionRawContent,
         createAsset,
+        updateResource,
 
         production,
         editor,

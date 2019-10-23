@@ -557,9 +557,10 @@ export default class SchemaForm extends Component {
         errors,
       },
       props: {
-        schema,
+        schema: inputSchema,
         assets = {},
         onAssetChange,
+        omitProps = [],
         title,
         // onCancel
       },
@@ -569,6 +570,11 @@ export default class SchemaForm extends Component {
       onChange,
       // onValidate
     } = this;
+
+    const schema = omitProps.reduce( ( res, propName ) => {
+      delete res.properties[propName];
+      return res;
+    }, inputSchema );
 
     return (
       <div

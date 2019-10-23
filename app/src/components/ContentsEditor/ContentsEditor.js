@@ -1407,8 +1407,10 @@ class ContentsEditor extends Component {
           const entityData = content.getEntity( entityKey ).getData();
           if ( entityData.asset && entityData.asset.id ) {
             const contextualization = production.contextualizations[entityData.asset.id];
-            const resource = production.resources[contextualization.sourceId];
-            cursorOnResourceType = resource.metadata.type;
+            if ( contextualization ) {
+              const resource = production.resources[contextualization.sourceId];
+              cursorOnResourceType = resource.metadata.type;
+            }
           }
           else if ( content.getEntity( entityKey ).getType() === SECTION_POINTER ) {
             cursorOnInternalLink = true;

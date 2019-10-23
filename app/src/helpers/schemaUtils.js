@@ -26,11 +26,14 @@ export const validateProduction = ( production ) => validate( productionSchema, 
 export const validateEdition = ( edition ) => validate( editionSchema, edition );
 
 export const validateResource = ( resource ) => {
-  let validation = validate( resourceSchema, resource );
-  if ( validation.valid ) {
-    const dataSchema = resourceSchema.definitions[resource.metadata.type];
-    validation = validate( dataSchema, resource.data );
-  }
+  const validation = validate( resourceSchema, resource );
+
+  /*
+   * if ( validation.valid ) {
+   *   const dataSchema = resourceSchema.definitions[resource.metadata.type];
+   *   validation = validate( dataSchema, resource.data );
+   * }
+   */
   return validation;
 };
 

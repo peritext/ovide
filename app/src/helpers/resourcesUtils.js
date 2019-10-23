@@ -231,16 +231,17 @@ export const createResourceData = ( file, props ) =>
               id: genId(),
               mimetype: mime.lookup( file.name )
             };
-
             metadata = inferMetadata( { ...newAsset }, type );
+            const defaultResource = createDefaultResource();
             resource = {
-              ...createDefaultResource(),
+              ...defaultResource,
               id,
               metadata: {
                 ...metadata,
                 type,
               },
               data: {
+                ...defaultResource.data,
                 images: [
                   {
                     rgbImageAssetId: newAsset.id
@@ -266,7 +267,8 @@ export const createResourceData = ( file, props ) =>
               } );
             }
             else resolve( {
-              id, success: false,
+              id,
+              success: false,
               error: validateResource( resource ).errors
             } );
           } )

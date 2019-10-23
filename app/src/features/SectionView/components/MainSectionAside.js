@@ -43,6 +43,7 @@ import ContextualizationEditor from '../../../components/ContextualizationEditor
  * Imports Assets
  */
 import config from '../../../config';
+// import { createDefaultResource } from '../../../helpers/schemaUtils';
 
 /**
  * Shared variables

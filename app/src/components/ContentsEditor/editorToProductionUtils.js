@@ -27,7 +27,7 @@ export const updateNotesFromContentsEditor = ( props ) => {
   const {
     editorStates,
     sectionId,
-    activeProductionId,
+    // activeProductionId,
     activeSection,
     updateSection,
   } = props;
@@ -38,8 +38,12 @@ export const updateNotesFromContentsEditor = ( props ) => {
   const newSection = activeSection;
   // newSection.data.contents.notes = newNotes;
   newSection.data.contents.notesOrder = notesOrder;
-  // if (newNotes !== activeSection.data.contents.notes) {
-    updateSection( activeProductionId, sectionId, newSection );
+
+  /*
+   * if (newNotes !== activeSection.data.contents.notes) {
+   * updateSection( activeProductionId, sectionId, newSection );
+   */
+    updateSection( newSection );
   // }
 };
 

@@ -895,7 +895,7 @@ export const deleteUncitedContext = ( sectionId, props ) => {
     actions: {
       deleteContextualizer,
       deleteContextualization,
-      updateSection
+      updateResource
     }
   } = props;
 
@@ -904,7 +904,7 @@ export const deleteUncitedContext = ( sectionId, props ) => {
     ...editedProduction.resources[sectionId],
     notes: cleanUncitedNotes( editedProduction.resources[sectionId] )
   };
-  updateSection( { productionId, sectionId, section: cleanedSection, userId } );
+  updateResource( { productionId, resourceId: sectionId, resource: cleanedSection, userId } );
 
   const citedContextualizationIds = Object.keys( cleanedSection.data.contents.notes ).reduce( ( contents, noteId ) => [
     ...contents,

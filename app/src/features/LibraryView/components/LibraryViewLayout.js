@@ -130,7 +130,6 @@ class LibraryViewLayout extends Component {
         updateAsset,
         deleteAsset,
 
-        updateSection,
         setSelectedResourcesIds,
         setResourcesPromptedToDelete,
         setIsBatchDeleting,
@@ -294,10 +293,10 @@ class LibraryViewLayout extends Component {
           return tempSections;
         }, {} );
         Object.keys( changedSections ).forEach( ( sectionId ) => {
-          updateSection( {
-            sectionId,
+          updateResource( {
+            resourceId: sectionId,
             productionId: production.id,
-            section: changedSections[sectionId],
+            resource: changedSections[sectionId],
           } );
         } );
 
@@ -391,10 +390,10 @@ class LibraryViewLayout extends Component {
       Object.keys( finalChangedSections || {} ).reduce( ( cur, sectionId ) => {
         return cur.
         then( () => new Promise( ( resolve, reject ) => {
-          updateSection( {
-            sectionId,
+          updateResource( {
+            resourceId: sectionId,
             productionId: production.id,
-            section: finalChangedSections[sectionId],
+            resource: finalChangedSections[sectionId],
           }, ( err ) => {
             if ( err ) {
               reject( err );
