@@ -150,6 +150,7 @@ class AsideSectionColumn extends Component {
       onCloseActiveResource,
       onSortEnd,
       handleSectionIndexChange,
+      onGoToResource,
       history,
     } = this.props;
     const { t } = this.context;
@@ -283,6 +284,7 @@ class AsideSectionColumn extends Component {
                     setSectionLevel,
                     productionId,
                     visibleResources,
+                    onGoToResource,
                   }
                 }
                 setResourceSearchStringDebounce={ this.setResourceSearchStringDebounce }

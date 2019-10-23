@@ -18,6 +18,8 @@ import {
 } from 'quinoa-design-library/components/';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
 
+import { resourceHasContents } from 'peritext-utils';
+
 /**
  * Imports Project utils
  */
@@ -132,6 +134,7 @@ class ResourceCard extends Component {
 
       connectDragSource,
       onMouseDown,
+      onGoToResource,
     } = props;
 
      const {
@@ -209,9 +212,10 @@ class ResourceCard extends Component {
     onDelete( event );
    };
 
-   const handleClick = ( event ) => {
-    onEdit( event );
-   };
+   const handleClick = ( ) => {
+    // onEdit( event );
+    onGoToResource( resource.id );
+  };
 
     return connectDragSource(
       <div
@@ -242,6 +246,17 @@ class ResourceCard extends Component {
                     data-effect={ 'solid' }
                     isSize={ '32x32' }
                   />
+                  {
+                    resourceHasContents( resource ) ?
+                      <span
+                        className={ 'contents-indicator' }
+                        data-for={ 'tooltip' }
+                        data-tip={ translate( 'this resource is annotated with contents' ) }
+                      >
+                        ☰
+                      </span>
+                    : null
+                  }
                   {/*<Icon
                     data-tip={ translate( resource.metadata.type ) }
                     data-for={ 'tooltip' }

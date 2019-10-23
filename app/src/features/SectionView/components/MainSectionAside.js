@@ -72,6 +72,7 @@ const MainSectionAside = ( {
   guessTitle,
   setEditedResourceId,
   submitMultiResources,
+  onGoToResource,
 
   createAsset,
   updateAsset,
@@ -327,6 +328,9 @@ const MainSectionAside = ( {
     const editedResource = resources[editedResourceId];
     const relatedAssetsIds = getRelatedAssetsIds( editedResource.data );
     const relatedAssets = relatedAssetsIds.map( ( id ) => production.assets[id] ).filter( ( a ) => a );
+    const handleGoToResource = () => {
+      onGoToResource( editedResourceId );
+    };
     return (
       <Column style={ { position: 'relative', height: '100%', width: '100%', background: 'white', zIndex: 3 } }>
         <StretchedLayoutContainer isAbsolute>
@@ -339,6 +343,8 @@ const MainSectionAside = ( {
                 existingAssets={ relatedAssets }
                 asNewResource={ false }
                 productionId={ productionId }
+                onGoToResource={ handleGoToResource }
+                allowGoToResource={ editedResource.id !== section.id }
               />
             </Column>
           </StretchedLayoutItem>

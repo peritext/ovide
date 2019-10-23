@@ -154,6 +154,7 @@ const SectionViewLayout = ( {
   onResourceEditAttempt: handleResourceEditAttempt,
   deleteResource,
   history,
+  onGoToResource,
 }, { t } ) => {
 
   /**
@@ -609,6 +610,7 @@ const SectionViewLayout = ( {
                   production,
                   submitMultiResources,
                   visibleResources,
+                  onGoToResource,
             }
           }
           sections={ sectionsList }
@@ -682,6 +684,9 @@ const SectionViewLayout = ( {
 
                 updateContextualization,
                 editedContextualizationId,
+
+                onGoToResource,
+                onResourceEditAttempt: handleResourceEditAttempt,
               }
             }
 

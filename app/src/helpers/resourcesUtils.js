@@ -141,6 +141,11 @@ export const createBibData = (
             ...resource,
             id,
             data: {
+              contents: {
+                contents: {},
+                notes: {},
+                notesOrder: []
+              },
               ...resource.data,
               citations: [ { ...datum, htmlPreview } ]
             },
@@ -319,7 +324,12 @@ export const createResourceData = ( file, props ) =>
                 type,
               },
               data: {
-                dataAssetId: newAsset.id
+                dataAssetId: newAsset.id,
+                contents: {
+                  contents: {},
+                  notes: {},
+                  notesOrder: []
+                }
               },
             };
 

@@ -1361,14 +1361,20 @@ class ContentsEditor extends Component {
     }
 
     const {
-      data: {
-        contents: {
-          notes: inputNotes,
-          notesOrder,
-        }
-      },
+      data,
       id: sectionId,
     } = activeSection;
+
+    const {
+      contents: {
+        notes: inputNotes,
+        notesOrder,
+      } = {
+        contents: {},
+        notes: {},
+        notesOrder: []
+      }
+    } = data;
 
     /**
      * Computed variables

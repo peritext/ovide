@@ -302,6 +302,8 @@
   "Components.ResourceForm.Authors of the webpage": "Auteurs de la page web",
   "Components.ResourceForm.Bib file": "Fichier .bib",
   "Components.ResourceForm.Cancel": "Annuler",
+  "Components.ResourceForm.Add and edit": "Ajouter et éditer",
+  "Components.ResourceForm.Edit contents": "Éditer les contenus",
   "Components.ResourceForm.Date of publication": "Date de publication",
   "Components.ResourceForm.Description of the resource": "Description de la ressource",
   "Components.ResourceForm.Drop a bib file": "Déposer un fichier .bib ici",
@@ -913,5 +915,9 @@
   "Components.CustomSummaryEditor.Update": "Mettre à jour",
   "Components.CustomSummaryEditor.Cancel": "Annuler",
   "Components.EditionForm.Edition sections summary": "Sommaire des sections de l'édition",
-  "Components.EditionForm.Explanation about the edition sections summary": "Vous pouvez configurer quelles sections intégrer dans l'édition et dans quel ordre"
+  "Components.EditionForm.Explanation about the edition sections summary": "Vous pouvez configurer quelles sections intégrer dans l'édition et dans quel ordre",
+  "Components.ResourceForm.danger": "danger",
+  "Features.SectionView.this resource is annotated with contents": "cette ressource est annotée avec des contenus",
+  "Features.SectionView.Edit resource": "Éditer la ressource",
+  "Features.SectionView.Resource title": "Titre de la ressource"
 }

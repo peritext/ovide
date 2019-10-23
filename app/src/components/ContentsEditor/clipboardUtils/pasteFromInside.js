@@ -1095,7 +1095,7 @@ const pasteFromInside = ( {
                 if ( err ) {
                   rej2( err );
                 }
- else {
+                else {
                   res2();
                 }
               } );

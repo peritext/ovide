@@ -116,10 +116,10 @@ export const convertQuinoaStoryToProduction = ( story ) => {
       }
     };
   }, {} );
-  const sectionsOrder = story.sectionsOrder.map(sectionId => ({
+  const sectionsOrder = story.sectionsOrder.map( ( sectionId ) => ( {
     resourceId: sectionId,
     level: story.sections[sectionId].metadata.level
-  }));
+  } ) );
   const assets = {};
   const resources = Object.keys( story.resources ).reduce( ( res, resourceId ) => {
     const resource = story.resources[resourceId];
@@ -190,7 +190,7 @@ export const convertQuinoaStoryToProduction = ( story ) => {
       contents: {},
       notes: {},
       notesOrder: []
-    }
+    };
     return {
       ...res,
       [resourceId]: newResource
@@ -198,7 +198,7 @@ export const convertQuinoaStoryToProduction = ( story ) => {
   }, {
     ...sections
   } );
-  const contextualizations = Object.keys(story.contextualizations).reduce((res, contextualizationId) => {
+  const contextualizations = Object.keys( story.contextualizations ).reduce( ( res, contextualizationId ) => {
     const contextualization = story.contextualizations[contextualizationId];
     return {
       ...res,
@@ -209,8 +209,8 @@ export const convertQuinoaStoryToProduction = ( story ) => {
         resourceId: undefined,
         sectionId: undefined
       }
-    }
-  }, {})
+    };
+  }, {} );
   return {
     ...production,
     id: genId(),

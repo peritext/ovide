@@ -63,6 +63,7 @@ const AsideSectionContents = ( {
   setSectionLevel,
   productionId,
   visibleResources,
+  onGoToResource,
 }, { t } ) => {
 
   /**
@@ -181,7 +182,9 @@ const AsideSectionContents = ( {
                     resources={ visibleResources }
                     onDeleteResource={ onDeleteResource }
                     productionId={ productionId }
+                    activeSectionId={ section.id }
                     editedResourceId={ editedResourceId }
+                    onGoToResource={ onGoToResource }
                     onCloseSettings={ onCloseActiveResource }
                     onResourceEditAttempt={ onResourceEditAttempt }
                     getResourceTitle={ getResourceTitle }

@@ -179,6 +179,20 @@ class LibraryViewContainer extends Component {
     else deleteResourceAction( payload, callback );
   }
 
+  handleGoToResource = ( resourceId ) => {
+    const {
+      props: {
+        history,
+        match: {
+          params: {
+            productionId
+          }
+        }
+      }
+    } = this;
+    history.push( `/productions/${productionId}/resources/${resourceId}` );
+  }
+
   render() {
     const {
       props: {
@@ -199,6 +213,7 @@ class LibraryViewContainer extends Component {
                   { ...this.props }
                   submitMultiResources={ submitMultiResources }
                   deleteResource={ deleteResource }
+                  onGoToResource={ this.handleGoToResource }
                 />
 
                 <UploadModal uploadStatus={ uploadStatus } />

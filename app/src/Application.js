@@ -47,6 +47,11 @@ const EditionRoutes = ( { match } ) => {
       />
       <Route
         exact
+        path={ `${match.path}:productionId/resources/:sectionId` }
+        component={ SectionView }
+      />
+      <Route
+        exact
         path={ `${match.path}:productionId/library` }
         component={ LibraryView }
       />

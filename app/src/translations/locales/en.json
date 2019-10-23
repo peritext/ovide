@@ -5,7 +5,6 @@
   "Components.AssetPreview.Unnamed resource": "Unnamed item",
   "Components.AuthorsManager.": "",
   "Features.SummaryView.Sections": "Sections",
-
   "Components.AuthorsManager.Add an author": "Add an author",
   "Components.AuthorsManager.Authors": "Authors",
   "Components.AuthorsManager.Explanation about the production authors": "Authors can include writers, editors, designers, and collaborators",
@@ -224,6 +223,8 @@
   "Components.ResourceForm.Authors of the table": "Authors of the table",
   "Components.ResourceForm.Authors of the video": "Authors of the video",
   "Components.ResourceForm.Authors of the webpage": "Authors of the webpage",
+  "Components.ResourceForm.Add and edit": "Add and edit",
+  "Components.ResourceForm.Edit contents": "Edit contents",
   "Components.ResourceForm.Bib file": "Bib file",
   "Components.ResourceForm.Cancel": "Cancel",
   "Components.ResourceForm.Date of publication": "Date of publication",
@@ -914,5 +915,9 @@
   "Components.CustomSummaryEditor.Update": "Update",
   "Components.CustomSummaryEditor.Cancel": "Cancel",
   "Components.EditionForm.Edition sections summary": "Edition sections summary",
-  "Components.EditionForm.Explanation about the edition sections summary": "Explanation about the edition sections summary"
+  "Components.EditionForm.Explanation about the edition sections summary": "Explanation about the edition sections summary",
+  "Components.ResourceForm.danger": "danger",
+  "Features.SectionView.this resource is annotated with contents": "this resource is annotated with contents",
+  "Features.SectionView.Edit resource": "Edit resource",
+  "Features.SectionView.Resource title": "Resource title"
 }

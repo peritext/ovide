@@ -23,7 +23,7 @@ import { translateNameSpacer } from '../../../helpers/translateUtils';
  * Imports Components
  */
 import ContentsEditor from '../../../components/ContentsEditor';
-import { createBibData } from '../../../helpers/resourcesUtils';
+import { createBibData, getResourceTitle } from '../../../helpers/resourcesUtils';
 import SectionHeader from './SectionHeader';
 
 import MainSectionAside from './MainSectionAside';
@@ -110,6 +110,10 @@ const MainSectionColumn = ( {
 
   updateContextualization,
 
+  onGoToResource,
+
+  onResourceEditAttempt,
+
 }, {
   t
 } ) => {
@@ -185,8 +189,13 @@ const MainSectionColumn = ( {
     setEditorFocus( undefined );
   };
   const handleEditMetadataClick = () => {
-    if ( mainColumnMode !== 'editmetadata' ) {
+    if ( section.metadata.type === 'section' && mainColumnMode !== 'editmetadata' ) {
+
       onOpenSectionSettings( section.id );
+    }
+    else if ( section.metadata.type !== 'section' && mainColumnMode !== 'editresource' ) {
+
+      onResourceEditAttempt( section.id );
     }
     else {
       setMainColumnMode( 'edition' );
@@ -247,6 +256,8 @@ const MainSectionColumn = ( {
                 createAsset,
                 updateAsset,
                 deleteAsset,
+
+                onGoToResource,
               }
             }
           />
@@ -279,7 +290,7 @@ const MainSectionColumn = ( {
                       isFlex={ 1 }
                     >
                       <SectionHeader
-                        title={ section.metadata.title }
+                        title={ getResourceTitle( section ) }
                         onEdit={ handleEditMetadataClick }
                         onBlur={ handleTitleBlur }
                         onFocus={ handleTitleFocus }
@@ -287,8 +298,8 @@ const MainSectionColumn = ( {
 
                         isDisabled={ ( mainColumnMode !== 'edition' && mainColumnMode !== 'editmetadata' ) }
                         isColor={ mainColumnMode === 'editmetadata' ? 'primary' : '' }
-                        editTip={ translate( 'Edit section metadata' ) }
-                        inputTip={ translate( 'Section title' ) }
+                        editTip={ section.metadata.type === 'section' ? translate( 'Edit section metadata' ) : translate( 'Edit resource' ) }
+                        inputTip={ section.metadata.type === 'section' ? translate( 'Section title' ) : translate( 'Resource title' ) }
                       />
                     </StretchedLayoutItem>
                   </StretchedLayoutContainer>

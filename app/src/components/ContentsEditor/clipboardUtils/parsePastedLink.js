@@ -54,6 +54,11 @@ export default (
       },
       data: {
         url,
+        contents: {
+          contents: {},
+          notes: {},
+          notesOrder: []
+        }
       }
     };
   }

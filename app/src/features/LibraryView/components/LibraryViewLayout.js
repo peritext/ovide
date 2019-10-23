@@ -137,6 +137,7 @@ class LibraryViewLayout extends Component {
         setEditedResourceId,
       },
       deleteResource,
+      onGoToResource,
     } = this.props;
     const { t } = this.context;
     const {
@@ -527,6 +528,7 @@ class LibraryViewLayout extends Component {
       const handleCancel = () => {
         setEditedResourceId( undefined );
       };
+      const handleGoToResource = () => onGoToResource( resource.id );
 
       return (
         <ResourceForm
@@ -535,6 +537,7 @@ class LibraryViewLayout extends Component {
           bigSelectColumnsNumber={ 3 }
           productionId={ productionId }
           resource={ resource }
+          onGoToResource={ handleGoToResource }
           existingAssets={ relatedAssets }
           asNewResource={ false }
         />

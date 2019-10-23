@@ -649,6 +649,19 @@ class SectionViewContainer extends Component {
 
     else deleteResourceAction( payload, callback );
   }
+  onGoToResource = ( resourceId ) => {
+    const {
+      props: {
+        history,
+        match: {
+          params: {
+            productionId
+          }
+        }
+      }
+    } = this;
+    history.push( `/productions/${productionId}/resources/${resourceId}` );
+  }
 
   render() {
     const {
@@ -676,6 +689,7 @@ class SectionViewContainer extends Component {
       embedLastResource,
       onResourceEditAttempt,
       deleteResource,
+      onGoToResource,
     } = this;
 
     if ( editedProduction ) {
@@ -696,6 +710,7 @@ class SectionViewContainer extends Component {
                 submitMultiResources={ submitMultiResources }
                 onCreateHyperlink={ onCreateHyperlink }
                 onContextualizeHyperlink={ onContextualizeHyperlink }
+                onGoToResource={ onGoToResource }
 
                 onCreateGlossary={ onCreateGlossary }
                 onContextualizeGlossary={ onContextualizeGlossary }
