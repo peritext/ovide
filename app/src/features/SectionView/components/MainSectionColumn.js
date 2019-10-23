@@ -22,7 +22,7 @@ import { translateNameSpacer } from '../../../helpers/translateUtils';
 /**
  * Imports Components
  */
-import SectionEditor from '../../../components/SectionEditor';
+import ContentsEditor from '../../../components/ContentsEditor';
 import { createBibData } from '../../../helpers/resourcesUtils';
 import SectionHeader from './SectionHeader';
 
@@ -297,7 +297,7 @@ const MainSectionColumn = ( {
               {/*editor*/}
               <StretchedLayoutItem isFlex={ 1 }>
                 <Column isWrapper>
-                  <SectionEditor
+                  <ContentsEditor
                     editorWidth={ editorWidth }
                     editorOffset={ editorX }
                     style={ { height: '100%' } }

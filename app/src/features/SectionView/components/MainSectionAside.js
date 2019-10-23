@@ -43,6 +43,7 @@ import ContextualizationEditor from '../../../components/ContextualizationEditor
  * Imports Assets
  */
 import config from '../../../config';
+// import { createDefaultResource } from '../../../helpers/schemaUtils';
 
 /**
  * Shared variables
@@ -358,7 +359,7 @@ const MainSectionAside = ( {
               <ContextualizationEditor
                 isActive={ editedContextualization !== undefined }
                 contextualization={ editedContextualization }
-                resource={ editedContextualization && production.resources[editedContextualization.resourceId] }
+                resource={ editedContextualization && production.resources[editedContextualization.sourceId] }
                 contextualizer={ editedContextualization && production.contextualizers[editedContextualization.contextualizerId] }
                 onClose={ handleCloseEditedContextualization }
                 updateContextualizer={ updateContextualizer }

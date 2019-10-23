@@ -213,10 +213,10 @@ class HomeViewLayout extends Component {
       };
       const production = {
         ...payload.payload,
-        sections: {
+        resources: {
           [startingSectionId]: startingSection,
         },
-        sectionsOrder: [ startingSectionId ],
+        sectionsOrder: [ { resourceId: startingSectionId, level: 0 } ],
         id: genId(),
       };
 
@@ -228,36 +228,13 @@ class HomeViewLayout extends Component {
           if ( !err ) {
             setNewProductionOpen( false );
             history.push( {
-              pathname: `/productions/${production.id}/sections/${startingSectionId}`,
+              // pathname: `/productions/${production.id}/sections/${startingSectionId}`,
+              pathname: `/productions/${production.id}`,
             } );
           }
         } );
     };
 
-    /*
-     * const handleCreateExistingProduction = ( ) => {
-     *   createProduction( {
-     *     payload: newProduction,
-     *   } )
-     *   .then( ( res ) => {
-     *     setNewProductionOpen( false );
-     *     history.push( {
-     *       pathname: `/productions/${res.result.data.production.id}/`,
-     *     } );
-     *   } );
-     * };
-     * const handleOverrideExistingProduction = ( ) => {
-     *   overrideProduction( { payload: newProduction } )
-     *   .then( ( resp ) => {
-     *     if ( resp.result ) {
-     *       setNewProductionOpen( false );
-     *       history.push( {
-     *         pathname: `/productions/${newProduction.id}/`,
-     *       } );
-     *     }
-     *   } );
-     * };
-     */
     const handleSearchStringChange = ( e ) => setSearchString( e.target.value );
     const handleToggleNewProductionOpened = () => setNewProductionOpen( !newProductionOpen );
     const handleSortByEditedRecently = () => setSortingMode( 'edited recently' );

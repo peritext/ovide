@@ -113,7 +113,7 @@ export const loadAssetsForEdition = ( {
        * get related assets ids
        * @todo get section-level assets when summary will be customizable in order to fetch only used assets
        */
-      const relatedResources = uniq( contextualizations.map( ( obj ) => obj.contextualization.resourceId ) )
+      const relatedResources = uniq( contextualizations.map( ( obj ) => obj.contextualization.sourceId ) )
         .map( ( resourceId ) => resources[resourceId] );
       const relatedAssetsIds = uniq(
         flatten(
@@ -222,7 +222,7 @@ class SectionRenderer extends Component {
     productionAssets: this.props.production.assets,
     contextualizers,
     production: this.props.production,
-    notes: this.props.section.notes,
+    notes: this.props.section.data.contents.notes,
   } )
 
   render = () => {
@@ -236,20 +236,20 @@ class SectionRenderer extends Component {
       <div id={ `section-${section.id}` }>
         <div>
           <Renderer
-            raw={ section.contents }
+            raw={ section.data.contents.contents }
             notesPosition={ 'sidenotes' }
             containerId={ '' }
           />
         </div>
-        {section.notesOrder.length > 0 &&
+        {section.data.contents.notesOrder.length > 0 &&
           <div>
             <h3>
               Notes
             </h3>
             <ol>
               {
-                section.notesOrder.map( ( id ) => {
-                  const note = section.notes[id];
+                section.data.contents.notesOrder.map( ( id ) => {
+                  const note = section.data.contents.notes[id];
                   return (
                     <li
                       id={ `note-content-${id}` }
@@ -296,7 +296,7 @@ export const bundleProjectAsHTML = ( { production, requestAssetData } ) => {
               >
                 <SectionRenderer
                   production={ productionJSON }
-                  section={ productionJSON.sections[sectionId] }
+                  section={ productionJSON.resources[sectionId] }
                 />
               </ReferencesManager>
             );
@@ -367,7 +367,7 @@ export const bundleProjectAsTEI = ( { production, requestAssetData } ) => {
                 },
                 body: {
                   div: productionJSON.sectionsOrder.map( ( sectionId ) => {
-                    const section = productionJSON.sections[sectionId];
+                    const section = productionJSON.resources[sectionId];
                     const contents = renderToStaticMarkup(
                       <ReferencesManager
                         key={ sectionId }
@@ -378,7 +378,7 @@ export const bundleProjectAsTEI = ( { production, requestAssetData } ) => {
                       >
                         <SectionRenderer
                           production={ productionJSON }
-                          section={ productionJSON.sections[sectionId] }
+                          section={ productionJSON.resources[sectionId] }
                         />
                       </ReferencesManager>
                     );

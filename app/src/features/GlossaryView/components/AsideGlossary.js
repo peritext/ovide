@@ -134,22 +134,22 @@ class AsideGlossary extends Component {
       const { production } = this.props;
 
         const { contextualizations, resources } = production;
-        const matches = production.sectionsOrder.reduce( ( result, sectionId ) => {
-            const section = production.sections[sectionId];
+        const matches = production.sectionsOrder.reduce( ( result, { resourceId } ) => {
+            const section = production.resources[resourceId];
             return [
                 ...result,
                 ...findProspectionMatches( {
-                    contents: section.contents,
-                    sectionId,
+                    contents: section.data.contents.contents,
+                    sectionId: resourceId,
                     contentId: 'main',
                     value,
                     contextualizations,
                     resources,
                 } ),
-                ...section.notesOrder.reduce( ( res, noteId ) =>
+                ...section.data.contents.notesOrder.reduce( ( res, noteId ) =>
                     [ ...res, ...findProspectionMatches( {
-                        contents: section.notes[noteId].contents,
-                        sectionId,
+                        contents: section.data.contents.notes[noteId].contents,
+                        sectionId: resourceId,
                         noteId,
                         value,
                         contextualizations,
@@ -211,14 +211,14 @@ class AsideGlossary extends Component {
         const translate = translateNameSpacer( t, 'Features.GlossaryView' );
 
         const relatedContextualizationsIds = Object.keys( production.contextualizations )
-        .filter( ( contextualizationId ) => production.contextualizations[contextualizationId].resourceId === resourceId );
+        .filter( ( contextualizationId ) => production.contextualizations[contextualizationId].sourceId === resourceId );
 
         const searchStringLower = searchString.toLowerCase();
     const mentions = relatedContextualizationsIds.map( ( contextualizationId ) => {
         const contextualization = production.contextualizations[contextualizationId];
-        const sectionId = contextualization.sectionId;
-        const section = production.sections[sectionId];
-        const editors = [ 'main', ...production.sections[sectionId].notesOrder ];
+        const sectionId = contextualization.targetId;
+        const section = production.resources[sectionId];
+        const editors = [ 'main', ...production.resources[sectionId].data.contents.notesOrder ];
         let mention = {
           sectionId,
           contextualizationId,
@@ -226,10 +226,10 @@ class AsideGlossary extends Component {
         editors.find( ( editorId ) => {
             let contents;
             if ( editorId === 'main' ) {
-                contents = section.contents;
+                contents = section.data.contents.contents;
             }
             else {
-                contents = section.notes[editorId].contents;
+                contents = section.data.contents.notes[editorId].contents;
             }
             return Object.keys( contents.entityMap ).find( ( entityKey ) => {
                 const entity = contents.entityMap[entityKey];
@@ -258,8 +258,8 @@ class AsideGlossary extends Component {
     } )
     .filter( ( mention ) => {
       if ( searchString.length > MIN_SEARCH_LENGTH && mention.contentId && mention.blockKey ) {
-        const section = production.sections[mention.sectionId];
-        const contents = mention.contentId === 'main' ? section.contents : section.notes[mention.contentId].contents;
+        const section = production.resources[mention.sectionId];
+        const contents = mention.contentId === 'main' ? section.data.contents.contents : section.data.contents.notes[mention.contentId].contents;
         const block = contents.blocks.find( ( thatBlock ) => thatBlock.key === mention.blockKey );
         return block.text.toLowerCase().includes( searchStringLower );
       }

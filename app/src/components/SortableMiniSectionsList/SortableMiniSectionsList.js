@@ -20,7 +20,10 @@ import {
 import SectionMiniCard from '../SectionMiniCard';
 
 const SortableItem = SortableElement( ( {
-  value: section,
+  value: {
+    level,
+    resource
+  },
   onOpenSettings,
   onDeleteSection,
   setSectionLevel,
@@ -36,28 +39,29 @@ const SortableItem = SortableElement( ( {
 } ) => {
   const handleDelete = ( event ) => {
     event.stopPropagation();
-    onDeleteSection( section.id );
+    onDeleteSection( resource.id );
   };
   const handleSelect = () => {
-    if ( section.lockStatus === 'open' && history ) {
-      history.push( `/productions/${productionId}/section/${section.id}` );
+    if ( history ) {
+      history.push( `/productions/${productionId}/sections/${resource.id}` );
     }
   };
   return (
     <Level>
       <Column
-        isSize={ 12 - section.metadata.level }
-        isOffset={ section.metadata.level }
+        isSize={ 12 - level }
+        isOffset={ level }
       >
         <SectionMiniCard
-          section={ section }
-          isActive={ section.id === activeSectionId }
+          section={ resource }
+          isActive={ resource.id === activeSectionId }
           setSectionIndex={ setSectionIndex }
           sectionIndex={ sectionIndex }
           maxSectionIndex={ maxSectionIndex }
           setSectionLevel={ setSectionLevel }
           productionId={ productionId }
           onSelect={ handleSelect }
+          level={ level }
           onDeleteSection={ handleDelete }
           onOpenSettings={ onOpenSettings }
         />

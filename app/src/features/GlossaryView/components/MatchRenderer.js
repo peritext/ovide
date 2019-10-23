@@ -203,28 +203,6 @@ const renderers = {
         </span>
       );
     }
-
-    /*
-     * NOTE_POINTER: ( children, data, { key } ) => {
-     *   return (
-     *     <NotePointer
-     *       key={ key }
-     *       children={ children }
-     *       noteId={ data.noteId }
-     *     />
-     *     );
-     * },
-     * [SECTION_POINTER]: ( children, data, { key } ) => {
-     *   return (
-     *     <SectionLink
-     *       key={ key }
-     *       sectionId={ data.sectionId }
-     *     >
-     *       {children}
-     *     </SectionLink>
-     *   );
-     * },
-     */
   },
 };
 

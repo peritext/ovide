@@ -156,22 +156,22 @@ class SectionViewContainer extends Component {
       // updating active section id
       this.props.actions.setEditedSectionId( nextSectionId );
       // packing up : saving all last editor states
-      const section = this.props.editedProduction.sections[prevSectionId];
+      const section = this.props.editedProduction.resources[prevSectionId];
       const newSection = {
         ...section,
-        contents: editorStates[prevSectionId] ? convertToRaw( editorStates[prevSectionId].getCurrentContent() ) : section.contents,
-        notes: Object.keys( section.notes || {} ).reduce( ( result, noteId ) => ( {
+        contents: editorStates[prevSectionId] ? convertToRaw( editorStates[prevSectionId].getCurrentContent() ) : section.data.contents.contents,
+        notes: Object.keys( section.data.contents.notes || {} ).reduce( ( result, noteId ) => ( {
           ...result,
           [noteId]: {
-            ...section.notes[noteId],
-            contents: editorStates[noteId] ? convertToRaw( editorStates[noteId].getCurrentContent() ) : section.notes[noteId].contents,
+            ...section.data.contents.notes[noteId],
+            contents: editorStates[noteId] ? convertToRaw( editorStates[noteId].getCurrentContent() ) : section.data.contents.notes[noteId].contents,
           }
         } ), {} )
       };
-      this.props.actions.updateSection( {
-        sectionId: prevSectionId,
+      this.props.actions.updateResource( {
+        resourceId: prevSectionId,
         productionId: prevProductionId,
-        section: newSection
+        resource: newSection
       } );
       this.props.actions.resetDraftEditorsStates();
       this.props.actions.setEmbedResourceAfterCreation( false );
@@ -296,6 +296,7 @@ class SectionViewContainer extends Component {
             currentFileName: next.name,
             errors: this.props.uploadStatus.errors
           } );
+          console.log( 'create resource data for', next );
           return createResourceData( next, this.props )
           .then( ( res ) => {
             if ( res && !res.success ) errors.push( res );
@@ -483,7 +484,7 @@ class SectionViewContainer extends Component {
         }
       },
     } = this.props;
-    const section = this.props.editedProduction.sections[sectionId];
+    const section = this.props.editedProduction.resources[sectionId];
     const finalEditorStateId = editorStateId === sectionId ? 'main' : editorStateId;
     const finalEditorState = this.props.editorStates[editorStateId];
 
@@ -514,18 +515,18 @@ class SectionViewContainer extends Component {
         *   contents: rawContent
         * };
         */
-      newSection.contents = rawContents;
+      newSection.data.contents.contents = rawContents;
     }
-    else if ( newSection.notes[editorStateId] && newSection.notes[editorStateId].contents ) {
-      newSection.notes[editorStateId].contents = rawContents;
+    else if ( newSection.data.contents.notes[editorStateId] && newSection.data.contents.notes[editorStateId].contents ) {
+      newSection.data.contents.notes[editorStateId].contents = rawContents;
 
        /*
         * newSection = {
         *   ...section,
         *   notes: {
-        *     ...section.notes,
+        *     ...section.data.contents.notes,
         *     [editorStateId]: {
-        *       ...section.notes[editorStateId],
+        *       ...section.data.contents.notes[editorStateId],
         *       contents: rawContent
         *     }
         *   }
@@ -536,10 +537,10 @@ class SectionViewContainer extends Component {
       console.warn( 'could not update editor %s', editorStateId );/* eslint no-console: 0 */
     }
 
-     this.props.actions.updateSection( {
+     this.props.actions.updateResource( {
       productionId,
-      sectionId,
-      section: newSection,
+      resourceId: sectionId,
+      resource: newSection,
     } );
   }
 
@@ -584,23 +585,6 @@ class SectionViewContainer extends Component {
     } );
   }
 
-  getInactiveSections = () => {
-    const {
-      match: {
-        params: {
-          sectionId,
-          // productionId
-        }
-      },
-      editedProduction,
-    } = this.props;
-    return editedProduction.sectionsOrder
-      .filter( ( id ) => id !== sectionId && editedProduction.sections[id] )
-      .map( ( id ) => ( {
-        id,
-        ...editedProduction.sections[id].metadata
-      } ) );
-  }
    setInternalLinkModalFocusData = ( focusId ) => {
     const {
       match: {
@@ -650,7 +634,7 @@ class SectionViewContainer extends Component {
             if ( err ) {
               return reject( err );
             }
- else {
+            else {
               return resolve();
             }
           } );
@@ -691,12 +675,11 @@ class SectionViewContainer extends Component {
       submitMultiResources,
       embedLastResource,
       onResourceEditAttempt,
-      getInactiveSections,
       deleteResource,
     } = this;
 
     if ( editedProduction ) {
-      const section = editedProduction.sections[sectionId];
+      const section = editedProduction.resources[sectionId];
       if ( section ) {
         return (
           <DataUrlProvider
@@ -719,7 +702,6 @@ class SectionViewContainer extends Component {
 
                 onResourceEditAttempt={ onResourceEditAttempt }
                 onCreateInternalLink={ onCreateInternalLink }
-                inactiveSections={ getInactiveSections() }
                 deleteResource={ deleteResource }
                 { ...this.props }
               />

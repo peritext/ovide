@@ -26,7 +26,7 @@ import { translateNameSpacer } from '../../helpers/translateUtils';
 export default class CustomSummaryEditor extends Component {
   static contextTypes = {
     production: PropTypes.object,
-    t: PropTypes.object,
+    t: PropTypes.func,
   }
 
   constructor( props ) {
@@ -100,21 +100,21 @@ export default class CustomSummaryEditor extends Component {
       } );
     };
 
-    const { sectionsOrder = [], sections = {} } = production;
+    const { sectionsOrder = [], resources = {} } = production;
 
-    const existingSummary = sectionsOrder.map( ( sectionId ) => {
-      if ( sections[sectionId] ) {
-        const thatSection = sections[sectionId];
+    const existingSummary = sectionsOrder.map( ( { resourceId, level } ) => {
+      if ( resources[resourceId] ) {
+        const thatSection = resources[resourceId];
         return {
           title: thatSection.metadata.title,
-          level: thatSection.metadata.level,
-          id: sectionId
+          level,
+          resourceId
         };
       }
     } ).filter( ( s ) => s );
 
-    const actionableSummary = summary.map( ( { level, id } ) => {
-      const thatSection = ( sections[id] || { metadata: {} } );
+    const actionableSummary = summary.map( ( { level, resourceId } ) => {
+      const thatSection = ( resources[resourceId] || { metadata: {} } );
       return {
         ...thatSection,
         metadata: {
@@ -125,10 +125,10 @@ export default class CustomSummaryEditor extends Component {
     } );
 
     const handleOnSortEnd = ( { oldIndex, newIndex } ) => {
-      const sectionsIds = summary.map( ( el ) => el.id );
+      const sectionsIds = summary.map( ( el ) => el.resourceId );
       const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex );
       const newSummary = newSectionsOrder.map( ( id ) => {
-        const summaryEl = summary.find( ( el ) => el.id === id );
+        const summaryEl = summary.find( ( el ) => el.resourceId === id );
         return summaryEl;
       } );
       this.setState( {
@@ -139,7 +139,7 @@ export default class CustomSummaryEditor extends Component {
       } );
     };
     const handleDelete = ( id ) => {
-      const newSummary = summary.filter( ( i ) => i.id !== id );
+      const newSummary = summary.filter( ( i ) => i.resourceId !== id );
       this.setState( {
         value: {
           ...value,
@@ -153,7 +153,7 @@ export default class CustomSummaryEditor extends Component {
 
     const handleSetSectionLevel = ( { sectionId, level } ) => {
       const newSummary = summary.map( ( el ) => {
-        if ( el.id === sectionId ) {
+        if ( el.resourceId === sectionId ) {
           return {
             ...el,
             level
@@ -168,7 +168,6 @@ export default class CustomSummaryEditor extends Component {
         }
       } );
     };
-
     return (
       <div>
         <div style={ { display: 'flex', flexFlow: 'row nowrap', alignItems: 'center' } }>
@@ -221,7 +220,8 @@ export default class CustomSummaryEditor extends Component {
                         isFlex={ 1 }
                       >
                         {
-                          actionableSummary.map( ( section ) => {
+                          actionableSummary.map( ( section, index ) => {
+                            const onDelete = () => handleDelete( section.id );
                             return (
                               <Level key={ section.id }>
                                 <Column
@@ -230,10 +230,12 @@ export default class CustomSummaryEditor extends Component {
                                 >
                                   <SectionMiniCard
                                     section={ section }
+                                    level={ section.metadata.level }
+                                    sectionIndex={ index }
                                     setSectionIndex={ handleSetSectionIndex }
                                     maxSectionIndex={ summary.length - 1 }
                                     setSectionLevel={ handleSetSectionLevel }
-                                    onDeleteSection={ handleDelete }
+                                    onDeleteSection={ onDelete }
                                     disableMove
                                   />
                                 </Column>
@@ -270,11 +272,11 @@ export default class CustomSummaryEditor extends Component {
                         existingSummary.map( ( summaryItem, index ) => {
                           const handleAddBlock = () => {
                             addBlockToSummary( {
-                              id: summaryItem.id,
+                              resourceId: summaryItem.resourceId,
                               level: summaryItem.level
                             } );
                           };
-                          const isDisabled = actionableSummary.find( ( i ) => i.id === summaryItem.id ) !== undefined;
+                          const isDisabled = actionableSummary.find( ( i ) => i.resourceId === summaryItem.resourceId ) !== undefined;
                           return (
                             <Column
                               style={ { maxWidth: '100%', opacity: isDisabled ? 0.5 : 1 } }

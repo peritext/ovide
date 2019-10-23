@@ -33,7 +33,7 @@ import AsideSectionContents from './AsideSectionContents';
 /**
  * Shared variables
  */
-const resourceTypes = Object.keys( resourcesSchemas );
+const resourceTypes = Object.keys( resourcesSchemas ).filter( ( t ) => t !== 'section' );
 
 class AsideSectionColumn extends Component {
 
@@ -85,8 +85,8 @@ class AsideSectionColumn extends Component {
       }
     } = nextProps;
 
-    const prevSectionsTitles = this.props.sections.map( ( s ) => s.metadata.title ).join( '-' );
-    const nextSectionsTitles = nextProps.sections.map( ( s ) => s.metadata.title ).join( '-' );
+    const prevSectionsTitles = this.props.sections.map( ( { resource } ) => resource.metadata.title ).join( '-' );
+    const nextSectionsTitles = nextProps.sections.map( ( { resource } ) => resource.metadata.title ).join( '-' );
     return (
       changingProps.find( ( propName ) => this.props[propName] !== nextProps[propName] ) !== undefined
       || prevResources !== nextResources
@@ -155,15 +155,11 @@ class AsideSectionColumn extends Component {
     const { t } = this.context;
     const {
       id: productionId,
-      metadata: {
-        coverImage = {}
-      }
     } = production;
 
     /**
      * Computed variables
      */
-    const coverImageId = coverImage.resourceId;
 
     /**
      * Local functions
@@ -261,7 +257,6 @@ class AsideSectionColumn extends Component {
                     asideTabCollapsed,
                     asideTabMode,
                     section,
-                    coverImageId,
                     editedResourceId,
                     getResourceTitle,
                     handleResourceFilterToggle,

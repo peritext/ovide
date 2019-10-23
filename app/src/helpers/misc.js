@@ -54,15 +54,15 @@ export const getBrowserInfo = () => {
  };
 
 export const computeSectionFirstWords = ( section, maxLength = 100 ) => {
-  if ( section.contents
-      && section.contents.blocks
-      && section.contents.blocks[0]
-      && section.contents.blocks[0].text
+  if ( section.data.contents.contents
+      && section.data.contents.contents.blocks
+      && section.data.contents.contents.blocks[0]
+      && section.data.contents.contents.blocks[0].text
   ) {
-    return section.contents.blocks[0].text.length > maxLength ?
-      `${section.contents.blocks[0].text.substr( 0, maxLength )}...`
+    return section.data.contents.contents.blocks[0].text.length > maxLength ?
+      `${section.data.contents.contents.blocks[0].text.substr( 0, maxLength )}...`
       :
-      section.contents.blocks[0].text;
+      section.data.contents.contents.blocks[0].text;
   }
   return '';
 };

@@ -10,7 +10,7 @@ const htmlToReactParser = new Parser();
 import defaultStyle from 'raw-loader!../sharedAssets/bibAssets/apa.csl';
 import defaultLocale from 'raw-loader!../sharedAssets/bibAssets/english-locale.xml';
 
-import {resourceToCslJSON} from 'peritext-utils';
+import { resourceToCslJSON } from 'peritext-utils';
 
 const { INLINE_ASSET, BLOCK_ASSET } = constants;
 
@@ -119,10 +119,10 @@ export const buildCitations = ( assets, props ) => {
      * Citations preparation
      */
     // isolate all contextualizations quoted inside editors
-    const quotedEntities = activeSection.notesOrder.reduce( ( contents, noteId ) => [
+    const quotedEntities = activeSection.data.contents.notesOrder.reduce( ( contents, noteId ) => [
       ...contents,
-      activeSection.notes[noteId].contents,
-    ], [ activeSection.contents ] )
+      activeSection.data.contents.notes[noteId].contents,
+    ], [ activeSection.data.contents.contents ] )
     .reduce( ( entities, contents ) =>
       [
         ...entities,
@@ -140,7 +140,7 @@ export const buildCitations = ( assets, props ) => {
     const bibContextualizations = quotedEntities
     .filter( ( assetKey ) =>
         assets[assetKey].type === 'bib'
-        && assets[assetKey].sectionId === activeSection.id
+        && assets[assetKey].targetId === activeSection.id
       )
     .map( ( assetKey ) => assets[assetKey] );
 
@@ -148,7 +148,7 @@ export const buildCitations = ( assets, props ) => {
     const citationItems = Object.keys( bibContextualizations )
       .reduce( ( finalCitations, key1 ) => {
         const bibCit = bibContextualizations[key1];
-        const citations = resourceToCslJSON(bibCit.resource);
+        const citations = resourceToCslJSON( bibCit.resource );
         const newCitations = citations.reduce( ( final2, citation ) => {
           return {
             ...final2,
@@ -168,7 +168,7 @@ export const buildCitations = ( assets, props ) => {
         const contextualization = contextualizations[key1];
 
         const contextualizer = contextualizers[contextualization.contextualizerId];
-        const resource = resources[contextualization.resourceId];
+        const resource = resources[contextualization.sourceId];
         return {
           citationID: key1,
           citationItems: resourceToCslJSON( resource ).map( ( ref ) => ( {

@@ -67,7 +67,7 @@ import { resourcesSchemas } from '../../peritextConfig.render';
 /**
  * Shared variables
  */
-const resourceTypes = Object.keys( resourcesSchemas );
+const resourceTypes = Object.keys( resourcesSchemas ).filter( ( key ) => key !== 'section' );
 const { maxResourceSize } = config;
 const realMaxFileSize = base64ToBytesLength( maxResourceSize );
 
@@ -131,7 +131,7 @@ class DataForm extends Component {
     /**
      * Callbacks handlers
      */
-    const handleDropFiles = ( files ) => {
+    const handleDropBibFiles = ( files ) => {
       formApi.setError( 'maxSize', undefined );
       loadResourceData( resourceType, files[0] )
       .then( ( data ) => {
@@ -147,7 +147,14 @@ class DataForm extends Component {
           title: prevMetadata.title ? prevMetadata.title : inferedMetadata.title
         };
         formApi.setValue( 'metadata', metadata );
-        formApi.setValue( 'data', data );
+        formApi.setValue( 'data', {
+          citations: data,
+          contents: {
+            contents: {},
+            notes: {},
+            notesOrder: []
+          }
+        } );
 
       } )
       .catch( ( e ) => {
@@ -158,8 +165,8 @@ class DataForm extends Component {
       const bibData = parseBibTeXToCSLJSON( value );
       // @todo: citation-js parse fail in silence, wait error handling feature
       if ( bibData.length === 1 ) {
-        formApi.setValue( 'data', bibData );
-        formApi.setError( 'data', undefined );
+        formApi.setValue( 'data', { citations: bibData } );
+        // formApi.setError( 'data', {undefined} );
       }
       else if ( bibData.length > 1 ) {
         formApi.setError( 'data', translate( 'Please enter only one bibtex' ) );
@@ -207,7 +214,7 @@ class DataForm extends Component {
               asNewResource ?
                 <DropZone
                   accept={ '.bib,.txt' }
-                  onDrop={ handleDropFiles }
+                  onDrop={ handleDropBibFiles }
                 >
                   {translate( 'Drop a bib file' )}
                 </DropZone> : null
@@ -216,7 +223,7 @@ class DataForm extends Component {
               !asNewResource &&
               <BibRefsEditor
                 style={ { minWidth: '10rem' } }
-                data={ resource.data }
+                data={ resource.data.citations }
                 onChange={ handleEditBib }
               />
             }
@@ -283,10 +290,12 @@ class DataForm extends Component {
             }
             handleDataChange( data, b );
           };
+
           return (
             <SchemaForm
               schema={ resourcesSchemas[resourceType] }
               document={ formApi.getValue( 'data' ) }
+              omitProps={ [ 'contents' ] }
               assets={ assets }
               onAssetChange={ onAssetChange }
               translate={ translate }

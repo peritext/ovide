@@ -41,14 +41,6 @@ export const UPDATE_PRODUCTION_SETTINGS = 'UPDATE_PRODUCTION_SETTINGS';
 export const UPDATE_SECTIONS_ORDER = 'UPDATE_SECTIONS_ORDER';
 
 /**
- * sections CRUD
- */
-export const CREATE_SECTION = 'CREATE_SECTION';
-export const UPDATE_SECTION = 'UPDATE_SECTION';
-export const DELETE_SECTION = 'DELETE_SECTION';
-export const SET_SECTION_LEVEL = 'SET_SECTION_LEVEL';
-
-/**
  * resources CRUD
  */
 export const CREATE_RESOURCE = 'CREATE_RESOURCE';
@@ -98,7 +90,6 @@ function production( state = PRODUCTION_DEFAULT_STATE, action ) {
   let contextualizers;
   let contextualizersToDeleteIds;
   let contextualizationsToDeleteIds;
-  let newSectionsOrder;
   let editions;
   switch ( action.type ) {
     case `${ACTIVATE_PRODUCTION}_SUCCESS`:
@@ -148,32 +139,8 @@ function production( state = PRODUCTION_DEFAULT_STATE, action ) {
       if ( !state.production ) {
         return state;
       }
-      const oldSectionsOrder = [ ...state.production.sectionsOrder ];
-      newSectionsOrder = [ ...payload.sectionsOrder ];
-      let resolvedSectionsOrder = [ ...payload.sectionsOrder ];
+      const resolvedSectionsOrder = [ ...payload.sectionsOrder ];
 
-      /*
-       * new order is bigger than older order
-       * (probably because a user deleted a section in the meantime)
-       * --> we filter the new order with only existing sections
-       */
-      if ( newSectionsOrder.length > oldSectionsOrder.length ) {
-          resolvedSectionsOrder = newSectionsOrder.filter(
-            ( newSectionId ) => oldSectionsOrder.indexOf( newSectionId ) > -1
-          );
-
-      /*
-       * new order is smaller than older order
-       * (probably because a user created a section in the meantime)
-       * --> we add created sections to the new sections order
-       */
-      }
-      else if ( newSectionsOrder.length < oldSectionsOrder.length ) {
-        resolvedSectionsOrder = [
-          ...newSectionsOrder,
-          ...oldSectionsOrder.slice( newSectionsOrder.length )
-        ];
-      }
       return {
           ...state,
           production: {
@@ -181,131 +148,6 @@ function production( state = PRODUCTION_DEFAULT_STATE, action ) {
             sectionsOrder: [ ...resolvedSectionsOrder ],
             lastUpdateAt: payload.lastUpdateAt,
           }
-      };
-
-    /**
-     * SECTION CRUD
-     */
-    case `${CREATE_SECTION}`:
-    // case `${CREATE_SECTION}_SUCCESS`:
-      if ( !state.production ) {
-        return state;
-      }
-      newSectionsOrder = payload.sectionOrder < state.production.sectionsOrder.length ?
-            [
-              ...state.production.sectionsOrder.slice( 0, payload.sectionOrder ),
-              payload.sectionId,
-              ...state.production.sectionsOrder.slice( payload.sectionOrder )
-            ]
-            :
-            [
-              ...state.production.sectionsOrder,
-              payload.sectionId
-            ];
-      return {
-          ...state,
-          production: {
-            ...state.production,
-            sections: {
-              ...state.production.sections,
-              [payload.sectionId]: {
-                ...payload.section,
-                lastUpdateAt: payload.lastUpdateAt,
-                createdAt: payload.lastUpdateAt,
-              }
-            },
-            sectionsOrder: newSectionsOrder,
-            lastUpdateAt: payload.lastUpdateAt,
-          }
-      };
-    case `${UPDATE_SECTION}`:
-    case `${UPDATE_SECTION}_SUCCESS`:
-      if ( !state.production ) {
-        return state;
-      }
-
-      return {
-          ...state,
-          production: {
-            ...state.production,
-            sections: {
-              ...state.production.sections,
-              [payload.sectionId]: {
-                ...payload.section,
-                lastUpdateAt: payload.lastUpdateAt,
-              }
-            },
-            lastUpdateAt: payload.lastUpdateAt,
-          }
-      };
-    case `${SET_SECTION_LEVEL}`:
-    case `${SET_SECTION_LEVEL}_SUCCESS`:
-      if ( !state.production ) {
-        return state;
-      }
-      return {
-          ...state,
-          production: {
-            ...state.production,
-            sections: {
-              ...state.production.sections,
-              [payload.sectionId]: {
-                ...state.production.sections[payload.sectionId],
-                metadata: {
-                  ...state.production.sections[payload.sectionId].metadata,
-                  level: payload.level
-                },
-                lastUpdateAt: payload.lastUpdateAt,
-              }
-            },
-            lastUpdateAt: payload.lastUpdateAt,
-          }
-      };
-    case `${DELETE_SECTION}`:
-    case `${DELETE_SECTION}_SUCCESS`:
-      if ( !state.production ) {
-        return state;
-      }
-      contextualizations = { ...state.production.contextualizations };
-      contextualizers = { ...state.production.contextualizers };
-
-      contextualizationsToDeleteIds = Object.keys( contextualizations )
-      .filter( ( id ) => {
-        return contextualizations[id].sectionId === payload.sectionId;
-      } );
-      contextualizersToDeleteIds = [];
-
-      contextualizationsToDeleteIds
-      .forEach( ( id ) => {
-        contextualizersToDeleteIds.push( contextualizations[id].contextualizerId );
-      } );
-
-      contextualizersToDeleteIds.forEach( ( contextualizerId ) => {
-        delete contextualizers[contextualizerId];
-      } );
-      contextualizationsToDeleteIds.forEach( ( contextualizationId ) => {
-        delete contextualizations[contextualizationId];
-      } );
-      return {
-          ...state,
-          production: {
-            ...state.production,
-            sections: Object.keys( state.production.sections )
-              .reduce( ( thatResult, thatSectionId ) => {
-                if ( thatSectionId === payload.sectionId ) {
-                  return thatResult;
-                }
-                else return {
-                  ...thatResult,
-                  [thatSectionId]: state.production.sections[thatSectionId]
-                };
-              }, {} ),
-            contextualizations,
-            contextualizers,
-            sectionsOrder: state.production.sectionsOrder.filter( ( id ) => id !== payload.sectionId ),
-            lastUpdateAt: payload.lastUpdateAt,
-          }
-
       };
 
     /**
@@ -372,7 +214,7 @@ function production( state = PRODUCTION_DEFAULT_STATE, action ) {
       // spot all objects to delete
       Object.keys( contextualizations )
         .forEach( ( contextualizationId ) => {
-          if ( contextualizations[contextualizationId].resourceId === payload.resourceId ) {
+          if ( contextualizations[contextualizationId].sourceId === payload.resourceId ) {
             contextualizationsToDeleteIds.push( contextualizationId );
             contextualizersToDeleteIds.push( contextualizations[contextualizationId].contextualizerId );
           }
@@ -661,7 +503,7 @@ export const updateProduction = ( TYPE, payload, callback ) => {
   updateEditionHistoryMap( payload.productionId );
   // TODO: refactor validation schema more modular
   let payloadSchema = DEFAULT_PAYLOAD_SCHEMA;
-  const sectionSchema = productionSchema.properties.sections.patternProperties['[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'];
+  // const sectionSchema = productionSchema.properties.sections.patternProperties['[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'];
   switch ( TYPE ) {
     case UPDATE_PRODUCTION_METADATA:
       payloadSchema = {
@@ -687,58 +529,6 @@ export const updateProduction = ( TYPE, payload, callback ) => {
         properties: {
           ...DEFAULT_PAYLOAD_SCHEMA.properties,
           sectionsOrder: productionSchema.properties.sectionsOrder,
-        }
-      };
-      break;
-    case SET_SECTION_LEVEL:
-      payloadSchema = {
-        ...DEFAULT_PAYLOAD_SCHEMA,
-        properties: {
-          ...DEFAULT_PAYLOAD_SCHEMA.properties,
-          sectionId: sectionSchema.properties.id,
-          level: productionSchema
-                  .definitions
-                  .metadata
-                  .properties
-
-                  /*
-                   * .properties
-                   * .sections
-                   * .patternProperties['[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}']
-                   * .properties
-                   * .metadata
-                   * .properties
-                   */
-                  .level,
-        }
-      };
-      break;
-    case CREATE_SECTION:
-      payloadSchema = {
-        ...DEFAULT_PAYLOAD_SCHEMA,
-        properties: {
-          ...DEFAULT_PAYLOAD_SCHEMA.properties,
-          sectionId: sectionSchema.properties.id,
-          section: sectionSchema.properties
-        }
-      };
-      break;
-    case UPDATE_SECTION:
-      payloadSchema = {
-        ...DEFAULT_PAYLOAD_SCHEMA,
-        properties: {
-          ...DEFAULT_PAYLOAD_SCHEMA.properties,
-          sectionId: sectionSchema.properties.id,
-          section: sectionSchema.properties
-        }
-      };
-      break;
-    case DELETE_SECTION:
-      payloadSchema = {
-        ...DEFAULT_PAYLOAD_SCHEMA,
-        properties: {
-          ...DEFAULT_PAYLOAD_SCHEMA.properties,
-          sectionId: sectionSchema.properties.id,
         }
       };
       break;
@@ -988,11 +778,6 @@ export const deleteAsset = ( payload, callback ) => {
 export const updateProductionMetadata = ( payload, callback ) => updateProduction( UPDATE_PRODUCTION_METADATA, payload, callback );
 export const updateProductionSettings = ( payload, callback ) => updateProduction( UPDATE_PRODUCTION_SETTINGS, payload, callback );
 export const updateSectionsOrder = ( payload, callback ) => updateProduction( UPDATE_SECTIONS_ORDER, payload, callback );
-
-export const createSection = ( payload, callback ) => updateProduction( CREATE_SECTION, payload, callback );
-export const updateSection = ( payload, callback ) => updateProduction( UPDATE_SECTION, payload, callback );
-export const deleteSection = ( payload, callback ) => updateProduction( DELETE_SECTION, payload, callback );
-export const setSectionLevel = ( payload, callback ) => updateProduction( SET_SECTION_LEVEL, payload, callback );
 
 export const createResource = ( payload, callback ) => updateProduction( CREATE_RESOURCE, payload, callback );
 export const updateResource = ( payload, callback ) => updateProduction( UPDATE_RESOURCE, payload, callback );
