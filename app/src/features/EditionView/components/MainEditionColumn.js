@@ -232,6 +232,7 @@ const MainEditionColumn = ( {
   locale,
 } ) => {
 
+
   const handleSummaryChange = ( newSummary ) => {
     onEditionChange( {
       ...edition,

@@ -1,10 +1,4 @@
 
-/*
- * const mapToArray = ( obj ) => Object.keys( obj )
- *   .reduce( ( arr, key ) =>
- *     arr.concat( obj[key] )
- *   , [] );
- */
 
 /*
  * ===========
@@ -18,7 +12,7 @@
  * ===========
  */
 
-const validCollections = [ 'resources', 'contextualizations', 'contextualizers', 'assets', 'editions', 'sections' ];
+const validCollections = [ 'resources', 'contextualizations', 'contextualizers', 'assets', 'editions' ];
 const validActionTypes = [ 'create', 'update', 'delete' ];
 
 /*
@@ -79,20 +73,6 @@ module.exports = function( state = STORIES_DEFAULT_STATE, action ) {
             )
           }
         );
-        if ( action.type === 'CREATE_SECTION' ) {
-          const newSectionsOrder = payload.sectionOrder && payload.sectionOrder < production.sectionsOrder.length ?
-          [
-            ...production.sectionsOrder.slice( 0, payload.sectionOrder ),
-            payload.sectionId,
-            ...production.sectionsOrder.slice( payload.sectionOrder )
-          ]
-          :
-          [
-            ...production.sectionsOrder,
-            payload.sectionId
-          ];
-          newState[payload.productionId].sectionsOrder = newSectionsOrder;
-        }
         return newState;
       case 'delete':
         newState = Object.assign( {}, state, {
@@ -162,28 +142,6 @@ module.exports = function( state = STORIES_DEFAULT_STATE, action ) {
               lastUpdateAt: payload.lastUpdateAt,
             }
           ),
-        }
-      );
-    case 'SET_SECTION_LEVEL':
-      return Object.assign(
-        {},
-        state,
-        {
-          [payload.productionId]: Object.assign(
-            {},
-            state[payload.productionId],
-            {
-              sections: Object.assign( {}, state[payload.productionId].sections, {
-                [payload.sectionId]: Object.assign( {}, state[payload.productionId].sections[payload.sectionId], {
-                  metadata: Object.assign( {}, state[payload.productionId].sections[payload.sectionId].metadata, {
-                    level: payload.level
-                  } ),
-                  lastUpdateAt: payload.lastUpdateAt,
-                } )
-              } ),
-              lastUpdateAt: payload.lastUpdateAt,
-            }
-          )
         }
       );
     case 'UPDATE_PRODUCTION_METADATA':

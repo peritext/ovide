@@ -165,6 +165,7 @@ const EditionViewLayout = ( {
     'Glossary list': translate( 'Glossary list' ),
   };
 
+
   return (
     <StretchedLayoutContainer
       isDirection={ 'horizontal' }

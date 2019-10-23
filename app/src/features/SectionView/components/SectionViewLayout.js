@@ -409,10 +409,10 @@ const SectionViewLayout = ( {
           };
         }
         if ( sectionChanged ) {
-          updateSection( {
-            sectionId: thatSection.id,
+          updateResource( {
+            resourceId: thatSection.id,
             productionId: production.id,
-            section: newSection,
+            resource: newSection,
           } );
         }
       } );

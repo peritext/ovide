@@ -56,10 +56,6 @@ const SummaryViewLayout = ( {
     setIsSorting,
     setMetadataOpen,
 
-    /*
-     * createSection,
-     * deleteSection,
-     */
     updateSectionsOrder,
     // setSectionLevel,
 
