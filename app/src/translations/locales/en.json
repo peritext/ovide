@@ -747,7 +747,7 @@
   "Features.EditionView.Explanation about citation style": "Bibliographic citations will be formatted automatically according to this convention",
   "Features.EditionView.Explanation about citation locale": "Bibliographic citations will be formatted automatically in this language",
   "Features.EditionView.Bibliographic metadata type": "Bibliographic metadata type",
-  "Features.EditionView.print this edition": "print this edition",
+  "Features.EditionView.print this edition": "print this view",
   "Features.HomeView.Production is not valid": "Production is not valid",
   "Features.EditionView.article": "article",
   "Features.EditionView.book": "book",

@@ -54,8 +54,10 @@ class EditionUiWrapperContainer extends Component {
       case '/productions/:productionId/editions/:editionId':
         return 'edition';
       case '/productions/:productionId/sections/:sectionId':
-        return 'editor';
-      case '/productions/:productionId/summary':
+        return 'editor-section';
+      case '/productions/:productionId/resources/:sectionId':
+        return 'editor-resource';
+        case '/productions/:productionId/summary':
       case '/productions/:productionId':
         return 'summary';
       default:

@@ -130,6 +130,7 @@ class GlossaryViewLayout extends Component {
 
       },
       deleteResource,
+      onGoToResource,
     } = this.props;
     const { t } = this.context;
     const {
@@ -519,6 +520,7 @@ class GlossaryViewLayout extends Component {
         <ResourceForm
           onCancel={ handleCancel }
           onSubmit={ handleSubmit }
+          onGoToResource={ () => onGoToResource( resource.id ) }
           bigSelectColumnsNumber={ 3 }
           productionId={ productionId }
           resource={ resource }
@@ -663,6 +665,9 @@ class GlossaryViewLayout extends Component {
             setPromptedToDeleteResourceId( resource.id );
           };
           const isSelected = selectedResourcesIds.indexOf( resource.id ) > -1;
+          const handleGoTo = () => {
+            onGoToResource( resource.id );
+          };
           const handleClick = () => {
             let newSelectedResourcesIds;
               if ( isSelected ) {
@@ -687,6 +692,7 @@ class GlossaryViewLayout extends Component {
               isActive={ isSelected }
               onClick={ handleClick }
               key={ resource.id }
+              onGoToResource={ handleGoTo }
               onEdit={ handleEdit }
               onDelete={ handleDelete }
               numberOfMentions={ resourcesNumberOfMentionsMap[resource.id] }

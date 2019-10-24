@@ -286,7 +286,7 @@ export const setDraggedResourceId = ( payload ) => ( {
 
 const UI_DEFAULT_STATE = {
   asideTabMode: 'summary',
-  asideTabCollapsed: true,
+  asideTabCollapsed: false,
   mainColumnMode: 'edition',
   resourceOptionsVisible: false,
   resourceSearchString: '',

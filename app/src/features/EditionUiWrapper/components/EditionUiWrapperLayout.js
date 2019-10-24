@@ -179,19 +179,26 @@ const EditionUiWrapperLayout = ( {
               isActive: navLocation === 'summary',
               content: `${translate( 'Contents' )}`,
             },
-            navLocation === 'editor' ?
+            navLocation === 'editor-section' ?
             {
               isActive: true,
               content: `/ ${realActiveSectionTitle}`,
               href: `/productions/${productionId}/sections/${sectionId}`,
             }
             : undefined,
-            // link to livrary view
+            // link to library view
             {
               href: `/productions/${productionId}/library`,
               isActive: navLocation === 'library',
               content: translate( 'Library' ),
             },
+            navLocation === 'editor-resource' ?
+            {
+              isActive: true,
+              content: `/ ${realActiveSectionTitle}`,
+              href: `/productions/${productionId}/resources/${sectionId}`,
+            }
+            : undefined,
             {
               href: `/productions/${productionId}/glossary`,
               isActive: navLocation === 'glossary',

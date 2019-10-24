@@ -175,13 +175,33 @@ const MainSectionColumn = ( {
   };
   const handleTitleBlur = ( title ) => {
     if ( title.length ) {
-      const newSection = {
-        ...section,
-        metadata: {
-          ...section.metadata,
-          title
-        }
-      };
+      let newSection;
+      if ( section.metadata.type === 'bib' ) {
+        newSection = {
+          ...section,
+          metadata: {
+            ...section.metadata,
+            title
+          },
+          data: {
+            ...section.data,
+            citations: [ {
+              ...section.data.citations[0],
+              title
+            } ]
+          }
+        };
+      }
+ else {
+        newSection = {
+          ...section,
+          metadata: {
+            ...section.metadata,
+            title
+          }
+        };
+      }
+
       handleUpdateSection( newSection );
     }
   };

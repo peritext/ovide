@@ -195,7 +195,7 @@ const SummaryViewLayout = ( {
      * const sectionsIds = sectionsList.map( ( section ) => section.id );
      * const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex );
      */
-    const levelMaps = sectionsList.reduce( ( res, item ) => ( {
+    const levelMaps = sectionsOrder.reduce( ( res, item ) => ( {
       ...res,
       [item.resourceId]: item.level
     } ), {} );

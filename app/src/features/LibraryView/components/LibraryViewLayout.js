@@ -688,11 +688,14 @@ class LibraryViewLayout extends Component {
               setSelectedResourcesIds( newSelectedResourcesIds );
           };
           // console.log('related assets', relatedAssets);
+          const handleGoToResource = () => onGoToResource( resource.id );
+
           return (
             <ResourceCard
               isActive={ isSelected }
               onClick={ handleClick }
               onEdit={ handleEdit }
+              onGoToResource={ handleGoToResource }
               onDelete={ handleDelete }
               numberOfMentions={ resourcesNumberOfMentionsMap[resource.id] }
               resource={ resource }

@@ -121,6 +121,13 @@ class SectionViewContainer extends Component {
     if ( !( this.props.editedProduction && this.props.editedProduction.id === productionId ) ) {
       this.props.actions.activateProduction( { productionId } );
     }
+    if ( this.props.editedProduction ) {
+      const activeResourceId = this.props.match.params.sectionId;
+      if ( this.props.editedProduction.resources && this.props.editedProduction.resources[activeResourceId] ) {
+        const nextSection = this.props.editedProduction.resources[activeResourceId];
+        this.props.actions.setAsideTabMode( nextSection.metadata.type === 'section' ? 'summary' : 'library' );
+      }
+    }
 
     this.props.actions.resetDraftEditorsStates();
     this.props.actions.setEditedSectionId( this.props.match.params.sectionId );
@@ -157,17 +164,29 @@ class SectionViewContainer extends Component {
       this.props.actions.setEditedSectionId( nextSectionId );
       // packing up : saving all last editor states
       const section = this.props.editedProduction.resources[prevSectionId];
+      const nextSection = this.props.editedProduction.resources[nextSectionId];
+      if ( nextSection ) {
+        this.props.actions.setAsideTabMode( nextSection.metadata.type === 'section' ? 'summary' : 'library' );
+      }
       const newSection = {
         ...section,
-        contents: editorStates[prevSectionId] ? convertToRaw( editorStates[prevSectionId].getCurrentContent() ) : section.data.contents.contents,
-        notes: Object.keys( section.data.contents.notes || {} ).reduce( ( result, noteId ) => ( {
-          ...result,
-          [noteId]: {
-            ...section.data.contents.notes[noteId],
-            contents: editorStates[noteId] ? convertToRaw( editorStates[noteId].getCurrentContent() ) : section.data.contents.notes[noteId].contents,
+        data: {
+          ...section.data,
+          contents: {
+            ...section.data.contents,
+            contents: editorStates[prevSectionId] ? convertToRaw( editorStates[prevSectionId].getCurrentContent() ) : section.data.contents.contents,
+            notes: Object.keys( section.data.contents.notes || {} ).reduce( ( result, noteId ) => ( {
+              ...result,
+              [noteId]: {
+                ...section.data.contents.notes[noteId],
+                contents: editorStates[noteId] ? convertToRaw( editorStates[noteId].getCurrentContent() ) : section.data.contents.notes[noteId].contents,
+              }
+            } ), {} )
           }
-        } ), {} )
+        }
+
       };
+
       this.props.actions.updateResource( {
         resourceId: prevSectionId,
         productionId: prevProductionId,

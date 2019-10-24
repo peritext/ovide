@@ -100,6 +100,7 @@ class ResourceCard extends Component {
         onClick,
         isSelectable,
         productionId,
+        onGoToResource,
       },
       context: {
         t,
@@ -258,6 +259,16 @@ class ResourceCard extends Component {
                     data-tip={ translate( 'settings' ) }
                   >
                     <CenteredIcon src={ icons.settings.black.svg } />
+                  </Button>
+
+                  <Button
+                    onClick={ onGoToResource }
+                    data-place={ 'left' }
+                    data-effect={ 'solid' }
+                    data-for={ 'tooltip' }
+                    data-tip={ translate( 'edit contents' ) }
+                  >
+                    <CenteredIcon src={ icons.edit.black.svg } />
                   </Button>
 
                   <Button

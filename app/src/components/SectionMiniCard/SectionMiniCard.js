@@ -43,7 +43,7 @@ const SectionMiniCard = ( {
   cardStyle = {},
   isActive,
   section,
-  level,
+  level = 0,
   productionId,
   onDeleteSection,
   onOpenSettings,

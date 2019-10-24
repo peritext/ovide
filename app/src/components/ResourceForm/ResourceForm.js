@@ -504,10 +504,6 @@ class ResourceForm extends Component {
         {
           ( formApi ) => {
             const handleFormAPISubmit = formApi.submitForm;
-            const handleAddAndEdit = () => {
-              formApi.submitForm();
-              onGoToResource();
-            };
             return (
               <form
                 ref={ bindRef }
@@ -710,19 +706,7 @@ class ResourceForm extends Component {
                               {asNewResource ? translate( `Add ${formApi.getValue( 'metadata.type' ) || 'item'} to library` ) : translate( `Update ${( resource && resource.metadata.type ) || 'item'}` )}
                             </Button>
                           </StretchedLayoutItem>
-                          {asNewResource && allowGoToResource &&
-                          <StretchedLayoutItem isFlex={ 1 }>
-                            <Button
-                              type={ 'submit' }
-                              isFullWidth
-                              onClick={ handleAddAndEdit }
-                              isDisabled={ !formApi.getValue( 'metadata.type' ) || isEmpty( formApi.getValue( 'data' ) ) }
-                              isColor={ 'success' }
-                            >
-                              {translate( 'Add and edit' ) }
-                            </Button>
-                          </StretchedLayoutItem>
-                          }
+
                           <StretchedLayoutItem isFlex={ 1 }>
                             <Button
                               isFullWidth
