@@ -143,6 +143,7 @@ const EditionViewLayout = ( {
     'Print mentions': translate( 'Print mentions' ),
     'Point of view of': translate( 'Point of view of' ),
     'untitled section': translate( 'untitled section' ),
+    'Expand contents': translate( 'Expand contents' ),
     'references': translate( 'references' ),
     'events': translate( 'events' ),
     'places': translate( 'places' ),

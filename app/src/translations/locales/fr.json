@@ -8,6 +8,7 @@
   "Features.LibraryView.one mention in contents": "une mention dans les contenus",
   "Features.LibraryView.{n} mentions in contents": "{n} mentions dans les contenus",
   "Components.AuthorsManager.Add an author": "Ajouter un.e auteur.e",
+  "Features.LibraryView.edit contents": "éditer les contenus",
   "Components.AuthorsManager.Authors": "Auteur.e.s",
   "Components.AuthorsManager.Explanation about the production authors": "Les auteur.e.s de la production peuvent inclure écrivain.e.s, graphistes, edit.eur.trice.s,...",
   "Components.AuthorsManager.New author": "Nouvel.le auteur.e",
@@ -64,6 +65,7 @@
   "bib": "référence bibliographique",
   "image": "image",
   "table": "table",
+  "glossary": "entrée de glossaire",
   "embed": "code embarqué",
   "video": "vidéo",
   "webpage": "page web",
@@ -772,6 +774,7 @@
   "Explanation about html": "Vous pouvez ajouter du code HTML d'embarquement provenant d'un service externe, ou même écrire du code HTML ou SVG qui sera exécuté dans les mentions de cette ressource.",
   "Features.EditionView.Explanation about additional document-level HTML code": "Ajouter du code HTML qui sera appliqué à toute l'édition (ex. intégration de polices de caractère spécifiques via des balises <link>)",
   "Features.EditionView.This item is mentionned in": "Cet élément est mentionné dans",
+  "Features.EditionView.Expand contents": "Lire les contenus associés",
   "Features.EditionView.Browse online": "Visiter en ligne",
   "Features.EditionView.Mentions of the item": "Mentions de la ressource",
   "Features.EditionView.webpage": "page web",
@@ -919,5 +922,6 @@
   "Components.ResourceForm.danger": "danger",
   "Features.SectionView.this resource is annotated with contents": "cette ressource est annotée avec des contenus",
   "Features.SectionView.Edit resource": "Éditer la ressource",
-  "Features.SectionView.Resource title": "Titre de la ressource"
+  "Features.SectionView.Resource title": "Titre de la ressource",
+  "Features.EditionView.resourceSections": "Fiches de ressources"
 }

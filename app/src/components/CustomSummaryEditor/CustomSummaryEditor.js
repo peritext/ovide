@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { resourceHasContents, defaultSortResourceSections } from 'peritext-utils';
 
 import {
   Button,
@@ -22,6 +23,7 @@ import arrayMove from 'array-move';
 import SectionMiniCard from '../SectionMiniCard';
 
 import { translateNameSpacer } from '../../helpers/translateUtils';
+import { getResourceTitle } from '../../helpers/resourcesUtils';
 
 export default class CustomSummaryEditor extends Component {
   static contextTypes = {
@@ -54,7 +56,9 @@ export default class CustomSummaryEditor extends Component {
       },
       props: {
         value: propsValue = { active: false },
-        onChange
+        onChange,
+        blockSettings,
+        summaryType = 'sections',
       },
       context: {
         production = {},
@@ -102,7 +106,8 @@ export default class CustomSummaryEditor extends Component {
 
     const { sectionsOrder = [], resources = {} } = production;
 
-    const existingSummary = sectionsOrder.map( ( { resourceId, level } ) => {
+    const existingSummary = summaryType === 'sections' ?
+     sectionsOrder.map( ( { resourceId, level } ) => {
       if ( resources[resourceId] ) {
         const thatSection = resources[resourceId];
         return {
@@ -111,7 +116,22 @@ export default class CustomSummaryEditor extends Component {
           resourceId
         };
       }
-    } ).filter( ( s ) => s );
+    } ).filter( ( s ) => s )
+    :
+    Object.keys( production.resources )
+    .filter( ( resourceId ) => {
+      const resource = production.resources[resourceId];
+      return resource.metadata.type !== 'section'
+      && blockSettings.resourceTypes.includes( resource.metadata.type )
+      && resourceHasContents( resource );
+    } )
+    .map( ( resourceId ) => ( {
+      resourceId,
+      level: 0,
+      type: production.resources[resourceId].metadata.type,
+      title: getResourceTitle( production.resources[resourceId] )
+    } ) )
+    .sort( defaultSortResourceSections );
 
     const actionableSummary = summary.map( ( { level, resourceId } ) => {
       const thatSection = ( resources[resourceId] || { metadata: {} } );
@@ -273,7 +293,7 @@ export default class CustomSummaryEditor extends Component {
                           const handleAddBlock = () => {
                             addBlockToSummary( {
                               resourceId: summaryItem.resourceId,
-                              level: summaryItem.level
+                              level: summaryItem.level || 0
                             } );
                           };
                           const isDisabled = actionableSummary.find( ( i ) => i.resourceId === summaryItem.resourceId ) !== undefined;

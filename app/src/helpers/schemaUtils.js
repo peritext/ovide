@@ -104,6 +104,7 @@ export const convertQuinoaStoryToProduction = ( story ) => {
         // ...section,
         metadata: {
           ...section.metadata,
+          type: 'section',
           authors: section.metadata.authors.map( convertQuinoaStoryToProduction )
         },
         data: {

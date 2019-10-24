@@ -9,6 +9,7 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { getResourceTitle } from 'peritext-utils';
 
 /**
  * Imports Project utils
@@ -65,7 +66,7 @@ class EditionUiWrapperContainer extends Component {
     }
   }
 
-  getActiveSectionTitle = ( production, sectionId ) => production.resources[sectionId].metadata.title;
+  getActiveSectionTitle = ( production, sectionId ) => getResourceTitle( production.resources[sectionId] );
 
   getActiveEditionTitle = ( production, editionId ) => production.editions[editionId].metadata.title;
 

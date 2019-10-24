@@ -114,20 +114,28 @@ export const buildCitations = ( assets, props ) => {
     contextualizers
   } = production;
   const { style, locale } = getCitationModels( production );
+  const { data = {} } = activeSection;
+  const {
+    contents = {
+      contents: {},
+      notes: {},
+      notesOrder: []
+    }
+  } = data;
 
     /*
      * Citations preparation
      */
     // isolate all contextualizations quoted inside editors
-    const quotedEntities = activeSection.data.contents.notesOrder.reduce( ( contents, noteId ) => [
-      ...contents,
-      activeSection.data.contents.notes[noteId].contents,
-    ], [ activeSection.data.contents.contents ] )
-    .reduce( ( entities, contents ) =>
+    const quotedEntities = contents.notesOrder.reduce( ( theseContents, noteId ) => [
+      ...theseContents,
+      contents.notes[noteId].contents,
+    ], [ contents.contents ] )
+    .reduce( ( entities, theseContents ) =>
       [
         ...entities,
-        ...Object.keys( contents && contents.entityMap || {} ).reduce( ( localEntities, entityId ) => {
-          const entity = contents.entityMap[entityId];
+        ...Object.keys( theseContents && theseContents.entityMap || {} ).reduce( ( localEntities, entityId ) => {
+          const entity = theseContents.entityMap[entityId];
           const isContextualization = entity.type === INLINE_ASSET || entity.type === BLOCK_ASSET;
           if ( isContextualization && assets && assets[entity.data.asset.id] ) {
             return [ ...localEntities, entity.data.asset.id ];

@@ -373,14 +373,25 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
             const actualValue = value || {};
             if ( model.uiType ) {
               switch ( model.uiType ) {
-                case 'customSummary':
+                case 'customSectionsSummary':
                   return (
                     <CustomSummaryEditor
                       value={ actualValue }
                       onChange={ ( val ) => onChange( path, val ) }
                       translate={ translate }
+                      summaryType={ 'sections' }
                     />
                   );
+                  case 'customResourcesSummary':
+                      return (
+                        <CustomSummaryEditor
+                          value={ actualValue }
+                          onChange={ ( val ) => onChange( path, val ) }
+                          translate={ translate }
+                          summaryType={ 'resources' }
+                          blockSettings={ totalObject }
+                        />
+                      );
                 default:
                   return null;
               }

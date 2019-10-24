@@ -32,17 +32,30 @@ export const updateNotesFromContentsEditor = ( props ) => {
     updateSection,
   } = props;
   const {
+    data = {}
+  } = activeSection;
+  const {
+    contents = {
+      contents: {},
+      notes: {},
+      notesOrder: []
+    }
+  } = data;
+  const {
     // newNotes,
     notesOrder
-  } = updateNotesFromEditor( editorStates[sectionId], { ...activeSection.data.contents.notes } );
+  } = updateNotesFromEditor( editorStates[sectionId], { ...contents.notes } );
   const newSection = activeSection;
   // newSection.data.contents.notes = newNotes;
-  newSection.data.contents.notesOrder = notesOrder;
+  const newContents = {
+    ...contents,
+    notesOrder,
+  };
+  newSection.data = {
+    ...newSection.data,
+    contents: newContents
+  };
 
-  /*
-   * if (newNotes !== activeSection.data.contents.notes) {
-   * updateSection( activeProductionId, sectionId, newSection );
-   */
     updateSection( newSection );
   // }
 };
@@ -64,8 +77,16 @@ export const updateContextualizationsFromEditor = ( props ) => {
     } = props;
     const activeProductionId = production.id;
     const activeSectionId = activeSection.id;
+    const { data = {} } = activeSection;
+    const {
+      contents = {
+        contents: {},
+        notes: {},
+        notesOrder: []
+      }
+    } = data;
     // regroup all eligible editorStates
-    const usedEditorStates = activeSection.data.contents.notesOrder.reduce( ( result, noteId ) => {
+    const usedEditorStates = contents.notesOrder.reduce( ( result, noteId ) => {
       return [
       ...result,
       editorStates[noteId]

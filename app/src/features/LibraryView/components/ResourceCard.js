@@ -181,7 +181,7 @@ class ResourceCard extends Component {
               <Columns style={ { marginBottom: 0 } }>
                 <Column isSize={ 2 }>
                   <CenteredIcon
-                    src={ icons[type].black.svg }
+                    src={ icons[type] && icons[type].black.svg }
                     isSize={ '32x32' }
                   />
 
