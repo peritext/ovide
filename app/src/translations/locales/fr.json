@@ -917,6 +917,15 @@
   "Components.CustomSummaryEditor.Add": "Ajouter",
   "Components.CustomSummaryEditor.Update": "Mettre à jour",
   "Components.CustomSummaryEditor.Cancel": "Annuler",
+
+  "Components.ContextualizationEditor.prefix": "préfixe",
+  "Components.ContextualizationEditor.Explanation about prefix parameter for contextualizer bib": "texte à ajouter avant la citation",
+  "Components.ContextualizationEditor.locator": "localisation",
+  "Components.ContextualizationEditor.Explanation about locator parameter for contextualizer bib": "numéro de page, de paragraphe,...",
+  "Components.ContextualizationEditor.suffix": "suffixe",
+  "Components.ContextualizationEditor.Explanation about suffix parameter for contextualizer bib": "texte à ajouter après la citation",
+  "Components.ContextualizationEditor.Edit resource": "éditer la ressource",
+
   "Components.EditionForm.Edition sections summary": "Sommaire des sections de l'édition",
   "Components.EditionForm.Explanation about the edition sections summary": "Vous pouvez configurer quelles sections intégrer dans l'édition et dans quel ordre",
   "Components.ResourceForm.danger": "danger",
