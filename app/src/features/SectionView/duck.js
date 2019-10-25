@@ -45,6 +45,7 @@ const SET_EDITOR_PASTING_STATUS = 'SET_EDITOR_PASTING_STATUS';
 const SET_SELECTED_CONTEXTUALIZATION_ID = 'SET_SELECTED_CONTEXTUALIZATION_ID';
 const SET_EDITED_RESOURCE_ID = 'SET_EDITED_RESOURCE_ID';
 const SET_EDITED_CONTEXTUALIZATION_ID = 'SET_EDITED_CONTEXTUALIZATION_ID';
+const SET_EDITED_CONTEXTUALIZATION_TYPE = 'SET_EDITED_CONTEXTUALIZATION_TYPE';
 const SET_PREVIEW_MODE = 'SET_PREVIEW_MODE';
 
 /**
@@ -190,6 +191,11 @@ export const setPreviewMode = ( payload ) => ( {
 
 export const setEditedContextualizationId = ( payload ) => ( {
   type: SET_EDITED_CONTEXTUALIZATION_ID,
+  payload,
+} );
+
+export const setEditedContextualizationType = ( payload ) => ( {
+  type: SET_EDITED_CONTEXTUALIZATION_TYPE,
   payload,
 } );
 
@@ -340,6 +346,7 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_EDITOR_PASTING_STATUS:
     case SET_SELECTED_CONTEXTUALIZATION_ID:
     case SET_EDITED_CONTEXTUALIZATION_ID:
+    case SET_EDITED_CONTEXTUALIZATION_TYPE:
     case SET_EDITED_RESOURCE_ID:
     case SET_PREVIEW_MODE:
       const propName = getStatePropFromActionSet( action.type );
@@ -589,6 +596,7 @@ const uploadStatus = ( state ) => state.ui.uploadStatus;
 const editorPastingStatus = ( state ) => state.ui.editorPastingStatus;
 const selectedContextualizationId = ( state ) => state.ui.selectedContextualizationId;
 const editedContextualizationId = ( state ) => state.ui.editedContextualizationId;
+const editedContextualizationType = ( state ) => state.ui.editedContextualizationType;
 const editedResourceId = ( state ) => state.ui.editedResourceId;
 const previewMode = ( state ) => state.ui.previewMode;
 
@@ -618,6 +626,7 @@ export const selector = createStructuredSelector( {
   editorPastingStatus,
   selectedContextualizationId,
   editedContextualizationId,
+  editedContextualizationType,
   editedResourceId,
   previewMode,
 

@@ -69,6 +69,10 @@ export default class ContextualizationForm extends Component {
   render = () => {
     const {
 
+      props: {
+        insertionType = 'block'
+      },
+
       /*
        * props: {
        *   translate,
@@ -92,7 +96,7 @@ export default class ContextualizationForm extends Component {
       }
     } = contextualization;
     const activeContextualizer = peritextConfig.contextualizers[contextualizer.type];
-    const profile = ( activeContextualizer && activeContextualizer.meta && activeContextualizer.meta.profile.block ) || {};
+    const profile = ( activeContextualizer && activeContextualizer.meta && activeContextualizer.meta.profile[insertionType] ) || {};
     const translate = translateNameSpacer( t, 'Components.ContextualizationEditor' );
 
     const contextualizerModuleOptions = profile.options || {};
@@ -130,8 +134,8 @@ export default class ContextualizationForm extends Component {
       const newContextualizerModuleOptions = (
         peritextConfig.contextualizers[type] &&
         peritextConfig.contextualizers[type].meta &&
-        peritextConfig.contextualizers[type].meta.profile.block &&
-        peritextConfig.contextualizers[type].meta.profile.block.options
+        peritextConfig.contextualizers[type].meta.profile[insertionType] &&
+        peritextConfig.contextualizers[type].meta.profile[insertionType].options
       ) || {};
       const defaults = Object.keys( newContextualizerModuleOptions ).reduce( ( res, key ) => ( {
         ...res,
@@ -167,11 +171,12 @@ export default class ContextualizationForm extends Component {
           }
         } );
 
-        return matches !== undefined;
+        return matches !== undefined && contextualizerModule.meta.profile[insertionType];
       } );
 
     return (
       <form>
+        {insertionType === 'block' &&
         <Control>
           <ExplainedLabel
             title={ translate( 'Custom title' ) }
@@ -183,7 +188,8 @@ export default class ContextualizationForm extends Component {
             placeholder={ translate( 'Custom title' ) }
             onChange={ handleTitleChange }
           />
-        </Control>
+        </Control>}
+        {insertionType === 'block' &&
         <Control>
           <ExplainedLabel
             title={ translate( 'Custom legend' ) }
@@ -196,6 +202,7 @@ export default class ContextualizationForm extends Component {
             onChange={ handleLegendChange }
           />
         </Control>
+        }
         <Control>
           <ExplainedLabel
             title={ translate( 'Mention visibility' ) }

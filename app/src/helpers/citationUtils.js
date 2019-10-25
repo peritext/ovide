@@ -180,9 +180,9 @@ export const buildCitations = ( assets, props ) => {
         return {
           citationID: key1,
           citationItems: resourceToCslJSON( resource ).map( ( ref ) => ( {
-            locator: contextualizer.locator,
-            prefix: contextualizer.prefix,
-            suffix: contextualizer.suffix,
+            locator: contextualizer.parameters ? contextualizer.parameters.locator : contextualizer.locator,
+            prefix: contextualizer.parameters ? contextualizer.parameters.prefix : contextualizer.prefix,
+            suffix: contextualizer.parameters ? contextualizer.parameters.suffix : contextualizer.suffix,
             // ...contextualizer,
             id: ref.id,
           } ) ),

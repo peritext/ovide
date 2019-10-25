@@ -81,6 +81,7 @@ const SectionViewLayout = ( {
   editedResourceId,
   previewMode,
   editedContextualizationId,
+  editedContextualizationType,
 
   actions: {
     setAsideTabMode,
@@ -139,6 +140,7 @@ const SectionViewLayout = ( {
     deleteAsset,
 
     setEditedContextualizationId,
+    setEditedContextualizationType,
   },
   goToSection,
   summonAsset,
@@ -659,6 +661,7 @@ const SectionViewLayout = ( {
                 selectedContextualizationId,
                 setAssetRequestContentId,
                 setEditedResourceId,
+                setEditedContextualizationId,
                 setEditorPastingStatus,
                 setErrorMessage,
                 setInternalLinkModalFocusData,
@@ -684,6 +687,9 @@ const SectionViewLayout = ( {
 
                 updateContextualization,
                 editedContextualizationId,
+
+                editedContextualizationType,
+                setEditedContextualizationType,
 
                 onGoToResource,
                 onResourceEditAttempt: handleResourceEditAttempt,

@@ -190,7 +190,7 @@
     "peritext-schemas": "^0.2.1",
     "peritext-template-deucalion": "^0.2.1",
     "peritext-template-pyrrah": "^0.2.1",
-    "peritext-utils": "^0.2.1",
+    "peritext-utils": "^0.2.2",
     "pigeon-maps": "^0.12.1",
     "pigeon-overlay": "^0.2.3",
     "pouchdb": "^6.4.3",

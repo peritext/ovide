@@ -5,6 +5,7 @@ import {
   StretchedLayoutContainer,
   Level,
   StretchedLayoutItem,
+  Button,
   Title,
 } from 'quinoa-design-library/components/';
 import Form from './ContextualizationForm';
@@ -73,6 +74,8 @@ class ContextualizationEditor extends Component {
         contextualizer,
         resource,
         productionId,
+        onOpenResource,
+        insertionType,
 
         /*
          * assets,
@@ -165,7 +168,17 @@ class ContextualizationEditor extends Component {
             contextualization={ contextualization }
             resource={ resource }
             onChange={ handleChange }
+            insertionType={ insertionType }
           />
+        </StretchedLayoutItem>
+        <StretchedLayoutItem>
+          <Button
+            isFullWidth
+            isColor={ 'primary' }
+            onClick={ onOpenResource }
+          >
+            {translate( 'Edit resource' )}
+          </Button>
         </StretchedLayoutItem>
       </StretchedLayoutContainer>
     );

@@ -82,7 +82,7 @@ import GlossaryMention from './GlossaryMention';
 import HeaderOneButton from './buttons/HeaderOneButton';
 import HeaderTwoButton from './buttons/HeaderTwoButton';
 import IconBtn from '../IconBtn';
-import InlineCitation from './InlineCitation';
+import InlineContextualizationContainer from './InlineContextualizationContainer';
 import ItalicButton from './buttons/ItalicButton';
 import LinkButton from './buttons/LinkButton';
 import GlossaryButton from './buttons/GlossaryButton';
@@ -122,9 +122,9 @@ const {
  * For inline assets we have a component for each asset type
  */
 const inlineAssetComponents = {
-  bib: InlineCitation,
   glossary: GlossaryMention,
-  webpage: LinkContextualization
+  webpage: LinkContextualization,
+  bib: InlineContextualizationContainer,
 };
 
 /**
@@ -343,7 +343,9 @@ class ContentsEditor extends Component {
     deleteContextualizationFromId: this.props.deleteContextualizationFromId,
     removeFormattingForSelection: this.removeFormattingForSelection,
     selectedContextualizationId: this.props.selectedContextualizationId,
+    editedContextualizationId: this.props.editedContextualizationId,
     setSelectedContextualizationId: this.props.setSelectedContextualizationId,
+    setEditedContextualizationType: this.props.setEditedContextualizationType,
   } )
 
   /**
@@ -424,6 +426,7 @@ class ContentsEditor extends Component {
           this.props.production.contextualizations !== nextProps.production.contextualizations ||
           this.props.activeSection.id !== nextProps.activeSection.id ||
           this.props.selectedContextualizationId !== nextProps.selectedContextualizationId ||
+          this.props.editedContextualizationId !== nextProps.editedContextualizationId ||
           this.props.renderingMode !== nextProps.renderingMode
         )
       ) {
@@ -681,6 +684,7 @@ class ContentsEditor extends Component {
       customContext: {
         citations,
         selectedContextualizationId: props.selectedContextualizationId,
+        editedContextualizationId: props.editedContextualizationId,
         productionAssets,
         renderingMode: props.renderingMode,
         productionId: props.production.id,
@@ -1042,6 +1046,7 @@ class ContentsEditor extends Component {
         customContext: {
           citations,
           selectedContextualizationId: this.props.selectedContextualizationId,
+          editedContextualizationId: this.props.editedContextualizationId,
           productionAssets: this.props.production.assets,
           renderingMode: this.props.renderingMode,
           productionId: this.props.production.id,
@@ -1628,7 +1633,6 @@ class ContentsEditor extends Component {
     const bindEditorRef = ( editor ) => {
       this.editor = editor;
     };
-
     return (
       <Content
         style={ componentStyle }
@@ -1876,9 +1880,11 @@ ContentsEditor.childContextTypes = {
   deleteContextualizationFromId: PropTypes.func,
   removeFormattingForSelection: PropTypes.func,
   selectedContextualizationId: PropTypes.string,
+  editedContextualizationId: PropTypes.string,
   setSelectedContextualizationId: PropTypes.func,
   startExistingResourceConfiguration: PropTypes.func,
   startNewResourceConfiguration: PropTypes.func,
+  setEditedContextualizationType: PropTypes.func,
   renderingMode: PropTypes.string,
 };
 

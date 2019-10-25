@@ -135,6 +135,7 @@ class BlockContainer extends Component {
       deleteContextualizationFromId,
       setSelectedContextualizationId,
       setEditedContextualizationId,
+      setEditedContextualizationType,
       production = {},
       t,
       // selectedContextualizationId,
@@ -185,6 +186,7 @@ class BlockContainer extends Component {
 
       if ( typeof setEditedContextualizationId === 'function' ) {
         setEditedContextualizationId( id );
+        setEditedContextualizationType( 'block' );
       }
     };
 
@@ -303,6 +305,7 @@ BlockContainer.contextTypes = {
   setSelectedContextualizationId: PropTypes.func,
   setEditedContextualizationId: PropTypes.func,
   selectedContextualizationId: PropTypes.string,
+  setEditedContextualizationType: PropTypes.func,
   production: PropTypes.object,
   t: PropTypes.func,
 };

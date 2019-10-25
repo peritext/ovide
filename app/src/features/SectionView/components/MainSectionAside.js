@@ -79,11 +79,14 @@ const MainSectionAside = ( {
   deleteAsset,
 
   editedContextualizationId,
+  editedContextualizationType,
   handleCloseEditedContextualization,
 
   previewMode,
   updateContextualization,
   updateContextualizer,
+  setEditedContextualizationId,
+  onResourceEditAttempt,
 
 }, { t } ) => {
 
@@ -354,6 +357,11 @@ const MainSectionAside = ( {
   }
  else if ( editedContextualizationId ) {
     const editedContextualization = contextualizations[editedContextualizationId];
+    const handleOpenResource = () => {
+      const resourceId = editedContextualization.sourceId;
+      setEditedContextualizationId( undefined );
+      onResourceEditAttempt( resourceId );
+    };
     return (
       <Column style={ { position: 'relative', height: '100%', width: '100%', background: 'white', zIndex: 3 } }>
         <StretchedLayoutContainer isAbsolute>
@@ -365,9 +373,11 @@ const MainSectionAside = ( {
               <ContextualizationEditor
                 isActive={ editedContextualization !== undefined }
                 contextualization={ editedContextualization }
+                insertionType={ editedContextualizationType }
                 resource={ editedContextualization && production.resources[editedContextualization.sourceId] }
                 contextualizer={ editedContextualization && production.contextualizers[editedContextualization.contextualizerId] }
                 onClose={ handleCloseEditedContextualization }
+                onOpenResource={ handleOpenResource }
                 updateContextualizer={ updateContextualizer }
                 updateContextualization={ updateContextualization }
                 productionId={ productionId }

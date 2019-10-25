@@ -103,6 +103,9 @@ const MainSectionColumn = ( {
 
   editedContextualizationId,
   handleCloseEditedContextualization,
+  setEditedContextualizationId,
+  setEditedContextualizationType,
+  editedContextualizationType,
 
   createAsset,
   updateAsset,
@@ -268,10 +271,13 @@ const MainSectionColumn = ( {
                 submitMultiResources,
                 editedContextualizationId,
                 handleCloseEditedContextualization,
+                setEditedContextualizationId,
+                editedContextualizationType,
 
                 previewMode,
                 updateContextualizer,
                 updateContextualization,
+                onResourceEditAttempt,
 
                 createAsset,
                 updateAsset,
@@ -282,7 +288,7 @@ const MainSectionColumn = ( {
             }
           />
         </StretchedLayoutItem>
-        <StretchedLayoutItem isFlex={ mainColumnMode === 'edition' && !editedResourceId ? 12 : 6 }>
+        <StretchedLayoutItem isFlex={ mainColumnMode === 'edition' && !editedResourceId && !editedContextualizationId ? 12 : 6 }>
           <Column
             isWrapper
             isSize={ 12 }
@@ -355,6 +361,7 @@ const MainSectionColumn = ( {
                     createResource={ createResource }
 
                     selectedContextualizationId={ selectedContextualizationId }
+                    editedContextualizationId={ editedContextualizationId }
                     setSelectedContextualizationId={ setSelectedContextualizationId }
 
                     updateContextualizer={ updateContextualizer }
@@ -386,6 +393,7 @@ const MainSectionColumn = ( {
                         internalLinkModalFocusData,
                         setInternalLinkModalFocusData,
                         createProductionObjects,
+                        setEditedContextualizationType,
                         createAsset,
                       }
                     }
