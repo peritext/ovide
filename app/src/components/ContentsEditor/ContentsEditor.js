@@ -125,6 +125,7 @@ const inlineAssetComponents = {
   glossary: GlossaryMention,
   webpage: LinkContextualization,
   bib: InlineContextualizationContainer,
+  image: InlineContextualizationContainer,
 };
 
 /**

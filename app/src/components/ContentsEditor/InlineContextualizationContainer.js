@@ -168,6 +168,10 @@ class InlineCitation extends Component {
     } = asset;
 
     const {
+      assets = {}
+    } = this.state;
+
+    const {
       visibility = {
         screened: true,
         paged: true
@@ -218,14 +222,15 @@ class InlineCitation extends Component {
         style={ { color: '#00A99D' } }
         key={ 0 }
       >
-        {ContextualizerComponent ?
-          <ContextualizerComponent
-            renderingMode={ renderingMode }
-            resource={ resource }
-            contextualizer={ contextualizer }
-            contextualization={ contextualization }
-          />
-        : null}
+        •
+        <ContextualizerComponent
+          renderingMode={ renderingMode }
+          resource={ resource }
+          contextualizer={ contextualizer }
+          contextualization={ contextualization }
+          assets={ assets }
+        />
+        •
       </span>,
       <span
         key={ 1 }

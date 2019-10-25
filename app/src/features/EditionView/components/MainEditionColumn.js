@@ -86,7 +86,6 @@ class PreviewWrapperInitial extends Component {
       production = {},
       edition = {},
     } = props;
-
     return new Promise( ( resolve, reject ) => {
 
       loadAssetsForEdition( {
@@ -126,7 +125,6 @@ class PreviewWrapperInitial extends Component {
     if ( !template || !initialProduction ) {
       return null;
     }
-
     const production = {
       ...initialProduction,
       assets: {

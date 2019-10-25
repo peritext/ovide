@@ -73,7 +73,7 @@ const ContextualizerOptionsForm = ( {
                 return (
                   <input
                     className={ 'input' }
-                    placeHolder={ translate( key ) }
+                    placeholder={ translate( key ) }
                     value={ value }
                     onChange={ handleInputChange }
                   />

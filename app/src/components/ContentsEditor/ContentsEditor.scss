@@ -438,5 +438,13 @@
         }
     }
 
+    .inline-images-container {
+        img {
+            max-width: 2rem;
+            max-height: 1rem;
+            padding-right: .3rem;
+        }
+    }
+
 
 }

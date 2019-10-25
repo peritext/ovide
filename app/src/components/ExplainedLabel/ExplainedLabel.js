@@ -11,7 +11,7 @@ import {
   // HelpPin,
 } from 'quinoa-design-library/components/';
 
-import HelpPin from '../HelpPin'
+import HelpPin from '../HelpPin';
 
 const ExplainedLabel = ( {
   title = '',
