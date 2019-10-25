@@ -24,6 +24,7 @@ import {
     buildCitations,
     findProspectionMatches
   } from './utils';
+import { resourceHasContents } from 'peritext-utils';
 
 const MIN_SEARCH_LENGTH = 2;
 
@@ -134,7 +135,9 @@ class AsideGlossary extends Component {
       const { production } = this.props;
 
         const { contextualizations, resources } = production;
-        const matches = production.sectionsOrder.reduce( ( result, { resourceId } ) => {
+        const matches = Object.keys( production.resources )
+        .filter( ( resourceId ) => resourceHasContents( production.resources[resourceId] ) )
+        .reduce( ( result, resourceId ) => {
             const section = production.resources[resourceId];
             return [
                 ...result,
@@ -214,16 +217,16 @@ class AsideGlossary extends Component {
         .filter( ( contextualizationId ) => production.contextualizations[contextualizationId].sourceId === resourceId );
 
         const searchStringLower = searchString.toLowerCase();
-    const mentions = relatedContextualizationsIds.map( ( contextualizationId ) => {
-        const contextualization = production.contextualizations[contextualizationId];
-        const sectionId = contextualization.targetId;
-        const section = production.resources[sectionId];
-        const editors = [ 'main', ...production.resources[sectionId].data.contents.notesOrder ];
-        let mention = {
-          sectionId,
-          contextualizationId,
-        };
-        editors.find( ( editorId ) => {
+        const mentions = relatedContextualizationsIds.map( ( contextualizationId ) => {
+          const contextualization = production.contextualizations[contextualizationId];
+          const sectionId = contextualization.targetId;
+          const section = production.resources[sectionId];
+          const editors = [ 'main', ...production.resources[sectionId].data.contents.notesOrder ];
+          let mention = {
+            sectionId,
+            contextualizationId,
+          };
+          editors.find( ( editorId ) => {
             let contents;
             if ( editorId === 'main' ) {
                 contents = section.data.contents.contents;
