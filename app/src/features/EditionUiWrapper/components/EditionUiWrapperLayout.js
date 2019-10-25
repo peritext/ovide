@@ -244,6 +244,8 @@ const EditionUiWrapperLayout = ( {
         onChange={ handleExportToFile }
       />
       <ReactTooltip id={ 'tooltip' } />
+      <ReactTooltip id={ 'help-tooltip' } />
+      <ReactTooltip id={ 'card-tooltip' } />
       <ReduxToastr
         timeOut={ 5000 }
         newestOnTop={ false }

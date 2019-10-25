@@ -221,8 +221,6 @@ export default class PaginatedList extends Component {
             }
             </Masonry>
         }
-
-          <Tooltip id={ 'tooltip' } />
         </div>
         {displayedPaginationItems &&
           displayedPaginationItems.length > 1 ?

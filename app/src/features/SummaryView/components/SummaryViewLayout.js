@@ -10,7 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { arrayMove } from 'react-sortable-hoc';
 import { v4 as genId } from 'uuid';
-import ReactTooltip from 'react-tooltip';
+import ReactTooltip from 'react-tooltip'
 import {
   Button,
   Column,
@@ -428,7 +428,6 @@ const SummaryViewLayout = ( {
           onDeleteConfirm={ handleDeleteSectionConfirm }
         />
       </StretchedLayoutContainer>
-      <ReactTooltip id={ 'card-tooltip' } />
     </Container>
     );
 };

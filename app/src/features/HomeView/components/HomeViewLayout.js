@@ -12,7 +12,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import FlipMove from 'react-flip-move';
 import { v4 as genId } from 'uuid';
-import ReactTooltip from 'react-tooltip';
 import { toastr } from 'react-redux-toastr';
 import {
   Button,
@@ -640,8 +639,6 @@ class HomeViewLayout extends Component {
           id={ 'footer' }
           translate={ this.translate }
         />
-
-        <ReactTooltip id={ 'tooltip' } />
 
       </section>
     );

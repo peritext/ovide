@@ -22,7 +22,6 @@ import {
    */
 } from 'quinoa-design-library/components';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
-import ReactTooltip from 'react-tooltip';
 
 /**
  * Imports Project utils
@@ -246,7 +245,6 @@ const EditionViewLayout = ( {
           </StretchedLayoutContainer>
         }
       />
-      <ReactTooltip id={ 'help-tooltip' } />
     </StretchedLayoutContainer>
   );
 };
