@@ -16,6 +16,7 @@ import Form from './ContextualizationForm';
 import { translateNameSpacer } from '../../helpers/translateUtils';
 import { getRelatedAssetsIds } from '../../helpers/assetsUtils';
 import { requestAssetData } from '../../helpers/dataClient';
+import peritextConfig from '../../peritextConfig.render';
 
 class ContextualizationEditor extends Component {
   constructor( props ) {
@@ -138,6 +139,8 @@ class ContextualizationEditor extends Component {
         else return resolve();
       } ) );
     };
+
+    const CustomForm = peritextConfig.contextualizers[contextualizer.type].ContextualizerFormComponent;
     return (
       <StretchedLayoutContainer
         isDirection={ 'vertical' }
@@ -162,14 +165,27 @@ class ContextualizationEditor extends Component {
           isFlex={ 1 }
         >
           <Level />
-          <Form
-            translate={ translate }
-            contextualizer={ contextualizer }
-            contextualization={ contextualization }
-            resource={ resource }
-            onChange={ handleChange }
-            insertionType={ insertionType }
-          />
+          {
+            CustomForm ?
+              <CustomForm
+                translate={ translate }
+                contextualizer={ contextualizer }
+                contextualization={ contextualization }
+                resource={ resource }
+                onChange={ handleChange }
+                insertionType={ insertionType }
+              />
+            :
+              <Form
+                translate={ translate }
+                contextualizer={ contextualizer }
+                contextualization={ contextualization }
+                resource={ resource }
+                onChange={ handleChange }
+                insertionType={ insertionType }
+              />
+          }
+
         </StretchedLayoutItem>
         <StretchedLayoutItem>
           <Button
