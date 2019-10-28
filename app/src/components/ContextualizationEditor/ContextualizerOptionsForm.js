@@ -1,12 +1,50 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   Control,
   Select,
   CodeEditor,
+  StretchedLayoutContainer,
 } from 'quinoa-design-library/components';
 
 import ExplainedLabel from '../ExplainedLabel';
+import StretchedLayoutItem from 'quinoa-design-library/components/StretchedLayoutItem';
+
+const ControlledInput = ( {
+  value,
+  onChange,
+  ...props,
+} ) => {
+  const [ actualValue, setActualValue ] = useState( value );
+
+  useEffect( () => {
+    setActualValue( value );
+  }, [ value ] );
+
+  const handleBlur = () => {
+    onChange( actualValue );
+  };
+
+  const handleChange = ( e ) => {
+    setActualValue( e.target.value );
+  };
+
+  const handleKeyDown = ( e ) => {
+    if ( e.key === 'Enter' ) {
+      onChange( actualValue );
+    }
+  };
+
+  return (
+    <input
+      value={ actualValue }
+      onChange={ handleChange }
+      onBlur={ handleBlur }
+      onKeyDown={ handleKeyDown }
+      { ...props }
+    />
+  );
+};
 
 const ContextualizerOptionsForm = ( {
   translate,
@@ -38,21 +76,95 @@ const ContextualizerOptionsForm = ( {
           const renderForm = () => {
             switch ( propertySchema.type ) {
               case 'number':
-                const handleInputNumberChange = ( e ) => {
-                  let newValue = e.target.value;
-                  newValue = +newValue;
-                  if ( !isNaN( newValue ) ) {
-                    handleParameterChange( key, newValue );
-                  }
-                };
-                return (
-                  <input
-                    className={ 'input' }
-                    placeholder={ translate( key ) }
-                    value={ value }
-                    onChange={ handleInputNumberChange }
-                  />
-                );
+                if ( propertySchema.uiType === 'time' ) {
+                  const totalSeconds = isNaN( +value ) ? 0 : +value;
+                  const seconds = totalSeconds % 3600;
+                  const minutes = ( totalSeconds - seconds ) % 60;
+                  const hours = parseInt( totalSeconds / 360, 10 );
+                  const handleHoursChange = ( val ) => {
+                    let newValue = val;
+                    newValue = +newValue;
+                    if ( !isNaN( newValue ) ) {
+                      const newTime = newValue * 3600 + minutes * 60 * seconds;
+                      handleParameterChange( key, newTime );
+                    }
+                  };
+                  const handleMinutesChange = ( val ) => {
+                    let newValue = val;
+                    newValue = +newValue;
+                    if ( !isNaN( newValue ) ) {
+                      const newTime = hours * 3600 + newValue * 60 * seconds;
+                      handleParameterChange( key, newTime );
+                    }
+                  };
+                  const handleSecondsChange = ( val ) => {
+                    let newValue = val;
+                    newValue = +newValue;
+                    if ( !isNaN( newValue ) ) {
+                      const newTime = hours * 3600 + minutes * 60 * newValue;
+                      handleParameterChange( key, newTime );
+                    }
+                  };
+                  return (
+                    <StretchedLayoutContainer
+                      className={ 'time-input-container' }
+                      isDirection={ 'horizontal' }
+                    >
+                      <StretchedLayoutItem>
+                        <ControlledInput
+                          className={ 'input' }
+                          placeholder={ translate( 'hours' ) }
+                          value={ hours }
+                          onChange={ handleHoursChange }
+                        />
+                      </StretchedLayoutItem>
+                      <StretchedLayoutItem>
+                        {translate( 'hours' )}
+                      </StretchedLayoutItem>
+                      <StretchedLayoutItem>
+                        <ControlledInput
+                          className={ 'input' }
+                          placeholder={ translate( 'minutes' ) }
+                          value={ minutes }
+                          onChange={ handleMinutesChange }
+                        />
+                      </StretchedLayoutItem>
+                      <StretchedLayoutItem>
+                        {translate( 'minutes' )}
+                      </StretchedLayoutItem>
+                      <StretchedLayoutItem>
+                        <ControlledInput
+                          className={ 'input' }
+                          placeholder={ translate( 'seconds' ) }
+                          value={ seconds }
+                          onChange={ handleSecondsChange }
+                        />
+                      </StretchedLayoutItem>
+                      <StretchedLayoutItem>
+                        {translate( 'seconds' )}
+                      </StretchedLayoutItem>
+                    </StretchedLayoutContainer>
+
+                  );
+                }
+ else {
+                  const handleInputNumberChange = ( e ) => {
+                    let newValue = e.target.value;
+                    newValue = +newValue;
+                    if ( !isNaN( newValue ) ) {
+                      handleParameterChange( key, newValue );
+                    }
+                  };
+                  return (
+                    <input
+                      className={ 'input' }
+                      placeholder={ translate( key ) }
+                      value={ value }
+                      onChange={ handleInputNumberChange }
+                    />
+                  );
+                }
+
               case 'string':
                 if ( propertySchema.code ) {
                   const handleCodeChange = ( code ) => {

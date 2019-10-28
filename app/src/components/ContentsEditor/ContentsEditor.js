@@ -126,6 +126,7 @@ const inlineAssetComponents = {
   webpage: LinkContextualization,
   bib: InlineContextualizationContainer,
   image: InlineContextualizationContainer,
+  video: InlineContextualizationContainer,
 };
 
 /**

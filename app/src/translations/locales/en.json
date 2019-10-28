@@ -651,6 +651,22 @@
   "Features.SectionView.bib": "bibliographic records",
   "Features.SectionView.delete this section": "delete this section",
   "Features.SectionView.edited recently": "edited recently",
+
+  "Features.SectionView.delete this image": "delete this image",
+  "Features.SectionView.delete this video": "delete this video",
+  "Features.SectionView.delete this embed": "delete this embed code",
+  "Features.SectionView.delete this glossary": "delete this glossary entry",
+  "Features.SectionView.delete this webpage": "delete this webpage",
+  "Features.SectionView.delete this table": "delete this table",
+  "Features.SectionView.delete this bib": "delete this reference",
+  "Features.SectionView.edit resource contents": "edit this resource's contents",
+
+  "Components.ContextualizationEditor.startTime": "start time",
+  "Components.ContextualizationEditor.endTime": "end time",
+  "Components.ContextualizationEditor.hours": "hours",
+  "Components.ContextualizationEditor.minutes": "minutes",
+  "Components.ContextualizationEditor.seconds": "seconds",
+
   "Features.SectionView.embed": "embed",
   "Features.SectionView.find a resource": "find an resource",
   "Features.SectionView.glossary": "glossary",

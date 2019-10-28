@@ -625,6 +625,14 @@
   "Features.SectionView.Untitled section": "Section sans titre",
   "Features.SectionView.Up to {n} files, with a maximum size of {s} Mb each": "Jusqu'à {n} fichiers, avec une taille maximale de {s} Mb chacun",
   "Features.SectionView.Where": "Où",
+
+  "Components.ContextualizationEditor.startTime": "début",
+  "Components.ContextualizationEditor.endTime": "fin",
+  "Components.ContextualizationEditor.hours": "heures",
+  "Components.ContextualizationEditor.minutes": "minutes",
+  "Components.ContextualizationEditor.seconds": "secondes",
+
+
   "Features.SectionView.Write bold text": "Écrire du texte gras",
   "Features.SectionView.Write italic text": "Écrire du texte italique",
   "Features.SectionView.\"#\" then space": "\"#\" puis espace",
@@ -931,6 +939,17 @@
   "Components.ResourceForm.danger": "danger",
   "Features.SectionView.this resource is annotated with contents": "cette ressource est annotée avec des contenus",
   "Features.SectionView.Edit resource": "Éditer la ressource",
+
+
+  "Features.SectionView.delete this image": "supprimer cette image",
+  "Features.SectionView.delete this video": "supprimer cette vidéo",
+  "Features.SectionView.delete this embed": "supprimer ce code à embarquer",
+  "Features.SectionView.delete this glossary": "supprimer cette entrée de glossaire",
+  "Features.SectionView.delete this webpage": "supprimer cette page web",
+  "Features.SectionView.delete this table": "supprimer ce tableau",
+  "Features.SectionView.delete this bib": "supprimer cette référence",
+  "Features.SectionView.edit resource contents": "éditer le contenu de cette ressource",
+
   "Features.SectionView.Resource title": "Titre de la ressource",
   "Features.EditionView.resourceSections": "Fiches de ressources"
 }

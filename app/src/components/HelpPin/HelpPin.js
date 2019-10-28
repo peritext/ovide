@@ -13,7 +13,8 @@ const HelpPin = ( {
   effect = 'solid',
   className = '',
 } ) =>
-  ( <span
+  ( 
+  <span
     className={ `help-pin ${className}` }
     style={ { position: 'relative' } }
     data-tip={ children }
@@ -25,7 +26,8 @@ const HelpPin = ( {
     <Icon >
       <FontAwesomeIcon icon={ faQuestionCircle } />
     </Icon>
-  </span> );
+  </span> 
+);
 
 HelpPin.propTypes = {
   effect: PropTypes.string,

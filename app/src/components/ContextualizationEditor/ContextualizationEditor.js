@@ -18,6 +18,8 @@ import { getRelatedAssetsIds } from '../../helpers/assetsUtils';
 import { requestAssetData } from '../../helpers/dataClient';
 import peritextConfig from '../../peritextConfig.render';
 
+import './ContextualizationEditor.scss';
+
 class ContextualizationEditor extends Component {
   constructor( props ) {
     super( props );

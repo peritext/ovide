@@ -33,9 +33,9 @@ import { silentEvent } from '../../helpers/misc';
 import { translateNameSpacer } from '../../helpers/translateUtils';
 
 /**
- * InlineCitation class for building react component instances
+ * InlineContextualizationContainer class for building react component instances
  */
-class InlineCitation extends Component {
+class InlineContextualizationContainer extends Component {
 
   /**
    * Component's context used properties
@@ -186,7 +186,7 @@ class InlineCitation extends Component {
     /**
      * Local functions
      */
-    const translate = translateNameSpacer( t, 'Components.InlineCitation' );
+    const translate = translateNameSpacer( t, 'Components.InlineContextualizationContainer' );
 
     /**
      * Callbacks handlers
@@ -244,7 +244,7 @@ class InlineCitation extends Component {
 /**
  * Component's properties types
  */
-InlineCitation.propTypes = {
+InlineContextualizationContainer.propTypes = {
 
   /**
    * The asset to consume for displaying the inline citation
@@ -272,4 +272,4 @@ InlineCitation.propTypes = {
   onAssetFocus: PropTypes.func,
 };
 
-export default InlineCitation;
+export default InlineContextualizationContainer;
