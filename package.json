@@ -188,7 +188,7 @@
     "peritext-generator-html-multi": "^0.1.4",
     "peritext-generator-html-singlepage": "^0.1.1",
     "peritext-schemas": "^0.2.1",
-    "peritext-template-deucalion": "^0.2.2",
+    "peritext-template-deucalion": "^0.2.4",
     "peritext-template-pyrrah": "^0.2.2",
     "peritext-utils": "^0.2.3",
     "pigeon-maps": "^0.12.1",
