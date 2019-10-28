@@ -111,7 +111,7 @@ export default class CustomSummaryEditor extends Component {
       if ( resources[resourceId] ) {
         const thatSection = resources[resourceId];
         return {
-          title: thatSection.metadata.title,
+          title: getResourceTitle(thatSection),
           level,
           resourceId
         };
@@ -121,8 +121,7 @@ export default class CustomSummaryEditor extends Component {
     Object.keys( production.resources )
     .filter( ( resourceId ) => {
       const resource = production.resources[resourceId];
-      return resource.metadata.type !== 'section'
-      && blockSettings.resourceTypes.includes( resource.metadata.type )
+      return blockSettings.resourceTypes.includes( resource.metadata.type )
       && resourceHasContents( resource );
     } )
     .map( ( resourceId ) => ( {
@@ -263,17 +262,6 @@ export default class CustomSummaryEditor extends Component {
                             );
                           } )
                         }
-                        {/* <SortableMiniSectionsList
-                          productionId={ production.id }
-                          items={ actionableSummary }
-                          onSortEnd={ handleOnSortEnd }
-                          setSectionIndex={ handleSetSectionIndex }
-                          maxSectionIndex={ summary.length - 1 }
-                          setSectionLevel={ handleSetSectionLevel }
-                          onDeleteSection={ handleDelete }
-                          useDragHandle
-                        /> */}
-
                       </StretchedLayoutItem>
                     </StretchedLayoutContainer>
                   </Column>

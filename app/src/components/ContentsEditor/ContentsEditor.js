@@ -947,7 +947,11 @@ class ContentsEditor extends Component {
     requestAsset( editorId, selection );
   }
 
-  hydrateEditorStates = ( contents, resourceId ) => {
+  hydrateEditorStates = ( contents = {
+    contents: {},
+    notes: {},
+    notesOrder: []
+  }, resourceId ) => {
     // console.log( 'avant', activeSection.data.contents.contents, activeSection.data.contents.contents && activeSection.data.contents.contents.entityMap );
     let mainContents;
     if ( contents.contents && contents.contents.entityMap ) {
