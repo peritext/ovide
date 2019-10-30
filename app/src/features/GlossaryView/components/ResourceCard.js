@@ -19,6 +19,7 @@ import {
   Card,
 } from 'quinoa-design-library/components';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
+import {getResourceTitle} from 'peritext-utils'
 
 /**
  * Imports Project utils
@@ -92,7 +93,7 @@ class ResourceCard extends Component {
       props: {
         resource,
         // assets,
-        getTitle,
+        // getTitle,
         onEdit,
         onDelete,
         numberOfMentions = 0,
@@ -135,7 +136,7 @@ class ResourceCard extends Component {
         />
       );
     }
-    else title = abbrevString( getTitle( resource ) || translate( 'untitled resource' ), 40 );
+    else title = abbrevString( getResourceTitle( resource ) || translate( 'untitled resource' ), 40 );
     let cardSize;
     switch ( resource.metadata.type ) {
 

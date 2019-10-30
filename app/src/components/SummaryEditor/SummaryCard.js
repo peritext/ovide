@@ -3,6 +3,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Tooltip from 'react-tooltip'
 import {
   Card,
   Column,
@@ -59,6 +60,7 @@ class SummaryCard extends Component {
       this.setState( {
         isEdited: !isEdited
       } );
+      Tooltip.rebuild();
     };
 
     const customTitle = summaryBlock.data && summaryBlock.data.customTitle;

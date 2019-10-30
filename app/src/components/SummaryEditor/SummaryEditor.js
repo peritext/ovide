@@ -8,6 +8,7 @@ import {
 } from 'quinoa-design-library/components/';
 import { v4 as genId } from 'uuid';
 import FlipMove from 'react-flip-move';
+import Tooltip from 'react-tooltip'
 import {
   DragDropContext,
   Droppable,
@@ -39,6 +40,10 @@ class SummaryEditor extends Component {
       summary
     };
     this.propagateSummaryChange = debounce( this.propagateSummaryChange, UPDATE_DELAY );
+  }
+
+  componentDidMount = () => {
+    Tooltip.rebuild();
   }
 
   componentWillReceiveProps = ( nextProps ) => {

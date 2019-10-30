@@ -969,5 +969,6 @@
   "Features.GlossaryView.edit contents": "éditer les contenus",
   "Features.GlossaryView.delete this glossary": "supprimer cette entrée de glossaire",
 
-  "Features.EditionView.resourceSections": "resources cards"
+  "Features.EditionView.resourceSections": "resources cards",
+  "Features.EditionView.Explanation about resourceSections": "a group of resources that can be of any type, to define automatically or manually"
 }

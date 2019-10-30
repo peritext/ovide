@@ -971,5 +971,6 @@
   "Features.GlossaryView.delete this glossary": "delete this glossary entry",
 
   "Features.SectionView.Resource title": "Titre de la ressource",
-  "Features.EditionView.resourceSections": "fiches de ressources"
+  "Features.EditionView.resourceSections": "fiches de ressources",
+  "Features.EditionView.Explanation about resourceSections": "un groupe de ressources pouvant être de tout type, à définir automatiquement ou manuellement"
 }

@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 import { v4 as genId } from 'uuid';
 // import { isEmpty } from 'lodash';
 import { Form, Text, TextArea } from 'react-form';
+import Tooltip from 'react-tooltip';
 import {
   BigSelect,
   Button,
@@ -71,6 +72,7 @@ class EditionForm extends Component {
   componentDidMount = () => {
     setTimeout( () => {
       if ( this.form ) {
+        Tooltip.rebuild();
         const inputs = this.form.getElementsByTagName( 'input' );
         if ( inputs && inputs.length ) {
           inputs[0].focus();
@@ -171,6 +173,7 @@ class EditionForm extends Component {
         const firstTemplateId = firstTemplate.meta.id;
         formApi.setValue( 'metadata.templateId', firstTemplateId );
       }
+      Tooltip.rebuild();
 
     };
     const handleEditionTemplateIdChange = ( thatTemplateId, formApi ) => {
@@ -179,6 +182,7 @@ class EditionForm extends Component {
         formApi.setValue( 'metadata.templateId', undefined );
       }
       formApi.setValue( 'metadata.templateId', thatTemplateId );
+      Tooltip.rebuild();
     };
 
     const handleSubmitFailure = ( error ) => {
