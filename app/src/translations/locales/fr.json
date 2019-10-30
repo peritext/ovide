@@ -193,6 +193,12 @@
   "Components.EditionForm.Title of the edition": "Titre de l'édition",
   "Components.EditionForm.Update edition": "Mettre à jour l'edition",
   "Components.EditionForm.deucalion": "deucalion",
+
+  "Components.EditionForm.callirhoe": "callirhoe",
+  "Components.EditionForm.Explanation about template callirhoe": "Un gabarit simple orientée vers les publications intermédiaires ou de corpora. Il permet d'afficher différentes lites de ressources sous la forme de cartes qui peuvent être lues.",
+  "Components.EditionForm.chrysaor": "chrysaor",
+  "Components.EditionForm.Explanation about template chrysaor": "Un système de colonnes orienté vers la visualisation des relations entre différents types de ressources.",
+
   "Components.EditionForm.metadata.type": "type",
   "Components.EditionForm.paged": "paginé",
   "Components.EditionForm.pyrrah": "pyrrha",
@@ -693,6 +699,17 @@
   "customSubtitle": "sous-titre spécifique",
   "customSummary": "sommaire spécifique",
   "customTitle": "titre spécifique",
+
+  "displayHeader": "afficher les en-têtes",
+  "Explanation about displayHeader": "choisir s'il faut afficher un aperçu des ressources dans leurs sections respectives",
+
+  "displayThumbnail": "afficher les vignettes",
+  "Explanation about displayThumbnail": "choisir s'il faut afficher un aperçu des ressources dans leur représentation dans les listes",
+
+  "hideEmptyResources": "cacher les ressources vides",
+  "Explanation about hideEmptyResources": "choisir s'il faut cacher les ressources qui n'ont pas de contenus attachés",
+
+
   "dataAssetId": "fichier de données",
   "description": "description",
   "endOfContents": "fin des contenus",
@@ -950,6 +967,9 @@
   "Features.SectionView.delete this bib": "supprimer cette référence",
   "Features.SectionView.edit resource contents": "éditer le contenu de cette ressource",
 
+  "Features.GlossaryView.edit contents": "edit contents",
+  "Features.GlossaryView.delete this glossary": "delete this glossary entry",
+
   "Features.SectionView.Resource title": "Titre de la ressource",
-  "Features.EditionView.resourceSections": "Fiches de ressources"
+  "Features.EditionView.resourceSections": "fiches de ressources"
 }

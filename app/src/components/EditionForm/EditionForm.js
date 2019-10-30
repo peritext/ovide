@@ -162,12 +162,16 @@ class EditionForm extends Component {
         formApi.resetAll();
       }
       const defaultEdition = createDefaultEdition();
-      const firstTemplate = getAvailableTemplates( thatType, this.props.availableTemplates );
-      const firstTemplateId = firstTemplate.length && firstTemplate[0] && firstTemplate[0].meta.id;
+      const typeTemplates = getAvailableTemplates( thatType, this.props.availableTemplates );
       formApi.setAllValues( defaultEdition );
       formApi.setValue( 'metadata.type', thatType );
       formApi.setValue( 'metadata.title', translate( thatType ) );
-      formApi.setValue( 'metadata.templateId', firstTemplateId );
+      if ( typeTemplates.length > 0 && typeTemplates.length < 2 ) {
+        const firstTemplate = typeTemplates[0];
+        const firstTemplateId = firstTemplate.meta.id;
+        formApi.setValue( 'metadata.templateId', firstTemplateId );
+      }
+
     };
     const handleEditionTemplateIdChange = ( thatTemplateId, formApi ) => {
       if ( thatTemplateId === undefined ) {
@@ -203,7 +207,15 @@ class EditionForm extends Component {
       deucalion: {
         black: require( '../../sharedAssets/deucalion.black.png' ),
         white: require( '../../sharedAssets/deucalion.white.png' ),
-      }
+      },
+      callirhoe: {
+        black: require( '../../sharedAssets/callirhoe.black.png' ),
+        white: require( '../../sharedAssets/callirhoe.white.png' ),
+      },
+      chrysaor: {
+        black: require( '../../sharedAssets/chrysaor.black.png' ),
+        white: require( '../../sharedAssets/chrysaor.white.png' ),
+      },
     };
 
     const handleUpdateCustomSummary = ( newCustomSummary ) => {
@@ -348,29 +360,6 @@ class EditionForm extends Component {
                               title={ translate( 'Description of the edition' ) }
                               explanation={ translate( 'Explanation about the edition description' ) }
                             />
-                            <TextArea
-                              className={ 'textarea' }
-                              type={ 'text' }
-                              id={ 'metadata.description' }
-                              field={ 'metadata.description' }
-                              placeholder={ translate( 'Edition description' ) }
-                            />
-                          </Control>
-                        </Field>
-                      </Column>
-                    </Column>}
-
-                    {formApi.getValue( 'metadata.type' ) &&
-                    <Column>
-                      <Column>
-                        <Field>
-                          <Control>
-                            <Label>
-                              {translate( 'Description of the edition' )}
-                              <HelpPin place={ 'right' }>
-                                {translate( 'Explanation about the edition description' )}
-                              </HelpPin>
-                            </Label>
                             <TextArea
                               className={ 'textarea' }
                               type={ 'text' }

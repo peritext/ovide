@@ -109,6 +109,13 @@
   "Components.EditionForm.Title of the edition": "Title of the edition",
   "Components.EditionForm.Update edition": "Update edition",
   "Components.EditionForm.deucalion": "deucalion",
+
+  "Components.EditionForm.callirhoe": "callirhoe",
+  "Components.EditionForm.Explanation about template callirhoe": "A simple template oriented toward in-progress or corpus-oriented publications. It allows to display different lists of resources as browsable cards.",
+  "Components.EditionForm.chrysaor": "chrysaor",
+  "Components.EditionForm.Explanation about template chrysaor": "A column-based layout template oriented toward visualizing relationship between several kinds of resources.",
+
+
   "Components.EditionForm.metadata.templateId": "templateId",
   "Components.EditionForm.metadata.type": "type",
   "Components.EditionForm.paged": "paged",
@@ -698,6 +705,16 @@
   "customSubtitle": "custom subtitle",
   "customSummary": "custom summary",
   "customTitle": "custom title",
+
+  "displayHeader": "display header",
+  "Explanation about displayHeader": "whether to display a preview of the resources in their respective sections",
+
+  "displayThumbnail": "display thumbnail",
+  "Explanation about displayThumbnail": "whether to display a preview of the resources in their respective representations in lists",
+
+  "hideEmptyResources": "hide empty resources",
+  "Explanation about hideEmptyResources": "whether to hide resources that don't have any attached contents",
+
   "dataAssetId": "data file",
   "description": "description",
   "endOfContents": "end of contents",
@@ -948,5 +965,9 @@
   "Components.ContextualizationEditor.Explanation about suffix parameter for contextualizer bib": "text to put after the citation",
   "Components.ContextualizationEditor.Edit resource": "edit resource",
 
-  "Features.EditionView.resourceSections": "Resources cards"
+
+  "Features.GlossaryView.edit contents": "éditer les contenus",
+  "Features.GlossaryView.delete this glossary": "supprimer cette entrée de glossaire",
+
+  "Features.EditionView.resourceSections": "resources cards"
 }

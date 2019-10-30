@@ -13,20 +13,20 @@ const HelpPin = ( {
   effect = 'solid',
   className = '',
 } ) =>
-  ( 
-  <span
-    className={ `help-pin ${className}` }
-    style={ { position: 'relative' } }
-    data-tip={ children }
-    data-for={ 'help-tooltip' }
-    data-type={ type }
-    data-place={ place }
-    data-effect={ effect }
+  (
+    <span
+      className={ `help-pin ${className}` }
+      style={ { position: 'relative' } }
+      data-tip={ children }
+      data-for={ 'help-tooltip' }
+      data-type={ type }
+      data-place={ place }
+      data-effect={ effect }
     >
-    <Icon >
-      <FontAwesomeIcon icon={ faQuestionCircle } />
-    </Icon>
-  </span> 
+      <Icon >
+        <FontAwesomeIcon icon={ faQuestionCircle } />
+      </Icon>
+    </span>
 );
 
 HelpPin.propTypes = {

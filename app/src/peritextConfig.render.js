@@ -1,8 +1,6 @@
 const resourceSchemas = require( 'peritext-schemas/resource' );
 const peritextConfig = {
-
   contextualizers: {
-
     bib: require( 'peritext-contextualizer-bib' ),
     glossary: require( 'peritext-contextualizer-glossary' ),
     webpage: require( 'peritext-contextualizer-webpage' ),
@@ -15,12 +13,16 @@ const peritextConfig = {
     },
   templates: [
     require( 'peritext-template-pyrrah' ).default,
-    require( 'peritext-template-deucalion' ).default
+    require( 'peritext-template-deucalion' ).default,
+    require( 'peritext-template-callirhoe' ).default,
+    require( 'peritext-template-chrysaor' ).default
   ],
   renderingModes: [ 'screened', 'paged' ],
   htmlBuilds: {
     'single-page-html': {
-      deucalion: true
+      deucalion: true,
+      callirhoe: true,
+      chrysaor: true
     }
   },
   generators: {

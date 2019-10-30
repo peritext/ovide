@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { resourceHasContents, defaultSortResourceSections } from 'peritext-utils';
+import { defaultSortResourceSections, buildResourceSectionsSummary } from 'peritext-utils';
 
 import {
   Button,
@@ -111,20 +111,15 @@ export default class CustomSummaryEditor extends Component {
       if ( resources[resourceId] ) {
         const thatSection = resources[resourceId];
         return {
-          title: getResourceTitle(thatSection),
+          title: getResourceTitle( thatSection ),
           level,
           resourceId
         };
       }
     } ).filter( ( s ) => s )
     :
-    Object.keys( production.resources )
-    .filter( ( resourceId ) => {
-      const resource = production.resources[resourceId];
-      return blockSettings.resourceTypes.includes( resource.metadata.type )
-      && resourceHasContents( resource );
-    } )
-    .map( ( resourceId ) => ( {
+    buildResourceSectionsSummary( { production, options: blockSettings } )
+    .map( ( { resourceId } ) => ( {
       resourceId,
       level: 0,
       type: production.resources[resourceId].metadata.type,

@@ -27,7 +27,7 @@ import {
   computeSectionFirstWords,
   silentEvent
 } from '../../helpers/misc';
-import {getResourceTitle} from '../../helpers/resourcesUtils';
+import { getResourceTitle } from '../../helpers/resourcesUtils';
 
 /**
  * Imports Components
@@ -65,7 +65,7 @@ const SectionMiniCard = ( {
   /**
    * Computed variables
    */
-  const title = getResourceTitle(section);
+  const title = getResourceTitle( section );
   const sectionTitle = (
     <span
       data-for={ 'tooltip' }
