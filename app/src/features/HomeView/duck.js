@@ -19,6 +19,7 @@ import {
   requestProductionCreation,
   requestProduction,
   requestProductionDeletion,
+  requestAssetData,
 
   /*
    * requestProductionUpdate,
@@ -217,9 +218,35 @@ export const duplicateProduction = ( payload ) => ( {
     return new Promise( ( resolve, reject ) => {
       requestProduction( payload.production.id )
         .then( ( { data: { production } } ) => {
+          return Object.keys( production.assets )
+          .reduce( ( cur, assetId ) =>
+            cur.then( ( activeProduction ) => {
+              return new Promise( ( res1, rej1 ) => {
+                const asset = activeProduction.assets[assetId];
+                requestAssetData( activeProduction.id, asset )
+                .then( ( assetData ) => {
+                  const newAsset = {
+                    ...asset,
+                    data: assetData
+                  };
+                  const newProduction = {
+                    ...activeProduction,
+                    assets: {
+                      ...activeProduction.assets,
+                      [asset.id]: newAsset
+                    }
+                  };
+                  res1( newProduction );
+                } )
+                .catch( rej1 );
+              } );
+            } )
+          , Promise.resolve( production ) );
+        } )
+        .then( ( production ) => {
           return requestProductionCreation( {
-          ...production,
-          id: genId()
+           ...production,
+            id: genId()
           } );
         } )
         .then( resolve )
