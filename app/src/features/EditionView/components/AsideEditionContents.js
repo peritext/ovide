@@ -18,6 +18,7 @@ import {
   Select,
 } from 'quinoa-design-library/components/';
 import debounce from 'lodash/debounce';
+import Tooltip from 'react-tooltip';
 // import icons from 'quinoa-design-library/src/themes/millet/icons';
 
 /**
@@ -53,6 +54,9 @@ class AsideEditionContents extends Component {
   componentWillReceiveProps = ( nextProps ) => {
     if ( this.props.edition !== nextProps.edition ) {
       this.setState( { edition: nextProps.edition } );
+    }
+    if ( this.props.editionAsideTabMode !== nextProps.editionAsideTabMode ) {
+      setTimeout( () => Tooltip.rebuild() );
     }
   }
 

@@ -270,9 +270,8 @@ const MainEditionColumn = ( {
       isSize={ 'fullwidth' }
       style={ { position: 'relative' } }
     >
-      {
-        <PreviewWrapper
-          {
+      <PreviewWrapper
+        {
             ...{
               production,
               edition,
@@ -282,8 +281,7 @@ const MainEditionColumn = ( {
               locale
             }
           }
-        />
-      }
+      />
       <div
         style={ {
           position: 'absolute',

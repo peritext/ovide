@@ -8,7 +8,7 @@ import {
 } from 'quinoa-design-library/components/';
 import { v4 as genId } from 'uuid';
 import FlipMove from 'react-flip-move';
-import Tooltip from 'react-tooltip'
+import Tooltip from 'react-tooltip';
 import {
   DragDropContext,
   Droppable,

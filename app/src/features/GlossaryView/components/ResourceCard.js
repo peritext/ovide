@@ -19,7 +19,7 @@ import {
   Card,
 } from 'quinoa-design-library/components';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
-import {getResourceTitle} from 'peritext-utils'
+import { getResourceTitle } from 'peritext-utils';
 
 /**
  * Imports Project utils
@@ -92,8 +92,11 @@ class ResourceCard extends Component {
     const {
       props: {
         resource,
-        // assets,
-        // getTitle,
+
+        /*
+         * assets,
+         * getTitle,
+         */
         onEdit,
         onDelete,
         numberOfMentions = 0,

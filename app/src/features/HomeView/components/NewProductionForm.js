@@ -41,58 +41,56 @@ const NewProductionForm = ( {
 } ) => {
   return (
     <Column isSize={ widthRatio }>
-      {
-        <Column>
-          <Title isSize={ 2 }>
-            <Columns>
-              <Column isSize={ 11 }>
-                {translate( 'New Production' )}
-              </Column>
-              <Column>
-                <Delete onClick={ onClose } />
-              </Column>
-            </Columns>
-          </Title>
-          <Tabs
-            isBoxed
-            isFullWidth
-          >
-            <Container>
-              <TabList>
-                <Tab
-                  onClick={ onSetModeForm }
-                  isActive={ mode === 'form' }
-                ><TabLink>{translate( 'Create a production' )}</TabLink>
-                </Tab>
-                <Tab
-                  onClick={ onSetModeFile }
-                  isActive={ mode === 'file' }
-                ><TabLink>{translate( 'Import an existing production' )}</TabLink>
-                </Tab>
-              </TabList>
-            </Container>
-          </Tabs>
-          {mode === 'form' ?
-            <MetadataForm
-              production={ newProduction }
-              status={ createProductionStatus }
-              onSubmit={ onCreateNewProduction }
-              onCancel={ onCloseNewProduction }
-            />
-                :
-            <Column>
-              <DropZone
-                accept={ 'application/json' }
-                onDrop={ onDropFiles }
-              >
-                {translate( 'Drop a ovide file' )}
-              </DropZone>
-              {importProductionStatus === 'fail' && <Help isColor={ 'danger' }>{translate( 'Production is not valid' )}</Help>}
-
+      <Column>
+        <Title isSize={ 2 }>
+          <Columns>
+            <Column isSize={ 11 }>
+              {translate( 'New Production' )}
             </Column>
+            <Column>
+              <Delete onClick={ onClose } />
+            </Column>
+          </Columns>
+        </Title>
+        <Tabs
+          isBoxed
+          isFullWidth
+        >
+          <Container>
+            <TabList>
+              <Tab
+                onClick={ onSetModeForm }
+                isActive={ mode === 'form' }
+              ><TabLink>{translate( 'Create a production' )}</TabLink>
+              </Tab>
+              <Tab
+                onClick={ onSetModeFile }
+                isActive={ mode === 'file' }
+              ><TabLink>{translate( 'Import an existing production' )}</TabLink>
+              </Tab>
+            </TabList>
+          </Container>
+        </Tabs>
+        {mode === 'form' ?
+          <MetadataForm
+            production={ newProduction }
+            status={ createProductionStatus }
+            onSubmit={ onCreateNewProduction }
+            onCancel={ onCloseNewProduction }
+          />
+                :
+          <Column>
+            <DropZone
+              accept={ 'application/json' }
+              onDrop={ onDropFiles }
+            >
+              {translate( 'Drop a ovide file' )}
+            </DropZone>
+            {importProductionStatus === 'fail' && <Help isColor={ 'danger' }>{translate( 'Production is not valid' )}</Help>}
+
+          </Column>
             }
-        </Column>
-        }
+      </Column>
 
     </Column>
   );

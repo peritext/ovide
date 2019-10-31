@@ -135,21 +135,19 @@ const SectionCard = ( {
                 style={ { paddingBottom: 0 } }
                 isSize={ 7 }
               >
-                {
-                  <Title isSize={ titleSize }>
-                    <Link
-                      to={ `/productions/${production.id}/sections/${section.id}` }
-                      data-tip={ section.metadata.title.length > MAX_TITLE_LEN ? section.metadata.title : undefined }
-                      data-for={ 'card-tooltip' }
-                      data-place={ 'bottom' }
-                    >
-                      <span>
-                        {sectionTitle}
-                      </span>
-                    </Link>
+                <Title isSize={ titleSize }>
+                  <Link
+                    to={ `/productions/${production.id}/sections/${section.id}` }
+                    data-tip={ section.metadata.title.length > MAX_TITLE_LEN ? section.metadata.title : undefined }
+                    data-for={ 'card-tooltip' }
+                    data-place={ 'bottom' }
+                  >
+                    <span>
+                      {sectionTitle}
+                    </span>
+                  </Link>
 
-                  </Title>
-                  }
+                </Title>
               </Column>
             </Columns>
             <Columns>

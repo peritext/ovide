@@ -102,6 +102,7 @@ const SummaryViewLayout = ( {
    */
   const handleMetadataEditionToggle = () => {
     setMetadataOpen( !metadataOpen );
+    setTimeout( () => ReactTooltip.rebuild() );
   };
 
   const handleMetadataSubmit = ( { payload: { metadata } } ) => {
@@ -297,23 +298,21 @@ const SummaryViewLayout = ( {
                 onClick={ handleMetadataEditionToggle }
               >
 
-                {
-                  <StretchedLayoutContainer
-                    isAbsolute
-                    style={ { alignItems: 'center', justifyContent: 'space-around', padding: '1rem' } }
-                    isDirection={ 'horizontal' }
-                  >
+                <StretchedLayoutContainer
+                  isAbsolute
+                  style={ { alignItems: 'center', justifyContent: 'space-around', padding: '1rem' } }
+                  isDirection={ 'horizontal' }
+                >
 
-                    <StretchedLayoutItem isFlex={ 1 }>
-                      {metadataOpen ? translate( 'Close production settings' ) : translate( 'Edit production settings' )}
-                    </StretchedLayoutItem>
-                    {metadataOpen &&
-                      <StretchedLayoutItem>
-                        <Delete isSize={ 'medium' } />
-                      </StretchedLayoutItem>
+                  <StretchedLayoutItem isFlex={ 1 }>
+                    {metadataOpen ? translate( 'Close production settings' ) : translate( 'Edit production settings' )}
+                  </StretchedLayoutItem>
+                  {metadataOpen &&
+                  <StretchedLayoutItem>
+                    <Delete isSize={ 'medium' } />
+                  </StretchedLayoutItem>
                     }
-                  </StretchedLayoutContainer>
-                }
+                </StretchedLayoutContainer>
               </Button>
             </Level>
             <Collapsable

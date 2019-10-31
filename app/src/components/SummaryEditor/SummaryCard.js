@@ -3,7 +3,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Tooltip from 'react-tooltip'
+import Tooltip from 'react-tooltip';
 import {
   Card,
   Column,
