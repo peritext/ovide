@@ -66,7 +66,7 @@
     }
   },
   "engines": {
-    "node": ">=9.2.0",
+    "node": ">=9.2.0 <10.0.0",
     "npm": ">=6.3.0"
   },
   "devDependencies": {
@@ -110,7 +110,7 @@
     "exec-series": "^1.0.3",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.10",
-    "image-webpack-loader": "^4.6.0",
+    "image-webpack-loader": "^3.6.0",
     "json2po": "^1.0.5",
     "mocha": "^4.0.1",
     "npm-run-all": "^4.1.5",
@@ -190,8 +190,8 @@
     "peritext-generator-html-singlepage": "^0.1.1",
     "peritext-schemas": "^0.2.1",
     "peritext-template-callirhoe": "0.0.2",
-    "peritext-template-chrysaor": "0.0.1",
-    "peritext-template-deucalion": "^0.2.5",
+    "peritext-template-chrysaor": "0.0.2",
+    "peritext-template-deucalion": "^0.2.6",
     "peritext-template-pyrrah": "^0.2.3",
     "peritext-utils": "^0.2.4",
     "pigeon-maps": "^0.12.1",
@@ -240,7 +240,7 @@
     "scholar-draft": "^0.2.60",
     "turndown": "^5.0.1",
     "uuid": "^3.2.1",
-    "vega-lite": "^3.0.0-rc11",
+    "vega": "^5.7.3",
     "xml-js": "^1.6.11"
   }
 }

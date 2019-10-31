@@ -22,7 +22,7 @@ const outputBase = path.resolve( `${__dirname }/../../app/htmlBuilds` );
 const buildProductionApplication = ( { templateId, generatorId } ) => {
   return new Promise( ( resolve, reject ) => {
     const outputFolder = `${outputBase}/${generatorId}/${templateId}`;
-    // console.log( 'build production application for', templateId, 'to', outputFolder );
+    console.log( 'build production application for', templateId, 'to', outputFolder );/*eslint no-console: 0 */
     const outputTempJS = `${outputFolder}/bundle.js`;
     const outputHTML = `${outputFolder}/index.html`;
     let bundle;
@@ -91,7 +91,6 @@ ${bundle}
         return resolve();
       } )
       .catch( reject );
-
   } );
 };
 

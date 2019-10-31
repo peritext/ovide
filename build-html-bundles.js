@@ -2,13 +2,10 @@ const peritextConfig = require( './app/src/peritextConfig.render' );
 const buildBundler = require( './services/htmlBuildBundler' );
 
 const buildBundle = ( { templateId, generatorId } ) => {
-  return new Promise( ( resolve ) => {
-    console.log( 'build bundle', templateId );
-    return buildBundler( {
+  return buildBundler( {
       templateId,
       generatorId,
-    } );
-  } );
+    } )
 };
 
 /**
@@ -30,5 +27,7 @@ if ( peritextConfig.htmlBuilds ) {
             .catch( reject );
         } );
       } );
-    }, Promise.resolve() );
+    }, Promise.resolve() )
+    .then(() => console.log('done'))
+    .catch(console.log)
 }
