@@ -27,6 +27,7 @@ import { translateNameSpacer } from '../../../helpers/translateUtils';
 import downloadFile from '../../../helpers/fileDownloader';
 import {
   bundleProjectAsJSON,
+  bundleProjectAsZIP,
   bundleProjectAsHTML,
   bundleProjectAsMarkdown,
   bundleProjectAsTEI,
@@ -122,6 +123,9 @@ const EditionUiWrapperLayout = ( {
           } )
           .catch( onRejection );
         break;
+        case 'zip':
+            bundleProjectAsZIP( { production: editedProduction, requestAssetData } );
+            break;
       case 'markdown':
         bundleProjectAsMarkdown( { production: editedProduction, requestAssetData } )
           .then( ( markdownBundle ) => {

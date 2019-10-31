@@ -9,9 +9,13 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import TurndownService from 'turndown';
 import { ReferencesManager } from 'react-citeproc';
 import convert from 'xml-js';
+import JSZip from 'jszip';
+import stringify from 'fast-json-stable-stringify';
+import { saveAs } from 'file-saver';
 
 import Renderer from 'peritext-template-pyrrah/dist/components/Renderer';
 import { getRelatedAssetsIds } from './assetsUtils';
+import { getFileAsText, getFileAsBinary } from './fileLoader';
 import { contextualizers } from '../peritextConfig.render';
 import { buildCitations, getContextualizationsFromEdition } from 'peritext-utils';
 
@@ -209,6 +213,125 @@ export const bundleProjectAsJSON = ( { production, requestAssetData } ) => {
   } );
 };
 
+/**
+ * Cleans and serializes a production representation
+ * @param {object} production - the production to bundle
+ * @return {string} result - the resulting serialized production
+ */
+export const bundleProjectAsZIP = ( { production, requestAssetData } ) => {
+  const zip = new JSZip();
+  return new Promise( ( resolve, reject ) => {
+    loadAllAssets( {
+      production,
+      requestAssetData
+    } )
+    .then( ( assets ) => {
+      zip.file( 'production.json', stringify( production, { space: '  ' } ) );
+      const assetsContainer = zip.folder( 'assets' );
+      Object.keys( assets ).forEach( ( assetId ) => {
+        const asset = assets[assetId];
+        const { data, mimetype, filename } = asset;
+        if ( [ 'image/jpeg', 'image/jpg', 'image/png' ].includes( mimetype ) ) {
+          const assetContainer = assetsContainer.folder( `${assetId}` );
+          assetContainer.file( filename, data.split( ',' )[1], { base64: true } );
+        }
+        // case table
+        else {
+          const assetContainer = assetsContainer.folder( `${assetId}` );
+          assetContainer.file( `${assetId}.json`, JSON.stringify( data ) );
+        }
+      } );
+      zip.generateAsync( { type: 'blob' } ).then( function( content ) {
+          // see FileSaver.js
+          saveAs( content, 'test.zip' );
+      } );
+    } )
+    .catch( reject );
+  } );
+};
+
+export const parseImportedFile = ( file ) => new Promise( ( resolve, reject ) => {
+  const ext = file.name.split( '.' ).pop();
+  let zip;
+  if ( ext === 'json' ) {
+    getFileAsText( file )
+    .then( ( text ) => {
+      let production;
+      try {
+        production = JSON.parse( text );
+      }
+      catch ( jsonError ) {
+        return reject( 'malformed json' );
+      }
+      resolve( production );
+    } )
+    .catch( reject );
+  }
+    else if ( ext === 'zip' ) {
+    getFileAsBinary( file, ( err, buff ) => {
+      if ( err ) {
+        reject( err );
+      }
+       else {
+        JSZip.loadAsync( buff )
+        .then( ( inputZip ) => {
+          zip = inputZip;
+          const production = zip.file( 'production.json' );
+          if ( !production ) {
+            reject( 'no production.json' );
+          }
+          else {
+            return production.async( 'string' );
+          }
+        } )
+        .then( ( text ) => {
+          let production;
+          try {
+            production = JSON.parse( text );
+          }
+          catch ( jsonError ) {
+            return reject( 'malformed json' );
+          }
+
+          return Object.keys( production.assets ).reduce( ( cur, assetId ) =>
+            cur.then( ( activeProduction ) => {
+              const asset = activeProduction.assets[assetId];
+
+              return new Promise( ( res1, rej1 ) => {
+                if ( asset.mimetype === 'text/csv' ) {
+                  zip.file( `assets/${asset.id}/${asset.id}.json` ).async( 'string' )
+                  .then( ( txt ) => {
+                    let json;
+                    try {
+                      json = JSON.parse( txt );
+                    }
+                    catch ( e ) {
+                      rej1( e );
+                    }
+                    activeProduction.assets[assetId].data = json;
+                    res1( activeProduction );
+                  } );
+                }
+                else if ( [ 'image/jpeg', 'image/jpg', 'image/png' ].includes( asset.mimetype ) ) {
+                  zip.file( `assets/${asset.id}/${asset.filename}` ).async( 'base64' )
+                  .then( ( base64 ) => {
+                    activeProduction.assets[assetId].data = `data:${asset.mimetype};base64,${base64}`;
+                    res1( activeProduction );
+                  } );
+
+                }
+                else res1( activeProduction );
+              } );
+            } )
+          , Promise.resolve( production ) );
+        } )
+        .then( resolve )
+        .catch( reject );
+      }
+    } );
+  }
+} );
+
 class SectionRenderer extends Component {
   static childContextTypes = {
     renderingMode: PropTypes.string,
@@ -285,10 +408,10 @@ export const bundleProjectAsHTML = ( { production, requestAssetData } ) => {
         const citations = buildCitations( { production: productionJSON } );
 
         const contents = renderToStaticMarkup(
-          production.sectionsOrder.map( ( sectionId ) => {
+          production.sectionsOrder.map( ( { resourceId } ) => {
             return (
               <ReferencesManager
-                key={ sectionId }
+                key={ resourceId }
                 style={ defaultCitationStyle }
                 locale={ defaultCitationLocale }
                 items={ citations.citationItems }
@@ -296,7 +419,7 @@ export const bundleProjectAsHTML = ( { production, requestAssetData } ) => {
               >
                 <SectionRenderer
                   production={ productionJSON }
-                  section={ productionJSON.resources[sectionId] }
+                  section={ productionJSON.resources[resourceId] }
                 />
               </ReferencesManager>
             );
@@ -366,11 +489,11 @@ export const bundleProjectAsTEI = ( { production, requestAssetData } ) => {
                   }
                 },
                 body: {
-                  div: productionJSON.sectionsOrder.map( ( sectionId ) => {
-                    const section = productionJSON.resources[sectionId];
+                  div: productionJSON.sectionsOrder.map( ( { resourceId } ) => {
+                    const section = productionJSON.resources[resourceId];
                     const contents = renderToStaticMarkup(
                       <ReferencesManager
-                        key={ sectionId }
+                        key={ resourceId }
                         style={ defaultCitationStyle }
                         locale={ defaultCitationLocale }
                         items={ citations.citationItems }
@@ -378,7 +501,7 @@ export const bundleProjectAsTEI = ( { production, requestAssetData } ) => {
                       >
                         <SectionRenderer
                           production={ productionJSON }
-                          section={ productionJSON.resources[sectionId] }
+                          section={ productionJSON.resources[resourceId] }
                         />
                       </ReferencesManager>
                     );

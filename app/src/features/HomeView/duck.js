@@ -11,7 +11,7 @@ import { v4 as genId } from 'uuid';
 
 import { createDefaultProduction, validateProduction, convertQuinoaStoryToProduction } from '../../helpers/schemaUtils';
 
-import { getFileAsText } from '../../helpers/fileLoader';
+import { parseImportedFile } from '../../helpers/projectBundler';
 import { getStatePropFromActionSet } from '../../helpers/reduxUtils';
 
 import {
@@ -155,15 +155,8 @@ export const importProduction = ( file, callback ) => ( {
   type: IMPORT_PRODUCTION,
   promise: () =>
     new Promise( ( resolve, reject ) => {
-      return getFileAsText( file )
-             .then( ( text ) => {
-                let production;
-                try {
-                  production = JSON.parse( text );
-                }
-                catch ( jsonError ) {
-                  return reject( 'malformed json' );
-                }
+      return parseImportedFile( file )
+             .then( ( production ) => {
 
                 /**
                  *  add a fonio story import hook here
