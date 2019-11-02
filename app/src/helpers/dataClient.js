@@ -235,7 +235,7 @@ export const requestAssetData = ( productionId, asset ) => {
   }
   else {
     return new Promise( ( resolve, reject ) => {
-      if (asset && asset.id) {
+      if ( asset && asset.id ) {
         // console.log('get attachment', asset.id, asset.filename);
         db.getAttachment( asset.id, asset.filename )
         .then( ( blobBuffer ) => {
@@ -243,8 +243,9 @@ export const requestAssetData = ( productionId, asset ) => {
           } )
         .then( resolve )
         .catch( reject );
-      } else reject('no asset')
-     
+      }
+ else reject( 'no asset' );
+
     } );
   }
 };

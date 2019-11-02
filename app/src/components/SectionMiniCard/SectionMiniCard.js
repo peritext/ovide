@@ -17,6 +17,7 @@ import {
   Icon,
 } from 'quinoa-design-library/components/';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
+import { getResourceTitle } from 'peritext-utils';
 
 /**
  * Imports Project utils
@@ -27,7 +28,6 @@ import {
   computeSectionFirstWords,
   silentEvent
 } from '../../helpers/misc';
-import { getResourceTitle } from '../../helpers/resourcesUtils';
 
 /**
  * Imports Components

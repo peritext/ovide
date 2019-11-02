@@ -81,7 +81,7 @@ const NewProductionForm = ( {
                 :
           <Column>
             <DropZone
-              accept={ [ 'application/json', 'application/zip' ] }
+              accept={ 'application/json,application/zip' }
               onDrop={ onDropFiles }
             >
               {translate( 'Drop a ovide file' )}
