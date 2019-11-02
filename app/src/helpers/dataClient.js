@@ -235,13 +235,16 @@ export const requestAssetData = ( productionId, asset ) => {
   }
   else {
     return new Promise( ( resolve, reject ) => {
-      // console.log('get attachment', asset.id, asset.filename);
-      db.getAttachment( asset.id, asset.filename )
+      if (asset && asset.id) {
+        // console.log('get attachment', asset.id, asset.filename);
+        db.getAttachment( asset.id, asset.filename )
         .then( ( blobBuffer ) => {
               return convertBlobAssetToPreviewData( blobBuffer, asset.mimetype );
           } )
         .then( resolve )
         .catch( reject );
+      } else reject('no asset')
+     
     } );
   }
 };
