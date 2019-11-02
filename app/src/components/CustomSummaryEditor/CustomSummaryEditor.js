@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { defaultSortResourceSections, buildResourceSectionsSummary } from 'peritext-utils';
+import {
+ defaultSortResourceSections, 
+ buildResourceSectionsSummary,
+ getResourceTitle,
+ } from 'peritext-utils';
 
 import {
   Button,
@@ -23,7 +27,6 @@ import arrayMove from 'array-move';
 import SectionMiniCard from '../SectionMiniCard';
 
 import { translateNameSpacer } from '../../helpers/translateUtils';
-import { getResourceTitle } from '../../helpers/resourcesUtils';
 
 export default class CustomSummaryEditor extends Component {
   static contextTypes = {
