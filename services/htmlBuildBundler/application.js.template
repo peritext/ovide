@@ -28,6 +28,7 @@ const renderProduction = function (production, editionId, locale, useBrowserRout
   if (template) {
     const Production = template.components.Edition;
     const edition = production.editions[editionId];
+    console.log('hydrating', mountNode)
     hydrate(React.createElement(Production, {
       production: production, 
       edition: edition, 
@@ -36,7 +37,9 @@ const renderProduction = function (production, editionId, locale, useBrowserRout
       contextualizers: peritextConfig.contextualizers,
       usedDocument: document,
       useBrowserRouter: useBrowserRouter,
-    }, null), mountNode); 
+    }, null), mountNode, function(){
+      console.log('done hydrating')
+    }); 
   } else {
     console.error('template %s not found', templateId);/* eslint no-console: 0 */
   }
@@ -99,9 +102,9 @@ if (!Object.prototype.unwatch) {
     }
   });
 }
-console.log('in window to watch', window.toWatch);
-if (window.toWatch) {
-  window.toWatch.watch("production", function (id, oldval, production) {
+console.log('in window to watch', window.watch);
+if (window.watch) {
+  window.watch("__production", function (id, oldval, production) {
   // console.log('changed', production);
     renderProduction(production, window.__editionId, window.__locale, window.__useBrowserRouter);
   });
