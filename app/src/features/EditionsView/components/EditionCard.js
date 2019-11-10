@@ -109,7 +109,11 @@ class EditionCard extends Component {
               <Columns style={ { marginBottom: 0 } }>
                 <Column isSize={ 2 }>
                   <CenteredIcon src={ editionsIcons[metadata.type] } />
-                  <CenteredIcon src={ templatesIcons[metadata.templateId].black } />
+                  <CenteredIcon
+                    data-for={ 'tooltip' }
+                    data-tip={ metadata.templateId }
+                    src={ templatesIcons[metadata.templateId].black }
+                  />
                 </Column>
 
                 <Column

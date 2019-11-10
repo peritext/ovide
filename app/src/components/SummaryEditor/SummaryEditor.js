@@ -34,7 +34,7 @@ import PossibleSummaryCard from './PossibleSummaryCard';
 
 import './SummaryEditor.scss';
 
-const UPDATE_DELAY = 2000;
+const UPDATE_DELAY = 500;
 
 class SummaryEditor extends Component {
   constructor( props ) {

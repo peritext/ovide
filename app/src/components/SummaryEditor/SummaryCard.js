@@ -86,15 +86,18 @@ class SummaryCard extends Component {
                     isFlex={ 1 }
                     style={ { minWidth: '70%' } }
                   >
-                    <Title isSize={ 6 }>
-                      {
-                        customTitle && customTitle.length ?
-                        `${customTitle} (${translate( summaryBlock.type )})`
-                        : translate( summaryBlock.type )
-                      }
-                      <HelpPin>
-                        {translate( `Explanation about ${summaryBlock.type}` )}
-                      </HelpPin>
+                    <Title isSize={ 4 }>
+   
+                          {
+                          customTitle && customTitle.length ?
+                          `${customTitle} (${translate( summaryBlock.type )})`
+                          : translate( summaryBlock.type )
+                        }
+
+                          <HelpPin>
+                            {translate( `Explanation about ${summaryBlock.type}` )}
+                          </HelpPin>
+ 
                     </Title>
 
                   </StretchedLayoutItem>
