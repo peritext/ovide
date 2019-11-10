@@ -96,7 +96,7 @@
     "csscomb": "^4.2.0",
     "download": "^7.1.0",
     "electron": "^4.2.12",
-    "electron-builder": "^20.28.4",
+    "electron-builder": "^21.2.0",
     "electron-devtools-installer": "^2.2.3",
     "electron-icon-maker": "0.0.4",
     "electron-icon-maker-fix": "0.0.5",
@@ -131,6 +131,7 @@
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-cli": "^3.1.1",
     "webpack-dev-server": "^3.1.14",
+    "worker-loader": "^2.0.0",
     "wrench": "^1.5.9"
   },
   "dependencies": {

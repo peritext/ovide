@@ -15,6 +15,7 @@ import fetch from 'axios';
  */
 import addons from 'raw-loader!./addons.paged.js';
 import previewStyleData from 'raw-loader!./previewStyle.paged.csx';
+import Worker from './render.worker.js';
 
 class PreviewWrapper extends Component {
 
@@ -23,6 +24,10 @@ class PreviewWrapper extends Component {
     this.state = {
     };
     this.frameRef = React.createRef();
+    this.worker = new Worker();
+
+    // this.worker.postMessage({count: 2});
+    this.worker.onmessage = this.handleWorkerResponse;
   }
 
   componentDidMount = () => {
@@ -32,6 +37,8 @@ class PreviewWrapper extends Component {
         this.setState( {
           pagedScript: data
         } );
+
+        // worker.addEventListener("message", function (event) {console.log('got message')});
       } );
   }
 
@@ -44,11 +51,27 @@ class PreviewWrapper extends Component {
   }
 
   componentDidUpdate = () => {
-    const { props: { additionalHTML = '' } } = this;
+    const { props: { additionalHTML = '', Component: RenderingComponent } } = this;
     if ( this.state.pagedScript && this.state.pagedScript.length ) {
+      // const thatDocument = this.frameDocument;
+      // const thatWindow = this.frameWindow;
+      console.log('document')
+      this.worker.postMessage({
+        type: 'render-component-to-string',
+        payload: {
+          
+          // RenderingComponent,
+          // window,
+          // document,
+        }
+      })
       this.injectRenderer( this.frameDocument, additionalHTML );
     }
   }
+
+  handleWorkerResponse = ({data}) => {
+    console.log('worker response', data)
+  };
 
   injectRenderer = ( thatDocument, additionalHTML ) => {
     console.info( 'inject renderer' );/* eslint no-console: 0 */
@@ -113,8 +136,9 @@ class PreviewWrapper extends Component {
       }
     } = this;
 
-    const dispatchContext = ( document/*, window*/ ) => {
+    const dispatchContext = ( document, window ) => {
       this.frameDocument = document;
+      this.frameWindow = window;
     };
     return (
       <div
