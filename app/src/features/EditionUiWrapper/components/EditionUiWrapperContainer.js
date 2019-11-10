@@ -10,6 +10,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { getResourceTitle } from 'peritext-utils';
+import { toastr } from 'react-redux-toastr';
 
 /**
  * Imports Project utils
@@ -69,6 +70,12 @@ class EditionUiWrapperContainer extends Component {
   getActiveSectionTitle = ( production, sectionId ) => getResourceTitle( production.resources[sectionId] );
 
   getActiveEditionTitle = ( production, editionId ) => production.editions[editionId].metadata.title;
+
+  componentDidCatch = ( error, errorInfo ) => {
+    console.error( 'an error occured' );/* eslint no-console : 0 */
+    console.error( error, errorInfo );/* eslint no-console : 0 */
+    toastr.error( 'Ouch ! A general error occured ...' );
+  }
 
   render() {
     const navLocation = this.getNavLocation( this.props.match.path );
