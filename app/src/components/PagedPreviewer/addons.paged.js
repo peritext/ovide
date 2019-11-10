@@ -44,7 +44,6 @@ if ( window.Paged ) {
         beforeParsed( content ) {
           console.info( 'spotting footnotes' );
           const footnotes = content.querySelectorAll( '.footnote' );
-
           for ( const footnote of footnotes ) {
             const parentElement = footnote.parentElement;
             const footnoteCall = document.createElement( 'a' );
@@ -57,14 +56,15 @@ if ( window.Paged ) {
             parentElement.insertBefore( footnoteCall, footnote );
 
             // Here comes a hack. Fortunately, it works with Chrome and FF.
-            const handler = document.createElement( 'p' );
+            const handler = document.createElement( 'div' );
             handler.className = 'footnoteHandler';
             parentElement.insertBefore( handler, footnote );
             handler.appendChild( footnote );
             handler.style.display = 'inline-block';
             handler.style.width = '100%';
             handler.style.float = 'right';
-            handler.style.pageBreakInside = 'avoid';
+            handler.style.margin = '0';
+            // handler.style.pageBreakInside = 'avoid';
           }
         }
 
@@ -158,7 +158,7 @@ if ( window.Paged ) {
                 footnoteCall.innerHTML = `<sup id="note-content-pointer-${ footnote.id }">${ footnoteIndex }</sup>`;
               }
 
-              footnote.innerHTML = `<sup class="note-pointer"><a href="#note-content-pointer-${ footnote.id }">${ footnoteIndex }</a></sup>${ footnote.innerHTML}`;
+              footnote.innerHTML = `${footnote.id ? `<sup class="note-pointer"><a href="#note-content-pointer-${ footnote.id }">${ footnoteIndex }</a></sup>` : ''}${ footnote.innerHTML}`;
               // footnote.style.fontSize = 'x-small';
               footnote.style.marginTop = 0;
               footnote.style.marginBottom = 0;

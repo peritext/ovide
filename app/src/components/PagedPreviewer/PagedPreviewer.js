@@ -10,6 +10,8 @@ import React, { Component } from 'react';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import fetch from 'axios';
 
+import LoadingScreen from '../LoadingScreen'
+
 /**
  * Imports Dependencies
  */
@@ -30,7 +32,7 @@ class PreviewWrapper extends Component {
     fetch( 'https://unpkg.com/pagedjs@0.1.34/dist/paged.polyfill.js' )
       .then( ( { data } ) => {
         this.setState( {
-          pagedScript: data
+          pagedScript: data,
         } );
       } );
   }
@@ -45,7 +47,8 @@ class PreviewWrapper extends Component {
 
   componentDidUpdate = () => {
     const { props: { additionalHTML = '' } } = this;
-    if ( this.state.pagedScript && this.state.pagedScript.length ) {
+
+    if ( this.state.pagedScript && this.state.pagedScript.length && this.frameDocument ) {
       this.injectRenderer( this.frameDocument, additionalHTML );
     }
   }
@@ -110,6 +113,8 @@ class PreviewWrapper extends Component {
       props: {
         style,
         Component: RenderingComponent,
+      },
+      state: {
       }
     } = this;
 
@@ -120,11 +125,11 @@ class PreviewWrapper extends Component {
       <div
         style={ style }
       >
-        {/* <LoadingScreen /> */}
+        <LoadingScreen />
         <Frame
           name={ 'preview' }
           id={ 'preview' }
-          style={ { width: '100%', height: '100%' } }
+          style={ { width: '100%', height: '100%', position: 'absolute' } }
           ref={ this.frameRef }
         >
           <FrameContextConsumer>
@@ -142,6 +147,7 @@ class PreviewWrapper extends Component {
               )}
           </FrameContextConsumer>
         </Frame>
+
       </div>
     );
   }
