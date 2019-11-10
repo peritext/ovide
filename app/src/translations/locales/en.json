@@ -5,6 +5,7 @@
   "Components.AssetPreview.Unnamed resource": "Unnamed resource",
   "Components.AuthorsManager.": "",
   "Features.SummaryView.Sections": "Sections",
+  "Features.EditionView.sections": "sections",
   "Components.AuthorsManager.Add an author": "Add an author",
   "Components.AuthorsManager.Authors": "Authors",
   "Components.AuthorsManager.Explanation about the production authors": "Authors can include writers, editors, designers, and collaborators",
@@ -436,6 +437,7 @@
   "Features.EditionView.Explanation about the edition description": "An internal description of what the edition is about or is supposed to be used for",
   "Features.EditionView.Explanation about the edition title": "An internal title to identify this edition",
   "Components.SummaryEditor.glossary": "glossary",
+  "Features.EditionView.glossary": "glossary",
   "Components.SummaryEditor.references": "references",
   "Features.EditionView.Go to mention": "Go to mention",
   "Features.EditionView.Mention context": "Mention context",
@@ -991,5 +993,6 @@
   "Features.GlossaryView.delete this glossary": "supprimer cette entrée de glossaire",
 
   "Components.SummaryEditor.resourceSections": "resources cards",
+  "Features.EditionView.resourceSections": "resources cards",
   "Components.SummaryEditor.Explanation about resourceSections": "a group of resources that can be of any type, to define automatically or manually"
 }
