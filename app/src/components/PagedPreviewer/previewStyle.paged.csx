@@ -1,79 +1,43 @@
+
+
+/* Change the look */
 :root {
-    --color-mbox : rgba(0,0,0,0.2);
-    --margin: 4px;
-    }
-    
-    [contenteditable]:focus {
-      outline: 0px solid transparent;
-    }
-    
-    #controls {
-    display: none;
-    }
-    
-    @media screen {
-    
-    body {
-      background-color: whitesmoke;
-    }
-    
-    .pagedjs_pages{
-      transform: translate(0.5);
-    }
-    
-    .pagedjs_page {
-      background-color: #fdfdfd;
-      margin: calc(var(--margin) * 4) var(--margin);
-      flex: none;
-      box-shadow: 0 0 0 1px var(--color-mbox);
-      pointer-events: none;
-    }
-    
-    .pagedjs_pages {
-      width: calc((var(--width) * 2) + (var(--margin) * 4));
+  --color-background:  whitesmoke;
+  --color-pageBox: #666;
+  --color-paper: white;
+  --color-marginBox: transparent;
+}
+
+
+/* To define how the book look on the screen: */
+@media screen {
+  body {
+      background-color: var(--color-background);
+  }
+  .pagedjs_pages {
       display: flex;
-      flex-direction: row;
+      width: calc(var(--pagedjs-width) * 2);
+      // width: 100%;
+      flex: 0;
       flex-wrap: wrap;
-      justify-content: flex-start;
-      transform-origin: 0 0;
       margin: 0 auto;
-    }
-    
-    #controls {
-      margin: 20px 0;
-      text-align: center;
-      display: block;
-    }
-    
-    .pagedjs_first_page {
-      margin-left: calc(50% + var(--margin));
-    }
-    }
-    
-    @media screen {
-    .debug .pagedjs_margin-top .pagedjs_margin-top-left-corner,
-    .debug .pagedjs_margin-top .pagedjs_margin-top-right-corner {
-      box-shadow: 0 0 0 1px inset var(--color-mbox);
-    }
-    
-    .debug .pagedjs_margin-top > div {
-      box-shadow: 0 0 0 1px inset var(--color-mbox);
-    }
-    
-    .debug .pagedjs_margin-right > div {
-      box-shadow: 0 0 0 1px inset var(--color-mbox);
-    }
-    
-    .debug .pagedjs_margin-bottom .pagedjs_margin-bottom-left-corner,
-    .debug .pagedjs_margin-bottom .pagedjs_margin-bottom-right-corner {
-      box-shadow: 0 0 0 1px inset var(--color-mbox);
-    }
-    
-    .debug .pagedjs_margin-bottom > div {
-      box-shadow: 0 0 0 1px inset var(--color-mbox);
-    }
-    
-    .debug .pagedjs_margin-left > div {
-      box-shadow: 0 0 0 1px inset var(--color-mbox);
-    }
-    }
+  }
+  .pagedjs_page {
+      background-color: var(--color-paper);
+      box-shadow: 0 0 0 1px var(--color-pageBox);
+      margin: 0;
+      flex-shrink: 0;
+      flex-grow: 0;
+      margin-top: 10mm;
+  }
+  .pagedjs_first_page {
+      margin-left: var(--pagedjs-width);
+  }
+
+  .pagedjs_page:last-of-type{ 
+      margin-bottom: 10mm;
+  }
+}
+
+
+

@@ -25,7 +25,8 @@ class PreviewWrapper extends Component {
   }
 
   componentDidMount = () => {
-    fetch( 'https://unpkg.com/pagedjs@0.1.30/dist/paged.polyfill.js' )
+    // fetch( 'https://unpkg.com/pagedjs@0.1.30/dist/paged.polyfill.js' )
+    fetch( 'https://unpkg.com/pagedjs@0.1.34/dist/paged.polyfill.js' )
       .then( ( { data } ) => {
         this.setState( {
           pagedScript: data
@@ -116,7 +117,6 @@ class PreviewWrapper extends Component {
           id={ 'preview' }
           style={ { width: '100%', height: '100%' } }
         >
-
           <FrameContextConsumer>
             {( { document, window } ) => (
               <div>

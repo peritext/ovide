@@ -118,12 +118,12 @@ if ( window.Paged ) {
             duration: 1000
           } ).showToast();
           console.info( 'rendering done, attaching footnotes to %s pages', pages.length );
-          let footnoteIndex = 1;
+          let footnoteIndex = 0;
           for ( const page of pages ) {
             // reset note number when changing section
             if (page.element.className.includes('pagedjs_section_first_page')) {
               console.log('reset footnote number');
-              footnoteIndex = 1;
+              footnoteIndex = 0;
             }
             const footnotes = page.element.querySelectorAll( '.footnote' );
             if ( footnotes.length === 0 ) {
@@ -197,12 +197,14 @@ if ( window.Paged ) {
       if ( pages ) {
         const scale = ( ( window.innerWidth * 0.9 ) / pages.offsetWidth );
         if ( scale < 1 ) {
-          const translateVal = ( window.innerWidth / 2 ) - ( ( pages.offsetWidth * scale / 2 ) );
-          const style = `scale(${ scale }) translate(${ translateVal }px, 0)`;
-          pages.style.transform = style;
+          const translateX = pages.offsetWidth * scale / 2;
+          const translateY = pages.offsetHeight * scale;
+          const style = `scale(${ scale }) translate(${ -translateX }px, ${-translateY}px)`;
+          document.body.style.transform = style;
+          // document.body.style['max-height'] = translateY;
         }
         else {
-          pages.style.transform = 'none';
+          document.body.style.transform = 'none';
         }
       }
     };
