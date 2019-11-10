@@ -9,8 +9,11 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { v4 as genId } from 'uuid';
-// import { isEmpty } from 'lodash';
+
+/*
+ * import { v4 as genId } from 'uuid';
+ * import { isEmpty } from 'lodash';
+ */
 import { Form, Text, TextArea } from 'react-form';
 import Tooltip from 'react-tooltip';
 import {
@@ -44,7 +47,7 @@ import {
  * Imports Components
  */
 import ExplainedLabel from '../../components/ExplainedLabel';
-import CustomSummaryEditor from '../../components/CustomSummaryEditor';
+import SummaryEditor from '../../components/SummaryEditor';
 
 /**
  * Shared variables
@@ -64,7 +67,6 @@ class EditionForm extends Component {
     const edition = props.edition || createDefaultEdition();
     this.state = {
       edition,
-      customSummary: { active: false, summary: [] }
     };
     this.translate = translateNameSpacer( context.t, 'Components.EditionForm' );
   }
@@ -117,7 +119,6 @@ class EditionForm extends Component {
       },
       state: {
         edition = {},
-        customSummary,
       },
       translate,
     } = this;
@@ -125,31 +126,11 @@ class EditionForm extends Component {
     const handleSubmit = ( candidate ) => {
       const templateId = candidate.metadata.templateId;
       const template = this.props.availableTemplates.find( ( thatTemplate ) => thatTemplate.meta.id === templateId );
-      const { meta: { defaultPlan } } = template;
-      const plan = {
-        ...defaultPlan,
-        summary: defaultPlan.summary.map( ( el ) => {
-          if ( el.type === 'sections' ) {
-            return {
-              ...el,
-              data: {
-                ...el.data,
-                customSummary: this.state.customSummary
-              },
-              id: genId()
-            };
-          }
-          return {
-            ...el,
-            id: genId()
-          };
-        } )
-      };
+
       const newEdition = {
         ...candidate,
         data: {
-          ...candidate.data,
-          plan
+          ...edition.data
         },
       };
 
@@ -158,6 +139,30 @@ class EditionForm extends Component {
       onSubmit( newEdition );
     };
 
+    const handleEditionTemplateIdChange = ( thatTemplateId, formApi ) => {
+      if ( thatTemplateId === undefined ) {
+        //"reset type" case
+        formApi.setValue( 'metadata.templateId', undefined );
+      }
+      const template = availableTemplates.find( ( t ) => t.meta.id === thatTemplateId );
+      if ( template ) {
+        const { meta: { defaultPlan } } = template;
+        this.setState( {
+          edition: {
+            ...edition,
+            data: {
+              ...edition.data,
+              plan: defaultPlan,
+            }
+          }
+        } );
+        // customSummary: { active: false, summary: [] }
+        formApi.setValue( 'metadata.title', `${translate( formApi.getValue( 'metadata.type' ) )} (${thatTemplateId})` );
+        formApi.setValue( 'metadata.templateId', thatTemplateId );
+      }
+
+      Tooltip.rebuild();
+    };
     const handleEditionTypeChange = ( thatType, formApi ) => {
       if ( thatType === undefined ) {
         //"reset type" case
@@ -167,22 +172,31 @@ class EditionForm extends Component {
       const typeTemplates = getAvailableTemplates( thatType, this.props.availableTemplates );
       formApi.setAllValues( defaultEdition );
       formApi.setValue( 'metadata.type', thatType );
-      formApi.setValue( 'metadata.title', translate( thatType ) );
+
+      /**
+       * If only one template available for that type auto-select it
+       */
       if ( typeTemplates.length > 0 && typeTemplates.length < 2 ) {
         const firstTemplate = typeTemplates[0];
         const firstTemplateId = firstTemplate.meta.id;
-        formApi.setValue( 'metadata.templateId', firstTemplateId );
+        setTimeout( () => handleEditionTemplateIdChange( firstTemplateId, formApi ) );
       }
       Tooltip.rebuild();
-
     };
-    const handleEditionTemplateIdChange = ( thatTemplateId, formApi ) => {
-      if ( thatTemplateId === undefined ) {
-        //"reset type" case
-        formApi.setValue( 'metadata.templateId', undefined );
-      }
-      formApi.setValue( 'metadata.templateId', thatTemplateId );
-      Tooltip.rebuild();
+
+    const handleSummaryChange = ( newSummary ) => {
+      this.setState( {
+        edition: {
+          ...edition,
+          data: {
+            ...edition.data,
+            plan: {
+              ...edition.data.plan,
+              summary: newSummary
+            },
+          }
+        }
+      } );
     };
 
     const handleSubmitFailure = ( error ) => {
@@ -220,12 +234,6 @@ class EditionForm extends Component {
         black: require( '../../sharedAssets/chrysaor.black.png' ),
         white: require( '../../sharedAssets/chrysaor.white.png' ),
       },
-    };
-
-    const handleUpdateCustomSummary = ( newCustomSummary ) => {
-      this.setState( {
-        customSummary: newCustomSummary
-      } );
     };
 
     return (
@@ -267,6 +275,7 @@ class EditionForm extends Component {
                   <StretchedLayoutItem
                     isFlowing
                     isFlex={ 1 }
+                    style={ { overflowX: 'hidden' } }
                   >
                     {
                       asNewEdition && !editionType &&
@@ -378,28 +387,20 @@ class EditionForm extends Component {
                     <Level />
 
                     {formApi.getValue( 'metadata.type' ) &&
-                    <Column>
-                      <Column>
-                        <Field>
-                          <Control>
-                            <Label>
-                              {translate( 'Edition sections summary' )}
-                              <HelpPin place={ 'right' }>
-                                {translate( 'Explanation about the edition sections summary' )}
-                              </HelpPin>
-                            </Label>
-                            <div>
-                              <CustomSummaryEditor
-                                summaryEdited
-                                translate={ translate }
-                                value={ customSummary }
-                                onChange={ handleUpdateCustomSummary }
-                              />
-                            </div>
-                          </Control>
-                        </Field>
-                      </Column>
-                    </Column>}
+                      formApi.getValue( 'metadata.templateId' ) &&
+                      <SummaryEditor
+                        {
+                        ...{
+                          template: availableTemplates.find( ( tempate ) => tempate.meta.id === formApi.getValue( 'metadata.templateId' ) ),
+                          edition,
+                          translate,
+                          summaryEdited: true,
+                          onSummaryChange: handleSummaryChange,
+                          noScroll: true,
+                        }
+                      }
+                      />
+                    }
                     <Level />
 
                   </StretchedLayoutItem>

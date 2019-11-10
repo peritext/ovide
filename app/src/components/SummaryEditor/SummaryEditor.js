@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Column,
   Title,
@@ -23,12 +24,15 @@ import { debounce } from 'lodash';
  * Imports Project utils
  */
 import { defaults } from '../../helpers/schemaUtils';
+import { translateNameSpacer } from '../../helpers/translateUtils';
 
 /**
  * Imports Components
  */
 import SummaryCard from './SummaryCard';
 import PossibleSummaryCard from './PossibleSummaryCard';
+
+import './SummaryEditor.scss';
 
 const UPDATE_DELAY = 2000;
 
@@ -40,6 +44,10 @@ class SummaryEditor extends Component {
       summary
     };
     this.propagateSummaryChange = debounce( this.propagateSummaryChange, UPDATE_DELAY );
+  }
+
+  static contextTypes = {
+    t: PropTypes.func,
   }
 
   componentDidMount = () => {
@@ -87,16 +95,25 @@ class SummaryEditor extends Component {
     const {
       props: {
         template,
-        // edition = {},
-        translate,
+
+        /*
+         * edition = {},
+         * translate,
+         */
         setSummaryEdited,
         summaryEdited,
+        noScroll,
       },
       state: {
         summary
       },
+      context: {
+        t
+      },
       onSummaryChange,
     } = this;
+
+    const translate = translateNameSpacer( t, 'Components.SummaryEditor' );
 
     /*
      * const {
@@ -172,18 +189,18 @@ class SummaryEditor extends Component {
 
         <StretchedLayoutContainer
           isDirection={ 'horizontal' }
-          style={ { width: '100%', height: '100%', overflow: 'hidden', position: 'relative' } }
+          className={ `ovide-SummaryEditor ${noScroll ? 'no-scroll' : ''}` }
         >
 
           <StretchedLayoutItem
-            style={ { height: '100%', overflow: 'hidden' } }
+            className={ 'list-container' }
             isFlex={ '1' }
           >
 
-            <Column style={ { height: '100%', overflow: 'hidden' } }>
+            <Column className={ 'list-container' }>
               <StretchedLayoutContainer
                 isDirection={ 'vertical' }
-                style={ { height: '100%', overflow: 'hidden' } }
+                className={ 'list-container' }
               >
                 <StretchedLayoutItem>
                   <Column>

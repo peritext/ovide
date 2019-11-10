@@ -1,0 +1,23 @@
+@import '../../parameters.scss';
+
+
+.ovide-SummaryEditor {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+
+  .list-container{
+    height: 100%;
+    overflow: hidden;
+  }
+
+  &.no-scroll{
+    overflow: visible;
+    height: unset;
+
+    .list-container{
+      overflow: visible;
+    }
+  }
+}

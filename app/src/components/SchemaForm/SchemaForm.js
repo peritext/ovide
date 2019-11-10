@@ -14,6 +14,7 @@ import defaults from 'json-schema-defaults';
 import DatePicker from 'react-datepicker';
 import { SketchPicker as ColorPicker } from 'react-color';
 import Textarea from 'react-textarea-autosize';
+import Tooltip from 'react-tooltip';
 
 import {
   DropZone,
@@ -85,6 +86,7 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                   onChange={ onRadioClick }
                   checked={ value || false }
                 />
+                <div><div /></div>
                 <label htmlFor={ key }>{translate( key )}</label>
               </div>
               );
@@ -170,6 +172,7 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                               onChange={ onRadioClick }
                               checked={ checked || false }
                             />
+                            <div><div /></div>
                             {translate( item )}
                           </label>
                         </li>
@@ -492,6 +495,8 @@ export default class SchemaForm extends Component {
         assets: nextProps.assets || {}
       } );
     }
+
+    Tooltip.rebuild();
   }
 
   onChange = ( path, value ) => {

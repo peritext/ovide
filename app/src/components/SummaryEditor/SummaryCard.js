@@ -15,6 +15,7 @@ import {
   Title,
   Delete,
 } from 'quinoa-design-library/components/';
+import './SummaryCard.scss';
 
 /**
  * Imports Project utils
@@ -70,6 +71,7 @@ class SummaryCard extends Component {
         ref={ providedBlock.innerRef }
         { ...providedBlock.dragHandleProps }
         { ...providedBlock.draggableProps }
+        className={ `ovide-SummaryCard ${isEdited ? 'is-edited' : ''}` }
       >
         <Column style={ { marginLeft: 0 } }>
           <Card
@@ -77,7 +79,7 @@ class SummaryCard extends Component {
             bodyContent={
               <div style={ { position: 'relative' } }>
                 <StretchedLayoutContainer
-                  style={ { minHeight: '5.5rem' } }
+                  style={ { minHeight: isEdited ? undefined : '5.5rem' } }
                   isDirection={ 'horizontal' }
                 >
                   <StretchedLayoutItem
@@ -98,19 +100,13 @@ class SummaryCard extends Component {
                   </StretchedLayoutItem>
                   <StretchedLayoutItem
                     isFlex={ 1 }
-                    style={ { transform: 'scale(.9)' } }
+                    className={ 'move-pad-container' }
                   >
                     {
-                    !isEdited &&
-                    <MovePad
-                      style={ {
-                          position: 'absolute',
-                          top: '-1rem',
-                          right: '4.5rem'
-                        } }
-                      verticalOnly
-                      hideMainButton
-                      chevronsData={ {
+                      <MovePad
+                        verticalOnly
+                        hideMainButton
+                        chevronsData={ {
                           left: {
                             tooltip: translate( 'Level {n}', { n: 1 } ),
                             isDisabled: true,
@@ -130,8 +126,8 @@ class SummaryCard extends Component {
                             onClick: onMoveDown
                           }
                         } }
-                      moveComponentToolTip={ translate( 'Move item in summary' ) }
-                      MoveComponent={ () =>
+                        moveComponentToolTip={ translate( 'Move item in summary' ) }
+                        MoveComponent={ () =>
                           (
                             <span
 
@@ -142,10 +138,9 @@ class SummaryCard extends Component {
                             </span>
                           )
                         }
-                    />
+                      />
                     }
                     {
-                      isEdited &&
                       <Delete
                         onClick={ handleToggleIsEdited }
                         style={ {
@@ -157,10 +152,11 @@ class SummaryCard extends Component {
                     }
                   </StretchedLayoutItem>
                 </StretchedLayoutContainer>
-                {
-                  !isEdited &&
-                  <StretchedLayoutContainer isDirection={ 'horizontal' }>
-                      {
+                <StretchedLayoutContainer
+                  className={ 'actions-container' }
+                  isDirection={ 'horizontal' }
+                >
+                  {
                         isEditable &&
                         <StretchedLayoutItem isFlex={ 1 }>
                           <Button
@@ -173,29 +169,25 @@ class SummaryCard extends Component {
                         </StretchedLayoutItem>
 
                       }
-                      {
-                        <StretchedLayoutItem isFlex={ 1 }>
-                          <Button
-                            isFullWidth
-                            onClick={ onRemove }
-                            isColor={ 'danger' }
-                          >
-                            {translate( 'Delete' )}
-                          </Button>
-                        </StretchedLayoutItem>
+                  {
+                    <StretchedLayoutItem isFlex={ 1 }>
+                      <Button
+                        isFullWidth
+                        onClick={ onRemove }
+                        isColor={ 'danger' }
+                      >
+                        {translate( 'Delete' )}
+                      </Button>
+                    </StretchedLayoutItem>
                       }
-                  </StretchedLayoutContainer>
-                }
-                {
-                  isEdited &&
-                  <div>
-                    <SchemaForm
-                      schema={ blockSchema }
-                      document={ summaryBlock.data }
-                      onAfterChange={ onBlockDataChange }
-                    />
-                  </div>
-                }
+                </StretchedLayoutContainer>
+                <div className={ 'parameters-container' }>
+                  <SchemaForm
+                    schema={ blockSchema }
+                    document={ summaryBlock.data }
+                    onAfterChange={ onBlockDataChange }
+                  />
+                </div>
               </div>
             }
           />

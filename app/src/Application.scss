@@ -152,6 +152,12 @@ input[type="checkbox"]
   }
 }
 
+.card {
+  .card-content{
+    word-break: break-word;
+  }
+}
+
 @media print
 {
   .navbar,
@@ -190,6 +196,7 @@ input[type="checkbox"]
     border: none!important;
     box-shadow: none!important;
   }
+
   p,
   li,
   blockquote,
