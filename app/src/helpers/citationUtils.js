@@ -129,8 +129,9 @@ export const buildCitations = ( assets, props ) => {
     // isolate all contextualizations quoted inside editors
     const quotedEntities = contents.notesOrder.reduce( ( theseContents, noteId ) => [
       ...theseContents,
-      contents.notes[noteId].contents,
+      contents.notes[noteId] ? contents.notes[noteId].contents : undefined,
     ], [ contents.contents ] )
+    .filter( ( c ) => c )
     .reduce( ( entities, theseContents ) =>
       [
         ...entities,

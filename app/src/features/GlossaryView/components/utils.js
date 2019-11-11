@@ -75,8 +75,9 @@ export const getCitationModels = ( production ) => {
           const activeSection = resources[resourceId];
           return activeSection.data.contents.notesOrder.reduce( ( contents, noteId ) => [
             ...contents,
-            activeSection.data.contents.notes[noteId].contents,
+            activeSection.data.contents && activeSection.data.contents.notes[noteId].contents,
         ], [ activeSection.data.contents.contents ] )
+        .filter( ( c ) => c )
         .reduce( ( entities, contents ) =>
             [
             ...entities,
