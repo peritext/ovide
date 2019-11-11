@@ -487,9 +487,44 @@ class ContentsEditor extends Component {
     document.removeEventListener( 'cut', this.onCopy );
     document.removeEventListener( 'paste', this.onPaste );
     document.removeEventListener( 'keyup', this.onKeyUp );
+    this.updateSectionRawContentDebounced.cancel();
+    this.debouncedCleanStuffFromEditorInspection.cancel();
+    this.snapshotBeforeUnmount();
+  }
+  snapshotBeforeUnmount = () => {
+    const { editorStates = {}, activeSection } = this.props;
+    const contents = Object.keys( editorStates ).reduce( ( res, editorStateId ) => {
+      const isNote = editorStateId !== activeSection.id;
+      const editorState = editorStates[editorStateId];
+      if ( !editorState ) {
+        return res;
+      }
+      const rawContents = convertToRaw( editorState.getCurrentContent() );
+      return isNote ? {
+        ...res,
+        notes: {
+          ...res.notes,
+          [editorStateId]: {
+            ...res.notes[editorStateId],
+            contents: rawContents
+          }
+        }
+      } :
+      {
+        ...res,
+        contents: rawContents,
+      };
+    }, activeSection.data.contents );
+    console.log( 'new contents', contents );
 
-    this.updateSectionRawContentDebounced.flush();
-    this.debouncedCleanStuffFromEditorInspection.flush();
+    const newSection = {
+      ...activeSection,
+      data: {
+        ...activeSection.data,
+        contents,
+      }
+    };
+    this.props.updateSection( newSection );
   }
 
   onEditCursoredInternalLink = () => {
@@ -1042,10 +1077,10 @@ class ContentsEditor extends Component {
 
       };
     }
-
     this.props.updateSection( newSection );
     // checking that component is mounted
     if ( this.component ) {
+      // if so build citations and mount
       const citations = buildCitations( this.state.assets, this.props );
       this.setState( {
         citations,
