@@ -17,8 +17,6 @@ import 'quinoa-design-library/themes/millet/style.css';
 import './Application.scss';
 import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
 
-import Layout from './features/Layout/components/LayoutContainer.js';
-
 /*
  * import About from './features/About/components/AboutContainer.js';
  * import Tour from './features/Tour/components/TourContainer.js';
@@ -82,9 +80,7 @@ const routes = [
       key={ 1 }
       path={ '/' }
       component={ () => (
-        <Layout>
           <HomeView />
-        </Layout>
       ) }
     />
   ),

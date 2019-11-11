@@ -154,6 +154,8 @@
   "Components.ContextualizationEditor.displayControls": "montrer les contrôles",
   "Components.ContextualizationEditor.embed": "code embarqué",
   "Components.ContextualizationEditor.filterable": "filtrable",
+  "Explanation about useAbstract": "utiliser le résumé de la production pour ce bloc",
+  "Explanation about customMarkdownContents": "ajouter des contenus riches spécifiques pour ce bloc",
   "Components.ContextualizationEditor.glossary": "glossaire",
   "Components.ContextualizationEditor.heavyPlayer": "montrer tout le lecteur même quand il ne joue pas",
   "Components.ContextualizationEditor.image": "image",
@@ -997,9 +999,9 @@
   "Features.SectionView.delete this table": "supprimer ce tableau",
   "Features.SectionView.delete this bib": "supprimer cette référence",
   "Features.SectionView.edit resource contents": "éditer le contenu de cette ressource",
-
-  "Features.GlossaryView.edit contents": "edit contents",
-  "Features.GlossaryView.delete this glossary": "delete this glossary entry",
+  "Cancel": "Annuler",
+  "Features.GlossaryView.edit contents": "éditer les contenus",
+  "Features.GlossaryView.delete this glossary": "supprimer cette entrée de glossaire",
 
   "Features.SectionView.Resource title": "Titre de la ressource",
   "Features.EditionView.resourceSections": "fiches de ressources",
