@@ -465,6 +465,7 @@
   "Components.SummaryEditor.emptyPage": "empty page",
   "Components.SummaryEditor.frontCover": "front cover",
   "Components.SummaryEditor.landing": "landing",
+  "Features.EditionView.landing": "landing",
   "Components.SummaryEditor.Explanation about landing": "Landing page of the web edition",
   "Components.SummaryEditor.events": "events",
   "Components.SummaryEditor.Explanation about events": "Display a timeline of your time-related glossary entry",
@@ -978,6 +979,10 @@
   "Components.EditionForm.Explanation about the edition sections summary": "Explanation about the edition sections summary",
   "Components.ResourceForm.danger": "danger",
   "Features.SectionView.this resource is annotated with contents": "this resource is annotated with contents",
+  "Features.GlossaryView.this resource is annotated with contents": "this resource is annotated with contents",
+  "Features.LibraryView.this resource is annotated with contents": "this resource is annotated with contents",
+
+  
   "Features.SectionView.Edit resource": "Edit resource",
   "Features.SectionView.Resource title": "Resource title",
   "Components.ContextualizationEditor.prefix": "prefix",

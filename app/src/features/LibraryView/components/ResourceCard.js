@@ -19,7 +19,7 @@ import {
   Card,
 } from 'quinoa-design-library/components';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
-
+import {resourceHasContents} from 'peritext-utils';
 /**
  * Imports Project utils
  */
@@ -184,6 +184,17 @@ class ResourceCard extends Component {
                     src={ icons[type] && icons[type].black.svg }
                     isSize={ '32x32' }
                   />
+                  {
+                    resourceHasContents( resource ) ?
+                      <span
+                        className={ 'contents-indicator' }
+                        data-for={ 'tooltip' }
+                        data-tip={ translate( 'this resource is annotated with contents' ) }
+                      >
+                        ☰
+                      </span>
+                    : null
+                  }
 
                 </Column>
 
