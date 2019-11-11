@@ -195,12 +195,16 @@ if ( window.Paged ) {
       const pages = document.querySelector( '.pagedjs_pages' );
 
       if ( pages ) {
-        const scale = ( ( window.innerWidth * 0.9 ) / pages.offsetWidth );
+        const scale = ( ( window.innerWidth * .9 ) / pages.offsetWidth );
         if ( scale < 1 ) {
-          const translateX = pages.offsetWidth * scale / 2;
-          const translateY = pages.offsetHeight * scale;
-          const style = `scale(${ scale }) translate(${ -translateX }px, ${-translateY}px)`;
-          document.body.style.transform = style;
+          const newWidth = pages.offsetWidth * scale;
+          const newHeight = pages.offsetHeight * scale
+          const translateX = (pages.offsetWidth - newWidth) / 2;
+          const translateY = (pages.offsetHeight - newHeight) / 2;
+          // console.log(pages.offsetHeight, translateY)
+          const style = `translate(${ -translateX }px, ${-translateY}px) scale(${ scale }) `;
+          pages.style.transform = style;
+          // document.body.style.transform = style;
           // document.body.style['max-height'] = translateY;
         }
         else {
