@@ -40,14 +40,16 @@ const buildProductionApplication = ( { templateId, generatorId } ) => {
             path: outputFolder,
           },
         } );
+
         // console.log( 'launching webpack build' );
         return new Promise( ( res, rej ) => {
+
           webpack( finalWebpackConf, ( err ) => {
             if ( err ) {
               rej( err );
             }
             else {
-              // console.log( 'webpack: done' );
+              console.log( 'webpack: done' );
               res();
             }
           } );

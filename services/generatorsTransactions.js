@@ -67,7 +67,6 @@ const generateEdition = ( {
     } )
     // clean temp files
     .then( () => {
-      // console.log( 'clean temp files' );
       return remove( tempDirPath );
     } )
     .then( () => {

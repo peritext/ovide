@@ -39,6 +39,13 @@ const renderProduction = function (production, editionId, locale, useBrowserRout
       useBrowserRouter: useBrowserRouter,
     }, null), mountNode, function(){
       console.log('done hydrating')
+      setTimeout(() => {
+        const staticContainer = document.getElementById('static')
+        if (staticContainer) {
+          staticContainer.remove();
+        }
+      })
+      
     }); 
   } else {
     console.error('template %s not found', templateId);/* eslint no-console: 0 */
