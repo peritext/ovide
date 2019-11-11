@@ -19,6 +19,7 @@ import Tooltip from 'react-tooltip';
 import {
   DropZone,
   CodeEditor,
+  Button,
 } from 'quinoa-design-library/components';
 
 import moment from 'moment';
@@ -36,7 +37,6 @@ import { get, set } from '../../helpers/dot-prop';
 
 import AssetWidget from '../AssetWidget';
 import ExplainedLabel from '../ExplainedLabel';
-import CustomSummaryEditor from '../CustomSummaryEditor';
 
 /*
  * import CodeEditor from '../CodeEditor/CodeEditor';
@@ -66,7 +66,7 @@ const ErrorDisplay = ( { error } ) => (
  * @param {boolean} required - whether edited property is required
  * @return {ReactMarkup} form - the form part corresponding to form scope
  */
-const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onChange, required, translate, assets, onAssetChange ) => {
+const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onChange, required, translate, assets, onAssetChange, onEditCustomSummary ) => {
   const render = () => {
         let onRadioClick;
 
@@ -376,25 +376,30 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
             const actualValue = value || {};
             if ( model.uiType ) {
               switch ( model.uiType ) {
+                case 'customResourcesSummary':
                 case 'customSectionsSummary':
+                  const handleClick = ( e ) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onEditCustomSummary(
+                      {
+                        path,
+                        totalObject,
+                        value,
+                        level,
+                        key,
+                        summaryType: model.uiType,
+                      }
+                    );
+                  };
                   return (
-                    <CustomSummaryEditor
-                      value={ actualValue }
-                      onChange={ ( val ) => onChange( path, val ) }
-                      translate={ translate }
-                      summaryType={ 'sections' }
-                    />
+                    <Button
+                      isFullWidth
+                      isColor={ 'primary' }
+                      onClick={ handleClick }
+                    >{translate( 'edit composition' )}
+                    </Button>
                   );
-                  case 'customResourcesSummary':
-                      return (
-                        <CustomSummaryEditor
-                          value={ actualValue }
-                          onChange={ ( val ) => onChange( path, val ) }
-                          translate={ translate }
-                          summaryType={ 'resources' }
-                          blockSettings={ totalObject }
-                        />
-                      );
                 default:
                   return null;
               }
@@ -425,6 +430,7 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                         translate,
                         assets,
                         onAssetChange,
+                        onEditCustomSummary,
                       )}
                     </div>
                   ) )
@@ -438,7 +444,21 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
               const refs = totalSchema.definitions;
               const subModel = refs[type];
               if ( subModel ) {
-                return makeForm( totalSchema, subModel, totalObject, value, level + 1, key, [ ...path ], onChange, false, translate, assets, onAssetChange );
+                return makeForm(
+                  totalSchema,
+                  subModel,
+                  totalObject,
+                  value,
+                  level + 1,
+                  key,
+                  [ ...path ],
+                  onChange,
+                  false,
+                  translate,
+                  assets,
+                  onAssetChange,
+                  onEditCustomSummary
+                );
               }
             }
             // default: render as json
@@ -577,11 +597,12 @@ export default class SchemaForm extends Component {
         assets = {},
         onAssetChange,
         omitProps = [],
+        onEditCustomSummary,
         title,
         // onCancel
       },
       context: {
-        t
+        t,
       },
       onChange,
       // onValidate
@@ -594,11 +615,11 @@ export default class SchemaForm extends Component {
 
     return (
       <div
-        onSubmit={ ( e ) => e.preventDefault() }
+        onClick={ ( e ) => e.stopPropagation() }
         className={ 'ovide-SchemaForm' }
       >
         {title && <h1 className={ 'title is-3' }>{title}</h1>}
-        {makeForm( schema, schema, document, document, 0, undefined, [], onChange, false, t, assets, onAssetChange )}
+        {makeForm( schema, schema, document, document, 0, undefined, [], onChange, false, t, assets, onAssetChange, onEditCustomSummary )}
         {errors &&
           <ul>
             {errors.map( ( error, key ) => (

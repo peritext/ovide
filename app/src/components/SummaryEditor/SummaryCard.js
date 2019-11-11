@@ -49,6 +49,7 @@ class SummaryCard extends Component {
         onMoveUp,
         onMoveDown,
         onBlockDataChange,
+        onEditCustomSummary,
       },
       state: {
         isEdited,
@@ -189,6 +190,7 @@ class SummaryCard extends Component {
                     schema={ blockSchema }
                     document={ summaryBlock.data }
                     onAfterChange={ onBlockDataChange }
+                    onEditCustomSummary={ onEditCustomSummary }
                   />
                 </div>
               </div>

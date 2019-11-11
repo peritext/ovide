@@ -33,6 +33,7 @@ import SummaryCard from './SummaryCard';
 import PossibleSummaryCard from './PossibleSummaryCard';
 
 import './SummaryEditor.scss';
+import CustomSummaryEditor from '../CustomSummaryEditor';
 
 const UPDATE_DELAY = 500;
 
@@ -41,7 +42,9 @@ class SummaryEditor extends Component {
     super( props );
     const summary = this.getSummaryFromEdition( props.edition );
     this.state = {
-      summary
+      summary,
+      editedCustomSummaryIndex: undefined,
+      editedCustomSummaryData: undefined
     };
     this.propagateSummaryChange = debounce( this.propagateSummaryChange, UPDATE_DELAY );
   }
@@ -65,6 +68,14 @@ class SummaryEditor extends Component {
 
   componentWillUnmount = () => {
     this.propagateSummaryChange.flush();
+  }
+
+  onEditCustomSummary = ( index, data ) => {
+    this.setState( {
+      editedCustomSummaryIndex: index,
+      editedCustomSummaryData: data,
+
+    } );
   }
 
   getSummaryFromEdition = ( edition = {} ) => {
@@ -105,12 +116,16 @@ class SummaryEditor extends Component {
         noScroll,
       },
       state: {
-        summary
+        summary,
+        editedCustomSummaryIndex,
+        editedCustomSummaryData,
+
       },
       context: {
         t
       },
       onSummaryChange,
+      onEditCustomSummary,
     } = this;
 
     const translate = translateNameSpacer( t, 'Components.SummaryEditor' );
@@ -184,6 +199,30 @@ class SummaryEditor extends Component {
       setSummaryEdited( !summaryEdited );
     };
 
+    if ( editedCustomSummaryIndex !== undefined ) {
+      const handleCancelCustomSummary = () => {
+        this.setState( {
+          editedCustomSummaryIndex: undefined,
+          editedCustomSummaryData: undefined
+        } );
+      };
+      const blockData = summary[editedCustomSummaryIndex].data;
+      const handleChange = ( newValue ) => {
+        const newSummary = [ ...summary ];
+        newSummary[editedCustomSummaryIndex].data.customSummary = newValue;
+        onSummaryChange( newSummary );
+      };
+      return (
+        <CustomSummaryEditor
+          onCancel={ handleCancelCustomSummary }
+          summaryType={ editedCustomSummaryData.summaryType }
+          value={ summary[editedCustomSummaryIndex].data.customSummary }
+          onChange={ handleChange }
+          blockSettings={ blockData }
+        />
+      );
+    }
+
     return (
       <DragDropContext onDragEnd={ handleSummaryDragEnd }>
 
@@ -241,6 +280,9 @@ class SummaryEditor extends Component {
                                 newSummary[index].data = newData;
                                 onSummaryChange( newSummary );
                               };
+                              const handleEditCustomSummary = ( data ) => {
+                                onEditCustomSummary( index, data );
+                              };
                               return (
 
                                 <Draggable
@@ -261,6 +303,7 @@ class SummaryEditor extends Component {
                                       onMoveUp={ handleMoveUp }
                                       onMoveDown={ handleMoveDown }
                                       onBlockDataChange={ handleBlockDataChange }
+                                      onEditCustomSummary={ handleEditCustomSummary }
                                       blockSchema={ template.meta.summaryBlockDataTypes[summaryBlock.type] }
                                     />
                                   )}
