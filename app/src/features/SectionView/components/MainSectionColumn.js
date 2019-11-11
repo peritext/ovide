@@ -317,6 +317,7 @@ const MainSectionColumn = ( {
                     >
                       <SectionHeader
                         title={ getResourceTitle( section ) }
+                        type={ section.metadata.type }
                         onEdit={ handleEditMetadataClick }
                         onBlur={ handleTitleBlur }
                         onFocus={ handleTitleFocus }

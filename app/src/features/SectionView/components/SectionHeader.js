@@ -83,6 +83,7 @@ class SectionHeader extends Component {
         editTip,
         placeHolder,
         inputTip,
+        type,
       },
       onFocus,
       onBlur,
@@ -148,12 +149,17 @@ class SectionHeader extends Component {
             left: '-4rem',
             top: 0,
             transition: 'all .5s ease',
-            opacity: isFocused ? 1 : 0,
-            // pointerEvents: isFocused ? 'all' : 'none'
+
+            /*
+             * padding: 0,
+             * opacity: isFocused ? 1 : 0,
+             * pointerEvents: isFocused ? 'all' : 'none'
+             */
           } }
         >
           <CenteredIcon
-            src={ icons.edit.black.svg }
+            src={ icons[type].black.svg }
+            isSize={ '32x32' }
           />
         </Button>
       </form>

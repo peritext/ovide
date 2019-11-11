@@ -213,7 +213,7 @@ class ResourceCard extends Component {
    };
 
    const handleClick = ( e ) => {
-    // onEdit( event );
+    // onEdit( e );
     e.stopPropagation();
     onGoToResource( resource.id );
   };
@@ -228,7 +228,7 @@ class ResourceCard extends Component {
         <Card
           isActive={ isActive }
           bodyContent={
-            <div onClick={ onEdit }>
+            <div onClick={ handleClick }>
               <Columns style={ {
                 minHeight: '4em',
                 maxHeight: '4em',
