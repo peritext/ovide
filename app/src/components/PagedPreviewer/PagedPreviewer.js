@@ -10,7 +10,7 @@ import React, { Component } from 'react';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import fetch from 'axios';
 
-import LoadingScreen from '../LoadingScreen'
+import LoadingScreen from '../LoadingScreen';
 
 /**
  * Imports Dependencies

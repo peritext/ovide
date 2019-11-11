@@ -19,7 +19,8 @@ import {
   Card,
 } from 'quinoa-design-library/components';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
-import {resourceHasContents} from 'peritext-utils';
+import { resourceHasContents } from 'peritext-utils';
+
 /**
  * Imports Project utils
  */

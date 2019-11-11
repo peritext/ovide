@@ -87,17 +87,17 @@ class SummaryCard extends Component {
                     style={ { minWidth: '70%' } }
                   >
                     <Title isSize={ 4 }>
-   
-                          {
+
+                      {
                           customTitle && customTitle.length ?
                           `${customTitle} (${translate( summaryBlock.type )})`
                           : translate( summaryBlock.type )
                         }
 
-                          <HelpPin>
-                            {translate( `Explanation about ${summaryBlock.type}` )}
-                          </HelpPin>
- 
+                      <HelpPin>
+                        {translate( `Explanation about ${summaryBlock.type}` )}
+                      </HelpPin>
+
                     </Title>
 
                   </StretchedLayoutItem>

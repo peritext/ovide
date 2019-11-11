@@ -977,6 +977,7 @@
   "Components.ContextualizationEditor.suffix": "suffixe",
   "Components.ContextualizationEditor.Explanation about suffix parameter for contextualizer bib": "texte à ajouter après la citation",
   "Components.ContextualizationEditor.Edit resource": "éditer la ressource",
+  "shortcuts help": "aide sur les raccourcis",
 
   "Components.EditionForm.Edition sections summary": "Sommaire des sections de l'édition",
   "Components.EditionForm.Explanation about the edition sections summary": "Vous pouvez configurer quelles sections intégrer dans l'édition et dans quel ordre",

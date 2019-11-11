@@ -7,10 +7,11 @@ import {
 const CenteredIcon = ( {
   src,
   style = {},
+  isSize = '16x16',
   ...props,
 } ) => (
   <Image
-    isSize={ '16x16' }
+    isSize={ isSize }
     src={ src }
     style={ {
       margin: 0,
