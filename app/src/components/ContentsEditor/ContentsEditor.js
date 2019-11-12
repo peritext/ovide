@@ -293,6 +293,8 @@ class ContentsEditor extends Component {
     this.updateSectionRawContentDebounced = debounce( this.updateSectionRawContent, UPDATE_RAW_CONTENTS_TIMEOUT );
     this.debouncedCleanStuffFromEditorInspection = debounce( this.cleanStuffFromEditorInspection, MEDIUM_TIMEOUT );
 
+    this.postCitationsBuilderMessage = debounce( this.postCitationsBuilderMessage, UPDATE_RAW_CONTENTS_TIMEOUT );
+
     this.handlePaste = handlePaste.bind( this );
     this.handleCopy = handleCopy.bind( this );
 
@@ -729,12 +731,19 @@ class ContentsEditor extends Component {
     }
   }
 
+  /**
+   * This wrapper is intended to be debounced
+   */
+  postCitationsBuilderMessage = ( props ) => {
+    this.citationsBuilder.postMessage( props );
+  }
+
   updateStateFromProps = ( props ) => {
     if ( !this || !this.state ) {
       return;
     }
 
-    this.citationsBuilder.postMessage( {
+    this.postCitationsBuilderMessage( {
       type: 'BUILD_CITATIONS_FOR_RESOURCE_CONTENTS',
       payload: {
         resourceId: props.activeSection.id,
@@ -1119,7 +1128,7 @@ class ContentsEditor extends Component {
        *   production: this.props.production,
        * } );
        */
-      this.citationsBuilder.postMessage( {
+      this.postCitationsBuilderMessage( {
         type: 'BUILD_CITATIONS_FOR_RESOURCE_CONTENTS',
         payload: {
           resourceId: this.props.activeSection.id,

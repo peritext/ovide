@@ -3,6 +3,7 @@
  * @module ovide/components/ContentsEditor
  */
 /* eslint react/no-set-state: 0 */
+/*eslint react/no-danger : 0 */
 /**
  * Imports Libraries
  */
@@ -210,7 +211,7 @@ class InlineContextualizationContainer extends Component {
         return representation ? <span
           className={ 'citation-container' }
           dangerouslySetInnerHTML={ { __html: representation.html } }
-                                /> : /*eslint react/no-danger */
+                                /> :
         <span>{translate( 'loading citation' )}</span>;
       };
     }
