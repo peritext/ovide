@@ -11,21 +11,17 @@ import {
     StretchedLayoutItem,
   } from 'quinoa-design-library/components';
 
+  import LoadingScreen from '../../../components/LoadingScreen';
+
 // import { ReferencesManager } from 'react-citeproc';
 
 import { translateNameSpacer } from '../../../helpers/translateUtils';
-import { buildCitationsForProduction, getCitationModels } from '../../../helpers/citationUtils';
 
 import Mentions from './Mentions';
 import Prospections from './Prospections';
 
-import {
-    // getCitationModels,
-    findProspectionMatches
-  } from './utils';
-import { resourceHasContents } from 'peritext-utils';
-import { computeAssetsForProduction } from '../../../helpers/resourcesUtils';
-import CitationsBuilder from '../../../helpers/citationsBuilder.worker.js';
+import CitationsBuilder from '../../../helpers/citationsBuilder.worker';
+import ProspectionsBuilder from '../../../helpers/glossaryProspectionsBuilder.worker';
 
 const MIN_SEARCH_LENGTH = 2;
 
@@ -104,6 +100,9 @@ class AsideGlossary extends Component {
         this.citationsBuilder = new CitationsBuilder();
         this.citationsBuilder.onmessage = this.onCitationsBuilderMessage;
 
+        this.prospectionsBuilder = new ProspectionsBuilder();
+        this.prospectionsBuilder.onmessage = this.onProspectionsBuilderMessage;
+
         this.updateCitations( props );
         this.updateProspections = debounce( this.updateProspections, 1000 );
 
@@ -155,44 +154,39 @@ class AsideGlossary extends Component {
       }
     }
   }
+  onProspectionsBuilderMessage = ( event ) => {
+    const { data } = event;
+    const { type, response } = data;
+    if ( type && response ) {
+      switch ( type ) {
+        case 'BUILD_PROSPECTIONS':
+          const { prospections } = response;
+          this.setState( {
+            prospections,
+            loading: false,
+          } );
+          break;
+        default:
+          break;
+      }
+    }
+  }
 
     updateProspections = ( value ) => {
       if ( !this.props.resource ) {
         return;
       }
-      const { production } = this.props;
-
-      const { contextualizations, resources } = production;
-      const matches = Object.keys( production.resources )
-      .filter( ( resourceId ) => resourceHasContents( production.resources[resourceId] ) )
-      .reduce( ( result, resourceId ) => {
-          const section = production.resources[resourceId];
-          return [
-              ...result,
-              ...findProspectionMatches( {
-                  contents: section.data.contents.contents,
-                  sectionId: resourceId,
-                  contentId: 'main',
-                  value,
-                  contextualizations,
-                  resources,
-              } ),
-              ...section.data.contents.notesOrder.reduce( ( res, noteId ) =>
-                  [ ...res, ...findProspectionMatches( {
-                      contents: section.data.contents.notes[noteId].contents,
-                      sectionId: resourceId,
-                      noteId,
-                      value,
-                      contextualizations,
-                      resources,
-                  } ) ]
-              , [] )
-          ];
-      }
-      , [] );
-
+      const { production, resource } = this.props;
+      this.prospectionsBuilder.postMessage( {
+        type: 'BUILD_PROSPECTIONS',
+        payload: {
+          resource,
+          searchTerm: value,
+          production
+        }
+      } );
       this.setState( {
-          prospections: matches
+        loading: true,
       } );
     }
     onSearchStringChange = ( value ) => {
@@ -228,7 +222,7 @@ class AsideGlossary extends Component {
             },
             state: {
                 prospections = [],
-                citations,
+                loading,
             },
             context: {
                 t
@@ -344,29 +338,33 @@ class AsideGlossary extends Component {
               </Column>
             </StretchedLayoutItem>
             <StretchedLayoutItem isFlex={ 1 }>
-              <StretchedLayoutContainer isAbsolute>
-                {
-                        mentionMode === 'add' ?
-                          <Prospections
-                            searchString={ searchString }
-                            translate={ translate }
-                            prospections={ prospections }
-                            production={ production }
-                            addProspect={ addProspect }
-                            minSearchLength={ MIN_SEARCH_LENGTH }
-                          />
-                        :
-                          <Mentions
-                            resourceId={ resource.id }
-                            production={ production }
-                            translate={ translate }
-                            searchString={ searchString }
-                            mentions={ mentions }
-                            removeMention={ removeMention }
-                            removeMentions={ removeMentions }
-                          />
-                    }
-              </StretchedLayoutContainer>
+              {
+                  loading ? <LoadingScreen /> :
+                  <StretchedLayoutContainer isAbsolute>
+                    {
+                          mentionMode === 'add' ?
+                            <Prospections
+                              searchString={ searchString }
+                              translate={ translate }
+                              prospections={ prospections }
+                              production={ production }
+                              addProspect={ addProspect }
+                              minSearchLength={ MIN_SEARCH_LENGTH }
+                            />
+                          :
+                            <Mentions
+                              resourceId={ resource.id }
+                              production={ production }
+                              translate={ translate }
+                              searchString={ searchString }
+                              mentions={ mentions }
+                              removeMention={ removeMention }
+                              removeMentions={ removeMentions }
+                            />
+                      }
+                  </StretchedLayoutContainer>
+                }
+
             </StretchedLayoutItem>
             <StretchedLayoutItem>
               <Column>
