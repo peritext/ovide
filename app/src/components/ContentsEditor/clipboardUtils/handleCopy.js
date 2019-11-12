@@ -391,8 +391,8 @@ export const processCopy = ( {
               const contextualization = production.contextualizations[targetId];
               const contextualizer = production.contextualizers[contextualization.contextualizerId];
               if ( contextualizer.type === 'bib' && reactCitations[contextualization.id] ) {
-                const component = reactCitations[contextualization.id].Component;
-                const content = renderToStaticMarkup( component ).replace( /<(?:.|\n)*?>/gm, '' );
+                const component = reactCitations[contextualization.id].html;
+                const content = component.replace( /<(?:.|\n)*?>/gm, '' );
                 clipboardContentState = Modifier.replaceText(
                   clipboardContentState,
                   tempEditorState.getSelection().merge( {

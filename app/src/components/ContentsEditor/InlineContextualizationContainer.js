@@ -210,7 +210,7 @@ class InlineContextualizationContainer extends Component {
     let ContextualizerComponent = contextualizers[contextualizer.type] && contextualizers[contextualizer.type].Inline || <span />;
     if ( contextualizer.type === 'bib' ) {
       ContextualizerComponent = () => {
-        return representation ? representation.Component : <span>{translate( 'loading citation' )}</span>;
+        return representation ? <span className="citation-container" dangerouslySetInnerHTML={{__html: representation.html}} /> : <span>{translate( 'loading citation' )}</span>;
       };
     }
 
