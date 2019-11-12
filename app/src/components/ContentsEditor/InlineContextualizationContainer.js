@@ -178,11 +178,6 @@ class InlineContextualizationContainer extends Component {
       }
     } = contextualization;
 
-    // const representation = asset && citations && citations[asset.id];
-    const representation = asset && customContext && customContext.citations
-     && customContext.citations.citationComponents && customContext.citations.citationComponents[asset.id];
-    // const representation = asset && citations && citations[asset.id];
-
     /**
      * Local functions
      */
@@ -209,8 +204,14 @@ class InlineContextualizationContainer extends Component {
 
     let ContextualizerComponent = contextualizers[contextualizer.type] && contextualizers[contextualizer.type].Inline || <span />;
     if ( contextualizer.type === 'bib' ) {
+      const representation = asset && customContext && customContext.citations
+      && customContext.citations.citationComponents && customContext.citations.citationComponents[asset.id];
       ContextualizerComponent = () => {
-        return representation ? <span className="citation-container" dangerouslySetInnerHTML={{__html: representation.html}} /> : <span>{translate( 'loading citation' )}</span>;
+        return representation ? <span
+          className={ 'citation-container' }
+          dangerouslySetInnerHTML={ { __html: representation.html } }
+                                /> : /*eslint react/no-danger */
+        <span>{translate( 'loading citation' )}</span>;
       };
     }
 

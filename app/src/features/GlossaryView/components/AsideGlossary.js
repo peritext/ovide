@@ -11,20 +11,21 @@ import {
     StretchedLayoutItem,
   } from 'quinoa-design-library/components';
 
-import { ReferencesManager } from 'react-citeproc';
+// import { ReferencesManager } from 'react-citeproc';
 
 import { translateNameSpacer } from '../../../helpers/translateUtils';
+import { buildCitationsForProduction, getCitationModels } from '../../../helpers/citationUtils';
 
 import Mentions from './Mentions';
 import Prospections from './Prospections';
 
 import {
-    computeAssets,
-    getCitationModels,
-    buildCitations,
+    // getCitationModels,
     findProspectionMatches
   } from './utils';
 import { resourceHasContents } from 'peritext-utils';
+import { computeAssetsForProduction } from '../../../helpers/resourcesUtils';
+import CitationsBuilder from '../../../helpers/citationsBuilder.worker.js';
 
 const MIN_SEARCH_LENGTH = 2;
 
@@ -98,10 +99,23 @@ class AsideGlossary extends Component {
         super( props );
         this.state = {
             prospections: [],
-            citations: this.updateCitations( props )
+            citations: {}
         };
+        this.citationsBuilder = new CitationsBuilder();
+        this.citationsBuilder.onmessage = this.onCitationsBuilderMessage;
+
+        this.updateCitations( props );
         this.updateProspections = debounce( this.updateProspections, 1000 );
+
     }
+
+    static childContextTypes = {
+      citations: PropTypes.object,
+    }
+
+    getChildContext = () => ( {
+      citations: this.state.citations && this.state.citations.citationComponents,
+    } )
 
     componentDidMount = () => {
       setTimeout( () => {
@@ -110,9 +124,7 @@ class AsideGlossary extends Component {
     }
     componentWillReceiveProps = ( nextProps ) => {
       if ( nextProps.production && this.props.production.id !== nextProps.production.id ) {
-          this.setState( {
-              citations: this.updateCitations( nextProps )
-          } );
+          this.updateCitations( nextProps );
       }
       if (
           ( this.props.production.contextualizations !== nextProps.production.contextualizations )
@@ -125,6 +137,23 @@ class AsideGlossary extends Component {
               this.updateProspections( nextProps.searchString );
          } );
       }
+  }
+
+  onCitationsBuilderMessage = ( event ) => {
+    const { data } = event;
+    const { type, response } = data;
+    if ( type && response ) {
+      switch ( type ) {
+        case 'BUILD_CITATIONS_FOR_PRODUCTION':
+          const { citations } = response;
+          this.setState( {
+            citations,
+          } );
+          break;
+        default:
+          break;
+      }
+    }
   }
 
     updateProspections = ( value ) => {
@@ -171,10 +200,12 @@ class AsideGlossary extends Component {
     }
     updateCitations = ( props ) => {
         const { production } = props;
-        const assets = computeAssets( { production } );
-        return buildCitations( assets, {
+        this.citationsBuilder.postMessage( {
+          type: 'BUILD_CITATIONS_FOR_PRODUCTION',
+          payload: {
             production,
-        } );
+          }
+         } );
     }
     render = () => {
         const {
@@ -205,10 +236,6 @@ class AsideGlossary extends Component {
             onSearchStringChange,
             } = this;
           const { id: resourceId } = resource;
-
-        const { style, locale } = getCitationModels( production );
-
-        const { citationItems, citationData } = citations;
 
         const translate = translateNameSpacer( t, 'Features.GlossaryView' );
 
@@ -285,12 +312,7 @@ class AsideGlossary extends Component {
           removeMentions( mentions );
         };
       return (
-        <ReferencesManager
-          style={ style }
-          locale={ locale }
-          items={ citationItems }
-          citations={ citationData }
-        >
+        <div>
           <StretchedLayoutContainer isAbsolute>
             <StretchedLayoutItem>
               <Column>
@@ -391,8 +413,8 @@ class AsideGlossary extends Component {
               </div>
               }
           />
-        </ReferencesManager>
-            );
+        </div>
+      );
     }
 }
 

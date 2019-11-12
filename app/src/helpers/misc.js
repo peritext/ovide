@@ -4,6 +4,34 @@
  */
 import trunc from 'unicode-byte-truncate';
 
+export const computeAssetsForProduction = ( { production } ) => {
+  const {
+        contextualizers,
+        contextualizations,
+        resources
+  } = production;
+  const assets = Object.keys( contextualizations )
+  .reduce( ( ass, id ) => {
+    const contextualization = contextualizations[id];
+    const contextualizer = contextualizers[contextualization.contextualizerId];
+    const resource = resources[contextualization.sourceId];
+    if ( contextualizer && resource ) {
+      return {
+        ...ass,
+        [id]: {
+          ...contextualization,
+          resource,
+          contextualizer,
+          type: contextualizer ? contextualizer.type : 'INLINE_ASSET'
+        }
+      };
+    }
+    return { ...ass };
+  }, {} );
+
+  return assets;
+};
+
 export const abbrevString = ( str = '', maxLength = 10 ) => {
   if ( str.length > maxLength ) {
    return `${trunc( str, maxLength ) }...`;

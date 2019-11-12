@@ -51,15 +51,12 @@ import Editor, {
  * Imports Project utils
  */
 import { translateNameSpacer } from '../../helpers/translateUtils';
-import { abbrevString, silentEvent } from '../../helpers/misc';
+import { abbrevString, silentEvent, computeAssetsForProduction } from '../../helpers/misc';
 import {
-  computeAssets,
   computeAssetChoiceProps,
 } from './utils';
 
-import {
-  buildCitations,
-} from '../../helpers/citationUtils';
+import CitationsBuilder from '../../helpers/citationsBuilder.worker.js';
 
 import {
   updateNotesFromContentsEditor,
@@ -289,6 +286,8 @@ class ContentsEditor extends Component {
         citationData: []
       }
     };
+    this.citationsBuilder = new CitationsBuilder();
+    this.citationsBuilder.onmessage = this.onCitationsBuilderMessage;
     // SectionRawContent = this.updateSectionRawContent.bind(this);
     this.updateSectionRawContent = this.updateSectionRawContent.bind( this );
     this.updateSectionRawContentDebounced = debounce( this.updateSectionRawContent, UPDATE_RAW_CONTENTS_TIMEOUT );
@@ -491,6 +490,7 @@ class ContentsEditor extends Component {
     this.debouncedCleanStuffFromEditorInspection.cancel();
     this.snapshotBeforeUnmount();
   }
+
   snapshotBeforeUnmount = () => {
     const { editorStates = {}, activeSection } = this.props;
     const contents = Object.keys( editorStates ).reduce( ( res, editorStateId ) => {
@@ -515,7 +515,6 @@ class ContentsEditor extends Component {
         contents: rawContents,
       };
     }, activeSection.data.contents );
-    console.log( 'new contents', contents );
 
     const newSection = {
       ...activeSection,
@@ -525,6 +524,30 @@ class ContentsEditor extends Component {
       }
     };
     this.props.updateSection( newSection );
+  }
+
+  onCitationsBuilderMessage = ( event ) => {
+    const { data } = event;
+    const { type, payload, response } = data;
+    if ( type && response ) {
+      switch ( type ) {
+        case 'BUILD_CITATIONS_FOR_RESOURCE_CONTENTS':
+          if ( payload.resourceId === this.props.activeSection.id ) {
+            const { citations } = response;
+            const { customContext = {} } = this.state;
+            this.setState( {
+              citations,
+              customContext: {
+                ...customContext,
+                citations,
+              }
+            } );
+          }
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   onEditCursoredInternalLink = () => {
@@ -710,16 +733,23 @@ class ContentsEditor extends Component {
     if ( !this || !this.state ) {
       return;
     }
-    const assets = computeAssets( props );
-    const citations = buildCitations( assets, props );
+
+    this.citationsBuilder.postMessage( {
+      type: 'BUILD_CITATIONS_FOR_RESOURCE_CONTENTS',
+      payload: {
+        resourceId: props.activeSection.id,
+        production: props.production,
+      }
+     } );
 
     const productionAssets = props.production.assets;
+    const assets = computeAssetsForProduction( { production: props.production } );
 
     this.setState( {/* eslint react/no-set-state : 0 */
       assets,
       assetChoiceProps: computeAssetChoiceProps( props ),
       customContext: {
-        citations,
+        // citations,
         selectedContextualizationId: props.selectedContextualizationId,
         editedContextualizationId: props.editedContextualizationId,
         productionAssets,
@@ -727,7 +757,7 @@ class ContentsEditor extends Component {
         productionId: props.production.id,
       },
       renderingMode: props.renderingMode,
-      citations,
+      // citations,
     } );
   }
 
@@ -1080,12 +1110,27 @@ class ContentsEditor extends Component {
     this.props.updateSection( newSection );
     // checking that component is mounted
     if ( this.component ) {
-      // if so build citations and mount
-      const citations = buildCitations( this.state.assets, this.props );
+
+      /*
+       * if so build citations and mount
+       * const citations = buildCitationsForResourceContents( {
+       *   assets: this.state.assets,
+       *   resourceId: this.props.activeSection.id,
+       *   production: this.props.production,
+       * } );
+       */
+      this.citationsBuilder.postMessage( {
+        type: 'BUILD_CITATIONS_FOR_RESOURCE_CONTENTS',
+        payload: {
+          resourceId: this.props.activeSection.id,
+          production: this.props.production,
+        }
+       } );
+
       this.setState( {
-        citations,
+        // citations,
         customContext: {
-          citations,
+          // citations,
           selectedContextualizationId: this.props.selectedContextualizationId,
           editedContextualizationId: this.props.editedContextualizationId,
           productionAssets: this.props.production.assets,
@@ -1710,7 +1755,6 @@ class ContentsEditor extends Component {
             mainEditorState={ mainEditorState }
             notes={ notes }
             notesOrder={ notesOrder }
-
             {
                 ...{
                    clipboard,
@@ -1729,58 +1773,6 @@ class ContentsEditor extends Component {
                 }
               }
           />
-          {/*<ReferencesManager
-            style={ style }
-            locale={ locale }
-            items={ citationItems }
-            citations={ citationData }
-          >
-            <Editor
-              AssetButtonComponent={ RealAssetComponent }
-              AssetChoiceComponent={ ResourceSearchWidget }
-              NotePointerComponent={ NotePointer }
-              editorPlaceholder={ placeholderText }
-              inlineEntities={ additionalInlineEntities }
-              onAssetChange={ handleDataChange }
-              onAssetChoice={ handleAssetChoice }
-              onAssetRequest={ handleAssetRequest }
-              onAssetRequestCancel={ handleAssetRequestCancel }
-              onBlur={ handleBlur }
-              onClick={ handleClick }
-              onDragOver={ handleDragOver }
-              onDrop={ handleDrop }
-              onEditorChange={ handleEditorChange }
-              onNoteAdd={ addNote }
-              onNoteDelete={ deleteNote }
-              onNotePointerMouseClick={ handleNotePointerMouseClick }
-              ref={ bindEditorRef }
-              BibliographyComponent={ null }
-              assets={ assets }
-              customContext={ customContext }
-              handlePastedText={ handleEditorPaste }
-              mainEditorState={ mainEditorState }
-              notes={ notes }
-              notesOrder={ notesOrder }
-
-              {
-                ...{
-                   clipboard,
-                   focusedEditorId,
-                   inlineButtons,
-                   messages,
-                   assetRequestContentId,
-                   assetRequestPosition,
-                   assetChoiceProps,
-                   NoteLayout,
-                   NoteButtonComponent,
-                   ElementLayoutComponent,
-                   inlineAssetComponents,
-                   blockAssetComponents,
-                }
-              }
-
-            />
-          </ReferencesManager>*/}
         </div>
         {
           linkPopupData &&
