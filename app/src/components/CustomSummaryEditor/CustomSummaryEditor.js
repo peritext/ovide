@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
- defaultSortResourceSections,
  buildResourceSectionsSummary,
  getResourceTitle,
  } from 'peritext-utils';
@@ -123,7 +122,7 @@ export default class CustomSummaryEditor extends Component {
       level,
       type: production.resources[resourceId].metadata.type,
       title: getResourceTitle( production.resources[resourceId] )
-    } ) )
+    } ) );
     // .sort( defaultSortResourceSections );
 
     const actionableSummary = summary.map( ( { level, resourceId } ) => {

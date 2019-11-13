@@ -3,7 +3,6 @@
  * @module ovide/components/ContentsEditor
  */
 import { uniqBy } from 'lodash';
-import { renderToStaticMarkup } from 'react-dom/server';
 
 import {
   EditorState,

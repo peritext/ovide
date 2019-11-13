@@ -80,7 +80,7 @@ const routes = [
       key={ 1 }
       path={ '/' }
       component={ () => (
-          <HomeView />
+        <HomeView />
       ) }
     />
   ),

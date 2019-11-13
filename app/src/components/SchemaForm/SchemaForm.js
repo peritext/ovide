@@ -145,7 +145,7 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                   {
                     model.items.enum.map( ( item ) => {
                       const checked = activeValue.indexOf( item ) > -1;
-                      onRadioClick = (e) => {
+                      onRadioClick = ( e ) => {
                         e.stopPropagation();
                         e.preventDefault();
                         let newValue;
@@ -161,7 +161,7 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                         onChange( path, newValue );
                       };
                       return (
-                        <li 
+                        <li
                           key={ item }
                         >
                           <label

@@ -64,11 +64,6 @@ export const findProspectionMatches = ( {
                   }
               }
           } while ( match );
-
-          /*
-           * if(matches.length)
-           * console.log(matches.length, 'matches')
-           */
           return [ ...result, ...matches ];
       }, [] );
 };
