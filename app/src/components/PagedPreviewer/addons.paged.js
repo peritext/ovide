@@ -71,15 +71,18 @@ if ( window.Paged ) {
         afterParsed() {
           console.info( 'parsing finished, rendering the pages' );
           console.group( 'rendering pages' );
-          Toastify( {
-            text: 'Rendering pages',
-            duration: 2000
-          } ).showToast();
+          if (Toastify) {
+            Toastify( {
+              text: 'Rendering pages',
+              duration: 2000
+            } ).showToast();
+          }
+          
         }
 
         afterPageLayout( pageFragment, page, breakToken ) {
           console.info( 'page %s is rendered', page.position + 1 );
-          if (page.position%20 === 0 && page.position) {
+          if (page.position%20 === 0 && page.position && Toastify) {
             Toastify( {
               text: 'Rendering pages : ' + (page.position) + '/?',
               duration: 1000
@@ -113,10 +116,12 @@ if ( window.Paged ) {
 
         afterRendered( pages ) {
           console.groupEnd( 'rendering pages' );
-          Toastify( {
-            text: `Attaching footnotes to ${ pages.length } pages`,
-            duration: 1000
-          } ).showToast();
+          if (Toastify) {
+            Toastify( {
+              text: `Attaching footnotes to ${ pages.length } pages`,
+              duration: 1000
+            } ).showToast();
+          }
           console.info( 'rendering done, attaching footnotes to %s pages', pages.length );
           let footnoteIndex = 0;
           for ( const page of pages ) {
@@ -182,10 +187,13 @@ if ( window.Paged ) {
             }
           }
           console.info( 'footnotes positionning done' );
-          Toastify( {
-            text: 'Rendering finished !',
-            duration: 3000
-          } ).showToast();
+          if(Toastify) {
+            Toastify( {
+              text: 'Rendering finished !',
+              duration: 3000
+            } ).showToast();
+          }
+          
 
         }
         } );/* end register handlers */
