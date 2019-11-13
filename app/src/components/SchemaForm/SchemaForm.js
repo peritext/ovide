@@ -145,7 +145,9 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                   {
                     model.items.enum.map( ( item ) => {
                       const checked = activeValue.indexOf( item ) > -1;
-                      onRadioClick = () => {
+                      onRadioClick = (e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
                         let newValue;
                         // uncheck option
                         if ( checked ) {
@@ -159,10 +161,13 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                         onChange( path, newValue );
                       };
                       return (
-                        <li key={ item }>
+                        <li 
+                          key={ item }
+                        >
                           <label
                             className={ 'checkbox' }
                             htmlFor={ item }
+                            onClick={ onRadioClick }
                           >
                             <input
                               type={ 'checkbox' }
