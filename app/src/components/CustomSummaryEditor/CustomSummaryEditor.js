@@ -118,13 +118,13 @@ export default class CustomSummaryEditor extends Component {
       ...blockSettings,
       customSummary: { active: false }
     } } )
-    .map( ( { resourceId } ) => ( {
+    .map( ( { resourceId, level = 0 } ) => ( {
       resourceId,
-      level: 0,
+      level,
       type: production.resources[resourceId].metadata.type,
       title: getResourceTitle( production.resources[resourceId] )
     } ) )
-    .sort( defaultSortResourceSections );
+    // .sort( defaultSortResourceSections );
 
     const actionableSummary = summary.map( ( { level, resourceId } ) => {
       const thatSection = ( resources[resourceId] || { metadata: {} } );
