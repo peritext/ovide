@@ -391,6 +391,13 @@ class ContentsEditor extends Component {
     setTimeout( () => {
       this.props.setEditorFocus( 'main' );
       this.updateStateFromProps( this.props );
+      this.postCitationsBuilderMessage( {
+        type: 'BUILD_CITATIONS_FOR_RESOURCE_CONTENTS',
+        payload: {
+          resourceId: this.props.activeSection.id,
+          production: this.props.production,
+        }
+       } );
     } );
   }
 
@@ -420,6 +427,16 @@ class ContentsEditor extends Component {
 
       } );
     }
+    if ( this.props.production && nextProps.production &&
+      this.props.production.contextualizers !== nextProps.production.contextualizers ) {
+        this.postCitationsBuilderMessage( {
+          type: 'BUILD_CITATIONS_FOR_RESOURCE_CONTENTS',
+          payload: {
+            resourceId: nextProps.activeSection.id,
+            production: nextProps.production,
+          }
+         } );
+      }
 
     if ( this.props.production &&
       nextProps.production &&
@@ -743,14 +760,6 @@ class ContentsEditor extends Component {
       return;
     }
 
-    this.postCitationsBuilderMessage( {
-      type: 'BUILD_CITATIONS_FOR_RESOURCE_CONTENTS',
-      payload: {
-        resourceId: props.activeSection.id,
-        production: props.production,
-      }
-     } );
-
     const productionAssets = props.production.assets;
     const assets = computeAssetsForProduction( { production: props.production } );
 
@@ -758,6 +767,7 @@ class ContentsEditor extends Component {
       assets,
       assetChoiceProps: computeAssetChoiceProps( props ),
       customContext: {
+        ...this.state.customContext,
         // citations,
         selectedContextualizationId: props.selectedContextualizationId,
         editedContextualizationId: props.editedContextualizationId,
@@ -1128,17 +1138,11 @@ class ContentsEditor extends Component {
        *   production: this.props.production,
        * } );
        */
-      this.postCitationsBuilderMessage( {
-        type: 'BUILD_CITATIONS_FOR_RESOURCE_CONTENTS',
-        payload: {
-          resourceId: this.props.activeSection.id,
-          production: this.props.production,
-        }
-       } );
 
       this.setState( {
         // citations,
         customContext: {
+          ...this.state.customContext,
           // citations,
           selectedContextualizationId: this.props.selectedContextualizationId,
           editedContextualizationId: this.props.editedContextualizationId,
