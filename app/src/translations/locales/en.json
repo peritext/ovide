@@ -1060,5 +1060,8 @@
   "Components.CustomSummaryEditor.Should the edition block use the default composition or a custom one ?": "Should the edition block use the default composition or a custom one ?",
   "Components.CustomSummaryEditor.default composition": "default composition",
   "Components.CustomSummaryEditor.custom composition": "custom composition",
-  "edit composition": "éditer la composition"
+  "edit composition": "éditer la composition",
+  "custom content": "contenu spécifique",
+  "Components.SummaryEditor.Move item in summary": "déplacer l'item dans le sommaire",
+  "Components.SummaryEditor.Level {n}": "Niveau {n}"
 }

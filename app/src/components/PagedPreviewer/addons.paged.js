@@ -71,7 +71,7 @@ if ( window.Paged ) {
         afterParsed() {
           console.info( 'parsing finished, rendering the pages' );
           console.group( 'rendering pages' );
-          if (Toastify) {
+          if (window.Toastify) {
             Toastify( {
               text: 'Rendering pages',
               duration: 2000
@@ -116,7 +116,7 @@ if ( window.Paged ) {
 
         afterRendered( pages ) {
           console.groupEnd( 'rendering pages' );
-          if (Toastify) {
+          if (window.Toastify) {
             Toastify( {
               text: `Attaching footnotes to ${ pages.length } pages`,
               duration: 1000

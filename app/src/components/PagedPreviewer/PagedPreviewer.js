@@ -47,7 +47,6 @@ class PreviewWrapper extends Component {
 
   componentDidUpdate = () => {
     const { props: { additionalHTML = '' } } = this;
-
     if ( this.state.pagedScript && this.state.pagedScript.length && this.frameDocument ) {
       this.injectRenderer( this.frameDocument, additionalHTML );
     }
@@ -113,6 +112,7 @@ class PreviewWrapper extends Component {
       props: {
         style,
         Component: RenderingComponent,
+        html,
       },
       state: {
       }
@@ -121,6 +121,37 @@ class PreviewWrapper extends Component {
     const dispatchContext = ( document/*, window*/ ) => {
       this.frameDocument = document;
     };
+    if ( html ) {
+      return (
+        <div
+          style={ style }
+        >
+          <LoadingScreen />
+          <Frame
+            name={ 'preview' }
+            id={ 'preview' }
+            style={ { width: '100%', height: '100%', position: 'absolute' } }
+            ref={ this.frameRef }
+          >
+            <FrameContextConsumer>
+              {( { document, window } ) => {
+                setTimeout( () => dispatchContext( document, window ) );
+                return (
+                  <div
+                    dangerouslySetInnerHTML={ {/* eslint react/no-danger : 0 */
+                    __html: html
+                  } }
+                  />
+
+                );
+}}
+            </FrameContextConsumer>
+          </Frame>
+
+        </div>
+      );
+
+    }
     return (
       <div
         style={ style }

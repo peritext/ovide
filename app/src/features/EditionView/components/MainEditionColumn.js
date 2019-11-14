@@ -25,6 +25,7 @@ import PagedPreviewer from '../../../components/PagedPreviewer';
 import SummaryEditor from '../../../components/SummaryEditor';
 import LoadingScreen from '../../../components/LoadingScreen';
 import EditionPreprocessor from '../../../helpers/editionPreprocessor.worker';
+import Renderer from '../../../helpers/editionRenderer.worker';
 
 // import { processCustomCss } from '../../../helpers/postcss';
 class ContextProvider extends Component {
@@ -54,7 +55,10 @@ class PreviewWrapperInitial extends Component {
       activeViewId: undefined,
     };
     this.editionPreprocessor = new EditionPreprocessor();
-    this.editionPreprocessor.onmessage = this.onEditionPreprocessorMessage;
+    this.editionPreprocessor.onmessage = this.onWorkerMessage;
+
+    this.editionRenderer = new Renderer();
+    this.editionRenderer.onmessage = this.onWorkerMessage;
   }
 
   componentDidMount = () => {
@@ -84,7 +88,10 @@ class PreviewWrapperInitial extends Component {
       'contextualizers',
       'lang'
     ];
-    return vals.find( ( key ) => this.props[key] !== nextProps[key] ) || this.state.assets !== nextState.assets || this.state.isPreprocessing !== nextState.isPreprocessing;
+    return vals.find( ( key ) => this.props[key] !== nextProps[key] )
+      || this.state.assets !== nextState.assets
+      || this.state.isPrerendering !== nextState.isPrerendering
+      || this.state.isPreprocessing !== nextState.isPreprocessing;
   }
 
   preprocessEditionData = ( props ) => {
@@ -103,16 +110,44 @@ class PreviewWrapperInitial extends Component {
     } );
   }
 
-  onEditionPreprocessorMessage = ( event ) => {
+  onWorkerMessage = ( event ) => {
     const { data } = event;
     const { type, response } = data;
     if ( type && response ) {
       switch ( type ) {
         case 'PREPROCESS_EDITION_DATA':
+          const { edition, production: initialProduction, lang, locale } = this.props;
           this.setState( {
             preprocessedData: response,
-            isPreprocessing: false
+            isPreprocessing: false,
+            isPrerendering: edition.metadata.type === 'paged',
           } );
+          if ( edition.metadata.type === 'paged' ) {
+            const production = {
+              ...initialProduction,
+              assets: {
+                ...( initialProduction.assets || {} ),
+                ...this.state.assets
+              }
+            };
+            this.editionRenderer.postMessage( {
+              type: 'RENDER_PAGED_EDITION_HTML',
+              payload: {
+                edition,
+                production,
+                lang,
+                locale,
+                preprocessedData: response
+              }
+            } );
+
+          }
+          break;
+        case 'RENDER_PAGED_EDITION_HTML':
+            this.setState( {
+              isPrerendering: false,
+              editionHTML: response.html
+            } );
           break;
         default:
           break;
@@ -160,14 +195,29 @@ class PreviewWrapperInitial extends Component {
       viewId,
       viewParams,
       isPreprocessing,
+      isPrerendering,
       preprocessedData,
+      editionHTML,
     } = state;
+
+    const renderingMode = edition.metadata.type;
 
     if ( !template || !initialProduction ) {
       return null;
     }
-    if ( isPreprocessing ) {
+    if ( isPreprocessing || isPrerendering ) {
       return <LoadingScreen />;
+    }
+    if ( renderingMode === 'paged' && editionHTML && editionHTML.length ) {
+      return (
+        <PagedPreviewer
+          style={ { width: '100%', height: '100%', position: 'absolute', left: 0,
+          top: 0, } }
+          html={ editionHTML }
+          additionalHTML={ edition.data.additionalHTML }
+          updateTrigger={ JSON.stringify( edition ) }
+        />
+      );
     }
     const production = {
       ...initialProduction,
@@ -180,8 +230,6 @@ class PreviewWrapperInitial extends Component {
     const Edition = template.components.Edition;
 
     const { getResourceDataUrl } = this.context;
-
-    const renderingMode = edition.metadata.type;
 
     const onActiveViewChange = ( params ) => {
       this.setState( params );
