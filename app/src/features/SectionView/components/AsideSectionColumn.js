@@ -58,9 +58,9 @@ class AsideSectionColumn extends Component {
       'asideTabMode',
       'resourceOptionsVisible',
       'mainColumnMode',
-      'section',
+      // 'section',
       'editedResourceId',
-      'sections',
+      // 'sections',
 
       'resourceSearchString',
       'resourceFilterValues',
