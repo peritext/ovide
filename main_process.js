@@ -74,9 +74,9 @@ app.on('ready', async () => {
         webaudio: false,
         webSecurity: false,
         nodeIntegration: true,
+        nodeIntegrationInWorker: true,
         allowDisplayingInsecureContent: true,
         allowRunningInsecureContent: true,
-        nodeIntegration: true,
         // preload: './app/electronBuild/bundle.js'
       }
     })
