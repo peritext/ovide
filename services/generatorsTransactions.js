@@ -17,6 +17,7 @@ const peritextConfigRender = require( '../app/src/peritextConfig.render' );
 const peritextConfig = Object.assign( peritextConfigRender, peritextConfigMain );
 
 const { getAssetData } = require( './assetsTransactions' );
+const { preprocessEditionData } = require( 'peritext-utils' );
 // const peritextConfigPath = path.resolve( `${__dirname }/../app/src/peritextConfig.render` );
 
 const userDataPath = ( electron.app || electron.remote.app ).getPath( 'userData' );
@@ -49,10 +50,12 @@ const generateEdition = ( {
     const onFeedback = ( payload ) => {
       mainWindow.webContents.send( 'MAIN_ACTION', { type: 'GENERATOR_MESSAGE', payload } );
     };
+    const preprocessedData = preprocessEditionData( { production, edition } );
     generator.generateOutput( {
       production,
       edition,
       templateId,
+      preprocessedData,
       // contextualizers,
       locale,
       outputPath,

@@ -6,6 +6,7 @@ import peritextConfig from '../peritextConfig.render';
 import downloadFile from './fileDownloader';
 import PQueue from 'p-queue';
 import { v4 as genId } from 'uuid';
+import preprocessEditionData from 'peritext-utils/dist/preprocessEditionData';
 
 const webAppPrefix = window.location.href.includes( 'ovide' ) ? `${window.location.href.split( 'ovide' )[0] }ovide/` : `${window.location.href.split( '/' ).slice( 0, 3 ).join( '/' ) }/`;
 
@@ -705,10 +706,12 @@ export const requestEditionDownload = ( {
         return requestHTMLBuild( { generatorId, templateId } );
       } )
       .then( ( { data: template } ) => {
+        const preprocessedData = preprocessEditionData( { production, edition } );
         const HTMLMetadata = buildHTMLMetadata( production, edition );
         const html = template
           .replace( '${metadata}', HTMLMetadata )
           .replace( '${productionJSON}', JSON.stringify( productionBundle ) )
+          .replace( '${preprocessedDataJSON}', JSON.stringify( preprocessedData ) )
           .replace( '${editionId}', `"${editionId}"` )
           .replace( '${locale}', JSON.stringify( locale ) );
 

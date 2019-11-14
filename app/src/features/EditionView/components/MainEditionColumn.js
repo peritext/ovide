@@ -23,9 +23,10 @@ import { loadAssetsForEdition } from '../../../helpers/projectBundler';
 import { requestAssetData } from '../../../helpers/dataClient';
 import PagedPreviewer from '../../../components/PagedPreviewer';
 import SummaryEditor from '../../../components/SummaryEditor';
+import LoadingScreen from '../../../components/LoadingScreen';
+import EditionPreprocessor from '../../../helpers/editionPreprocessor.worker';
 
 // import { processCustomCss } from '../../../helpers/postcss';
-
 class ContextProvider extends Component {
 
   static childContextTypes = {
@@ -52,10 +53,13 @@ class PreviewWrapperInitial extends Component {
       assets: {},
       activeViewId: undefined,
     };
+    this.editionPreprocessor = new EditionPreprocessor();
+    this.editionPreprocessor.onmessage = this.onEditionPreprocessorMessage;
   }
 
   componentDidMount = () => {
     this.loadAssets( this.props );
+    this.preprocessEditionData( this.props );
     // setTimeout( () => this.update( this.props, this.state ) );
   }
 
@@ -66,7 +70,9 @@ class PreviewWrapperInitial extends Component {
       || this.props.edition !== nextProps.edition
     ) {
       this.loadAssets( nextProps );
-      // .then( () => this.update( this.props, this.state ) );
+      if ( this.props.edition && nextProps.edition && this.props.edition.data.summary !== nextProps.edition.data.summary ) {
+        this.preprocessEditionData( nextProps );
+      }
     }
   }
 
@@ -78,7 +84,40 @@ class PreviewWrapperInitial extends Component {
       'contextualizers',
       'lang'
     ];
-    return vals.find( ( key ) => this.props[key] !== nextProps[key] ) || this.state.assets !== nextState.assets;
+    return vals.find( ( key ) => this.props[key] !== nextProps[key] ) || this.state.assets !== nextState.assets || this.state.isPreprocessing !== nextState.isPreprocessing;
+  }
+
+  preprocessEditionData = ( props ) => {
+    const { production, edition } = props;
+
+    this.editionPreprocessor.postMessage( {
+      type: 'PREPROCESS_EDITION_DATA',
+      payload: {
+        production,
+        edition
+      }
+    } );
+    this.setState( {
+      isPreprocessing: true,
+      preprocessedData: undefined,
+    } );
+  }
+
+  onEditionPreprocessorMessage = ( event ) => {
+    const { data } = event;
+    const { type, response } = data;
+    if ( type && response ) {
+      switch ( type ) {
+        case 'PREPROCESS_EDITION_DATA':
+          this.setState( {
+            preprocessedData: response,
+            isPreprocessing: false
+          } );
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   loadAssets = ( props ) => {
@@ -120,10 +159,15 @@ class PreviewWrapperInitial extends Component {
       viewClass,
       viewId,
       viewParams,
+      isPreprocessing,
+      preprocessedData,
     } = state;
 
     if ( !template || !initialProduction ) {
       return null;
+    }
+    if ( isPreprocessing ) {
+      return <LoadingScreen />;
     }
     const production = {
       ...initialProduction,
@@ -156,6 +200,7 @@ class PreviewWrapperInitial extends Component {
               lang,
               contextualizers,
               previewMode: true,
+              preprocessedData,
               locale,
             }
           }
@@ -202,6 +247,7 @@ class PreviewWrapperInitial extends Component {
                     viewId,
                     viewParams,
                     onActiveViewChange,
+                    preprocessedData,
                   }
                 }
               />

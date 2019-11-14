@@ -1,3 +1,16 @@
+import PQueue from 'p-queue';
+
+const queue = new PQueue( { concurrency: 1 } );
+
+const addToUpdateQueue = ( job ) => {
+  return new Promise( ( resolve, reject ) => {
+    queue.add( job )
+    .then( function() {
+      resolve( ...arguments );
+    } )
+    .catch( reject );
+  } );
+};
 
 export const findProspectionMatches = ( {
   contents,
@@ -110,12 +123,17 @@ self.onmessage = ( { data } ) => {
   if ( type && payload ) {
     switch ( type ) {
       case 'BUILD_PROSPECTIONS':
-        const prospections = updateProspections( payload );
-        self.postMessage( {
-          type,
-          response: {
-            prospections
-          }
+        addToUpdateQueue( () => {
+          return new Promise( ( resolve ) => {
+            const prospections = updateProspections( payload );
+            self.postMessage( {
+              type,
+              response: {
+                prospections
+              }
+            } );
+            resolve();
+          } );
         } );
         break;
       default:

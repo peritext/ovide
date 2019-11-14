@@ -75,6 +75,7 @@ const buildProductionApplication = ( { templateId, generatorId } ) => {
     <div id="mount"></div>
     <script>
         var __production = \${productionJSON};
+        var __preprocessedData = \${preprocessedDataJSON};
         var __editionId = \${editionId};
         var __locale = \${locale} || {};
     </script>

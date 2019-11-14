@@ -15,7 +15,7 @@ const templateId = "${templateId}";
  * Handles the rendering of a peritext single page html
  * @param {object} production - the production to render
  */
-const renderProduction = function (production, editionId, locale, useBrowserRouter) {
+const renderProduction = function (production, editionId, preprocessedData, locale, useBrowserRouter) {
 
   // console.log('render', production, editionId, locale, useBrowserRouter);
   // console.log('config', peritextConfig);
@@ -37,6 +37,7 @@ const renderProduction = function (production, editionId, locale, useBrowserRout
       contextualizers: peritextConfig.contextualizers,
       usedDocument: document,
       useBrowserRouter: useBrowserRouter,
+      preprocessedData: preprocessedData,
     }, null), mountNode, function(){
       console.log('done hydrating')
       setTimeout(() => {
@@ -53,7 +54,7 @@ const renderProduction = function (production, editionId, locale, useBrowserRout
 }
 // this is used in all-in-one html representations
 // in which production's data is stored as a js object
-renderProduction(window.__production, window.__editionId, window.__locale, window.__useBrowserRouter);
+renderProduction(window.__production, window.__editionId, window.__preprocessedData, window.__locale, window.__useBrowserRouter);
 
 /*
  * object.watch polyfill
@@ -113,7 +114,7 @@ console.log('in window to watch', window.watch);
 if (window.watch) {
   window.watch("__production", function (id, oldval, production) {
   // console.log('changed', production);
-    renderProduction(production, window.__editionId, window.__locale, window.__useBrowserRouter);
+    renderProduction(production, window.__editionId, window.__preprocessedData, window.__locale, window.__useBrowserRouter);
   });
 }
 
