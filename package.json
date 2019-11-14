@@ -176,7 +176,7 @@
     "node-sass": "^4.12.0",
     "p-queue": "^3.0.0",
     "parse-srt": "^1.0.0-alpha",
-    "peritext-contextualizer-bib": "^0.2.1",
+    "peritext-contextualizer-bib": "^0.2.2",
     "peritext-contextualizer-embed": "^0.1.1",
     "peritext-contextualizer-glossary": "^0.1.0",
     "peritext-contextualizer-image": "^0.2.1",
