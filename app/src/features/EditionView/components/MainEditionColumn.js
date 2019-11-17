@@ -94,6 +94,11 @@ class PreviewWrapperInitial extends Component {
       || this.state.isPreprocessing !== nextState.isPreprocessing;
   }
 
+  componentWillUnmount = () => {
+    this.editionPreprocessor.terminate();
+    this.editionRenderer.terminate();
+  }
+
   preprocessEditionData = ( props ) => {
     const { production, edition } = props;
 

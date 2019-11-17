@@ -121,6 +121,10 @@ class AsideGlossary extends Component {
             this.updateProspections( this.props.searchString );
       } );
     }
+    componentWillUnmount = () => {
+      this.prospectionsBuilder.terminate();
+      this.citationsBuilder.terminate();
+    }
     componentWillReceiveProps = ( nextProps ) => {
       if ( nextProps.production && this.props.production.id !== nextProps.production.id ) {
           this.updateCitations( nextProps );

@@ -508,6 +508,7 @@ class ContentsEditor extends Component {
     this.updateSectionRawContentDebounced.cancel();
     this.debouncedCleanStuffFromEditorInspection.cancel();
     this.snapshotBeforeUnmount();
+    this.citationsBuilder.terminate();
   }
 
   snapshotBeforeUnmount = () => {
