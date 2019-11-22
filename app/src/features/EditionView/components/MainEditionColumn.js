@@ -15,6 +15,8 @@ import {
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import debounceRender from 'react-debounce-render';
 
+import './MainEditionColumn.scss';
+
 /**
  * Imports Project utils
  */
@@ -382,11 +384,7 @@ const MainEditionColumn = ( {
           }
       />
       <div
-        style={ {
-          position: 'absolute',
-          right: '1.5rem',
-          bottom: '1.5rem'
-        } }
+        className={ 'edition-actions' }
       >
         {availableGenerators.length > 0 &&
         <Button
@@ -400,7 +398,7 @@ const MainEditionColumn = ( {
             isAlign={ 'left' }
             className={ 'fa fa-download' }
           />
-          <span style={ { paddingLeft: '.5rem' } }>{ translate( 'download this edition' ) }</span>
+          <span>{ translate( 'download this edition' ) }</span>
         </Button>
         }
         {
@@ -410,14 +408,13 @@ const MainEditionColumn = ( {
             onClick={ handleClickOnPrint }
             data-for={ 'tooltip' }
             data-tip={ translate( 'print this edition' ) }
-            style={ { marginLeft: '.5rem' } }
           >
             <Icon
               isSize={ 'small' }
               isAlign={ 'left' }
               className={ 'fa fa-print' }
             />
-            <span style={ { paddingLeft: '.5rem' } }>{ translate( 'print this edition' ) }</span>
+            <span>{ translate( 'print this edition' ) }</span>
           </Button>
         }
 
