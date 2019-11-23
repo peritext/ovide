@@ -28,9 +28,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import Ajv from 'ajv';
 
-import Select from 'react-select';
+// import Select from 'react-select';
 
-import 'react-select/dist/react-select.css';
+// import 'react-select/dist/react-select.css';
 
 // import {get, set} from 'dot-prop';
 import { get, set } from '../../helpers/dot-prop';
@@ -107,38 +107,41 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
             else if ( model.enum ) {
                 if ( model.enum.length > 1 ) {
                   return (
-                    <ul  style={{margin: 0, listStyle: 'none'}}>
+                    <ul style={ { margin: 0, listStyle: 'none' } }>
                       {
-                        model.enum.map((thatValue) => {
+                        model.enum.map( ( thatValue ) => {
                           const handleClick = () => {
-                            onChange(path, thatValue);
-                          }
+                            onChange( path, thatValue );
+                          };
                           return (
-                            <li key={thatValue}>
-                              <Button 
-                                isColor={thatValue === value ? 'primary': ''}
-                                onClick={handleClick}
+                            <li key={ thatValue }>
+                              <Button
+                                isColor={ thatValue === value ? 'primary' : '' }
+                                onClick={ handleClick }
                                 isFullWidth
                               >
-                                {translate(thatValue)}
+                                {translate( thatValue )}
                               </Button>
                             </li>
-                          )
-                        })
+                          );
+                        } )
                       }
                     </ul>
-                  )
-                  // return (
-                  //   <Select
-                  //     name={ key }
-                  //     value={ value }
-                  //     onChange={ ( e ) => onChange( path, e.value ) }
-                  //     clearable={ false }
-                  //     searchable={ false }
-                  //     options={
-                  //       model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
-                  //     }
-                  //   /> );
+                  );
+
+                  /*
+                   * return (
+                   *   <Select
+                   *     name={ key }
+                   *     value={ value }
+                   *     onChange={ ( e ) => onChange( path, e.value ) }
+                   *     clearable={ false }
+                   *     searchable={ false }
+                   *     options={
+                   *       model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
+                   *     }
+                   *   /> );
+                   */
               }
               // only one value enumerable --> informative
               else {
@@ -354,38 +357,41 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
             else if ( model.enum ) {
               if ( model.enum.length > 1 ) {
                 return (
-                    <ul style={{margin: 0, listStyle: 'none'}}>
-                      {
-                        model.enum.map((thatValue) => {
+                  <ul style={ { margin: 0, listStyle: 'none' } }>
+                    {
+                        model.enum.map( ( thatValue ) => {
                           const handleClick = () => {
-                            onChange(path, thatValue);
-                          }
+                            onChange( path, thatValue );
+                          };
                           return (
-                            <li key={thatValue}>
-                              <Button 
-                                isColor={thatValue === value ? 'primary': ''}
-                                onClick={handleClick}
+                            <li key={ thatValue }>
+                              <Button
+                                isColor={ thatValue === value ? 'primary' : '' }
+                                onClick={ handleClick }
                                 isFullWidth
                               >
-                                {translate(thatValue)}
+                                {translate( thatValue )}
                               </Button>
                             </li>
-                          )
-                        })
+                          );
+                        } )
                       }
-                    </ul>
-                  )
-                // return (
-                //   <Select
-                //     name={ key }
-                //     value={ value }
-                //     onChange={ ( e ) => onChange( path, e.value ) }
-                //     clearable={ false }
-                //     searchable={ false }
-                //     options={
-                //       model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
-                //     }
-                //   /> );
+                  </ul>
+                  );
+
+                /*
+                 * return (
+                 *   <Select
+                 *     name={ key }
+                 *     value={ value }
+                 *     onChange={ ( e ) => onChange( path, e.value ) }
+                 *     clearable={ false }
+                 *     searchable={ false }
+                 *     options={
+                 *       model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
+                 *     }
+                 *   /> );
+                 */
               }
               // only one value enumerable --> informative
               else {

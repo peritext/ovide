@@ -1063,5 +1063,8 @@
   "Components.CustomSummaryEditor.Default composition": "Composition par défaut",
   "Components.CustomSummaryEditor.Custom composition": "Composition spécifique",
   "Components.CustomSummaryEditor.automatic": "automatique",
+  "figuresPosition": "Position des figures",
+  "Explanation about figuresPosition": "choisir si les figures devraient être affichées dans le corps des contenus ou à la fin",
+  "inBody": "dans le corps des contenus",
   "Components.CustomSummaryEditor.specific": "spécifique"
 }

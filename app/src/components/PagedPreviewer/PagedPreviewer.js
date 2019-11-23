@@ -48,7 +48,7 @@ class PreviewWrapper extends Component {
   componentDidUpdate = () => {
     const { props: { additionalHTML = '' } } = this;
     if ( this.state.pagedScript && this.state.pagedScript.length && this.frameDocument ) {
-      setTimeout(() => this.injectRenderer( this.frameDocument, additionalHTML ))
+      setTimeout( () => this.injectRenderer( this.frameDocument, additionalHTML ) );
     }
   }
 

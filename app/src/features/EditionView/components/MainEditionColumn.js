@@ -53,7 +53,7 @@ class PreviewWrapperInitial extends Component {
   constructor( props ) {
     super( props );
     this.state = {
-      assets: {},
+      assets: undefined,
       activeViewId: undefined,
     };
     this.editionPreprocessor = new EditionPreprocessor();
@@ -96,6 +96,33 @@ class PreviewWrapperInitial extends Component {
       || this.state.isPreprocessing !== nextState.isPreprocessing;
   }
 
+  componentDidUpdate = ( prevProps, prevState ) => {
+    if ( this.state.assets !== prevState.assets ) {
+      const { edition, production: initialProduction, lang, locale } = this.props;
+
+      if ( edition.metadata.type === 'paged' ) {
+        const production = {
+          ...initialProduction,
+          assets: {
+            ...( initialProduction.assets || {} ),
+            ...this.state.assets
+          }
+        };
+
+        this.editionRenderer.postMessage( {
+          type: 'RENDER_PAGED_EDITION_HTML',
+          payload: {
+            edition,
+            production,
+            lang,
+            locale,
+            preprocessedData: this.state.preprocessedData
+          }
+        } );
+      }
+    }
+  }
+
   componentWillUnmount = () => {
     this.editionPreprocessor.terminate();
     this.editionRenderer.terminate();
@@ -129,7 +156,7 @@ class PreviewWrapperInitial extends Component {
             isPreprocessing: false,
             isPrerendering: edition.metadata.type === 'paged',
           } );
-          if ( edition.metadata.type === 'paged' ) {
+          if ( edition.metadata.type === 'paged' && this.state.assets !== undefined ) {
             const production = {
               ...initialProduction,
               assets: {
@@ -147,7 +174,6 @@ class PreviewWrapperInitial extends Component {
                 preprocessedData: response
               }
             } );
-
           }
           break;
         case 'RENDER_PAGED_EDITION_HTML':
@@ -226,6 +252,7 @@ class PreviewWrapperInitial extends Component {
         />
       );
     }
+
     const production = {
       ...initialProduction,
       assets: {
