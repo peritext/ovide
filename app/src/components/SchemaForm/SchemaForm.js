@@ -104,19 +104,41 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                 />
               );
             }
- else if ( model.enum ) {
+            else if ( model.enum ) {
                 if ( model.enum.length > 1 ) {
                   return (
-                    <Select
-                      name={ key }
-                      value={ value }
-                      onChange={ ( e ) => onChange( path, e.value ) }
-                      clearable={ false }
-                      searchable={ false }
-                      options={
-                        model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
+                    <ul  style={{margin: 0, listStyle: 'none'}}>
+                      {
+                        model.enum.map((thatValue) => {
+                          const handleClick = () => {
+                            onChange(path, thatValue);
+                          }
+                          return (
+                            <li key={thatValue}>
+                              <Button 
+                                isColor={thatValue === value ? 'primary': ''}
+                                onClick={handleClick}
+                                isFullWidth
+                              >
+                                {translate(thatValue)}
+                              </Button>
+                            </li>
+                          )
+                        })
                       }
-                    /> );
+                    </ul>
+                  )
+                  // return (
+                  //   <Select
+                  //     name={ key }
+                  //     value={ value }
+                  //     onChange={ ( e ) => onChange( path, e.value ) }
+                  //     clearable={ false }
+                  //     searchable={ false }
+                  //     options={
+                  //       model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
+                  //     }
+                  //   /> );
               }
               // only one value enumerable --> informative
               else {
@@ -332,16 +354,38 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
             else if ( model.enum ) {
               if ( model.enum.length > 1 ) {
                 return (
-                  <Select
-                    name={ key }
-                    value={ value }
-                    onChange={ ( e ) => onChange( path, e.value ) }
-                    clearable={ false }
-                    searchable={ false }
-                    options={
-                      model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
-                    }
-                  /> );
+                    <ul style={{margin: 0, listStyle: 'none'}}>
+                      {
+                        model.enum.map((thatValue) => {
+                          const handleClick = () => {
+                            onChange(path, thatValue);
+                          }
+                          return (
+                            <li key={thatValue}>
+                              <Button 
+                                isColor={thatValue === value ? 'primary': ''}
+                                onClick={handleClick}
+                                isFullWidth
+                              >
+                                {translate(thatValue)}
+                              </Button>
+                            </li>
+                          )
+                        })
+                      }
+                    </ul>
+                  )
+                // return (
+                //   <Select
+                //     name={ key }
+                //     value={ value }
+                //     onChange={ ( e ) => onChange( path, e.value ) }
+                //     clearable={ false }
+                //     searchable={ false }
+                //     options={
+                //       model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
+                //     }
+                //   /> );
               }
               // only one value enumerable --> informative
               else {
