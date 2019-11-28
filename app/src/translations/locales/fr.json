@@ -1066,5 +1066,8 @@
   "figuresPosition": "Position des figures",
   "Explanation about figuresPosition": "choisir si les figures devraient être affichées dans le corps des contenus ou à la fin",
   "inBody": "dans le corps des contenus",
-  "Components.CustomSummaryEditor.specific": "spécifique"
+  "Components.CustomSummaryEditor.specific": "spécifique",
+  "Features.EditionView.Loading": "Chargement",
+  "Features.EditionView.Mentions of this item": "Mentions de cet item",
+  "Features.EditionView.print mentions": "imprimer les mentions"
 }

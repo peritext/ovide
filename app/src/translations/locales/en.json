@@ -1066,5 +1066,8 @@
   "Explanation about figuresPosition": "choose if figures should be displayed in the body of contents or at the end",
   "inBody": "in contents body",
   "Components.SummaryEditor.Move item in summary": "déplacer l'item dans le sommaire",
-  "Components.SummaryEditor.Level {n}": "Niveau {n}"
+  "Components.SummaryEditor.Level {n}": "Niveau {n}",
+  "Features.EditionView.Loading": "Loading",
+  "Features.EditionView.Mentions of this item": "Mentions of this item",
+  "Features.EditionView.print mentions": "print mentions"
 }
