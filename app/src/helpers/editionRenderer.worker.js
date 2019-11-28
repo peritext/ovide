@@ -11,10 +11,12 @@ class ContextProvider extends Component {
 
   static childContextTypes = {
     renderingMode: PropTypes.string,
+    preprocessedContextualizations: PropTypes.object,
   }
 
   getChildContext = () => ( {
     renderingMode: this.props.renderingMode,
+    preprocessedContextualizations: this.props.preprocessedContextualizations,
   } )
   render = () => {
     return this.props.children;
@@ -36,7 +38,7 @@ self.onmessage = ( { data } ) => {
   if ( type && payload ) {
     switch ( type ) {
       case 'RENDER_PAGED_EDITION_HTML':
-        const { production, edition, locale, lang, preprocessedData } = payload;
+        const { production, edition, locale, lang, preprocessedData, preprocessedContextualizations } = payload;
         addToUpdateQueue( () => {
           return new Promise( ( resolve ) => {
             const template = templates.find( ( thatTemplate ) => thatTemplate.meta.id === edition.metadata.templateId );
@@ -47,6 +49,7 @@ self.onmessage = ( { data } ) => {
             const FinalComponent = () => (
               <ContextProvider
                 renderingMode={ renderingMode }
+                preprocessedContextualizations={ preprocessedContextualizations }
               >
                 <Edition
                   {
@@ -63,7 +66,13 @@ self.onmessage = ( { data } ) => {
                 />
               </ContextProvider>
             );
-            const html = renderToStaticMarkup( <FinalComponent /> );
+            let html = '';
+            try {
+              html = renderToStaticMarkup( <FinalComponent /> );
+            }
+            catch ( e ) {
+              console.error( e );/* eslint no-console : 0 */
+            }
             self.postMessage( {
               type,
               response: {

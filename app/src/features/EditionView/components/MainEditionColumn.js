@@ -28,16 +28,24 @@ import SummaryEditor from '../../../components/SummaryEditor';
 import LoadingScreen from '../../../components/LoadingScreen';
 import EditionPreprocessor from '../../../helpers/editionPreprocessor.worker';
 import Renderer from '../../../helpers/editionRenderer.worker';
+import getContextualizationsFromEdition from 'peritext-utils/dist/getContextualizationsFromEdition';
 
 // import { processCustomCss } from '../../../helpers/postcss';
+
+import peritextConfig from '../../../peritextConfig.render';
+
+const contextualizerModules = peritextConfig.contextualizers;
+
 class ContextProvider extends Component {
 
   static childContextTypes = {
     renderingMode: PropTypes.string,
+    preprocessedContextualizations: PropTypes.object,
   }
 
   getChildContext = () => ( {
     renderingMode: this.props.renderingMode,
+    preprocessedContextualizations: this.props.preprocessedContextualizations,
   } )
   render = () => {
     return this.props.children;
@@ -93,6 +101,7 @@ class PreviewWrapperInitial extends Component {
     return vals.find( ( key ) => this.props[key] !== nextProps[key] )
       || this.state.assets !== nextState.assets
       || this.state.isPrerendering !== nextState.isPrerendering
+      || this.state.preprocessedContextualizations !== nextState.preprocessedContextualizations
       || this.state.isPreprocessing !== nextState.isPreprocessing;
   }
 
@@ -109,15 +118,26 @@ class PreviewWrapperInitial extends Component {
           }
         };
 
-        this.editionRenderer.postMessage( {
-          type: 'RENDER_PAGED_EDITION_HTML',
-          payload: {
-            edition,
-            production,
-            lang,
-            locale,
-            preprocessedData: this.state.preprocessedData
-          }
+        const contextualizations = getContextualizationsFromEdition( production, edition );
+        this.getPreprocessedContextualizations( {
+          production,
+          edition,
+          assets: this.state.assets || {},
+          contextualizations
+        } )
+        .then( ( preprocessedContextualizations = {} ) => {
+          this.setState( { preprocessedContextualizations } );
+          this.editionRenderer.postMessage( {
+            type: 'RENDER_PAGED_EDITION_HTML',
+            payload: {
+              edition,
+              production,
+              lang,
+              locale,
+              preprocessedData: this.state.preprocessedData,
+              preprocessedContextualizations
+            }
+          } );
         } );
       }
     }
@@ -144,6 +164,43 @@ class PreviewWrapperInitial extends Component {
     } );
   }
 
+  getPreprocessedContextualizations = ( {
+    production,
+    // edition,
+    assets,
+    contextualizations
+  } ) => {
+
+    return contextualizations.reduce( ( cur, { contextualization, contextualizer } ) =>
+    cur.then( ( result ) => {
+      return new Promise( ( resolve, reject ) => {
+
+        if ( contextualization && contextualizer ) {
+          const thatModule = contextualizerModules[contextualizer.type];
+          if ( thatModule && thatModule.meta && thatModule.meta.asyncPrerender ) {
+            const resource = production.resources[contextualization.sourceId];
+            thatModule.meta.asyncPrerender( {
+              resource,
+              contextualization,
+              contextualizer,
+              productionAssets: assets,
+            } )
+            .then( ( data ) => {
+              resolve( {
+                ...result,
+                [contextualization.id]: data
+              } );
+            } )
+            .catch( reject );
+          }
+          else resolve( result );
+        }
+        else resolve( result );
+      } );
+    } )
+    , Promise.resolve( {} ) );
+  }
+
   onWorkerMessage = ( event ) => {
     const { data } = event;
     const { type, response } = data;
@@ -151,11 +208,13 @@ class PreviewWrapperInitial extends Component {
       switch ( type ) {
         case 'PREPROCESS_EDITION_DATA':
           const { edition, production: initialProduction, lang, locale } = this.props;
+
           this.setState( {
             preprocessedData: response,
             isPreprocessing: false,
             isPrerendering: edition.metadata.type === 'paged',
           } );
+
           if ( edition.metadata.type === 'paged' && this.state.assets !== undefined ) {
             const production = {
               ...initialProduction,
@@ -164,16 +223,28 @@ class PreviewWrapperInitial extends Component {
                 ...this.state.assets
               }
             };
-            this.editionRenderer.postMessage( {
-              type: 'RENDER_PAGED_EDITION_HTML',
-              payload: {
-                edition,
-                production,
-                lang,
-                locale,
-                preprocessedData: response
-              }
+            const contextualizations = getContextualizationsFromEdition( initialProduction, edition );
+            this.getPreprocessedContextualizations( {
+              production,
+              edition,
+              assets: this.state.assets || {},
+              contextualizations
+            } )
+            .then( ( preprocessedContextualizations = {} ) => {
+              this.setState( { preprocessedContextualizations } );
+              this.editionRenderer.postMessage( {
+                type: 'RENDER_PAGED_EDITION_HTML',
+                payload: {
+                  edition,
+                  production,
+                  lang,
+                  locale,
+                  preprocessedData: response,
+                  preprocessedContextualizations
+                }
+              } );
             } );
+
           }
           break;
         case 'RENDER_PAGED_EDITION_HTML':
@@ -294,7 +365,7 @@ class PreviewWrapperInitial extends Component {
       return (
         <PagedPreviewer
           style={ { width: '100%', height: '100%', position: 'absolute', left: 0,
-          top: 0, } }
+              top: 0, } }
           Component={ FinalComponent }
           additionalHTML={ edition.data.additionalHTML }
           updateTrigger={ JSON.stringify( edition ) }
