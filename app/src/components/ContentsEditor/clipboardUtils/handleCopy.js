@@ -242,7 +242,6 @@ export const computeCopiedData = ( {
       ...result,
       [contentId]: uniqBy( copiedEntities[contentId], ( e ) => e.key )
     } ), {} );
-    console.log('copied contextualizations', copiedContextualizations)
     const copiedResources = uniq(
       copiedContextualizations.map( ( { sourceId } ) => sourceId )
     ).map( ( resourceId ) => production.resources[resourceId] );

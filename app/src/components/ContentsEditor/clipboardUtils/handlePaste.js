@@ -46,7 +46,11 @@ const handlePaste = function( html ) {
     if ( !Object.keys( editorStates ).length ) return;
 
     const {
-      notes,
+      data: {
+        contents: {
+          notes
+        }
+      },
       id: activeSectionId
     } = activeSection;
 

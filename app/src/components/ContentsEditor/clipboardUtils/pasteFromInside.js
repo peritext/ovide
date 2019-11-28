@@ -93,15 +93,19 @@ const getRelatedAssetsIds = ( resource ) => {
  * @return {array} resources
  */
 const retrieveCopiedAssets = () => {
-  let copiedResources = [];
+  let copiedAssets = {};
   try {
-    copiedResources = JSON.parse( localStorage.getItem( 'ovide/copied-assets' ) );
+    const localAssets = localStorage.getItem( 'ovide/copied-assets' );
+    if ( localAssets && localAssets !== 'undefined' ) {
+      copiedAssets = JSON.parse( localAssets );
+    }
+    return copiedAssets;
   }
   catch ( err ) {
     console.error( 'could not retreive copied resources, reason: ', err );/* eslint no-console: 0 */
     console.error( 'local storage initial item: ', localStorage.getItem( 'ovide/copied-assets' ) );
   }
-  return copiedResources;
+  return copiedAssets;
 };
 
 /**
@@ -979,9 +983,14 @@ export const computePastedData = ( {
    */
   const newSection = {
       ...activeSection,
-      contents: convertToRaw( mainEditorState.getCurrentContent() ),
-      notesOrder,
-      notes: newNotes,
+      data: {
+        ...activeSection.data,
+        contents: {
+          contents: convertToRaw( mainEditorState.getCurrentContent() ),
+          notesOrder,
+          notes: newNotes,
+        }
+      }
     };
 
   /**
