@@ -87,22 +87,57 @@ class PreviewWrapperInitial extends Component {
       if ( this.props.edition && nextProps.edition && this.props.edition.data.summary !== nextProps.edition.data.summary ) {
         this.preprocessEditionData( nextProps );
       }
+      if ( nextProps.edition.metadata.type === 'paged' ) {
+        const {
+          production,
+          edition,
+          lang,
+          locale
+        } = nextProps;
+
+        const contextualizations = getContextualizationsFromEdition( production, edition );
+
+        this.getPreprocessedContextualizations( {
+          production,
+          edition,
+          assets: this.state.assets || {},
+          contextualizations
+        } )
+        .then( ( preprocessedContextualizations = {} ) => {
+          this.editionRenderer.postMessage( {
+            type: 'RENDER_PAGED_EDITION_HTML',
+            payload: {
+              edition,
+              production,
+              lang,
+              locale,
+              preprocessedData: this.state.preprocessedData,
+              preprocessedContextualizations
+            }
+          } );
+        } );
+
+      }
     }
   }
 
   shouldComponentUpdate = ( nextProps, nextState ) => {
-    const vals = [
+    const propsVals = [
       'production',
       'edition',
       'template',
       'contextualizers',
       'lang'
     ];
-    return vals.find( ( key ) => this.props[key] !== nextProps[key] )
-      || this.state.assets !== nextState.assets
-      || this.state.isPrerendering !== nextState.isPrerendering
-      || this.state.preprocessedContextualizations !== nextState.preprocessedContextualizations
-      || this.state.isPreprocessing !== nextState.isPreprocessing;
+    const stateVals = [
+      'assets',
+      'isPrerendering',
+      'preprocessedContextualizations',
+      'editionHTML',
+      'isPreprocessing'
+    ];
+    return propsVals.find( ( key ) => this.props[key] !== nextProps[key] )
+    || stateVals.find( ( key ) => this.state[key] !== nextState[key] );
   }
 
   componentDidUpdate = ( prevProps, prevState ) => {

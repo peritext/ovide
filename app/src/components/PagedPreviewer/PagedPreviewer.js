@@ -41,8 +41,8 @@ class PreviewWrapper extends Component {
     console.error( 'previewer catched an error', error, errorInfo );
   }
 
-  shouldComponentUpdate = ( { updateTrigger }, { pagedScript } ) => {
-    return updateTrigger !== this.props.updateTrigger || this.state.pagedScript !== pagedScript;
+  shouldComponentUpdate = ( { updateTrigger, html }, { pagedScript } ) => {
+    return html !== this.props.html || updateTrigger !== this.props.updateTrigger || this.state.pagedScript !== pagedScript;
   }
 
   componentDidUpdate = () => {
