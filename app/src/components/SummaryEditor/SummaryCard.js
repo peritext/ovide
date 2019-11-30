@@ -26,7 +26,6 @@ import './SummaryCard.scss';
  * Imports Components
  */
 import SchemaForm from '../SchemaForm';
-import MovePad from '../MovePad';
 
 class SummaryCard extends Component {
   constructor( props ) {
@@ -72,22 +71,20 @@ class SummaryCard extends Component {
         ref={ providedBlock.innerRef }
         { ...providedBlock.dragHandleProps }
         { ...providedBlock.draggableProps }
-        className={ `ovide-SummaryCard ${isEdited ? 'is-edited' : ''}` }
+        className={ `ovide-SummaryCard actual-summary-card ${isEdited ? 'is-edited' : ''}` }
       >
-        <Column style={ { marginLeft: 0 } }>
+        <Column>
           <Card
-            style={ { marginLeft: 0 } }
             bodyContent={
               <div style={ { position: 'relative' } }>
                 <StretchedLayoutContainer
-                  style={ { minHeight: isEdited ? undefined : '5.5rem' } }
                   isDirection={ 'horizontal' }
+                  style={ { alignItems: 'center' } }
                 >
                   <StretchedLayoutItem
                     isFlex={ 1 }
-                    style={ { minWidth: '70%' } }
                   >
-                    <Title isSize={ 4 }>
+                    <Title isSize={ 6 }>
 
                       {
                           customTitle && customTitle.length ?
@@ -98,93 +95,81 @@ class SummaryCard extends Component {
                       <HelpPin>
                         {translate( `Explanation about ${summaryBlock.type}` )}
                       </HelpPin>
-
                     </Title>
-
                   </StretchedLayoutItem>
-                  <StretchedLayoutItem
-                    isFlex={ 1 }
-                    className={ 'move-pad-container' }
-                  >
-                    {
-                      <MovePad
-                        verticalOnly
-                        hideMainButton
-                        chevronsData={ {
-                          left: {
-                            tooltip: translate( 'Level {n}', { n: 1 } ),
-                            isDisabled: true,
-                          },
-                          right: {
-                            tooltip: translate( 'Level {n}', { n: 1 } ),
-                            isDisabled: true,
-                          },
-                          up: {
-                            isDisabled: index === 0,
-                            tooltip: translate( 'Move up in the summary' ),
-                            onClick: onMoveUp
-                          },
-                          down: {
-                            isDisabled: index === maxIndex,
-                            tooltip: translate( 'Move down in the summary' ),
-                            onClick: onMoveDown
-                          }
-                        } }
-                        moveComponentToolTip={ translate( 'Move item in summary' ) }
-                        MoveComponent={ () =>
-                          (
-                            <span
+                  {
+                    !isEdited &&
+                    <StretchedLayoutItem>
+                      <Button
+                        isFullWidth
+                        isDisabled={ index === 0 }
+                        onClick={ onMoveUp }
+                        data-tip={ translate( 'Move up in the summary' ) }
+                        data-for={ 'tooltip' }
+                      >
 
-                              style={ { cursor: 'move' } }
-                              className={ 'button' }
-                            >
-                              <Icon className={ 'fa fa-arrows-alt' } />
-                            </span>
-                          )
-                        }
-                      />
-                    }
-                    {
-                      <Delete
+                        <Icon className={ 'fa fa-chevron-up' } />
+                      </Button>
+                    </StretchedLayoutItem>
+                  }
+                  {
+                    !isEdited &&
+                    <StretchedLayoutItem>
+                      <Button
+                        isFullWidth
+                        isDisabled={ index === maxIndex }
+                        onClick={ onMoveDown }
+                        data-tip={ translate( 'Move down in the summary' ) }
+                        data-for={ 'tooltip' }
+                      >
+
+                        <Icon className={ 'fa fa-chevron-down' } />
+                      </Button>
+                    </StretchedLayoutItem>
+                  }
+
+                  {
+                    isEditable && !isEdited &&
+                    <StretchedLayoutItem>
+                      <Button
+                        isFullWidth
                         onClick={ handleToggleIsEdited }
-                        style={ {
-                          position: 'absolute',
-                          right: 0,
-                          top: 0,
-                        } }
-                      />
-                    }
-                  </StretchedLayoutItem>
-                </StretchedLayoutContainer>
-                <StretchedLayoutContainer
-                  className={ 'actions-container' }
-                  isDirection={ 'horizontal' }
-                >
-                  {
-                        isEditable &&
-                        <StretchedLayoutItem isFlex={ 1 }>
-                          <Button
-                            isFullWidth
-                            onClick={ handleToggleIsEdited }
-                            isColor={ 'info' }
-                          >
-                            {translate( 'Edit' )}
-                          </Button>
-                        </StretchedLayoutItem>
+                        isColor={ 'info' }
+                        data-tip={ translate( 'Edit' ) }
+                        data-for={ 'tooltip' }
+                      >
 
-                      }
-                  {
-                    <StretchedLayoutItem isFlex={ 1 }>
+                        <Icon className={ 'fa fa-pencil-alt' } />
+                      </Button>
+                    </StretchedLayoutItem>
+
+                  }
+                  {!isEdited &&
+                    <StretchedLayoutItem>
                       <Button
                         isFullWidth
                         onClick={ onRemove }
                         isColor={ 'danger' }
+                        data-tip={ translate( 'Delete' ) }
+                        data-for={ 'tooltip' }
                       >
-                        {translate( 'Delete' )}
+                        <Icon className={ 'fa fa-trash' } />
                       </Button>
                     </StretchedLayoutItem>
                       }
+
+                  {
+                    <Delete
+                      onClick={ handleToggleIsEdited }
+                      style={ {
+                          position: 'absolute',
+                          right: 0,
+                          top: 0,
+                        } }
+                    />
+                    }
                 </StretchedLayoutContainer>
+
                 <div className={ 'parameters-container' }>
                   <SchemaForm
                     schema={ blockSchema }

@@ -284,7 +284,6 @@ class SummaryEditor extends Component {
                                 onEditCustomSummary( index, data );
                               };
                               return (
-
                                 <Draggable
                                   draggableId={ `summaryBlock-${index}` }
                                   type={ 'SUMMARY_BLOCK' }
@@ -358,12 +357,11 @@ class SummaryEditor extends Component {
                             isDisabled = true;
                           }
                           return (
-
                             <Draggable
                               draggableId={ `possible-block-${index}` }
                               type={ 'POSSIBLE_BLOCK' }
                               index={ index }
-                              key={ index }
+                              key={ summaryBlockType }
                             >
                               {( providedBlock ) => (
                                 <PossibleSummaryCard

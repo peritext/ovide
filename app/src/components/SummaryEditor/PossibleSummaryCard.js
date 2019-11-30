@@ -31,10 +31,13 @@ const PossibleSummaryCard = ( {
 }/*, { t }*/ ) => {
 
   const render = () => (
-    <Column style={ { marginLeft: 0, opacity: isDisabled ? 0.5 : 1 } }>
+    <Column style={ { opacity: isDisabled ? 0.5 : 1 } }>
       <Card
         bodyContent={
-          <StretchedLayoutContainer isDirection={ 'horizontal' }>
+          <StretchedLayoutContainer
+            style={ { alignItems: 'center' } }
+            isDirection={ 'horizontal' }
+          >
             <StretchedLayoutItem isFlex={ 1 }>
               {translate( blockType )}
               <HelpPin>
@@ -62,6 +65,7 @@ const PossibleSummaryCard = ( {
       ref={ providedBlock.innerRef }
       { ...providedBlock.dragHandleProps }
       { ...providedBlock.draggableProps }
+      className={ 'ovide-SummaryCard possible-summary-card' }
     >
       {render()}
     </div>

@@ -3,6 +3,17 @@
 
 .ovide-SummaryCard {
 
+  .column{
+    margin-left: 0;
+    padding-bottom: 0;
+  }
+  .card .card-content{
+    padding: 1rem;
+    .media{
+      display: none;
+    }
+  }
+
   .move-pad-container{
     transform: scale(.9);
   }
