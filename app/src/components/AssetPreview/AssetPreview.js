@@ -234,6 +234,26 @@ class AssetPreview extends Component {
       this.props.onClick( e );
     }
   }
+
+  shouldComponentUpdate = ( nextProps, nextState ) => {
+    return (
+      this.state.isInfoShown !== nextState.isInfoShown
+      ||
+        (
+          this.props.contextualization
+          && nextProps.contextualization
+          && this.props.contextualization.contextualizerId !== nextProps.contextualization.contextualizerId
+        )
+      ||
+      [
+        'showPannel',
+        'resource',
+        'isActive',
+        'silentPreviewClick',
+        'isGhostMode',
+      ].find( ( key ) => this.props[key] !== nextProps[key] ) !== undefined
+    );
+  }
   render() {
 
     /**
@@ -269,7 +289,6 @@ class AssetPreview extends Component {
         silentEvent( event );
       }
     };
-
     return (
       showPannel ?
         <Box
