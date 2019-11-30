@@ -345,6 +345,22 @@ class EditionForm extends Component {
                     }
 
                     {formApi.getValue( 'metadata.type' ) &&
+                      formApi.getValue( 'metadata.templateId' ) &&
+                      <SummaryEditor
+                        {
+                        ...{
+                          template: availableTemplates.find( ( tempate ) => tempate.meta.id === formApi.getValue( 'metadata.templateId' ) ),
+                          edition,
+                          translate,
+                          summaryEdited: true,
+                          onSummaryChange: handleSummaryChange,
+                          noScroll: true,
+                        }
+                      }
+                      />
+                    }
+                    <Level />
+                    {formApi.getValue( 'metadata.type' ) &&
                     <Column>
                       <Column>
                         <Field>
@@ -384,23 +400,6 @@ class EditionForm extends Component {
                         </Field>
                       </Column>
                     </Column>}
-                    <Level />
-
-                    {formApi.getValue( 'metadata.type' ) &&
-                      formApi.getValue( 'metadata.templateId' ) &&
-                      <SummaryEditor
-                        {
-                        ...{
-                          template: availableTemplates.find( ( tempate ) => tempate.meta.id === formApi.getValue( 'metadata.templateId' ) ),
-                          edition,
-                          translate,
-                          summaryEdited: true,
-                          onSummaryChange: handleSummaryChange,
-                          noScroll: true,
-                        }
-                      }
-                      />
-                    }
                     <Level />
 
                   </StretchedLayoutItem>
