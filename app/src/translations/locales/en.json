@@ -1069,5 +1069,6 @@
   "Components.SummaryEditor.Level {n}": "Niveau {n}",
   "Features.EditionView.Loading": "Loading",
   "Features.EditionView.Mentions of this item": "Mentions of this item",
-  "Features.EditionView.print mentions": "print mentions"
+  "Features.EditionView.print mentions": "print mentions",
+  "Components.ContextualizationEditor.simpleTable": "Simplified table"
 }

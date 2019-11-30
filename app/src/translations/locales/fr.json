@@ -1069,5 +1069,6 @@
   "Components.CustomSummaryEditor.specific": "spécifique",
   "Features.EditionView.Loading": "Chargement",
   "Features.EditionView.Mentions of this item": "Mentions de cet item",
-  "Features.EditionView.print mentions": "imprimer les mentions"
+  "Features.EditionView.print mentions": "imprimer les mentions",
+  "Components.ContextualizationEditor.simpleTable": "Tableau simplifié"
 }
