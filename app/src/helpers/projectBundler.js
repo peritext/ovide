@@ -243,7 +243,7 @@ export const bundleProjectAsZIP = ( { production, requestAssetData } ) => {
       } );
       zip.generateAsync( { type: 'blob' } ).then( function( content ) {
           // see FileSaver.js
-          saveAs( content, 'test.zip' );
+          saveAs( content, `${production.metadata.title || 'peritext' }.zip` );
       } );
     } )
     .catch( reject );
