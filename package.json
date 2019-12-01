@@ -227,6 +227,7 @@
     "react-textarea-autosize": "^5.2.1",
     "react-tooltip": "^3.6.1",
     "react-virtualized": "^9.20.1",
+    "react-visibility-sensor": "^5.1.1",
     "redraft": "^0.10.2",
     "redux": "^3.6.0",
     "redux-actions": "^2.2.1",
