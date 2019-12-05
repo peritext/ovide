@@ -158,6 +158,10 @@ input[type="checkbox"]
   }
 }
 
+.tile{
+  cursor: pointer;
+}
+
 @media print
 {
   .navbar,

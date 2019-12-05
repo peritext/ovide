@@ -65,7 +65,7 @@ class ResourceCard extends Component {
     assets.reduce( ( cur, asset ) => {
       return cur.then( () => {
         return new Promise( ( resolve, reject ) => {
-          requestAssetData( productionId, asset )
+          requestAssetData( { productionId, asset } )
             .then( ( data ) => {
               this.setState( {
                 assets: {

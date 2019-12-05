@@ -131,7 +131,7 @@ export const loadAssetsForEdition = ( {
       relatedAssets.reduce( ( cur, asset ) => {
         return cur.then( () => {
           return new Promise( ( resolve, reject ) => {
-            requestAssetData( productionId, asset )
+            requestAssetData( { productionId, asset } )
               .then( ( data ) => {
                 finalAssets[asset.id] = {
                   ...asset,
@@ -172,7 +172,7 @@ const loadAllAssets = ( {
       .reduce( ( cur, asset ) => {
         return cur.then( () => {
           return new Promise( ( resolve, reject ) => {
-            requestAssetData( productionId, asset )
+            requestAssetData( { productionId, asset } )
               .then( ( data ) => {
                 finalAssets[asset.id] = {
                   ...asset,

@@ -193,7 +193,7 @@ class EditionViewContainer extends Component {
       assetsToLoad.reduce( ( cur, asset ) => {
         return cur.then( () => {
           return new Promise( ( resolve, reject ) => {
-            requestAssetData( productionId, asset )
+            requestAssetData( { productionId, asset } )
               .then( ( newData ) => {
                 const newAsset = {
                   ...asset,

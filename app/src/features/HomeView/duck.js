@@ -216,7 +216,7 @@ export const duplicateProduction = ( payload ) => ( {
             cur.then( ( activeProduction ) => {
               return new Promise( ( res1, rej1 ) => {
                 const asset = activeProduction.assets[assetId];
-                requestAssetData( activeProduction.id, asset )
+                requestAssetData( { productionId: activeProduction.id, asset } )
                 .then( ( assetData ) => {
                   const newAsset = {
                     ...asset,

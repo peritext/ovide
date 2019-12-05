@@ -87,7 +87,7 @@ class BlockContainer extends Component {
     relatedAssets.reduce( ( cur, thatAsset ) => {
       return cur.then( () => {
         return new Promise( ( resolve, reject ) => {
-          requestAssetData( productionId, thatAsset )
+          requestAssetData( { productionId, asset: thatAsset } )
             .then( ( data ) => {
               this.setState( {
                 assets: {

@@ -54,7 +54,7 @@ export const packCopiedAssets = ( {
     Object.keys( copiedAssets ).reduce( ( cur, assetId ) =>
         cur.then( ( temp = {} ) => new Promise( ( resolve, reject ) => {
           const asset = { ...copiedAssets[assetId] };
-          requestAssetData( production, asset )
+          requestAssetData( { productionId: production.id, asset } )
           .then( ( data ) => {
             asset.data = data;
             resolve( {

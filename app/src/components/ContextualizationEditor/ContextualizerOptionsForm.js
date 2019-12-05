@@ -78,14 +78,14 @@ const ContextualizerOptionsForm = ( {
               case 'number':
                 if ( propertySchema.uiType === 'time' ) {
                   const totalSeconds = isNaN( +value ) ? 0 : +value;
-                  const seconds = totalSeconds % 3600;
-                  const minutes = ( totalSeconds - seconds ) % 60;
-                  const hours = parseInt( totalSeconds / 360, 10 );
+                  const seconds = totalSeconds % 60;
+                  const minutes = ( ( totalSeconds - seconds ) / 60 ) % 60;
+                  const hours = ( totalSeconds - minutes * 60 - seconds ) / 3600;
                   const handleHoursChange = ( val ) => {
                     let newValue = val;
                     newValue = +newValue;
                     if ( !isNaN( newValue ) ) {
-                      const newTime = newValue * 3600 + minutes * 60 * seconds;
+                      const newTime = newValue * 3600 + minutes * 60 + seconds;
                       handleParameterChange( key, newTime );
                     }
                   };
@@ -93,7 +93,7 @@ const ContextualizerOptionsForm = ( {
                     let newValue = val;
                     newValue = +newValue;
                     if ( !isNaN( newValue ) ) {
-                      const newTime = hours * 3600 + newValue * 60 * seconds;
+                      const newTime = hours * 3600 + newValue * 60 + seconds;
                       handleParameterChange( key, newTime );
                     }
                   };
@@ -101,7 +101,7 @@ const ContextualizerOptionsForm = ( {
                     let newValue = val;
                     newValue = +newValue;
                     if ( !isNaN( newValue ) ) {
-                      const newTime = hours * 3600 + minutes * 60 * newValue;
+                      const newTime = hours * 3600 + minutes * 60 + newValue;
                       handleParameterChange( key, newTime );
                     }
                   };

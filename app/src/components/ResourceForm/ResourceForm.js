@@ -386,7 +386,7 @@ class ResourceForm extends Component {
       return cur.then( () => {
         return new Promise( ( resolve, reject ) => {
           // console.log( 'request asset data', productionId, asset );
-          requestAssetData( productionId, asset )
+          requestAssetData( { productionId, asset } )
             .then( ( data ) => {
               // console.log( 'setting asset data', data );
               this.setState( {
