@@ -136,8 +136,8 @@ class PreviewWrapperInitial extends Component {
       'editionHTML',
       'isPreprocessing'
     ];
-    return propsVals.find( ( key ) => this.props[key] !== nextProps[key] )
-    || stateVals.find( ( key ) => this.state[key] !== nextState[key] );
+    return propsVals.find( ( key ) => this.props[key] !== nextProps[key] ) !== undefined
+    || stateVals.find( ( key ) => this.state[key] !== nextState[key] ) !== undefined;
   }
 
   componentDidUpdate = ( prevProps, prevState ) => {

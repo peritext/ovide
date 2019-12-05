@@ -222,9 +222,9 @@ class BlockContainer extends Component {
             isRounded
             isColor={ 'danger' }
             onClick={ handleDeleteRequest }
-            data-for={ 'block-tooltip' }
+            data-for={ 'tooltip' }
             data-place={ 'right' }
-            data-effect={ 'solid' }
+            data-effect={ 'float' }
             data-tip={ translate( 'delete mention (the item will not be deleted from the library)' ) }
           >
             <Icon className={ 'fa fa-trash' } />
@@ -233,9 +233,9 @@ class BlockContainer extends Component {
             isRounded
             isColor={ 'info' }
             onClick={ handleEditContextualizationRequest }
-            data-for={ 'block-tooltip' }
+            data-for={ 'tooltip' }
             data-place={ 'right' }
-            data-effect={ 'solid' }
+            data-effect={ 'float' }
             data-tip={ translate( 'edit mention parameters' ) }
           >
             <Icon className={ 'fa fa-pencil-alt' } />
@@ -244,9 +244,9 @@ class BlockContainer extends Component {
             isRounded
             onClick={ handleEditRequest }
             isColor={ 'primary' }
-            data-for={ 'block-tooltip' }
+            data-for={ 'tooltip' }
             data-place={ 'right' }
-            data-effect={ 'solid' }
+            data-effect={ 'float' }
             data-tip={ translate( `edit ${resource.metadata.type}` ) }
           >
             <CenteredIcon src={ icons.settings.white.svg } />
@@ -267,10 +267,6 @@ class BlockContainer extends Component {
           renderingMode={ renderingMode }
           isGhostMode={ !visibility[renderingMode] }
           showPannel
-        />,
-        <ReactTooltip
-          key={ 2 }
-          id={ 'block-tooltip' }
         />
 
       ] : null

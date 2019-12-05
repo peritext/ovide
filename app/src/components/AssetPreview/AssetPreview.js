@@ -282,7 +282,6 @@ class AssetPreview extends Component {
       isVisible
     } = this.state;
 
-
     /**
      * Local functions
      */
