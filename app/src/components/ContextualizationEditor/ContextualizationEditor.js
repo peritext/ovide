@@ -9,6 +9,7 @@ import {
   Title,
 } from 'quinoa-design-library/components/';
 import Form from './ContextualizationForm';
+import Tooltip from 'react-tooltip'
 
 /**
  * Imports Project utils
@@ -32,6 +33,7 @@ class ContextualizationEditor extends Component {
   componentWillReceiveProps = ( nextProps ) => {
     if ( nextProps.contextualization && nextProps.resource ) {
       this.refreshAssets( nextProps );
+      Tooltip.rebuild();
     }
   }
   refreshAssets = ( props ) => {
@@ -198,6 +200,7 @@ class ContextualizationEditor extends Component {
             {translate( 'Edit resource' )}
           </Button>
         </StretchedLayoutItem>
+        <Tooltip id="help-tooltip" />
       </StretchedLayoutContainer>
     );
 
