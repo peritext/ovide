@@ -144,7 +144,7 @@ class PreviewWrapper extends Component {
                   />
 
                 );
-}}
+              }}
             </FrameContextConsumer>
           </Frame>
 

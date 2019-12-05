@@ -147,7 +147,7 @@ const ContextualizerOptionsForm = ( {
 
                   );
                 }
- else {
+                else {
                   const handleInputNumberChange = ( e ) => {
                     let newValue = e.target.value;
                     newValue = +newValue;
