@@ -139,7 +139,17 @@ class EditionsViewLayout extends Component {
     const handleNewEditionSubmit = ( edition ) => {
       const newEdition = {
         ...edition,
-        id: genId()
+        id: genId(),
+        data: {
+          ...edition.data,
+          plan: {
+            ...edition.data.plan,
+            summary: edition.data.plan.summary.map(s => ({
+              ...s,
+              id: genId(),
+            }))
+          }
+        }
       };
       createEdition( {
         edition: newEdition,
