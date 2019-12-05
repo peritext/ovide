@@ -144,10 +144,10 @@ class EditionsViewLayout extends Component {
           ...edition.data,
           plan: {
             ...edition.data.plan,
-            summary: edition.data.plan.summary.map(s => ({
+            summary: edition.data.plan.summary.map( ( s ) => ( {
               ...s,
               id: genId(),
-            }))
+            } ) )
           }
         }
       };
