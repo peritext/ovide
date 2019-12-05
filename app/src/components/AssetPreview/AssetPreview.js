@@ -135,7 +135,7 @@ class AssetPreview extends Component {
       columns: [],
       isInfoShown: false,
       assets: {},
-      isVisible: false
+      isVisible: true
     };
     this.onClickEdit = this.onClickEdit.bind( this );
     this.onClickDelete = this.onClickDelete.bind( this );
@@ -246,7 +246,9 @@ class AssetPreview extends Component {
         (
           this.props.contextualization
           && nextProps.contextualization
-          && this.props.contextualization.contextualizerId !== nextProps.contextualization.contextualizerId
+          && (
+            this.props.contextualization.contextualizerId !== nextProps.contextualization.contextualizerId
+          )
         )
       ||
       [
@@ -254,6 +256,8 @@ class AssetPreview extends Component {
         'resource',
         'isActive',
         'silentPreviewClick',
+        'contextualizer',
+        // 'contextualization',
         'isGhostMode',
       ].find( ( key ) => this.props[key] !== nextProps[key] ) !== undefined
     );
@@ -277,6 +281,7 @@ class AssetPreview extends Component {
       isInfoShown,
       isVisible
     } = this.state;
+
 
     /**
      * Local functions
