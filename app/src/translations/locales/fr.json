@@ -116,7 +116,7 @@
   "Custom summary": "Sommaire de l'édition",
   "Default summary": "Sommaire par défaut",
   "add": "ajouter",
-  "Components.ContextualizationEditor.vegaLiteSpecificationCode": "Spécification Vega lite",
+  "Components.ContextualizationEditor.vegaLiteSpecificationCode": "Spécification Vega",
   "Components.ContextualizationEditor.Explanation about defaultPageSize parameter for contextualizer table": "définir le nombre de ressources par défaut à afficher dans une seule page du tableau interactif",
   "Components.ContextualizationEditor.Explanation about displayControls parameter for contextualizer table": "définir si les lecteurs peuvent se déplacer dans la vidéo",
   "Components.ContextualizationEditor.Explanation about filterable parameter for contextualizer table": "définir si les lecteurs peuvent effectuer des opérations de filtrage complexe dans la version interactive du tableau",
@@ -128,7 +128,7 @@
   "Components.ContextualizationEditor.Explanation about showPageSizeOptions parameter for contextualizer table": "définir si les lecteurs peuvent changer le nombre d'éléments à afficher dans la version interactive du tableau",
   "Components.ContextualizationEditor.Explanation about showPagination parameter for contextualizer table": "définir si les lecteurs peuvent se déplacer entre les pages du tableau",
   "Components.ContextualizationEditor.Explanation about sortable parameter for contextualizer table": "définir si les lecteurs peuvent effectuer des opérations de triage complexe dans la version interactive du tableau",
-  "Components.ContextualizationEditor.Explanation about vegaLiteSpecificationCode parameter for contextualizer vegaLite": "Vega lite est une grammaire allégée permettant de décrire des visualisations de données. Veuillez visite le site de vega pour en savoir plus (https://vega.github.io/vega-ite/)",
+  "Components.ContextualizationEditor.Explanation about vegaLiteSpecificationCode parameter for contextualizer vegaLite": "Vega est une grammaire allégée permettant de décrire des visualisations de données. Veuillez visite le site de vega pour en savoir plus (https://vega.github.io/)",
   "Components.BlockContextualization.edit mention parameters": "éditer les paramètres de la mention",
   "Components.ConfirmToDeleteModal.Are you sure you want to delete the resource \"{s}\" ?": "Êtes-vous sûr.e de vouloir supprimer la ressource \"{s}\" ?",
   "Components.ConfirmToDeleteModal.Are you sure you want to delete the section \"{s}\" ? All its content will be lost without possible recovery.": "Êtes vous sûr.e de vouloir supprimer la section \"{s}\" ? Tous ses contenus seront perdus sans possibilité de les récupérer.",
@@ -171,7 +171,7 @@
   "Components.ContextualizationEditor.sortable": "triable",
   "Components.ContextualizationEditor.sourceCode": "code source",
   "Components.ContextualizationEditor.table": "tableau",
-  "Components.ContextualizationEditor.vegaLite": "vega lite",
+  "Components.ContextualizationEditor.vegaLite": "vega",
   "Components.ContextualizationEditor.video": "vidéo",
   "Components.ContextualizationEditor.webpage": "page web",
   "Components.ContextualizationEditor.yes": "oui",
@@ -1070,5 +1070,9 @@
   "Features.EditionView.Loading": "Chargement",
   "Features.EditionView.Mentions of this item": "Mentions de cet item",
   "Features.EditionView.print mentions": "imprimer les mentions",
-  "Components.ContextualizationEditor.simpleTable": "Tableau simplifié"
+  "Components.ContextualizationEditor.simpleTable": "Tableau simplifié",
+  "textColor": "Couleur du texte",
+  "Explanation about textColor": "Choisir la couleur du texte de cet élément",
+  "Components.ContextualizationEditor.liteMode": "Mode 'lite'",
+  "Components.ContextualizationEditor.Explanation about liteMode parameter for contextualizer vegaLite": "Choisir d'utiliser la version standard de la grammaire vega ou la version 'lite', plus simple et adaptée à la plupart des tâches de visualisations simples."
 }

@@ -45,7 +45,7 @@
   "Components.ContextualizationEditor.Custom legend": "Custom legend",
   "Components.ContextualizationEditor.Custom title": "Custom title",
   "add a new asset": "add a new file",
-  "Components.ContextualizationEditor.Explanation about vegaLiteSpecificationCode parameter for contextualizer vegaLite": "Vega lite is a grammar for describing data visualization. Please visit vega official website in order to know more about it (https://vega.github.io/vega-lite/)",
+  "Components.ContextualizationEditor.Explanation about vegaLiteSpecificationCode parameter for contextualizer vegaLite": "Vega is a grammar for describing data visualization. Please visit vega official website in order to know more about it (https://vega.github.io/)",
   "Components.ContextualizationEditor.Mention settings": "Mention settings",
   "Components.ContextualizationEditor.Mention type": "Mention type",
   "Components.ContextualizationEditor.Mention visibility": "Mention visibility",
@@ -69,8 +69,8 @@
   "Components.ContextualizationEditor.sortable": "sortable",
   "Components.ContextualizationEditor.sourceCode": "source code",
   "Components.ContextualizationEditor.table": "table",
-  "Components.ContextualizationEditor.vegaLite": "vega lite",
-  "Components.ContextualizationEditor.vegaLiteSpecificationCode": "Vega lite specification code",
+  "Components.ContextualizationEditor.vegaLite": "vega",
+  "Components.ContextualizationEditor.vegaLiteSpecificationCode": "Vega specification code",
   "Components.ContextualizationEditor.video": "video",
   "Components.ContextualizationEditor.webpage": "webpage",
   "Components.ContextualizationEditor.yes": "yes",
@@ -1070,5 +1070,9 @@
   "Features.EditionView.Loading": "Loading",
   "Features.EditionView.Mentions of this item": "Mentions of this item",
   "Features.EditionView.print mentions": "print mentions",
-  "Components.ContextualizationEditor.simpleTable": "Simplified table"
+  "Components.ContextualizationEditor.simpleTable": "Simplified table",
+  "textColor": "Text color",
+  "Explanation about textColor": "Choose the color of this element's text",
+  "Components.ContextualizationEditor.liteMode": "Lite mode",
+  "Components.ContextualizationEditor.Explanation about liteMode parameter for contextualizer vegaLite": "Choose whether to use the 'standard' vega grammar or the 'lite' version, which is simpler and adapted for most simple visualization tasks."
 }
