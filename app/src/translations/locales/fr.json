@@ -424,7 +424,7 @@
   "Components.UploadModal.\"{f}\" is too big": "\"{f}\" est trop volumineux",
   "Features.EditionUiWrapper.Contents": "Sections",
   "Features.EditionUiWrapper.Editions": "Editions",
-  "Features.EditionUiWrapper.Export": "Exporter",
+  "Features.EditionUiWrapper.Export": "Exporter la production...",
   "Features.EditionUiWrapper.Home": "Accueil",
   "Features.EditionUiWrapper.Library": "Bibliothèque",
   "Features.EditionUiWrapper.Unnamed production": "Production sans titre",
@@ -656,6 +656,11 @@
   "Features.SectionView.Where": "Où",
   "Components.ContextualizationEditor.startTime": "début",
   "Components.ContextualizationEditor.endTime": "fin",
+
+  "Components.ContextualizationEditor.Explanation about the startTime parameter for the video contextualizer": "définir quand démarrer l'extrait à présenter dans la contextualisation",
+  "Components.ContextualizationEditor.Explanation about the endTime parameter for the video contextualizer": "définir quand terminer l'extrait à présenter dans la contextualisation",
+
+
   "Components.ContextualizationEditor.hours": "heures",
   "Components.ContextualizationEditor.minutes": "minutes",
   "Components.ContextualizationEditor.seconds": "secondes",

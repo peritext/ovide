@@ -343,7 +343,7 @@
   "Explanation html": "Paste here html code to run in order to render the resource",
   "Features.EditionUiWrapper.Contents": "Sections",
   "Features.EditionUiWrapper.Editions": "Editions",
-  "Features.EditionUiWrapper.Export": "Export",
+  "Features.EditionUiWrapper.Export": "Export production...",
   "Features.EditionUiWrapper.Home": "Home",
   "Features.EditionUiWrapper.Library": "Library",
   "Features.EditionUiWrapper.Unnamed production": "Unnamed production",
@@ -682,6 +682,12 @@
   "Features.SectionView.edit resource contents": "edit this resource's contents",
   "Components.ContextualizationEditor.startTime": "start time",
   "Components.ContextualizationEditor.endTime": "end time",
+
+
+  "Components.ContextualizationEditor.Explanation about the startTime parameter for the video contextualizer": "define when to start the excerpt to be presented in this mention",
+  "Components.ContextualizationEditor.Explanation about the endTime parameter for the video contextualizer": "define when to end the excerpt to be presented in this mention",
+
+
   "Components.ContextualizationEditor.hours": "hours",
   "Components.ContextualizationEditor.minutes": "minutes",
   "Components.ContextualizationEditor.seconds": "seconds",
