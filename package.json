@@ -182,7 +182,7 @@
     "peritext-contextualizer-image": "^0.2.1",
     "peritext-contextualizer-source-code": "^0.1.0",
     "peritext-contextualizer-table": "^0.1.2",
-    "peritext-contextualizer-vegalite": "^0.2.1",
+    "peritext-contextualizer-vegalite": "^0.2.2",
     "peritext-contextualizer-video": "^0.2.1",
     "peritext-contextualizer-webpage": "^0.1.0",
     "peritext-core": "git+https://github.com/peritext/peritext-core.git",
