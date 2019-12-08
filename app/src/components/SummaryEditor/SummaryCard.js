@@ -79,7 +79,7 @@ class SummaryCard extends Component {
               <div style={ { position: 'relative' } }>
                 <StretchedLayoutContainer
                   isDirection={ 'horizontal' }
-                  style={ { alignItems: 'center' } }
+                  style={ { alignItems: 'center', paddingBottom: '.2rem' } }
                 >
                   <StretchedLayoutItem
                     isFlex={ 1 }
@@ -165,6 +165,7 @@ class SummaryCard extends Component {
                           position: 'absolute',
                           right: 0,
                           top: 0,
+                          pointerEvents: isEdited ? 'all' : 'none'
                         } }
                     />
                     }

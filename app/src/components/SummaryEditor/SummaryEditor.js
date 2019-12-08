@@ -260,7 +260,7 @@ class SummaryEditor extends Component {
                         style={ { overflow: 'auto', minHeight: '100%' } }
                       >
                         {provided.placeholder}
-                        <FlipMove>
+                        <FlipMove style={ { paddingBottom: '2rem' } }>
                           {
                             summary.map( ( summaryBlock, index ) => {
                               const handleRemove = () => {
