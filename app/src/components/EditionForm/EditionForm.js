@@ -49,6 +49,8 @@ import {
 import ExplainedLabel from '../../components/ExplainedLabel';
 import SummaryEditor from '../../components/SummaryEditor';
 
+import './EditionForm.scss';
+
 /**
  * Shared variables
  */
@@ -75,18 +77,35 @@ class EditionForm extends Component {
     setTimeout( () => {
       if ( this.form ) {
         Tooltip.rebuild();
-        const inputs = this.form.getElementsByTagName( 'input' );
-        if ( inputs && inputs.length ) {
-          inputs[0].focus();
-        }
-        const flowing = this.form.getElementsByClassName( 'is-flowing' );
-        if ( flowing && flowing.length ) {
-          Array.prototype.forEach.call( flowing, ( el ) => {
-            el.scrollTop = 0;
-          } );
-        }
+        this.scrollToPosition( 0 );
       }
     } );
+  }
+
+  scrollToPosition = ( top ) => {
+    if ( this.form ) {
+      const inputs = this.form.getElementsByTagName( 'input' );
+      if ( inputs && inputs.length ) {
+        inputs[0].focus();
+      }
+      const flowing = this.form.getElementsByClassName( 'is-flowing' );
+      if ( flowing && flowing.length ) {
+        Array.prototype.forEach.call( flowing, ( el ) => {
+          el.scrollTop = top;
+        } );
+      }
+    }
+  }
+
+  scrollToElement = ( selector ) => {
+    setTimeout( () => {
+      const element = document.querySelector( selector );
+      console.log( 'scroll to', selector, element );
+      if ( element ) {
+        this.scrollToPosition( element.offsetTop );
+      }
+    } );
+
   }
 
   componentWillReceiveProps = ( nextProps, nextContext ) => {
@@ -250,7 +269,7 @@ class EditionForm extends Component {
             return (
               <form
                 ref={ bindRef }
-                className={ 'is-wrapper' }
+                className={ 'ovide-EditionForm is-wrapper' }
                 onSubmit={ handleFormAPISubmit }
               >
                 <StretchedLayoutContainer isAbsolute>
@@ -283,7 +302,11 @@ class EditionForm extends Component {
                         <BigSelect
                           activeOptionId={ formApi.getValue( 'metadata.type' ) }
                           columns={ bigSelectColumnsNumber }
-                          onChange={ ( thatType ) => handleEditionTypeChange( thatType, formApi ) }
+                          onChange={ ( thatType ) => {
+                            console.log( 'type change' );
+                            handleEditionTypeChange( thatType, formApi );
+                            this.scrollToElement( '#template-choice' );
+                          } }
                           boxStyle={ { textAlign: 'center' } }
                           options={ formApi.getValue( 'metadata.type' ) ?
                               [ {
@@ -309,7 +332,7 @@ class EditionForm extends Component {
                     {
                       formApi.getValue( 'metadata.type' ) &&
                       getAvailableTemplates( formApi.getValue( 'metadata.type' ), availableTemplates ).length > 0 &&
-                      <Column>
+                      <Column id={ 'template-choice' }>
                         <Column>
                           <Label>
                             {translate( 'Choose a template' )}
@@ -319,7 +342,12 @@ class EditionForm extends Component {
                           <BigSelect
                             activeOptionId={ formApi.getValue( 'metadata.templateId' ) }
                             columns={ bigSelectColumnsNumber }
-                            onChange={ ( thatTemplateId ) => handleEditionTemplateIdChange( thatTemplateId, formApi ) }
+                            onChange={ ( thatTemplateId ) => {
+                              handleEditionTemplateIdChange( thatTemplateId, formApi );
+                              if ( thatTemplateId ) {
+                                this.scrollToElement( '#summary-choice' );
+                              }
+                            } }
                             boxStyle={ { textAlign: 'center' } }
                             options={ formApi.getValue( 'metadata.templateId' ) ?
                                 [ {
@@ -344,6 +372,7 @@ class EditionForm extends Component {
                       </Column>
                     }
 
+                    <div id={ 'summary-choice' } />
                     {formApi.getValue( 'metadata.type' ) &&
                       formApi.getValue( 'metadata.templateId' ) &&
                       <SummaryEditor

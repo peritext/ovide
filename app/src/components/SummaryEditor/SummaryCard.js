@@ -84,7 +84,11 @@ class SummaryCard extends Component {
                   <StretchedLayoutItem
                     isFlex={ 1 }
                   >
-                    <Title isSize={ 6 }>
+                    <Title
+                      isSize={ 6 }
+                      onClick={ handleToggleIsEdited }
+                      style={ { cursor: 'pointer' } }
+                    >
 
                       {
                           customTitle && customTitle.length ?

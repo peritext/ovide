@@ -336,7 +336,7 @@ class SummaryEditor extends Component {
                 </StretchedLayoutItem>
                 <StretchedLayoutItem
                   isFlex={ 1 }
-                  style={ { overflow: 'auto' } }
+                  style={ { overflow: 'auto', paddingBottom: '2rem' } }
                 >
                   <Droppable droppableId={ 'possibles' }>
                     {( provided ) => (
