@@ -181,14 +181,33 @@ export const importProduction = ( file, callback ) => ( {
                   } )
                   .catch( ( err ) => {
                     if ( typeof callback === 'function' ) {
-                      callback( err );
+                      callback( {
+                        error: err,
+                        type: 'data-creation-error'
+                      } );
                     }
                     reject( err );
                   } );
                 }
-                else reject( validation.errors );
+                else {
+                  reject( validation.errors );
+                  if ( typeof callback === 'function' ) {
+                    callback( {
+                      error: validation.errors,
+                      type: 'validation-error'
+                     } );
+                   }
+                }
              } )
-             .catch( ( e ) => reject( e ) );
+             .catch( ( e ) => {
+               if ( typeof callback === 'function' ) {
+                callback( {
+                  error: e,
+                  type: 'parsing-error'
+                 } );
+               }
+               reject( e );
+            } );
     } ),
 } );
 

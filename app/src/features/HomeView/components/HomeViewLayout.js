@@ -30,6 +30,7 @@ import {
   Title,
 } from 'quinoa-design-library/components/';
 import { Link } from 'react-router-dom';
+import ReduxToastr from 'react-redux-toastr';
 
 /**
  * Imports Project utils
@@ -188,8 +189,14 @@ class HomeViewLayout extends Component {
           setIsImporting( false );
           if ( err ) {
             console.error( err );/* eslint no-console: 0 */
-            toastr.error( this.translate( 'The production could not be imported' ) );
+            const message = {
+              'validation-error': this.translate( 'The JSON data is not valid' ),
+              'parsing-error': this.translate( 'The file could not be parsed (it is probably corrupted)' ),
+              'data-creation-error': this.translate( 'The data could not be created (maybe not enough space on device)' )
+            };
 
+            toastr.error( this.translate( 'The production could not be imported' ), message[err.type] );
+            setNewProductionOpen( false );
           }
           else {
             setNewProductionOpen( false );
@@ -638,6 +645,15 @@ class HomeViewLayout extends Component {
         <Footer
           id={ 'footer' }
           translate={ this.translate }
+        />
+
+        <ReduxToastr
+          timeOut={ 5000 }
+          newestOnTop={ false }
+          position={ 'top-right' }
+          transitionIn={ 'fadeIn' }
+          transitionOut={ 'fadeOut' }
+          closeOnToastrClick
         />
 
       </section>

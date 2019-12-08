@@ -7,7 +7,6 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import ReactTooltip from 'react-tooltip';
 import {
   Button,
   Icon

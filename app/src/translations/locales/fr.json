@@ -656,11 +656,8 @@
   "Features.SectionView.Where": "Où",
   "Components.ContextualizationEditor.startTime": "début",
   "Components.ContextualizationEditor.endTime": "fin",
-
   "Components.ContextualizationEditor.Explanation about the startTime parameter for the video contextualizer": "définir quand démarrer l'extrait à présenter dans la contextualisation",
   "Components.ContextualizationEditor.Explanation about the endTime parameter for the video contextualizer": "définir quand terminer l'extrait à présenter dans la contextualisation",
-
-
   "Components.ContextualizationEditor.hours": "heures",
   "Components.ContextualizationEditor.minutes": "minutes",
   "Components.ContextualizationEditor.seconds": "secondes",
@@ -766,7 +763,7 @@
   "Features.HomeView.Please notice that this web version is for testing purpose only: your data is stored on your browser local storage, which means that it can be easily erased by browser cleaning operations. Please download the desktop version below for substantial work beyond playing with this tool.": "Veuillez noter que cette version web est à usage de test uniquement : vos données sont sauvegardées sur le stockage local de votre navigateur, ce qui signifie qu'elles peuvent facilement être supprimées par des opérations de nettoyage du navigateur (ex. supprimer les données de navigation). Veuillez télécharger la version bureau pour un travail substantiel.",
   "Features.EditionView.The edition was downloaded successfully": "L'édition a été téléchargée avec succès",
   "Features.EditionView.An error occured during edition download": "Une erreur s'est produite durant le téléchargement de l'édition",
-  "Features.HomeView.The production could not be imported": "The production could not be imported",
+  "Features.HomeView.The production could not be imported": "La production n'a pas pu être importée",
   "Components.DatesPicker.add-dates": "ajouter des dates",
   "Components.DatesPicker.start date": "date de début",
   "Components.DatesPicker.end date": "date de fin",
@@ -1079,5 +1076,8 @@
   "textColor": "Couleur du texte",
   "Explanation about textColor": "Choisir la couleur du texte de cet élément",
   "Components.ContextualizationEditor.liteMode": "Mode 'lite'",
-  "Components.ContextualizationEditor.Explanation about liteMode parameter for contextualizer vegaLite": "Choisir d'utiliser la version standard de la grammaire vega ou la version 'lite', plus simple et adaptée à la plupart des tâches de visualisations simples."
+  "Components.ContextualizationEditor.Explanation about liteMode parameter for contextualizer vegaLite": "Choisir d'utiliser la version standard de la grammaire vega ou la version 'lite', plus simple et adaptée à la plupart des tâches de visualisations simples.",
+  "Features.HomeView.The JSON data is not valid": "Les données JSON ne sont pas valides",
+  "Features.HomeView.The file could not be parsed (it is probably corrupted)": "Le fichier n'a pas pu être analysé (il est peut-être corrompu)",
+  "Features.HomeView.The data could not be created (maybe not enough space on device)": "Les données n'ont pas pu être créées (peut-être pas assez d'espace disponible sur l'appareil)"
 }

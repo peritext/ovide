@@ -682,12 +682,8 @@
   "Features.SectionView.edit resource contents": "edit this resource's contents",
   "Components.ContextualizationEditor.startTime": "start time",
   "Components.ContextualizationEditor.endTime": "end time",
-
-
   "Components.ContextualizationEditor.Explanation about the startTime parameter for the video contextualizer": "define when to start the excerpt to be presented in this mention",
   "Components.ContextualizationEditor.Explanation about the endTime parameter for the video contextualizer": "define when to end the excerpt to be presented in this mention",
-
-
   "Components.ContextualizationEditor.hours": "hours",
   "Components.ContextualizationEditor.minutes": "minutes",
   "Components.ContextualizationEditor.seconds": "seconds",
@@ -1080,5 +1076,8 @@
   "textColor": "Text color",
   "Explanation about textColor": "Choose the color of this element's text",
   "Components.ContextualizationEditor.liteMode": "Lite mode",
-  "Components.ContextualizationEditor.Explanation about liteMode parameter for contextualizer vegaLite": "Choose whether to use the 'standard' vega grammar or the 'lite' version, which is simpler and adapted for most simple visualization tasks."
+  "Components.ContextualizationEditor.Explanation about liteMode parameter for contextualizer vegaLite": "Choose whether to use the 'standard' vega grammar or the 'lite' version, which is simpler and adapted for most simple visualization tasks.",
+  "Features.HomeView.The JSON data is not valid": "The JSON data is not valid",
+  "Features.HomeView.The file could not be parsed (it is probably corrupted)": "The file could not be parsed (it is probably corrupted)",
+  "Features.HomeView.The data could not be created (maybe not enough space on device)": "The data could not be created (maybe not enough space on device)"
 }
