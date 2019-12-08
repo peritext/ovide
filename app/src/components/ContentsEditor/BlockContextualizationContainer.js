@@ -266,6 +266,7 @@ class BlockContainer extends Component {
           renderingMode={ renderingMode }
           isGhostMode={ !visibility[renderingMode] }
           showPannel
+          showOnlyIfVisible
         />
 
       ] : null

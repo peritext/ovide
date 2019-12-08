@@ -259,6 +259,7 @@ class AssetPreview extends Component {
         'contextualizer',
         // 'contextualization',
         'isGhostMode',
+        'assets'
       ].find( ( key ) => this.props[key] !== nextProps[key] ) !== undefined
     );
   }
@@ -275,6 +276,7 @@ class AssetPreview extends Component {
       silentPreviewClick = true,
       contextualization = {},
       isGhostMode = false,
+      showOnlyIfVisible
     } = this.props;
     const { metadata, data } = resource;
     const {
@@ -325,7 +327,7 @@ class AssetPreview extends Component {
           className={ 'ovide-AssetPreview' }
         >
           <div className={ 'preview-container' }>
-            {data && isVisible && this.renderPreview()}
+            {data && ( showOnlyIfVisible ? isVisible : true ) && this.renderPreview()}
           </div>
           <div>
             <Level style={ { margin: '1rem', marginBottom: 0 } }>
