@@ -13,13 +13,12 @@ if (isDevelopment) {
   // Let electron reload by itself when webpack watches changes in ./app/
   require('electron-reload')(__dirname, {
     electron: require('${__dirname}/../../node_modules/electron')
-  })
+  });
 }
 
 // console.log('start main process');
 
 const userDataPath = (electron.app || electron.remote.app).getPath('userData');
-
 
 const contentPath = path.join(userDataPath, '/productions');
 
