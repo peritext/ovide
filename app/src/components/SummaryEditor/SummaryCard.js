@@ -89,7 +89,6 @@ class SummaryCard extends Component {
                       onClick={ handleToggleIsEdited }
                       style={ { cursor: 'pointer' } }
                     >
-
                       {
                           customTitle && customTitle.length ?
                           `${customTitle} (${translate( summaryBlock.type )})`

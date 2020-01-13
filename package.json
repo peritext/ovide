@@ -1,6 +1,6 @@
 {
   "name": "ovide",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "an experimental application for context-rich & polymorphic scholarly publishing",
   "author": "Robin de Mourat",
   "contributors": [
@@ -51,6 +51,7 @@
   "build": {
     "productName": "ovide",
     "appId": "com.electron.ovide",
+    "npmRebuild": false,
     "linux": {
       "target": "tar.gz",
       "synopsis": "A polymorphic scholarly rich content editor",
@@ -58,7 +59,8 @@
     },
     "mac": {
       "category": "public.app-category.productivity",
-      "type": "development"
+      "type": "development",
+      "target": "pkg"
     },
     "directories": {
       "output": "dist",
@@ -96,7 +98,7 @@
     "csscomb": "^4.2.0",
     "download": "^7.1.0",
     "electron": "^4.2.12",
-    "electron-builder": "^20.28.4",
+    "electron-builder": "^22.2.0",
     "electron-devtools-installer": "^2.2.3",
     "electron-icon-maker": "0.0.4",
     "electron-icon-maker-fix": "0.0.5",
@@ -176,7 +178,7 @@
     "node-sass": "^4.12.0",
     "p-queue": "^3.0.0",
     "parse-srt": "^1.0.0-alpha",
-    "peritext-contextualizer-bib": "^0.2.3",
+    "peritext-contextualizer-bib": "^0.2.4",
     "peritext-contextualizer-embed": "^0.1.3",
     "peritext-contextualizer-glossary": "^0.1.0",
     "peritext-contextualizer-image": "^0.2.1",
@@ -186,12 +188,12 @@
     "peritext-contextualizer-video": "^0.2.1",
     "peritext-contextualizer-webpage": "^0.1.0",
     "peritext-core": "git+https://github.com/peritext/peritext-core.git",
-    "peritext-generator-html-multi": "^0.1.6",
+    "peritext-generator-html-multi": "^0.1.7",
     "peritext-generator-html-singlepage": "^0.1.2",
     "peritext-schemas": "^0.2.2",
-    "peritext-template-callirhoe": "0.0.5",
-    "peritext-template-chrysaor": "0.0.5",
-    "peritext-template-deucalion": "^0.3.1",
+    "peritext-template-callirhoe": "0.0.6",
+    "peritext-template-chrysaor": "0.0.6",
+    "peritext-template-deucalion": "^0.3.2",
     "peritext-template-pyrrah": "^0.3.2",
     "peritext-utils": "^0.2.12",
     "pigeon-maps": "^0.12.1",
