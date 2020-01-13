@@ -5,9 +5,11 @@ import {
   StretchedLayoutContainer,
   Level,
   StretchedLayoutItem,
+  Button,
   Title,
 } from 'quinoa-design-library/components/';
 import Form from './ContextualizationForm';
+import Tooltip from 'react-tooltip';
 
 /**
  * Imports Project utils
@@ -15,6 +17,9 @@ import Form from './ContextualizationForm';
 import { translateNameSpacer } from '../../helpers/translateUtils';
 import { getRelatedAssetsIds } from '../../helpers/assetsUtils';
 import { requestAssetData } from '../../helpers/dataClient';
+import peritextConfig from '../../peritextConfig.render';
+
+import './ContextualizationEditor.scss';
 
 class ContextualizationEditor extends Component {
   constructor( props ) {
@@ -28,6 +33,7 @@ class ContextualizationEditor extends Component {
   componentWillReceiveProps = ( nextProps ) => {
     if ( nextProps.contextualization && nextProps.resource ) {
       this.refreshAssets( nextProps );
+      Tooltip.rebuild();
     }
   }
   refreshAssets = ( props ) => {
@@ -45,7 +51,7 @@ class ContextualizationEditor extends Component {
     relatedAssets.reduce( ( cur, asset ) => {
       return cur.then( () => {
         return new Promise( ( resolve, reject ) => {
-          requestAssetData( productionId, asset )
+          requestAssetData( { productionId, asset } )
             .then( ( data ) => {
               this.setState( {
                 assets: {
@@ -73,6 +79,8 @@ class ContextualizationEditor extends Component {
         contextualizer,
         resource,
         productionId,
+        onOpenResource,
+        insertionType,
 
         /*
          * assets,
@@ -135,10 +143,12 @@ class ContextualizationEditor extends Component {
         else return resolve();
       } ) );
     };
+
+    const CustomForm = peritextConfig.contextualizers[contextualizer.type].ContextualizerFormComponent;
     return (
       <StretchedLayoutContainer
         isDirection={ 'vertical' }
-        style={ { height: '100%', overflow: 'hidden' } }
+        style={ { height: '100%', overflow: 'hidden', position: 'relative', paddingRight: '1rem' } }
       >
         <StretchedLayoutItem>
           <StretchedLayoutContainer
@@ -155,18 +165,42 @@ class ContextualizationEditor extends Component {
           </StretchedLayoutContainer>
         </StretchedLayoutItem>
         <StretchedLayoutItem
-          style={ { overflow: 'auto' } }
+          style={ { overflowY: 'auto', overflowX: 'hidden' } }
           isFlex={ 1 }
         >
           <Level />
-          <Form
-            translate={ translate }
-            contextualizer={ contextualizer }
-            contextualization={ contextualization }
-            resource={ resource }
-            onChange={ handleChange }
-          />
+          {
+            CustomForm ?
+              <CustomForm
+                translate={ translate }
+                contextualizer={ contextualizer }
+                contextualization={ contextualization }
+                resource={ resource }
+                onChange={ handleChange }
+                insertionType={ insertionType }
+              />
+            :
+              <Form
+                translate={ translate }
+                contextualizer={ contextualizer }
+                contextualization={ contextualization }
+                resource={ resource }
+                onChange={ handleChange }
+                insertionType={ insertionType }
+              />
+          }
+
         </StretchedLayoutItem>
+        <StretchedLayoutItem>
+          <Button
+            isFullWidth
+            isColor={ 'primary' }
+            onClick={ onOpenResource }
+          >
+            {translate( 'Edit resource' )}
+          </Button>
+        </StretchedLayoutItem>
+        <Tooltip id={ 'help-tooltip' } />
       </StretchedLayoutContainer>
     );
 

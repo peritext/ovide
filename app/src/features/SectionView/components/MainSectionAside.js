@@ -43,6 +43,7 @@ import ContextualizationEditor from '../../../components/ContextualizationEditor
  * Imports Assets
  */
 import config from '../../../config';
+// import { createDefaultResource } from '../../../helpers/schemaUtils';
 
 /**
  * Shared variables
@@ -71,17 +72,21 @@ const MainSectionAside = ( {
   guessTitle,
   setEditedResourceId,
   submitMultiResources,
+  onGoToResource,
 
   createAsset,
   updateAsset,
   deleteAsset,
 
   editedContextualizationId,
+  editedContextualizationType,
   handleCloseEditedContextualization,
 
   previewMode,
   updateContextualization,
   updateContextualizer,
+  setEditedContextualizationId,
+  onResourceEditAttempt,
 
 }, { t } ) => {
 
@@ -326,6 +331,9 @@ const MainSectionAside = ( {
     const editedResource = resources[editedResourceId];
     const relatedAssetsIds = getRelatedAssetsIds( editedResource.data );
     const relatedAssets = relatedAssetsIds.map( ( id ) => production.assets[id] ).filter( ( a ) => a );
+    const handleGoToResource = () => {
+      onGoToResource( editedResourceId );
+    };
     return (
       <Column style={ { position: 'relative', height: '100%', width: '100%', background: 'white', zIndex: 3 } }>
         <StretchedLayoutContainer isAbsolute>
@@ -338,6 +346,8 @@ const MainSectionAside = ( {
                 existingAssets={ relatedAssets }
                 asNewResource={ false }
                 productionId={ productionId }
+                onGoToResource={ handleGoToResource }
+                allowGoToResource={ editedResource.id !== section.id }
               />
             </Column>
           </StretchedLayoutItem>
@@ -347,20 +357,27 @@ const MainSectionAside = ( {
   }
  else if ( editedContextualizationId ) {
     const editedContextualization = contextualizations[editedContextualizationId];
+    const handleOpenResource = () => {
+      const resourceId = editedContextualization.sourceId;
+      setEditedContextualizationId( undefined );
+      onResourceEditAttempt( resourceId );
+    };
     return (
       <Column style={ { position: 'relative', height: '100%', width: '100%', background: 'white', zIndex: 3 } }>
         <StretchedLayoutContainer isAbsolute>
           <StretchedLayoutItem
-            style={ { height: '100%' } }
+            style={ { height: '100%', width: '100%', position: 'absolute' } }
             isFlex={ 1 }
           >
             <Column style={ { position: 'relative', height: '100%', width: '100%' } }>
               <ContextualizationEditor
                 isActive={ editedContextualization !== undefined }
                 contextualization={ editedContextualization }
-                resource={ editedContextualization && production.resources[editedContextualization.resourceId] }
+                insertionType={ editedContextualizationType }
+                resource={ editedContextualization && production.resources[editedContextualization.sourceId] }
                 contextualizer={ editedContextualization && production.contextualizers[editedContextualization.contextualizerId] }
                 onClose={ handleCloseEditedContextualization }
+                onOpenResource={ handleOpenResource }
                 updateContextualizer={ updateContextualizer }
                 updateContextualization={ updateContextualization }
                 productionId={ productionId }

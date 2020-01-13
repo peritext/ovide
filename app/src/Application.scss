@@ -91,6 +91,7 @@ input[type="checkbox"]
 
 .__react_component_tooltip{
   z-index: 10000!important;
+  position: absolute;
 }
 
 .drop-zone{
@@ -151,6 +152,16 @@ input[type="checkbox"]
   }
 }
 
+.card {
+  .card-content{
+    word-break: break-word;
+  }
+}
+
+.tile{
+  cursor: pointer;
+}
+
 @media print
 {
   .navbar,
@@ -189,6 +200,7 @@ input[type="checkbox"]
     border: none!important;
     box-shadow: none!important;
   }
+
   p,
   li,
   blockquote,

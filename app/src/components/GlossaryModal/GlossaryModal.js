@@ -101,7 +101,16 @@ class GlossaryModal extends Component {
      */
     const handleConfirm = () => {
       if ( name && name.length && entryType ) {
-        onCreateGlossary( { name, description, entryType }, focusData.focusId, focusData.selection );
+        onCreateGlossary( {
+          name,
+          description,
+          entryType,
+          contents: {
+            contents: {},
+            notes: {},
+            notesOrder: []
+          }
+        }, focusData.focusId, focusData.selection );
       }
       else {
         onContextualizeGlossary( choosenResource, focusData.focusId, focusData.selection );

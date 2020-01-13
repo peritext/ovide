@@ -1,3 +1,4 @@
+/* eslint-disable arrow-parens */
 /**
  * This module provides a layout component for displaying the summary view
  * @module ovide/features/SummaryView
@@ -55,10 +56,11 @@ const SummaryViewLayout = ( {
     setIsSorting,
     setMetadataOpen,
 
-    createSection,
-    deleteSection,
     updateSectionsOrder,
-    setSectionLevel,
+    // setSectionLevel,
+
+    createResource,
+    deleteResource,
   },
   goToSection
 }, { t } ) => {
@@ -73,8 +75,8 @@ const SummaryViewLayout = ( {
       authors,
       abstract
     },
-    sections,
     sectionsOrder,
+    resources,
     id: productionId,
   } = production;
 
@@ -86,7 +88,12 @@ const SummaryViewLayout = ( {
   /**
    * Computed variables
    */
-  const sectionsList = sectionsOrder.filter( ( sectionId ) => sections[sectionId] ).map( ( sectionId ) => sections[sectionId] );
+  const sectionsList = sectionsOrder
+  .filter( ( { resourceId } ) => resources[resourceId] )
+  .map( ( { resourceId, level } ) => ( {
+    resource: resources[resourceId],
+    level
+  } ) );
   const defaultSection = createDefaultSection();
   const defaultSectionMetadata = defaultSection.metadata;
 
@@ -95,6 +102,7 @@ const SummaryViewLayout = ( {
    */
   const handleMetadataEditionToggle = () => {
     setMetadataOpen( !metadataOpen );
+    setTimeout( () => ReactTooltip.rebuild() );
   };
 
   const handleMetadataSubmit = ( { payload: { metadata } } ) => {
@@ -112,27 +120,48 @@ const SummaryViewLayout = ( {
       metadata,
       id: genId()
     };
-
-    createSection( {
-      sectionId: newSection.id,
-      section: newSection,
+    createResource( {
+      resourceId: newSection.id,
+      resource: newSection,
       productionId,
-      sectionIndex: sectionsList.length - 1
+    }, ( err ) => {
+      if ( !err ) {
+        const newSectionsOrder = [
+          ...sectionsOrder,
+          {
+            resourceId: newSection.id,
+            level: 0
+          }
+        ];
+        updateSectionsOrder( {
+          productionId,
+          sectionsOrder: newSectionsOrder
+        }, ( thatErr ) => {
+          if ( !thatErr ) {
+            setNewSectionOpen( false );
+            goToSection( newSection.id );
+        }
+        } );
+
+      }
     } );
-    setNewSectionOpen( false );
-    goToSection( newSection.id );
   };
 
   const handleDeleteSection = ( thatSectionId ) => {
     setPromptedToDeleteSectionId( thatSectionId );
   };
   const handleDeleteSectionExecution = ( thatSectionId ) => {
-    deleteSection( {
-      sectionId: thatSectionId,
+    const newSectionsOrder = sectionsOrder.filter( ( { resourceId } ) => resourceId !== thatSectionId );
+    updateSectionsOrder( {
       productionId,
-      blockId: thatSectionId,
-      blockType: 'sections'
+      sectionsOrder: newSectionsOrder
+    }, () => {
+      deleteResource( {
+        resourceId: thatSectionId,
+        productionId,
+      } );
     } );
+
   };
 
   const handleDeleteSectionConfirm = () => {
@@ -141,9 +170,19 @@ const SummaryViewLayout = ( {
   };
 
   const handleSortEnd = ( { oldIndex, newIndex } ) => {
+
     setIsSorting( false );
-    const sectionsIds = sectionsList.map( ( section ) => section.id );
-    const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex );
+    const levelsMap = sectionsOrder.reduce( ( res, { resourceId, level } ) => ( {
+      ...res,
+      [resourceId]: level
+    } ), {} );
+    const sectionsIds = sectionsOrder.map( ( { resourceId } ) => resourceId );
+
+    const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex ).map( resourceId => ( {
+      resourceId,
+      level: levelsMap[resourceId]
+    } ) );
+
     updateSectionsOrder( {
       productionId,
       sectionsOrder: newSectionsOrder
@@ -152,8 +191,21 @@ const SummaryViewLayout = ( {
   };
 
   const handleSectionIndexChange = ( oldIndex, newIndex ) => {
-    const sectionsIds = sectionsList.map( ( section ) => section.id );
-    const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex );
+
+    /*
+     * const sectionsIds = sectionsList.map( ( section ) => section.id );
+     * const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex );
+     */
+    const levelMaps = sectionsOrder.reduce( ( res, item ) => ( {
+      ...res,
+      [item.resourceId]: item.level
+    } ), {} );
+    const sectionsIds = sectionsOrder.map( ( { resourceId } ) => resourceId );
+
+    const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex ).map( ( resourceId ) => ( {
+      resourceId,
+      level: levelMaps[resourceId]
+    } ) );
     updateSectionsOrder( {
       productionId,
       sectionsOrder: newSectionsOrder
@@ -162,10 +214,21 @@ const SummaryViewLayout = ( {
   };
 
   const handleSetSectionLevel = ( { sectionId, level } ) => {
-    setSectionLevel( {
+    const newSectionsOrder = sectionsOrder.map( ( { resourceId: thatResourceId, level: thatLevel } ) => {
+      if ( thatResourceId === sectionId ) {
+        return {
+          resourceId: thatResourceId,
+          level
+        };
+      }
+      return {
+        resourceId: thatResourceId,
+        level: thatLevel
+      };
+    } );
+    updateSectionsOrder( {
       productionId,
-      sectionId,
-      level,
+      sectionsOrder: newSectionsOrder
     } );
   };
 
@@ -235,23 +298,21 @@ const SummaryViewLayout = ( {
                 onClick={ handleMetadataEditionToggle }
               >
 
-                {
-                  <StretchedLayoutContainer
-                    isAbsolute
-                    style={ { alignItems: 'center', justifyContent: 'space-around', padding: '1rem' } }
-                    isDirection={ 'horizontal' }
-                  >
+                <StretchedLayoutContainer
+                  isAbsolute
+                  style={ { alignItems: 'center', justifyContent: 'space-around', padding: '1rem' } }
+                  isDirection={ 'horizontal' }
+                >
 
-                    <StretchedLayoutItem isFlex={ 1 }>
-                      {metadataOpen ? translate( 'Close production settings' ) : translate( 'Edit production settings' )}
-                    </StretchedLayoutItem>
-                    {metadataOpen &&
-                      <StretchedLayoutItem>
-                        <Delete isSize={ 'medium' } />
-                      </StretchedLayoutItem>
+                  <StretchedLayoutItem isFlex={ 1 }>
+                    {metadataOpen ? translate( 'Close production settings' ) : translate( 'Edit production settings' )}
+                  </StretchedLayoutItem>
+                  {metadataOpen &&
+                  <StretchedLayoutItem>
+                    <Delete isSize={ 'medium' } />
+                  </StretchedLayoutItem>
                     }
-                  </StretchedLayoutContainer>
-                }
+                </StretchedLayoutContainer>
               </Button>
             </Level>
             <Collapsable
@@ -326,7 +387,7 @@ const SummaryViewLayout = ( {
                     style={ { paddingTop: '.2rem' } }
                     isSize={ 2 }
                   >
-                    {translate( 'Summary' )}
+                    {translate( 'Sections' )}
                   </Title>
                 </Column>
                 <Level>

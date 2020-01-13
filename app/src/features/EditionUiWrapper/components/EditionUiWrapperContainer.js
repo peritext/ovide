@@ -9,6 +9,8 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
+import { getResourceTitle } from 'peritext-utils';
+import { toastr } from 'react-redux-toastr';
 
 /**
  * Imports Project utils
@@ -54,8 +56,10 @@ class EditionUiWrapperContainer extends Component {
       case '/productions/:productionId/editions/:editionId':
         return 'edition';
       case '/productions/:productionId/sections/:sectionId':
-        return 'editor';
-      case '/productions/:productionId/summary':
+        return 'editor-section';
+      case '/productions/:productionId/resources/:sectionId':
+        return 'editor-resource';
+        case '/productions/:productionId/summary':
       case '/productions/:productionId':
         return 'summary';
       default:
@@ -63,9 +67,15 @@ class EditionUiWrapperContainer extends Component {
     }
   }
 
-  getActiveSectionTitle = ( production, sectionId ) => production.sections[sectionId].metadata.title;
+  getActiveSectionTitle = ( production, sectionId ) => getResourceTitle( production.resources[sectionId] );
 
   getActiveEditionTitle = ( production, editionId ) => production.editions[editionId].metadata.title;
+
+  componentDidCatch = ( error, errorInfo ) => {
+    console.error( 'an error occured' );/* eslint no-console : 0 */
+    console.error( error, errorInfo );/* eslint no-console : 0 */
+    toastr.error( 'Ouch ! A general error occured ...' );
+  }
 
   render() {
     const navLocation = this.getNavLocation( this.props.match.path );

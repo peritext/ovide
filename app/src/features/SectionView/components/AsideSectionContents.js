@@ -63,13 +63,13 @@ const AsideSectionContents = ( {
   setSectionLevel,
   productionId,
   visibleResources,
+  onGoToResource,
 }, { t } ) => {
 
   /**
    * Local functions
    */
   const translate = translateNameSpacer( t, 'Features.SectionView' );
-
   if ( asideTabCollapsed ) {
         return null;
       }
@@ -182,7 +182,9 @@ const AsideSectionContents = ( {
                     resources={ visibleResources }
                     onDeleteResource={ onDeleteResource }
                     productionId={ productionId }
+                    activeSectionId={ section.id }
                     editedResourceId={ editedResourceId }
+                    onGoToResource={ onGoToResource }
                     onCloseSettings={ onCloseActiveResource }
                     onResourceEditAttempt={ onResourceEditAttempt }
                     getResourceTitle={ getResourceTitle }

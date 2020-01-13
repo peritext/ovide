@@ -27,6 +27,7 @@ import { translateNameSpacer } from '../../../helpers/translateUtils';
 import downloadFile from '../../../helpers/fileDownloader';
 import {
   bundleProjectAsJSON,
+  bundleProjectAsZIP,
   bundleProjectAsHTML,
   bundleProjectAsMarkdown,
   bundleProjectAsTEI,
@@ -122,6 +123,9 @@ const EditionUiWrapperLayout = ( {
           } )
           .catch( onRejection );
         break;
+        case 'zip':
+            bundleProjectAsZIP( { production: editedProduction, requestAssetData } );
+            break;
       case 'markdown':
         bundleProjectAsMarkdown( { production: editedProduction, requestAssetData } )
           .then( ( markdownBundle ) => {
@@ -179,19 +183,26 @@ const EditionUiWrapperLayout = ( {
               isActive: navLocation === 'summary',
               content: `${translate( 'Contents' )}`,
             },
-            navLocation === 'editor' ?
+            navLocation === 'editor-section' ?
             {
               isActive: true,
               content: `/ ${realActiveSectionTitle}`,
               href: `/productions/${productionId}/sections/${sectionId}`,
             }
             : undefined,
-            // link to livrary view
+            // link to library view
             {
               href: `/productions/${productionId}/library`,
               isActive: navLocation === 'library',
               content: translate( 'Library' ),
             },
+            navLocation === 'editor-resource' ?
+            {
+              isActive: true,
+              content: `/ ${realActiveSectionTitle}`,
+              href: `/productions/${productionId}/resources/${sectionId}`,
+            }
+            : undefined,
             {
               href: `/productions/${productionId}/glossary`,
               isActive: navLocation === 'glossary',
@@ -237,6 +248,8 @@ const EditionUiWrapperLayout = ( {
         onChange={ handleExportToFile }
       />
       <ReactTooltip id={ 'tooltip' } />
+      <ReactTooltip id={ 'help-tooltip' } />
+      <ReactTooltip id={ 'card-tooltip' } />
       <ReduxToastr
         timeOut={ 5000 }
         newestOnTop={ false }

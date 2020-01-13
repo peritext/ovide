@@ -18,6 +18,8 @@ import {
 } from 'quinoa-design-library/components/';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
 
+import { resourceHasContents } from 'peritext-utils';
+
 /**
  * Imports Project utils
  */
@@ -132,6 +134,7 @@ class ResourceCard extends Component {
 
       connectDragSource,
       onMouseDown,
+      onGoToResource,
     } = props;
 
      const {
@@ -209,10 +212,11 @@ class ResourceCard extends Component {
     onDelete( event );
    };
 
-   const handleClick = ( event ) => {
-    onEdit( event );
-   };
-
+   const handleClick = ( e ) => {
+    // onEdit( e );
+    e.stopPropagation();
+    onGoToResource( resource.id );
+  };
     return connectDragSource(
       <div
         // draggable
@@ -236,12 +240,23 @@ class ResourceCard extends Component {
                   isSize={ 2 }
                 >
                   <CenteredIcon
-                    src={ icons[type].black.svg }
+                    src={ icons[type] && icons[type].black.svg }
                     data-tip={ translate( resource.metadata.type ) }
                     data-for={ 'tooltip' }
                     data-effect={ 'solid' }
                     isSize={ '32x32' }
                   />
+                  {
+                    resourceHasContents( resource ) ?
+                      <span
+                        className={ 'contents-indicator' }
+                        data-for={ 'tooltip' }
+                        data-tip={ translate( 'this resource is annotated with contents' ) }
+                      >
+                        ☰
+                      </span>
+                    : null
+                  }
                   {/*<Icon
                     data-tip={ translate( resource.metadata.type ) }
                     data-for={ 'tooltip' }
@@ -282,6 +297,17 @@ class ResourceCard extends Component {
                   >
                     <CenteredIcon src={ icons.settings.black.svg } />
 
+                  </Button>
+
+                  <Button
+                    onClick={ handleClick }
+                    isDisabled={ isActive }
+                    data-place={ 'left' }
+                    data-effect={ 'solid' }
+                    data-for={ 'tooltip' }
+                    data-tip={ translate( 'edit resource contents' ) }
+                  >
+                    <CenteredIcon src={ icons.edit.black.svg } />
                   </Button>
 
                   <Button

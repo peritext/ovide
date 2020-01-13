@@ -11,6 +11,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
+import VisibilitySensor from 'react-visibility-sensor';
 import {
   Box,
   Column,
@@ -133,7 +134,8 @@ class AssetPreview extends Component {
       loading: false,
       columns: [],
       isInfoShown: false,
-      assets: {}
+      assets: {},
+      isVisible: true
     };
     this.onClickEdit = this.onClickEdit.bind( this );
     this.onClickDelete = this.onClickDelete.bind( this );
@@ -234,6 +236,33 @@ class AssetPreview extends Component {
       this.props.onClick( e );
     }
   }
+
+  shouldComponentUpdate = ( nextProps, nextState ) => {
+    return (
+      this.state.isInfoShown !== nextState.isInfoShown
+      || this.state.isVisible !== nextState.isVisible
+      || ( !this.props.contextualization && nextProps.contextualization )
+      ||
+        (
+          this.props.contextualization
+          && nextProps.contextualization
+          && (
+            this.props.contextualization.contextualizerId !== nextProps.contextualization.contextualizerId
+          )
+        )
+      ||
+      [
+        'showPannel',
+        'resource',
+        'isActive',
+        'silentPreviewClick',
+        'contextualizer',
+        // 'contextualization',
+        'isGhostMode',
+        'assets'
+      ].find( ( key ) => this.props[key] !== nextProps[key] ) !== undefined
+    );
+  }
   render() {
 
     /**
@@ -247,19 +276,24 @@ class AssetPreview extends Component {
       silentPreviewClick = true,
       contextualization = {},
       isGhostMode = false,
+      showOnlyIfVisible
     } = this.props;
     const { metadata, data } = resource;
-    const { isInfoShown } = this.state;
-
-    /**
-     * Computed variables
-     */
-    const handleClickBox = this.onClickBox;
+    const {
+      isInfoShown,
+      isVisible
+    } = this.state;
 
     /**
      * Local functions
      */
     const translate = translateNameSpacer( this.context.t, 'Components.AssetPreview' );
+
+    /**
+     * Computed variables
+     */
+    const handleClickBox = this.onClickBox;
+    const title = contextualization.title || getResourceTitle( resource ) || translate( 'Unnamed resource' );
 
     /**
      * Callbacks handlers
@@ -269,8 +303,16 @@ class AssetPreview extends Component {
         silentEvent( event );
       }
     };
-
+    const onVisibilityChange = ( newIsVisible ) => {
+      this.setState( { isVisible: newIsVisible } );
+    };
     return (
+      <VisibilitySensor
+        onChange={ onVisibilityChange }
+        partialVisibility
+        intervalDelay={ 500 }
+      >
+        {
       showPannel ?
         <Box
           onClick={ handleClickBox }
@@ -285,7 +327,7 @@ class AssetPreview extends Component {
           className={ 'ovide-AssetPreview' }
         >
           <div className={ 'preview-container' }>
-            {data && this.renderPreview()}
+            {data && ( showOnlyIfVisible ? isVisible : true ) && this.renderPreview()}
           </div>
           <div>
             <Level style={ { margin: '1rem', marginBottom: 0 } }>
@@ -302,7 +344,7 @@ class AssetPreview extends Component {
                     style={ { paddingTop: '.2rem', color: 'inherit' } }
                     isSize={ 6 }
                   >
-                    {contextualization.title || getResourceTitle( resource ) || translate( 'Unnamed resource' )}
+                    {title}
                     {
                       isGhostMode &&
                       <Icon
@@ -347,9 +389,11 @@ class AssetPreview extends Component {
             onClick={ handlePreviewClick }
             className={ 'preview-container' }
           >
-            {data && this.renderPreview()}
+            {data && isVisible && this.renderPreview()}
           </div>
         </div>
+      }
+      </VisibilitySensor>
     );
   }
 }

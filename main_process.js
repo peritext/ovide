@@ -13,13 +13,12 @@ if (isDevelopment) {
   // Let electron reload by itself when webpack watches changes in ./app/
   require('electron-reload')(__dirname, {
     electron: require('${__dirname}/../../node_modules/electron')
-  })
+  });
 }
 
 // console.log('start main process');
 
 const userDataPath = (electron.app || electron.remote.app).getPath('userData');
-
 
 const contentPath = path.join(userDataPath, '/productions');
 
@@ -74,9 +73,9 @@ app.on('ready', async () => {
         webaudio: false,
         webSecurity: false,
         nodeIntegration: true,
+        nodeIntegrationInWorker: true,
         allowDisplayingInsecureContent: true,
         allowRunningInsecureContent: true,
-        nodeIntegration: true,
         // preload: './app/electronBuild/bundle.js'
       }
     })

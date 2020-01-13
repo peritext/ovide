@@ -14,6 +14,13 @@ module.exports = {
     module: {
         rules: [
             {
+              test: /\.worker\.js$/,
+              use: { 
+                loader: 'worker-loader' ,
+                options: { inline: true }
+              }
+            },
+            {
                 test: /\.js?$/,
                 loader: 'babel-loader',
                 options: {
@@ -56,7 +63,24 @@ module.exports = {
                 test: /\.(jpe?g|png|gif|svg)$/i,
                 use: [
                   'url-loader?limit=10000',
-                  'image-webpack-loader'
+                  {
+                    loader: 'image-webpack-loader',
+                    query: {
+                      mozjpeg: {
+                        progressive: true,
+                      },
+                      gifsicle: {
+                        interlaced: false,
+                      },
+                      optipng: {
+                        optimizationLevel: 7,
+                      },
+                      pngquant: {
+                        quality: '65-90',
+                        speed: 4,
+                      },
+                    },
+                  },
                 ]
               },
         ]

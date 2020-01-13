@@ -100,7 +100,7 @@ class GlossaryViewContainer extends Component {
             if ( err ) {
               return reject( err );
             }
- else {
+          else {
               return resolve();
             }
           } );
@@ -116,6 +116,11 @@ class GlossaryViewContainer extends Component {
     else deleteResourceAction( payload, callback );
   }
 
+  onGoToResource = ( resourceId ) => {
+    const { id: productionId } = this.props.editedProduction;
+    this.props.history.push( `/productions/${productionId}/resources/${resourceId}` );
+  }
+
   render() {
     const {
       props: {
@@ -123,6 +128,7 @@ class GlossaryViewContainer extends Component {
         editedProduction,
       },
       deleteResource,
+      onGoToResource,
     } = this;
     return editedProduction ?
           (
@@ -134,6 +140,7 @@ class GlossaryViewContainer extends Component {
                 <GlossaryViewLayout
                   { ...this.props }
                   deleteResource={ deleteResource }
+                  onGoToResource={ onGoToResource }
                 />
 
                 <UploadModal uploadStatus={ uploadStatus } />

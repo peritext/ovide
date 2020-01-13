@@ -31,7 +31,9 @@ class ResourceCardWrapper extends Component {
       handleDelete,
       getResourceTitle,
       editedResourceId,
-      handleEdit
+      handleEdit,
+      activeSectionId,
+      onGoToResource
     } = this.props;
     return (
       <Column key={ resource.id }>
@@ -39,7 +41,8 @@ class ResourceCardWrapper extends Component {
           resource={ resource }
           onDelete={ handleDelete }
           getTitle={ getResourceTitle }
-          isActive={ resource.id === editedResourceId }
+          isActive={ resource.id === editedResourceId || resource.id === activeSectionId }
+          onGoToResource={ onGoToResource }
           onEdit={ handleEdit }
         />
       </Column>
@@ -62,6 +65,8 @@ export default class ResourcesList extends Component {
       getResourceTitle,
       onCloseSettings,
       editedResourceId,
+      activeSectionId,
+      onGoToResource,
     } = this.props;
 
     const rowRenderer = ( {
@@ -94,6 +99,8 @@ export default class ResourcesList extends Component {
             handleDelete={ handleDelete }
             editedResourceId={ editedResourceId }
             getResourceTitle={ getResourceTitle }
+            activeSectionId={ activeSectionId }
+            onGoToResource={ onGoToResource }
             handleEdit={ handleEdit }
           />
         </div>

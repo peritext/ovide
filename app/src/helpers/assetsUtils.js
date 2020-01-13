@@ -15,6 +15,7 @@ import {
   convertToRaw,
   Modifier,
   EditorState,
+  SelectionState,
 } from 'draft-js';
 
 import {
@@ -366,33 +367,25 @@ export const retrieveMediaMetadata = ( url, credentials = {} ) => {
     // case youtube
     if ( url.match( youtubeRegexp ) ) {
       // must provide a youtube simple api key
-      if ( credentials.youtubeAPIKey ) {
-        let videoId = url.match( /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/ );
-        if ( videoId !== null ) {
-           videoId = videoId[1];
-           // for a simple metadata retrieval we can use this route that includes the api key
-            const endPoint = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${credentials.youtubeAPIKey}`;
-            get( endPoint )
-            .then( ( res ) => {
-              const info = res.data && res.data.items && res.data.items[0] && res.data.items[0].snippet;
-              return resolve( {
-                  url,
-                  metadata: {
-                    description: info.description,
-                    source: `${info.channelTitle } (youtube: ${url})`,
-                    title: info.title,
-                    videoUrl: url,
-                    authors: [ info.channelTitle ]
-                  }
-                } );
-            } )
-            .catch( ( e ) => reject( e ) );
-        }
-        else {
-          return resolve( { url, metadata: {
-          videoUrl: url
-        } } );
-        }
+      let videoId = url.match( /(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/ );
+      if ( videoId !== null ) {
+          videoId = videoId[1];
+          // for a simple metadata retrieval we can use this route that includes the api key
+          const endPoint = `https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`;
+          get( endPoint )
+          .then( ( res ) => {
+            const info = res.data;
+            return resolve( {
+                url,
+                metadata: {
+                  source: `Youtube: ${url}`,
+                  title: info.title,
+                  videoUrl: url,
+                  authors: [ { family: info.author_name, given: '', affiliation: '', role: 'uploader' } ]
+                }
+              } );
+          } )
+          .catch( ( e ) => reject( e ) );
       }
       else {
         return resolve( { url, metadata: {
@@ -412,7 +405,8 @@ export const retrieveMediaMetadata = ( url, credentials = {} ) => {
             source: `${data.author_name } (vimeo: ${url})`,
             title: data.title,
             description: data.description,
-            videoUrl: url
+            videoUrl: url,
+            authors: [ { family: data.author_name, given: '', affiliation: '', role: 'uploader' } ]
           }
         } );
       } )
@@ -509,12 +503,12 @@ export const summonAsset = ( contentId, resourceId, props, config ) => {
       createContextualizer,
       createContextualization,
       updateDraftEditorState,
-      updateSection,
+      updateResource,
       setEditorFocus,
     } = actions;
     const { contextualizers } = config;
 
-    const activeSection = production.sections[sectionId];
+    const activeSection = production.resources[sectionId];
     const resource = production.resources[resourceId];
 
     const editorStateId = contentId === 'main' ? sectionId : contentId;
@@ -595,7 +589,6 @@ export const summonAsset = ( contentId, resourceId, props, config ) => {
      * for different resources (e.g. comparating datasets)
      * and we can handle multi-modality in a smarter way.
      */
-
     // todo : consume model to do that
     const contextualizerId = genId();
     const contextualizer = {
@@ -607,9 +600,9 @@ export const summonAsset = ( contentId, resourceId, props, config ) => {
     const contextualizationId = genId();
     const contextualization = {
       id: contextualizationId,
-      resourceId,
+      sourceId: resourceId,
       contextualizerId,
-      sectionId
+      targetId: sectionId
     };
     // console.log( 'future contextualization', contextualization );
 
@@ -658,23 +651,48 @@ export const summonAsset = ( contentId, resourceId, props, config ) => {
     newEditorState = insertionType === BLOCK_ASSET ?
       insertBlockContextualization( newEditorState, contextualization, contextualizer, resource ) :
       insertInlineContextualization( newEditorState, contextualization, contextualizer, resource, isMutable );
-
+    // update selection to put cursor after newly created item
+    const newContentState = newEditorState.getCurrentContent();
+    const lastEntityKey = newContentState.getLastCreatedEntityKey();
+    const entity = newContentState.getEntity( lastEntityKey );
+    let newSelection = newEditorState.getSelection();
+    const activeSelection = newEditorState.getSelection();
+    if ( insertionType === 'block' ) {
+      const offsetKey = activeSelection.getFocusKey();
+      const blockAfter = newContentState.getBlockAfter( offsetKey );
+      if ( blockAfter ) {
+        newSelection = SelectionState.createEmpty( blockAfter.getKey() );
+      }
+    }
+    newEditorState = EditorState.forceSelection( newEditorState, newSelection );
     // update serialized editor state
     let newSection;
     if ( contentId === 'main' ) {
       newSection = {
         ...activeSection,
-        contents: convertToRaw( newEditorState.getCurrentContent() )
+        data: {
+          ...activeSection.data,
+          contents: {
+            ...activeSection.data.contents,
+            contents: convertToRaw( newEditorState.getCurrentContent() )
+          }
+        }
       };
     }
     else {
       newSection = {
         ...activeSection,
-        notes: {
-          ...activeSection.notes,
-          [contentId]: {
-            ...activeSection.notes[contentId],
-            contents: convertToRaw( newEditorState.getCurrentContent() )
+        data: {
+          ...activeSection.data,
+          contents: {
+            ...activeSection.data.contents,
+            notes: {
+              ...activeSection.data.contents.notes,
+              [contentId]: {
+                ...activeSection.data.contents.notes[contentId],
+                contents: convertToRaw( newEditorState.getCurrentContent() )
+              }
+            }
           }
         }
       };
@@ -701,8 +719,9 @@ export const summonAsset = ( contentId, resourceId, props, config ) => {
     )
     .then( () =>
       new Promise( ( resolve, reject ) => {
+
         // update immutable editor state
-        updateSection( { productionId, sectionId, section: newSection, userId }, ( err ) => {
+        updateResource( { productionId, resourceId: sectionId, resource: newSection, userId }, ( err ) => {
           if ( err ) {
             return reject( err );
           }
@@ -793,9 +812,9 @@ export const deleteContextualizationFromId = ( {
                       } : {
                         ...section,
                         notes: {
-                          ...section.notes,
+                          ...section.data.contents.notes,
                           [contentId]: {
-                            ...section.notes[contentId],
+                            ...section.data.contents.notes[contentId],
                             contents: convertToRaw( newEditorState.getCurrentContent() )
                           }
                         }
@@ -876,21 +895,21 @@ export const deleteUncitedContext = ( sectionId, props ) => {
     actions: {
       deleteContextualizer,
       deleteContextualization,
-      updateSection
+      updateResource
     }
   } = props;
 
   const { id: productionId } = editedProduction;
   const cleanedSection = {
-    ...editedProduction.sections[sectionId],
-    notes: cleanUncitedNotes( editedProduction.sections[sectionId] )
+    ...editedProduction.resources[sectionId],
+    notes: cleanUncitedNotes( editedProduction.resources[sectionId] )
   };
-  updateSection( { productionId, sectionId, section: cleanedSection, userId } );
+  updateResource( { productionId, resourceId: sectionId, resource: cleanedSection, userId } );
 
-  const citedContextualizationIds = Object.keys( cleanedSection.notes ).reduce( ( contents, noteId ) => [
+  const citedContextualizationIds = Object.keys( cleanedSection.data.contents.notes ).reduce( ( contents, noteId ) => [
     ...contents,
-    editedProduction.sections[sectionId].notes[noteId].contents,
-  ], [ editedProduction.sections[sectionId].contents ] )
+    editedProduction.resources[sectionId].notes[noteId].contents,
+  ], [ editedProduction.resources[sectionId].contents ] )
   .reduce( ( entities, contents ) =>
     [
       ...entities,
@@ -907,7 +926,7 @@ export const deleteUncitedContext = ( sectionId, props ) => {
   const uncitedContextualizations = Object.keys( editedProduction.contextualizations )
                                         .map( ( id ) => editedProduction.contextualizations[id] )
                                         .filter( ( contextualization ) => {
-                                          return contextualization.sectionId === sectionId && citedContextualizationIds.indexOf( contextualization.id ) === -1;
+                                          return contextualization.targetId === sectionId && citedContextualizationIds.indexOf( contextualization.id ) === -1;
                                         } );
   uncitedContextualizations.forEach( ( contextualization ) => {
     const { contextualizerId, id: contextualizationId } = contextualization;

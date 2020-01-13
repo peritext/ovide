@@ -1,0 +1,9 @@
+
+
+
+.time-input-container{
+  align-items: center;
+  .stretched-layout-item:not(:last-of-type){
+    margin-right: 1rem;
+  }
+}

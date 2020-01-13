@@ -48,6 +48,7 @@ const MAX_TITLE_LEN = 30;
 
 const SectionCard = ( {
   section,
+  level,
   goTo,
   setSectionLevel,
   sectionIndex,
@@ -69,7 +70,7 @@ const SectionCard = ( {
 
   const sectionTitle = (
     <span
-      data-for={ 'tooltip' }
+      data-for={ 'card-tooltip' }
       data-place={ 'right' }
       data-html
       data-tip={ `<div class="content"><h5 style="color: white">${section.metadata.title}</h5><p>${computeSectionFirstWords( section )}</p></div>` }
@@ -90,10 +91,10 @@ const SectionCard = ( {
         onDelete( section.id );
         break;
       case 'higher':
-        setSectionLevel( { sectionId: section.id, level: section.metadata.level - 1 } );
+        setSectionLevel( { resourceId: section.id, level: level - 1 } );
         break;
       case 'lower':
-        setSectionLevel( { sectionId: section.id, level: section.metadata.level + 1 } );
+        setSectionLevel( { resourceId: section.id, level: level + 1 } );
         break;
       case 'edit':
       default:
@@ -134,21 +135,19 @@ const SectionCard = ( {
                 style={ { paddingBottom: 0 } }
                 isSize={ 7 }
               >
-                {
-                  <Title isSize={ titleSize }>
-                    <Link
-                      to={ `/productions/${production.id}/sections/${section.id}` }
-                      data-tip={ section.metadata.title.length > MAX_TITLE_LEN ? section.metadata.title : undefined }
-                      data-for={ 'tooltip' }
-                      data-place={ 'bottom' }
-                    >
-                      <span>
-                        {sectionTitle}
-                      </span>
-                    </Link>
+                <Title isSize={ titleSize }>
+                  <Link
+                    to={ `/productions/${production.id}/sections/${section.id}` }
+                    data-tip={ section.metadata.title.length > MAX_TITLE_LEN ? section.metadata.title : undefined }
+                    data-for={ 'card-tooltip' }
+                    data-place={ 'bottom' }
+                  >
+                    <span>
+                      {sectionTitle}
+                    </span>
+                  </Link>
 
-                  </Title>
-                  }
+                </Title>
               </Column>
             </Columns>
             <Columns>
@@ -162,7 +161,7 @@ const SectionCard = ( {
                     onClick={ handleEdit }
                     data-effect={ 'solid' }
                     data-place={ 'left' }
-                    data-for={ 'tooltip' }
+                    data-for={ 'card-tooltip' }
                     data-tip={ translate( 'edit section' ) }
                   >
                     <CenteredIcon src={ icons.edit.black.svg } />
@@ -171,7 +170,7 @@ const SectionCard = ( {
                     onClick={ handleDelete }
                     data-effect={ 'solid' }
                     data-place={ 'left' }
-                    data-for={ 'tooltip' }
+                    data-for={ 'card-tooltip' }
                     data-tip={ translate( 'delete this section' ) }
                   >
                     <CenteredIcon src={ icons.remove.black.svg } />
@@ -190,14 +189,14 @@ const SectionCard = ( {
                     } }
                   chevronsData={ {
                       left: {
-                        tooltip: translate( 'Title level {n}', { n: section.metadata.level } ),
-                        isDisabled: section.metadata.level === 0,
-                        onClick: () => setSectionLevel( { sectionId: section.id, level: section.metadata.level - 1 } )
+                        tooltip: translate( 'Title level {n}', { n: level } ),
+                        isDisabled: level === 0,
+                        onClick: () => setSectionLevel( { sectionId: section.id, level: level - 1 } )
                       },
                       right: {
-                        tooltip: translate( 'Title level {n}', { n: section.metadata.level + 2 } ),
-                        isDisabled: section.metadata.level >= config.maxSectionLevel - 1,
-                        onClick: () => setSectionLevel( { sectionId: section.id, level: section.metadata.level + 1 } )
+                        tooltip: translate( 'Title level {n}', { n: level + 2 } ),
+                        isDisabled: level >= config.maxSectionLevel - 1,
+                        onClick: () => setSectionLevel( { sectionId: section.id, level: level + 1 } )
                       },
                       up: {
                         isDisabled: sectionIndex === 0,

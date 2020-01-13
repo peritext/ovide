@@ -47,6 +47,16 @@ const ExportModal = ( {
                 boxStyle={ { cursor: 'pointer', minHeight: '12rem', textAlign: 'center' } }
                 options={ [
                         {
+                          id: 'zip',
+                          label: (
+                            <ExplainedLabel
+                              title={ translate( 'Export to ZIP' ) }
+                              explanation={ translate( 'explanation about export to ZIP' ) }
+                            />
+                          ),
+                          iconUrl: activeOptionId === 'zip' ? icons.takeAway.white.svg : icons.takeAway.black.svg
+                        },
+                        {
                           id: 'json',
                           label: (
                             <ExplainedLabel
@@ -56,6 +66,7 @@ const ExportModal = ( {
                           ),
                           iconUrl: activeOptionId === 'json' ? icons.takeAway.white.svg : icons.takeAway.black.svg
                         },
+
                         {
                           id: 'html',
                           label: (

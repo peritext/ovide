@@ -22,7 +22,7 @@ const outputBase = path.resolve( `${__dirname }/../../app/htmlBuilds` );
 const buildProductionApplication = ( { templateId, generatorId } ) => {
   return new Promise( ( resolve, reject ) => {
     const outputFolder = `${outputBase}/${generatorId}/${templateId}`;
-    // console.log( 'build production application for', templateId, 'to', outputFolder );
+    console.log( 'build production application for', templateId, 'to', outputFolder );/*eslint no-console: 0 */
     const outputTempJS = `${outputFolder}/bundle.js`;
     const outputHTML = `${outputFolder}/index.html`;
     let bundle;
@@ -40,14 +40,16 @@ const buildProductionApplication = ( { templateId, generatorId } ) => {
             path: outputFolder,
           },
         } );
+
         // console.log( 'launching webpack build' );
         return new Promise( ( res, rej ) => {
+
           webpack( finalWebpackConf, ( err ) => {
             if ( err ) {
               rej( err );
             }
             else {
-              // console.log( 'webpack: done' );
+              console.log( 'webpack: done' );
               res();
             }
           } );
@@ -73,6 +75,7 @@ const buildProductionApplication = ( { templateId, generatorId } ) => {
     <div id="mount"></div>
     <script>
         var __production = \${productionJSON};
+        var __preprocessedData = \${preprocessedDataJSON};
         var __editionId = \${editionId};
         var __locale = \${locale} || {};
     </script>
@@ -80,7 +83,6 @@ const buildProductionApplication = ( { templateId, generatorId } ) => {
 ${bundle}
     </script>
     <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@1"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBBSfycBqpNHM0ieFYBhNW24h7mgQ2CTjQ&libraries=places"></script>
   </body>
 </html>
     `;
@@ -92,7 +94,6 @@ ${bundle}
         return resolve();
       } )
       .catch( reject );
-
   } );
 };
 

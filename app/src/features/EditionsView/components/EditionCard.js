@@ -35,6 +35,26 @@ import CenteredIcon from '../../../components/CenteredIcon';
 /**
  * Imports Assets
  */
+const templatesIcons = {
+  paged: require( '../../../sharedAssets/paged.png' ),
+  screened: require( '../../../sharedAssets/screened.png' ),
+  pyrrah: {
+    black: require( '../../../sharedAssets/pyrrah.black.png' ),
+    white: require( '../../../sharedAssets/pyrrah.white.png' ),
+  },
+  deucalion: {
+    black: require( '../../../sharedAssets/deucalion.black.png' ),
+    white: require( '../../../sharedAssets/deucalion.white.png' ),
+  },
+  callirhoe: {
+    black: require( '../../../sharedAssets/callirhoe.black.png' ),
+    white: require( '../../../sharedAssets/callirhoe.white.png' ),
+  },
+  chrysaor: {
+    black: require( '../../../sharedAssets/chrysaor.black.png' ),
+    white: require( '../../../sharedAssets/chrysaor.white.png' ),
+  },
+};
 
 class EditionCard extends Component {
   render = () => {
@@ -89,6 +109,11 @@ class EditionCard extends Component {
               <Columns style={ { marginBottom: 0 } }>
                 <Column isSize={ 2 }>
                   <CenteredIcon src={ editionsIcons[metadata.type] } />
+                  <CenteredIcon
+                    data-for={ 'tooltip' }
+                    data-tip={ metadata.templateId }
+                    src={ templatesIcons[metadata.templateId].black }
+                  />
                 </Column>
 
                 <Column

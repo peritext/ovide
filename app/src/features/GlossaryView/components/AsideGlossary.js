@@ -11,19 +11,17 @@ import {
     StretchedLayoutItem,
   } from 'quinoa-design-library/components';
 
-import { ReferencesManager } from 'react-citeproc';
+  import LoadingScreen from '../../../components/LoadingScreen';
+
+// import { ReferencesManager } from 'react-citeproc';
 
 import { translateNameSpacer } from '../../../helpers/translateUtils';
 
 import Mentions from './Mentions';
 import Prospections from './Prospections';
 
-import {
-    computeAssets,
-    getCitationModels,
-    buildCitations,
-    findProspectionMatches
-  } from './utils';
+import CitationsBuilder from '../../../helpers/citationsBuilder.worker';
+import ProspectionsBuilder from '../../../helpers/glossaryProspectionsBuilder.worker';
 
 const MIN_SEARCH_LENGTH = 2;
 
@@ -97,22 +95,39 @@ class AsideGlossary extends Component {
         super( props );
         this.state = {
             prospections: [],
-            citations: this.updateCitations( props )
+            citations: {}
         };
+        this.citationsBuilder = new CitationsBuilder();
+        this.citationsBuilder.onmessage = this.onCitationsBuilderMessage;
+
+        this.prospectionsBuilder = new ProspectionsBuilder();
+        this.prospectionsBuilder.onmessage = this.onProspectionsBuilderMessage;
+
+        this.updateCitations( props );
         this.updateProspections = debounce( this.updateProspections, 1000 );
+
     }
+
+    static childContextTypes = {
+      citations: PropTypes.object,
+    }
+
+    getChildContext = () => ( {
+      citations: this.state.citations && this.state.citations.citationComponents,
+    } )
 
     componentDidMount = () => {
       setTimeout( () => {
             this.updateProspections( this.props.searchString );
       } );
     }
-
+    componentWillUnmount = () => {
+      this.prospectionsBuilder.terminate();
+      this.citationsBuilder.terminate();
+    }
     componentWillReceiveProps = ( nextProps ) => {
       if ( nextProps.production && this.props.production.id !== nextProps.production.id ) {
-          this.setState( {
-              citations: this.updateCitations( nextProps )
-          } );
+          this.updateCitations( nextProps );
       }
       if (
           ( this.props.production.contextualizations !== nextProps.production.contextualizations )
@@ -127,52 +142,68 @@ class AsideGlossary extends Component {
       }
   }
 
+  onCitationsBuilderMessage = ( event ) => {
+    const { data } = event;
+    const { type, response } = data;
+    if ( type && response ) {
+      switch ( type ) {
+        case 'BUILD_CITATIONS_FOR_PRODUCTION':
+          const { citations } = response;
+          this.setState( {
+            citations,
+          } );
+          break;
+        default:
+          break;
+      }
+    }
+  }
+  onProspectionsBuilderMessage = ( event ) => {
+    const { data } = event;
+    const { type, response } = data;
+    if ( type && response ) {
+      switch ( type ) {
+        case 'BUILD_PROSPECTIONS':
+          const { prospections } = response;
+          this.setState( {
+            prospections,
+            loading: false,
+          } );
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
     updateProspections = ( value ) => {
       if ( !this.props.resource ) {
         return;
       }
-      const { production } = this.props;
-
-        const { contextualizations, resources } = production;
-        const matches = production.sectionsOrder.reduce( ( result, sectionId ) => {
-            const section = production.sections[sectionId];
-            return [
-                ...result,
-                ...findProspectionMatches( {
-                    contents: section.contents,
-                    sectionId,
-                    contentId: 'main',
-                    value,
-                    contextualizations,
-                    resources,
-                } ),
-                ...section.notesOrder.reduce( ( res, noteId ) =>
-                    [ ...res, ...findProspectionMatches( {
-                        contents: section.notes[noteId].contents,
-                        sectionId,
-                        noteId,
-                        value,
-                        contextualizations,
-                        resources,
-                    } ) ]
-                , [] )
-            ];
+      const { production, resource } = this.props;
+      this.prospectionsBuilder.postMessage( {
+        type: 'BUILD_PROSPECTIONS',
+        payload: {
+          resource,
+          searchTerm: value,
+          production
         }
-        , [] );
-
-        this.setState( {
-            prospections: matches
-        } );
+      } );
+      this.setState( {
+        loading: true,
+      } );
     }
     onSearchStringChange = ( value ) => {
         this.props.onSearchStringChange( value );
     }
     updateCitations = ( props ) => {
         const { production } = props;
-        const assets = computeAssets( { production } );
-        return buildCitations( assets, {
+        this.citationsBuilder.postMessage( {
+          type: 'BUILD_CITATIONS_FOR_PRODUCTION',
+          payload: {
             production,
-        } );
+          }
+         } );
     }
     render = () => {
         const {
@@ -195,7 +226,7 @@ class AsideGlossary extends Component {
             },
             state: {
                 prospections = [],
-                citations,
+                loading,
             },
             context: {
                 t
@@ -204,32 +235,28 @@ class AsideGlossary extends Component {
             } = this;
           const { id: resourceId } = resource;
 
-        const { style, locale } = getCitationModels( production );
-
-        const { citationItems, citationData } = citations;
-
         const translate = translateNameSpacer( t, 'Features.GlossaryView' );
 
         const relatedContextualizationsIds = Object.keys( production.contextualizations )
-        .filter( ( contextualizationId ) => production.contextualizations[contextualizationId].resourceId === resourceId );
+        .filter( ( contextualizationId ) => production.contextualizations[contextualizationId].sourceId === resourceId );
 
         const searchStringLower = searchString.toLowerCase();
-    const mentions = relatedContextualizationsIds.map( ( contextualizationId ) => {
-        const contextualization = production.contextualizations[contextualizationId];
-        const sectionId = contextualization.sectionId;
-        const section = production.sections[sectionId];
-        const editors = [ 'main', ...production.sections[sectionId].notesOrder ];
-        let mention = {
-          sectionId,
-          contextualizationId,
-        };
-        editors.find( ( editorId ) => {
+        const mentions = relatedContextualizationsIds.map( ( contextualizationId ) => {
+          const contextualization = production.contextualizations[contextualizationId];
+          const sectionId = contextualization.targetId;
+          const section = production.resources[sectionId];
+          const editors = [ 'main', ...production.resources[sectionId].data.contents.notesOrder ];
+          let mention = {
+            sectionId,
+            contextualizationId,
+          };
+          editors.find( ( editorId ) => {
             let contents;
             if ( editorId === 'main' ) {
-                contents = section.contents;
+                contents = section.data.contents.contents;
             }
             else {
-                contents = section.notes[editorId].contents;
+                contents = section.data.contents.notes[editorId].contents;
             }
             return Object.keys( contents.entityMap ).find( ( entityKey ) => {
                 const entity = contents.entityMap[entityKey];
@@ -253,18 +280,18 @@ class AsideGlossary extends Component {
                     return true;
                 }
             } );
+            } );
+            return mention;
+        } )
+        .filter( ( mention ) => {
+          if ( searchString.length > MIN_SEARCH_LENGTH && mention.contentId && mention.blockKey ) {
+            const section = production.resources[mention.sectionId];
+            const contents = mention.contentId === 'main' ? section.data.contents.contents : section.data.contents.notes[mention.contentId].contents;
+            const block = contents.blocks.find( ( thatBlock ) => thatBlock.key === mention.blockKey );
+            return block.text.toLowerCase().includes( searchStringLower );
+          }
+          return true;
         } );
-        return mention;
-    } )
-    .filter( ( mention ) => {
-      if ( searchString.length > MIN_SEARCH_LENGTH && mention.contentId && mention.blockKey ) {
-        const section = production.sections[mention.sectionId];
-        const contents = mention.contentId === 'main' ? section.contents : section.notes[mention.contentId].contents;
-        const block = contents.blocks.find( ( thatBlock ) => thatBlock.key === mention.blockKey );
-        return block.text.toLowerCase().includes( searchStringLower );
-      }
-      return true;
-    } );
         const handleSetMentionModeToReview = () => {
             setMentionMode( 'review' );
             onSearchStringChange( '' );
@@ -282,20 +309,15 @@ class AsideGlossary extends Component {
         const removeAllMentions = () => {
           removeMentions( mentions );
         };
-        return (
-          <ReferencesManager
-            style={ style }
-            locale={ locale }
-            items={ citationItems }
-            citations={ citationData }
-          >
-            <StretchedLayoutContainer isAbsolute>
-              <StretchedLayoutItem>
-                <Column>
-                  <Title
-                    style={ { paddingTop: '.5rem' } }
-                    isSize={ 5 }
-                  >{
+      return (
+        <div>
+          <StretchedLayoutContainer isAbsolute>
+            <StretchedLayoutItem>
+              <Column>
+                <Title
+                  style={ { paddingTop: '.5rem' } }
+                  isSize={ 5 }
+                >{
                             resource &&
                             resource.data &&
                             resource.data.name &&
@@ -304,8 +326,8 @@ class AsideGlossary extends Component {
                             :
                             translate( 'Unnamed glossary entry' )
                         } - <i>{mentionMode === 'add' ? translate( 'add new mentions' ) : translate( 'existing mentions' )}</i>
-                  </Title>
-                  {
+                </Title>
+                {
                     renderHeader( {
                         mentionMode,
                         searchString,
@@ -317,79 +339,84 @@ class AsideGlossary extends Component {
                         translate,
                     } )
                 }
-                </Column>
-              </StretchedLayoutItem>
-              <StretchedLayoutItem isFlex={ 1 }>
-                <StretchedLayoutContainer isAbsolute>
-                  {
-                        mentionMode === 'add' ?
-                          <Prospections
-                            searchString={ searchString }
-                            translate={ translate }
-                            prospections={ prospections }
-                            production={ production }
-                            addProspect={ addProspect }
-                            minSearchLength={ MIN_SEARCH_LENGTH }
-                          />
-                        :
-                          <Mentions
-                            resourceId={ resource.id }
-                            production={ production }
-                            translate={ translate }
-                            searchString={ searchString }
-                            mentions={ mentions }
-                            removeMention={ removeMention }
-                            removeMentions={ removeMentions }
-                          />
-                    }
-                </StretchedLayoutContainer>
-              </StretchedLayoutItem>
-              <StretchedLayoutItem>
-                <Column>
-                  <StretchedLayoutContainer isDirection={ 'horizontal' }>
-                    <StretchedLayoutItem isFlex={ 1 }>
-                      <Button
-                        onClick={ handleSetMentionModeToAdd }
-                        isColor={ mentionMode === 'add' ? 'primary' : 'info' }
-                        isFullWidth
-                      >
-                        {translate( 'Add new mentions' )}
-                      </Button>
-                    </StretchedLayoutItem>
-                    <StretchedLayoutItem isFlex={ 1 }>
-                      <Button
-                        onClick={ handleSetMentionModeToReview }
-                        isColor={ mentionMode === 'review' ? 'primary' : 'info' }
-                        isFullWidth
-                      >
-                        {translate( 'Review existing mentions' )} ({mentions.length})
-                      </Button>
-                    </StretchedLayoutItem>
-
+              </Column>
+            </StretchedLayoutItem>
+            <StretchedLayoutItem isFlex={ 1 }>
+              {
+                  loading ? <LoadingScreen /> :
+                  <StretchedLayoutContainer isAbsolute>
+                    {
+                          mentionMode === 'add' ?
+                            <Prospections
+                              searchString={ searchString }
+                              translate={ translate }
+                              prospections={ prospections }
+                              production={ production }
+                              addProspect={ addProspect }
+                              minSearchLength={ MIN_SEARCH_LENGTH }
+                            />
+                          :
+                            <Mentions
+                              resourceId={ resource.id }
+                              production={ production }
+                              translate={ translate }
+                              searchString={ searchString }
+                              mentions={ mentions }
+                              removeMention={ removeMention }
+                              removeMentions={ removeMentions }
+                            />
+                      }
                   </StretchedLayoutContainer>
-                </Column>
-              </StretchedLayoutItem>
-            </StretchedLayoutContainer>
-            <ModalCard
-              isActive={ isBatchDeleting }
-              headerContent={ translate( [ 'Deleting a mention', 'Deleting {n} mentions', 'n' ], { n: mentionsToDeleteNumber } ) }
-              mainContent={
-                <div>
-                  {translate( 'Deleting mention {k} of {n}', { k: mentionDeleteStep + 1, n: mentionsToDeleteNumber } )}
-                </div>
+                }
+
+            </StretchedLayoutItem>
+            <StretchedLayoutItem>
+              <Column>
+                <StretchedLayoutContainer isDirection={ 'horizontal' }>
+                  <StretchedLayoutItem isFlex={ 1 }>
+                    <Button
+                      onClick={ handleSetMentionModeToAdd }
+                      isColor={ mentionMode === 'add' ? 'primary' : 'info' }
+                      isFullWidth
+                    >
+                      {translate( 'Add new mentions' )}
+                    </Button>
+                  </StretchedLayoutItem>
+                  <StretchedLayoutItem isFlex={ 1 }>
+                    <Button
+                      onClick={ handleSetMentionModeToReview }
+                      isColor={ mentionMode === 'review' ? 'primary' : 'info' }
+                      isFullWidth
+                    >
+                      {translate( 'Review existing mentions' )} ({mentions.length})
+                    </Button>
+                  </StretchedLayoutItem>
+
+                </StretchedLayoutContainer>
+              </Column>
+            </StretchedLayoutItem>
+          </StretchedLayoutContainer>
+
+          <ModalCard
+            isActive={ isBatchDeleting }
+            headerContent={ translate( [ 'Deleting a mention', 'Deleting {n} mentions', 'n' ], { n: mentionsToDeleteNumber } ) }
+            mainContent={
+              <div>
+                {translate( 'Deleting mention {k} of {n}', { k: mentionDeleteStep + 1, n: mentionsToDeleteNumber } )}
+              </div>
               }
-            />
-            <ModalCard
-              isActive={ isBatchCreating }
-              headerContent={ translate( [ 'Creating a mention', 'Creating {n} mentions', 'n' ], { n: mentionsToCreateNumber } ) }
-              mainContent={
-                <div>
-                  {translate( 'Creating mention {k} of {n}', { k: mentionCreationStep + 1, n: mentionsToCreateNumber } )}
-                </div>
+          />
+          <ModalCard
+            isActive={ isBatchCreating }
+            headerContent={ translate( [ 'Creating a mention', 'Creating {n} mentions', 'n' ], { n: mentionsToCreateNumber } ) }
+            mainContent={
+              <div>
+                {translate( 'Creating mention {k} of {n}', { k: mentionCreationStep + 1, n: mentionsToCreateNumber } )}
+              </div>
               }
-            />
-          </ReferencesManager>
-            );
+          />
+        </div>
+      );
     }
 }
 

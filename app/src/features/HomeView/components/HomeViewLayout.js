@@ -12,7 +12,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import FlipMove from 'react-flip-move';
 import { v4 as genId } from 'uuid';
-import ReactTooltip from 'react-tooltip';
 import { toastr } from 'react-redux-toastr';
 import {
   Button,
@@ -31,6 +30,7 @@ import {
   Title,
 } from 'quinoa-design-library/components/';
 import { Link } from 'react-router-dom';
+import ReduxToastr from 'react-redux-toastr';
 
 /**
  * Imports Project utils
@@ -189,8 +189,14 @@ class HomeViewLayout extends Component {
           setIsImporting( false );
           if ( err ) {
             console.error( err );/* eslint no-console: 0 */
-            toastr.error( this.translate( 'The production could not be imported' ) );
+            const message = {
+              'validation-error': this.translate( 'The JSON data is not valid' ),
+              'parsing-error': this.translate( 'The file could not be parsed (it is probably corrupted)' ),
+              'data-creation-error': this.translate( 'The data could not be created (maybe not enough space on device)' )
+            };
 
+            toastr.error( this.translate( 'The production could not be imported' ), message[err.type] );
+            setNewProductionOpen( false );
           }
           else {
             setNewProductionOpen( false );
@@ -213,10 +219,10 @@ class HomeViewLayout extends Component {
       };
       const production = {
         ...payload.payload,
-        sections: {
+        resources: {
           [startingSectionId]: startingSection,
         },
-        sectionsOrder: [ startingSectionId ],
+        sectionsOrder: [ { resourceId: startingSectionId, level: 0 } ],
         id: genId(),
       };
 
@@ -228,36 +234,13 @@ class HomeViewLayout extends Component {
           if ( !err ) {
             setNewProductionOpen( false );
             history.push( {
-              pathname: `/productions/${production.id}/sections/${startingSectionId}`,
+              // pathname: `/productions/${production.id}/sections/${startingSectionId}`,
+              pathname: `/productions/${production.id}`,
             } );
           }
         } );
     };
 
-    /*
-     * const handleCreateExistingProduction = ( ) => {
-     *   createProduction( {
-     *     payload: newProduction,
-     *   } )
-     *   .then( ( res ) => {
-     *     setNewProductionOpen( false );
-     *     history.push( {
-     *       pathname: `/productions/${res.result.data.production.id}/`,
-     *     } );
-     *   } );
-     * };
-     * const handleOverrideExistingProduction = ( ) => {
-     *   overrideProduction( { payload: newProduction } )
-     *   .then( ( resp ) => {
-     *     if ( resp.result ) {
-     *       setNewProductionOpen( false );
-     *       history.push( {
-     *         pathname: `/productions/${newProduction.id}/`,
-     *       } );
-     *     }
-     *   } );
-     * };
-     */
     const handleSearchStringChange = ( e ) => setSearchString( e.target.value );
     const handleToggleNewProductionOpened = () => setNewProductionOpen( !newProductionOpen );
     const handleSortByEditedRecently = () => setSortingMode( 'edited recently' );
@@ -664,7 +647,14 @@ class HomeViewLayout extends Component {
           translate={ this.translate }
         />
 
-        <ReactTooltip id={ 'tooltip' } />
+        <ReduxToastr
+          timeOut={ 5000 }
+          newestOnTop={ false }
+          position={ 'top-right' }
+          transitionIn={ 'fadeIn' }
+          transitionOut={ 'fadeOut' }
+          closeOnToastrClick
+        />
 
       </section>
     );

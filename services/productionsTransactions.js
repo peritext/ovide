@@ -5,6 +5,7 @@ const {
   writeFile,
   readdir,
   readFile,
+  exists,
   remove,
   lstatSync,
   createWriteStream,
@@ -30,13 +31,23 @@ const getProductions = () => {
         const parseFile = ( dirName ) => {
           const jsonPath = path.join( contentPath, `${dirName}/${dirName}.json` );
           return new Promise( ( resolveThat, rejectThat ) => {
-            return readFile( jsonPath, 'utf8' )
+            return exists( jsonPath )
+              .then( ( itExists ) => {
+                if ( itExists ) {
+                  return readFile( jsonPath, 'utf8' );
+                }
+              else {
+                  console.error( jsonPath, ' does not exist' );
+                  return rejectThat( [] );
+                }
+              } )
               .then( ( str ) => {
                 try {
                   return resolveThat( [ dirName, JSON.parse( str ) ] );
                 }
                 catch ( error ) {
-                  rejectThat( error );
+                  console.error( error );
+                  resolveThat( [ ] );
                 }
               } )
               .catch( rejectThat );
@@ -46,7 +57,7 @@ const getProductions = () => {
         return Promise.all( filesToParse.map( parseFile ) );
       } )
       .then( ( couples ) => {
-        const productions = couples.reduce( ( result, couple ) => Object.assign( result, {
+        const productions = couples.filter( ( c ) => c.length ).reduce( ( result, couple ) => Object.assign( result, {
           [couple[0]]: couple[1]
         } ), {} );
 

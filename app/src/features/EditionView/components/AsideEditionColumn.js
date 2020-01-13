@@ -146,7 +146,8 @@ const AsideEditionColumn = ( {
                           paddingRight: editionAsideTabCollapsed ? '1rem' : undefined,
                           display: editionAsideTabCollapsed ? 'inline-block' : 'flex',
                           justifyContent: editionAsideTabCollapsed ? undefined : 'flex-end',
-                          textAlign: 'left'
+                          textAlign: 'left',
+                          position: 'relative'
                         } }
                     data-for={ 'tooltip' }
                     data-effect={ 'solid' }

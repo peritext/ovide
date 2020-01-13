@@ -18,7 +18,7 @@ import { getStatePropFromActionSet } from '../../helpers/reduxUtils';
  * ===================================================
  */
 
-import { CREATE_RESOURCE, UPDATE_SECTION } from '../ProductionManager/duck';
+import { CREATE_RESOURCE, UPDATE_SECTION, UPDATE_RESOURCE } from '../ProductionManager/duck';
 
 /**
  * UI
@@ -45,6 +45,7 @@ const SET_EDITOR_PASTING_STATUS = 'SET_EDITOR_PASTING_STATUS';
 const SET_SELECTED_CONTEXTUALIZATION_ID = 'SET_SELECTED_CONTEXTUALIZATION_ID';
 const SET_EDITED_RESOURCE_ID = 'SET_EDITED_RESOURCE_ID';
 const SET_EDITED_CONTEXTUALIZATION_ID = 'SET_EDITED_CONTEXTUALIZATION_ID';
+const SET_EDITED_CONTEXTUALIZATION_TYPE = 'SET_EDITED_CONTEXTUALIZATION_TYPE';
 const SET_PREVIEW_MODE = 'SET_PREVIEW_MODE';
 
 /**
@@ -193,6 +194,11 @@ export const setEditedContextualizationId = ( payload ) => ( {
   payload,
 } );
 
+export const setEditedContextualizationType = ( payload ) => ( {
+  type: SET_EDITED_CONTEXTUALIZATION_TYPE,
+  payload,
+} );
+
 /**
  * Action creators related to section edition
  */
@@ -286,7 +292,7 @@ export const setDraggedResourceId = ( payload ) => ( {
 
 const UI_DEFAULT_STATE = {
   asideTabMode: 'summary',
-  asideTabCollapsed: true,
+  asideTabCollapsed: false,
   mainColumnMode: 'edition',
   resourceOptionsVisible: false,
   resourceSearchString: '',
@@ -340,6 +346,7 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_EDITOR_PASTING_STATUS:
     case SET_SELECTED_CONTEXTUALIZATION_ID:
     case SET_EDITED_CONTEXTUALIZATION_ID:
+    case SET_EDITED_CONTEXTUALIZATION_TYPE:
     case SET_EDITED_RESOURCE_ID:
     case SET_PREVIEW_MODE:
       const propName = getStatePropFromActionSet( action.type );
@@ -358,6 +365,8 @@ function ui( state = UI_DEFAULT_STATE, action ) {
      */
     case `${UPDATE_SECTION}`:
     case `${UPDATE_SECTION}_SUCCESS`:
+    case `${UPDATE_RESOURCE}`:
+    case `${UPDATE_RESOURCE}_SUCCESS`:
       return {
         ...state,
         productionIsSaved: true
@@ -587,6 +596,7 @@ const uploadStatus = ( state ) => state.ui.uploadStatus;
 const editorPastingStatus = ( state ) => state.ui.editorPastingStatus;
 const selectedContextualizationId = ( state ) => state.ui.selectedContextualizationId;
 const editedContextualizationId = ( state ) => state.ui.editedContextualizationId;
+const editedContextualizationType = ( state ) => state.ui.editedContextualizationType;
 const editedResourceId = ( state ) => state.ui.editedResourceId;
 const previewMode = ( state ) => state.ui.previewMode;
 
@@ -616,6 +626,7 @@ export const selector = createStructuredSelector( {
   editorPastingStatus,
   selectedContextualizationId,
   editedContextualizationId,
+  editedContextualizationType,
   editedResourceId,
   previewMode,
 

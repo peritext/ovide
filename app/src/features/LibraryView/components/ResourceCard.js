@@ -19,6 +19,7 @@ import {
   Card,
 } from 'quinoa-design-library/components';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
+import { resourceHasContents } from 'peritext-utils';
 
 /**
  * Imports Project utils
@@ -64,7 +65,7 @@ class ResourceCard extends Component {
     assets.reduce( ( cur, asset ) => {
       return cur.then( () => {
         return new Promise( ( resolve, reject ) => {
-          requestAssetData( productionId, asset )
+          requestAssetData( { productionId, asset } )
             .then( ( data ) => {
               this.setState( {
                 assets: {
@@ -100,6 +101,7 @@ class ResourceCard extends Component {
         onClick,
         isSelectable,
         productionId,
+        onGoToResource,
       },
       context: {
         t,
@@ -160,7 +162,7 @@ class ResourceCard extends Component {
         };
         break;
     }
-    const url = resource.data.url || Array.isArray( resource.data ) && resource.data[0] && resource.data[0].URL;
+    const url = resource.data.url || Array.isArray( resource.data.citations ) && resource.data.citations[0] && resource.data.citations[0].URL;
 
     /**
      * Callbacks handlers
@@ -180,9 +182,20 @@ class ResourceCard extends Component {
               <Columns style={ { marginBottom: 0 } }>
                 <Column isSize={ 2 }>
                   <CenteredIcon
-                    src={ icons[type].black.svg }
+                    src={ icons[type] && icons[type].black.svg }
                     isSize={ '32x32' }
                   />
+                  {
+                    resourceHasContents( resource ) ?
+                      <span
+                        className={ 'contents-indicator' }
+                        data-for={ 'tooltip' }
+                        data-tip={ translate( 'this resource is annotated with contents' ) }
+                      >
+                        ☰
+                      </span>
+                    : null
+                  }
 
                 </Column>
 
@@ -258,6 +271,16 @@ class ResourceCard extends Component {
                     data-tip={ translate( 'settings' ) }
                   >
                     <CenteredIcon src={ icons.settings.black.svg } />
+                  </Button>
+
+                  <Button
+                    onClick={ onGoToResource }
+                    data-place={ 'left' }
+                    data-effect={ 'solid' }
+                    data-for={ 'tooltip' }
+                    data-tip={ translate( 'edit contents' ) }
+                  >
+                    <CenteredIcon src={ icons.edit.black.svg } />
                   </Button>
 
                   <Button

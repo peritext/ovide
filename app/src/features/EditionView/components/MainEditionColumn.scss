@@ -1,0 +1,12 @@
+
+
+.edition-actions{
+  position: absolute;
+  right: 1.5rem;
+  bottom: 2rem;
+  display: flex;
+  flex-flow: column nowrap;
+  .button:first-of-type{
+    margin-bottom: .5rem;
+  }
+}

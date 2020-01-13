@@ -22,7 +22,6 @@ import {
    */
 } from 'quinoa-design-library/components';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
-import ReactTooltip from 'react-tooltip';
 
 /**
  * Imports Project utils
@@ -143,13 +142,16 @@ const EditionViewLayout = ( {
     'Print mentions': translate( 'Print mentions' ),
     'Point of view of': translate( 'Point of view of' ),
     'untitled section': translate( 'untitled section' ),
+    'Expand contents': translate( 'Expand contents' ),
     'references': translate( 'references' ),
     'events': translate( 'events' ),
     'places': translate( 'places' ),
+    'Loading': translate( 'Loading' ),
     'resourcesMap': translate( 'resourcesMap' ),
     'This item is mentionned in': translate( 'This item is mentionned in' ),
     'Browse online': translate( 'Browse online' ),
     'Mentions of the item': translate( 'Mentions of the item' ),
+    'Mentions of this item': translate( 'Mentions of this item' ),
     'glossary': translate( 'glossary' ),
     'webpage': translate( 'webpage' ),
     'bib': translate( 'bib' ),
@@ -157,6 +159,7 @@ const EditionViewLayout = ( {
     'embed': translate( 'embed' ),
     'table': translate( 'table' ),
     'image': translate( 'image' ),
+    'print mentions': translate( 'print mentions' ),
     'See mentions': translate( 'See mentions' ),
     'Mentions about this place': translate( 'Mentions about this place' ),
     'Mentions about an event': translate( 'Mentions about an event' ),
@@ -245,7 +248,6 @@ const EditionViewLayout = ( {
           </StretchedLayoutContainer>
         }
       />
-      <ReactTooltip id={ 'help-tooltip' } />
     </StretchedLayoutContainer>
   );
 };

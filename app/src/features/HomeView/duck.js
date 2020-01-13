@@ -11,7 +11,7 @@ import { v4 as genId } from 'uuid';
 
 import { createDefaultProduction, validateProduction, convertQuinoaStoryToProduction } from '../../helpers/schemaUtils';
 
-import { getFileAsText } from '../../helpers/fileLoader';
+import { parseImportedFile } from '../../helpers/projectBundler';
 import { getStatePropFromActionSet } from '../../helpers/reduxUtils';
 
 import {
@@ -19,6 +19,7 @@ import {
   requestProductionCreation,
   requestProduction,
   requestProductionDeletion,
+  requestAssetData,
 
   /*
    * requestProductionUpdate,
@@ -154,15 +155,8 @@ export const importProduction = ( file, callback ) => ( {
   type: IMPORT_PRODUCTION,
   promise: () =>
     new Promise( ( resolve, reject ) => {
-      return getFileAsText( file )
-             .then( ( text ) => {
-                let production;
-                try {
-                  production = JSON.parse( text );
-                }
-                catch ( jsonError ) {
-                  return reject( 'malformed json' );
-                }
+      return parseImportedFile( file )
+             .then( ( production ) => {
 
                 /**
                  *  add a fonio story import hook here
@@ -187,14 +181,33 @@ export const importProduction = ( file, callback ) => ( {
                   } )
                   .catch( ( err ) => {
                     if ( typeof callback === 'function' ) {
-                      callback( err );
+                      callback( {
+                        error: err,
+                        type: 'data-creation-error'
+                      } );
                     }
                     reject( err );
                   } );
                 }
-                else reject( validation.errors );
+                else {
+                  reject( validation.errors );
+                  if ( typeof callback === 'function' ) {
+                    callback( {
+                      error: validation.errors,
+                      type: 'validation-error'
+                     } );
+                   }
+                }
              } )
-             .catch( ( e ) => reject( e ) );
+             .catch( ( e ) => {
+               if ( typeof callback === 'function' ) {
+                callback( {
+                  error: e,
+                  type: 'parsing-error'
+                 } );
+               }
+               reject( e );
+            } );
     } ),
 } );
 
@@ -217,9 +230,35 @@ export const duplicateProduction = ( payload ) => ( {
     return new Promise( ( resolve, reject ) => {
       requestProduction( payload.production.id )
         .then( ( { data: { production } } ) => {
+          return Object.keys( production.assets )
+          .reduce( ( cur, assetId ) =>
+            cur.then( ( activeProduction ) => {
+              return new Promise( ( res1, rej1 ) => {
+                const asset = activeProduction.assets[assetId];
+                requestAssetData( { productionId: activeProduction.id, asset } )
+                .then( ( assetData ) => {
+                  const newAsset = {
+                    ...asset,
+                    data: assetData
+                  };
+                  const newProduction = {
+                    ...activeProduction,
+                    assets: {
+                      ...activeProduction.assets,
+                      [asset.id]: newAsset
+                    }
+                  };
+                  res1( newProduction );
+                } )
+                .catch( rej1 );
+              } );
+            } )
+          , Promise.resolve( production ) );
+        } )
+        .then( ( production ) => {
           return requestProductionCreation( {
-          ...production,
-          id: genId()
+           ...production,
+            id: genId()
           } );
         } )
         .then( resolve )

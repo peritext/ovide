@@ -12,11 +12,6 @@ import resourceSchema from 'peritext-schemas/resource';
 const ajv = new Ajv();
 ajv.addMetaSchema( require( 'ajv/lib/refs/json-schema-draft-06.json' ) );
 
-const sectionSchema = {
-  ...productionSchema.properties.sections.patternProperties['[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'],
-  ...productionSchema.definitions,
-};
-
 const editionSchema = {
   ...productionSchema.definitions.edition,
 };
@@ -31,11 +26,14 @@ export const validateProduction = ( production ) => validate( productionSchema, 
 export const validateEdition = ( edition ) => validate( editionSchema, edition );
 
 export const validateResource = ( resource ) => {
-  let validation = validate( resourceSchema, resource );
-  if ( validation.valid ) {
-    const dataSchema = resourceSchema.definitions[resource.metadata.type];
-    validation = validate( dataSchema, resource.data );
-  }
+  const validation = validate( resourceSchema, resource );
+
+  /*
+   * if ( validation.valid ) {
+   *   const dataSchema = resourceSchema.definitions[resource.metadata.type];
+   *   validation = validate( dataSchema, resource.data );
+   * }
+   */
   return validation;
 };
 
@@ -43,7 +41,23 @@ export const defaults = ( schema ) => def( schema );
 
 export const createDefaultProduction = () => defaults( productionSchema );
 
-export const createDefaultSection = () => defaults( sectionSchema );
+export const createDefaultSection = ( ) => {
+  // const dataSchema = resourceSchema.definitions.section;
+  const res = defaults( resourceSchema );
+  res.metadata.type = 'section';
+  const data = {
+    // ...res.data,
+    contents: {
+      contents: {},
+      notes: {},
+      notesOrder: []
+    }
+  };
+  return {
+    ...res,
+    data
+  };
+};
 
 export const createDefaultResource = ( type = 'webpage' ) => {
   const dataSchema = resourceSchema.definitions[type];
@@ -51,7 +65,14 @@ export const createDefaultResource = ( type = 'webpage' ) => {
   const data = defaults( dataSchema );
   return {
     ...res,
-    data
+    data: {
+      ...data,
+      contents: {
+        contents: {},
+        notes: {},
+        notesOrder: []
+      }
+    }
   };
 };
 
@@ -79,14 +100,27 @@ export const convertQuinoaStoryToProduction = ( story ) => {
     return {
       ...res,
       [sectionId]: {
-        ...section,
+        id: section.id,
+        // ...section,
         metadata: {
           ...section.metadata,
+          type: 'section',
           authors: section.metadata.authors.map( convertQuinoaStoryToProduction )
+        },
+        data: {
+          contents: {
+            contents: section.contents,
+            notes: section.notes,
+            notesOrder: section.notesOrder
+          }
         }
       }
     };
   }, {} );
+  const sectionsOrder = story.sectionsOrder.map( ( sectionId ) => ( {
+    resourceId: sectionId,
+    level: story.sections[sectionId].metadata.level
+  } ) );
   const assets = {};
   const resources = Object.keys( story.resources ).reduce( ( res, resourceId ) => {
     const resource = story.resources[resourceId];
@@ -100,10 +134,15 @@ export const convertQuinoaStoryToProduction = ( story ) => {
         mediaUrl: resource.data.url
       };
     }
- else if ( newResource.metadata.type === 'glossary' ) {
+    else if ( newResource.metadata.type === 'glossary' ) {
       newResource.data = {
         ...resource.data,
         entryType: 'notion'
+      };
+    }
+    else if ( newResource.metadata.type === 'bib' ) {
+      newResource.data = {
+        citations: resource.data,
       };
     }
     else if ( newResource.metadata.type === 'image' ) {
@@ -148,19 +187,39 @@ export const convertQuinoaStoryToProduction = ( story ) => {
         dataAssetId: assetId
       };
     }
+    newResource.data.contents = {
+      contents: {},
+      notes: {},
+      notesOrder: []
+    };
     return {
       ...res,
       [resourceId]: newResource
+    };
+  }, {
+    ...sections
+  } );
+  const contextualizations = Object.keys( story.contextualizations ).reduce( ( res, contextualizationId ) => {
+    const contextualization = story.contextualizations[contextualizationId];
+    return {
+      ...res,
+      [contextualizationId]: {
+        ...contextualization,
+        sourceId: contextualization.resourceId,
+        targetId: contextualization.sectionId,
+        resourceId: undefined,
+        sectionId: undefined
+      }
     };
   }, {} );
   return {
     ...production,
     id: genId(),
     metadata: productionMetadata,
-    sectionsOrder: story.sectionsOrder,
+    sectionsOrder,
     sections,
     resources,
-    contextualizations: story.contextualizations,
+    contextualizations,
     contextualizers: story.contextualizers,
     assets,
   };

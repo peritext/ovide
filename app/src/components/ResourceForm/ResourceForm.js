@@ -34,7 +34,7 @@ import icons from 'quinoa-design-library/src/themes/millet/icons';
 import config from '../../config';
 import { translateNameSpacer } from '../../helpers/translateUtils';
 import {
-  // retrieveMediaMetadata,
+  retrieveMediaMetadata,
   retrieveWebpageMetadata,
   loadImage,
   inferMetadata,
@@ -67,8 +67,7 @@ import { resourcesSchemas } from '../../peritextConfig.render';
 /**
  * Shared variables
  */
-const resourceTypes = Object.keys( resourcesSchemas );
-// const credentials = { youtubeAPIKey: config.youtubeAPIKey };
+const resourceTypes = Object.keys( resourcesSchemas ).filter( ( key ) => key !== 'section' );
 const { maxResourceSize } = config;
 const realMaxFileSize = base64ToBytesLength( maxResourceSize );
 
@@ -132,7 +131,7 @@ class DataForm extends Component {
     /**
      * Callbacks handlers
      */
-    const handleDropFiles = ( files ) => {
+    const handleDropBibFiles = ( files ) => {
       formApi.setError( 'maxSize', undefined );
       loadResourceData( resourceType, files[0] )
       .then( ( data ) => {
@@ -148,7 +147,14 @@ class DataForm extends Component {
           title: prevMetadata.title ? prevMetadata.title : inferedMetadata.title
         };
         formApi.setValue( 'metadata', metadata );
-        formApi.setValue( 'data', data );
+        formApi.setValue( 'data', {
+          citations: data,
+          contents: {
+            contents: {},
+            notes: {},
+            notesOrder: []
+          }
+        } );
 
       } )
       .catch( ( e ) => {
@@ -159,8 +165,8 @@ class DataForm extends Component {
       const bibData = parseBibTeXToCSLJSON( value );
       // @todo: citation-js parse fail in silence, wait error handling feature
       if ( bibData.length === 1 ) {
-        formApi.setValue( 'data', bibData );
-        formApi.setError( 'data', undefined );
+        formApi.setValue( 'data', { citations: bibData } );
+        // formApi.setError( 'data', {undefined} );
       }
       else if ( bibData.length > 1 ) {
         formApi.setError( 'data', translate( 'Please enter only one bibtex' ) );
@@ -208,7 +214,7 @@ class DataForm extends Component {
               asNewResource ?
                 <DropZone
                   accept={ '.bib,.txt' }
-                  onDrop={ handleDropFiles }
+                  onDrop={ handleDropBibFiles }
                 >
                   {translate( 'Drop a bib file' )}
                 </DropZone> : null
@@ -217,7 +223,7 @@ class DataForm extends Component {
               !asNewResource &&
               <BibRefsEditor
                 style={ { minWidth: '10rem' } }
-                data={ resource.data }
+                data={ resource.data.citations }
                 onChange={ handleEditBib }
               />
             }
@@ -267,12 +273,44 @@ class DataForm extends Component {
           </Field>
         </div>
       );
+    case 'video':
+        if ( resourcesSchemas[resourceType] ) {
+          const wrapDataChange = ( data, b ) => {
+            if ( data.mediaUrl !== formApi.getValue( 'data.mediaUrl' ) ) {
+              retrieveMediaMetadata( data.mediaUrl )
+                .then( ( { metadata } ) => {
+                  Object.keys( metadata )
+                    .forEach( ( key ) => {
+                      const existing = formApi.getValue( `metadata.${key}` );
+                      if ( ( !existing || ( typeof existing === 'string' && !existing.trim().length ) || ( Array.isArray( existing ) && !existing.length ) ) && metadata[key] ) {
+                        formApi.setValue( `metadata.${key}`, metadata[key] );
+                      }
+                    } );
+                } );
+            }
+            handleDataChange( data, b );
+          };
+
+          return (
+            <SchemaForm
+              schema={ resourcesSchemas[resourceType] }
+              document={ formApi.getValue( 'data' ) }
+              omitProps={ [ 'contents' ] }
+              assets={ assets }
+              onAssetChange={ onAssetChange }
+              translate={ translate }
+              onAfterChange={ wrapDataChange }
+            />
+          );
+        }
+        break;
     default:
       if ( resourcesSchemas[resourceType] ) {
         return (
           <SchemaForm
             schema={ resourcesSchemas[resourceType] }
             document={ formApi.getValue( 'data' ) }
+            omitProps={ [ 'contents' ] }
             assets={ assets }
             onAssetChange={ onAssetChange }
             translate={ translate }
@@ -348,7 +386,7 @@ class ResourceForm extends Component {
       return cur.then( () => {
         return new Promise( ( resolve, reject ) => {
           // console.log( 'request asset data', productionId, asset );
-          requestAssetData( productionId, asset )
+          requestAssetData( { productionId, asset } )
             .then( ( data ) => {
               // console.log( 'setting asset data', data );
               this.setState( {
@@ -387,6 +425,8 @@ class ResourceForm extends Component {
         resourceType,
         showTitle = true,
         bigSelectColumnsNumber = 2,
+        onGoToResource,
+        allowGoToResource = true
 
         /*
          * existingAssetsIds,
@@ -655,6 +695,7 @@ class ResourceForm extends Component {
                     <StretchedLayoutItem>
                       <Column>
                         <StretchedLayoutContainer isDirection={ 'horizontal' }>
+
                           <StretchedLayoutItem isFlex={ 1 }>
                             <Button
                               type={ 'submit' }
@@ -666,6 +707,7 @@ class ResourceForm extends Component {
                               {asNewResource ? translate( `Add ${formApi.getValue( 'metadata.type' ) || 'item'} to library` ) : translate( `Update ${( resource && resource.metadata.type ) || 'item'}` )}
                             </Button>
                           </StretchedLayoutItem>
+
                           <StretchedLayoutItem isFlex={ 1 }>
                             <Button
                               isFullWidth
@@ -676,6 +718,26 @@ class ResourceForm extends Component {
                             </Button>
                           </StretchedLayoutItem>
                         </StretchedLayoutContainer>
+                        {
+                          !asNewResource && allowGoToResource &&
+                          <StretchedLayoutContainer
+                            style={ { marginTop: '1rem' } }
+                            isDirection={ 'horizontal' }
+                          >
+                            <StretchedLayoutItem isFlex={ 1 }>
+                              <Button
+                                type={ 'submit' }
+                                isFullWidth
+                                onClick={ onGoToResource }
+                                isDisabled={ !formApi.getValue( 'metadata.type' ) || isEmpty( formApi.getValue( 'data' ) ) }
+                                isColor={ 'primary' }
+                              >
+                                {translate( 'Edit contents' )}
+                              </Button>
+                            </StretchedLayoutItem>
+                          </StretchedLayoutContainer>
+                        }
+
                       </Column>
                     </StretchedLayoutItem>
                   </StretchedLayoutItem>

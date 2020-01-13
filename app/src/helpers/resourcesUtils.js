@@ -123,7 +123,7 @@ export const createBibData = (
     const {
       id: productionId
     } = production;
-    resource.data.reduce( ( cur, datum ) => {
+    resource.data.citations.reduce( ( cur, datum ) => {
       return cur.then( () => {
         return new Promise( ( resolve1, reject1 ) => {
           const id = resource.id ? resource.id : genId();
@@ -140,7 +140,15 @@ export const createBibData = (
           const item = {
             ...resource,
             id,
-            data: [ { ...datum, htmlPreview } ],
+            data: {
+              contents: {
+                contents: {},
+                notes: {},
+                notesOrder: []
+              },
+              ...resource.data,
+              citations: [ { ...datum, htmlPreview } ]
+            },
           };
           const payload = {
             resourceId: id,
@@ -159,7 +167,7 @@ export const createBibData = (
             }
             else {
               if ( typeof setUploadStatus === 'function' ) {
-                const title = item.data && item.data[0] && item.data[0].title;
+                const title = item.data && item.data.citations && item.data.citations[0] && item.data.citations[0].title;
                 setUploadStatus( {
                   status: 'uploading',
                   currentFileName: title,
@@ -228,16 +236,17 @@ export const createResourceData = ( file, props ) =>
               id: genId(),
               mimetype: mime.lookup( file.name )
             };
-
             metadata = inferMetadata( { ...newAsset }, type );
+            const defaultResource = createDefaultResource();
             resource = {
-              ...createDefaultResource(),
+              ...defaultResource,
               id,
               metadata: {
                 ...metadata,
                 type,
               },
               data: {
+                ...defaultResource.data,
                 images: [
                   {
                     rgbImageAssetId: newAsset.id
@@ -263,7 +272,8 @@ export const createResourceData = ( file, props ) =>
               } );
             }
             else resolve( {
-              id, success: false,
+              id,
+              success: false,
               error: validateResource( resource ).errors
             } );
           } )
@@ -314,7 +324,12 @@ export const createResourceData = ( file, props ) =>
                 type,
               },
               data: {
-                dataAssetId: newAsset.id
+                dataAssetId: newAsset.id,
+                contents: {
+                  contents: {},
+                  notes: {},
+                  notesOrder: []
+                }
               },
             };
 
@@ -377,7 +392,14 @@ export const createResourceData = ( file, props ) =>
                     ...createDefaultResource().metadata,
                     type: 'bib',
                   },
-                  data: [ { ...datum, htmlPreview } ],
+                  data: {
+                    citations: [ { ...datum, htmlPreview } ],
+                    contents: {
+                      contents: {},
+                      notes: {},
+                      notesOrder: []
+                    }
+                  },
                 };
                 payload = {
                   resourceId: id,

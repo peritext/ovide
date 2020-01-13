@@ -384,42 +384,38 @@ export default class LocationPickerContainer extends Component {
               null
           }
           </StretchedLayoutItem>
-          {
-            <StretchedLayoutItem
-              isFlex={ 1 }
-              style={ { position: 'relative' } }
-            >
-              <div style={ { width: '100%', height: '20rem' } }>
-                <Map
-                  center={ [ latitude || 0, longitude || 0 ] }
-                  zoom={ zoomLevel }
-                  onBoundsChanged={ onMapChange }
-                >
-                  {
+          <StretchedLayoutItem
+            isFlex={ 1 }
+            style={ { position: 'relative' } }
+          >
+            <div style={ { width: '100%', height: '20rem' } }>
+              <Map
+                center={ [ latitude || 0, longitude || 0 ] }
+                zoom={ zoomLevel }
+                onBoundsChanged={ onMapChange }
+              >
+                {
 
-                    <Overlay anchor={ [ latitude || 0, longitude || 0 ] }>
-                      <PrevMarker />
-                    </Overlay>
+                  <Overlay anchor={ [ latitude || 0, longitude || 0 ] }>
+                    <PrevMarker />
+                  </Overlay>
 
                   }
-                  {location.latitude ?
-                    <Overlay anchor={ [ location.latitude, location.longitude ] }>
-                      <Marker />
-                    </Overlay>
+                {location.latitude ?
+                  <Overlay anchor={ [ location.latitude, location.longitude ] }>
+                    <Marker />
+                  </Overlay>
                 : null}
-                </Map>
-              </div>
-              <div>
-                {
-                  <Button
-                    style={ { position: 'absolute', top: '1rem', right: '1rem' } }
-                    onClick={ onAlignOnMapPosition }
-                  >{translate( 'Update location from map position' )}
-                  </Button>
-              }
-              </div>
-            </StretchedLayoutItem>
-        }
+              </Map>
+            </div>
+            <div>
+              <Button
+                style={ { position: 'absolute', top: '1rem', right: '1rem' } }
+                onClick={ onAlignOnMapPosition }
+              >{translate( 'Update location from map position' )}
+              </Button>
+            </div>
+          </StretchedLayoutItem>
         </StretchedLayoutContainer>
 
       </div>

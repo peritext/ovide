@@ -1,0 +1,63 @@
+@import '../../parameters.scss';
+
+
+.ovide-SummaryCard {
+
+  .column{
+    margin-left: 0;
+    padding-bottom: 0;
+  }
+  .card .card-content{
+    padding: 1rem;
+    .media{
+      display: none;
+    }
+  }
+
+  .move-pad-container{
+    transform: scale(.9);
+  }
+
+  .move-pad{
+    position: absolute;
+    top: -1rem;
+    right: 4.5rem;
+    opacity: 1;
+    transition: opacity .5s ease;
+  }
+  .parameters-container,
+  .actions-container,
+  .delete{
+    transition: .5s all ease;
+    overflow: hidden;
+  }
+
+  .parameters-container,
+  .delete{
+    max-height: 0;
+    opacity: 0;
+  }
+
+  .actions-container{
+    max-height: 20rem;
+    opacity: 1;
+  }
+
+  &.is-edited{
+    .parameters-container,
+    .delete,
+    {
+      max-height: 1000vh;
+      opacity: 1;
+    }
+    .actions-container
+    {
+      max-height: 0;
+      opacity: 0;
+    }
+    .move-pad{
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+}

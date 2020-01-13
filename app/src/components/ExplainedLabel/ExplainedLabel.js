@@ -8,8 +8,10 @@
 import React from 'react';
 import {
   Label,
-  HelpPin,
+  // HelpPin,
 } from 'quinoa-design-library/components/';
+
+import HelpPin from '../HelpPin';
 
 const ExplainedLabel = ( {
   title = '',

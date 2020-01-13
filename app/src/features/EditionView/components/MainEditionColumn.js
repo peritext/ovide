@@ -13,6 +13,9 @@ import {
   Column,
 } from 'quinoa-design-library/components/';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
+import debounceRender from 'react-debounce-render';
+
+import './MainEditionColumn.scss';
 
 /**
  * Imports Project utils
@@ -21,25 +24,35 @@ import Frame, { FrameContextConsumer } from 'react-frame-component';
 import { loadAssetsForEdition } from '../../../helpers/projectBundler';
 import { requestAssetData } from '../../../helpers/dataClient';
 import PagedPreviewer from '../../../components/PagedPreviewer';
-import SummaryEditor from './SummaryEditor';
+import SummaryEditor from '../../../components/SummaryEditor';
+import LoadingScreen from '../../../components/LoadingScreen';
+import EditionPreprocessor from '../../../helpers/editionPreprocessor.worker';
+import Renderer from '../../../helpers/editionRenderer.worker';
+import getContextualizationsFromEdition from 'peritext-utils/dist/getContextualizationsFromEdition';
 
 // import { processCustomCss } from '../../../helpers/postcss';
+
+import peritextConfig from '../../../peritextConfig.render';
+
+const contextualizerModules = peritextConfig.contextualizers;
 
 class ContextProvider extends Component {
 
   static childContextTypes = {
     renderingMode: PropTypes.string,
+    preprocessedContextualizations: PropTypes.object,
   }
 
   getChildContext = () => ( {
     renderingMode: this.props.renderingMode,
+    preprocessedContextualizations: this.props.preprocessedContextualizations,
   } )
   render = () => {
     return this.props.children;
   }
 }
 
-class PreviewWrapper extends Component {
+class PreviewWrapperInitial extends Component {
 
   static contextTypes = {
     getResourceDataUrl: PropTypes.func,
@@ -48,12 +61,19 @@ class PreviewWrapper extends Component {
   constructor( props ) {
     super( props );
     this.state = {
-      assets: {}
+      assets: undefined,
+      activeViewId: undefined,
     };
+    this.editionPreprocessor = new EditionPreprocessor();
+    this.editionPreprocessor.onmessage = this.onWorkerMessage;
+
+    this.editionRenderer = new Renderer();
+    this.editionRenderer.onmessage = this.onWorkerMessage;
   }
 
   componentDidMount = () => {
     this.loadAssets( this.props );
+    this.preprocessEditionData( this.props );
     // setTimeout( () => this.update( this.props, this.state ) );
   }
 
@@ -64,19 +84,214 @@ class PreviewWrapper extends Component {
       || this.props.edition !== nextProps.edition
     ) {
       this.loadAssets( nextProps );
-      // .then( () => this.update( this.props, this.state ) );
+      if ( this.props.edition && nextProps.edition && this.props.edition.data.summary !== nextProps.edition.data.summary ) {
+        this.preprocessEditionData( nextProps );
+      }
+      if ( nextProps.edition.metadata.type === 'paged' ) {
+        const {
+          production,
+          edition,
+          lang,
+          locale
+        } = nextProps;
+
+        const contextualizations = getContextualizationsFromEdition( production, edition );
+
+        this.getPreprocessedContextualizations( {
+          production,
+          edition,
+          assets: this.state.assets || {},
+          contextualizations
+        } )
+        .then( ( preprocessedContextualizations = {} ) => {
+          this.editionRenderer.postMessage( {
+            type: 'RENDER_PAGED_EDITION_HTML',
+            payload: {
+              edition,
+              production,
+              lang,
+              locale,
+              preprocessedData: this.state.preprocessedData,
+              preprocessedContextualizations
+            }
+          } );
+        } );
+
+      }
     }
   }
 
   shouldComponentUpdate = ( nextProps, nextState ) => {
-    const vals = [
+    const propsVals = [
       'production',
       'edition',
       'template',
       'contextualizers',
       'lang'
     ];
-    return vals.find( ( key ) => this.props[key] !== nextProps[key] ) || this.state.assets !== nextState.assets;
+    const stateVals = [
+      'assets',
+      'isPrerendering',
+      'preprocessedContextualizations',
+      'editionHTML',
+      'isPreprocessing'
+    ];
+    return propsVals.find( ( key ) => this.props[key] !== nextProps[key] ) !== undefined
+    || stateVals.find( ( key ) => this.state[key] !== nextState[key] ) !== undefined;
+  }
+
+  componentDidUpdate = ( prevProps, prevState ) => {
+    if ( this.state.assets !== prevState.assets ) {
+      const { edition, production: initialProduction, lang, locale } = this.props;
+
+      if ( edition.metadata.type === 'paged' ) {
+        const production = {
+          ...initialProduction,
+          assets: {
+            ...( initialProduction.assets || {} ),
+            ...this.state.assets
+          }
+        };
+
+        const contextualizations = getContextualizationsFromEdition( production, edition );
+        this.getPreprocessedContextualizations( {
+          production,
+          edition,
+          assets: this.state.assets || {},
+          contextualizations
+        } )
+        .then( ( preprocessedContextualizations = {} ) => {
+          this.setState( { preprocessedContextualizations } );
+          this.editionRenderer.postMessage( {
+            type: 'RENDER_PAGED_EDITION_HTML',
+            payload: {
+              edition,
+              production,
+              lang,
+              locale,
+              preprocessedData: this.state.preprocessedData,
+              preprocessedContextualizations
+            }
+          } );
+        } );
+      }
+    }
+  }
+
+  componentWillUnmount = () => {
+    this.editionPreprocessor.terminate();
+    this.editionRenderer.terminate();
+  }
+
+  preprocessEditionData = ( props ) => {
+    const { production, edition } = props;
+
+    this.editionPreprocessor.postMessage( {
+      type: 'PREPROCESS_EDITION_DATA',
+      payload: {
+        production,
+        edition
+      }
+    } );
+    this.setState( {
+      isPreprocessing: true,
+      preprocessedData: undefined,
+    } );
+  }
+
+  getPreprocessedContextualizations = ( {
+    production,
+    // edition,
+    assets,
+    contextualizations
+  } ) => {
+
+    return contextualizations.reduce( ( cur, { contextualization, contextualizer } ) =>
+    cur.then( ( result ) => {
+      return new Promise( ( resolve, reject ) => {
+
+        if ( contextualization && contextualizer ) {
+          const thatModule = contextualizerModules[contextualizer.type];
+          if ( thatModule && thatModule.meta && thatModule.meta.asyncPrerender ) {
+            const resource = production.resources[contextualization.sourceId];
+            thatModule.meta.asyncPrerender( {
+              resource,
+              contextualization,
+              contextualizer,
+              productionAssets: assets,
+            } )
+            .then( ( data ) => {
+              resolve( {
+                ...result,
+                [contextualization.id]: data
+              } );
+            } )
+            .catch( reject );
+          }
+          else resolve( result );
+        }
+        else resolve( result );
+      } );
+    } )
+    , Promise.resolve( {} ) );
+  }
+
+  onWorkerMessage = ( event ) => {
+    const { data } = event;
+    const { type, response } = data;
+    if ( type && response ) {
+      switch ( type ) {
+        case 'PREPROCESS_EDITION_DATA':
+          const { edition, production: initialProduction, lang, locale } = this.props;
+
+          this.setState( {
+            preprocessedData: response,
+            isPreprocessing: false,
+            isPrerendering: edition.metadata.type === 'paged',
+          } );
+
+          if ( edition.metadata.type === 'paged' && this.state.assets !== undefined ) {
+            const production = {
+              ...initialProduction,
+              assets: {
+                ...( initialProduction.assets || {} ),
+                ...this.state.assets
+              }
+            };
+            const contextualizations = getContextualizationsFromEdition( initialProduction, edition );
+            this.getPreprocessedContextualizations( {
+              production,
+              edition,
+              assets: this.state.assets || {},
+              contextualizations
+            } )
+            .then( ( preprocessedContextualizations = {} ) => {
+              this.setState( { preprocessedContextualizations } );
+              this.editionRenderer.postMessage( {
+                type: 'RENDER_PAGED_EDITION_HTML',
+                payload: {
+                  edition,
+                  production,
+                  lang,
+                  locale,
+                  preprocessedData: response,
+                  preprocessedContextualizations
+                }
+              } );
+            } );
+
+          }
+          break;
+        case 'RENDER_PAGED_EDITION_HTML':
+            this.setState( {
+              isPrerendering: false,
+              editionHTML: response.html
+            } );
+          break;
+        default:
+          break;
+      }
+    }
   }
 
   loadAssets = ( props ) => {
@@ -84,7 +299,6 @@ class PreviewWrapper extends Component {
       production = {},
       edition = {},
     } = props;
-
     return new Promise( ( resolve, reject ) => {
 
       loadAssetsForEdition( {
@@ -115,11 +329,34 @@ class PreviewWrapper extends Component {
     } = props;
 
     const {
-      assets = {}
+      assets = {},
+      viewClass,
+      viewId,
+      viewParams,
+      isPreprocessing,
+      isPrerendering,
+      preprocessedData,
+      editionHTML,
     } = state;
+
+    const renderingMode = edition.metadata.type;
 
     if ( !template || !initialProduction ) {
       return null;
+    }
+    if ( isPreprocessing || isPrerendering ) {
+      return <LoadingScreen />;
+    }
+    if ( renderingMode === 'paged' && editionHTML && editionHTML.length ) {
+      return (
+        <PagedPreviewer
+          style={ { width: '100%', height: '100%', position: 'absolute', left: 0,
+          top: 0, } }
+          html={ editionHTML }
+          additionalHTML={ edition.data.additionalHTML }
+          updateTrigger={ JSON.stringify( edition ) }
+        />
+      );
     }
 
     const production = {
@@ -134,7 +371,9 @@ class PreviewWrapper extends Component {
 
     const { getResourceDataUrl } = this.context;
 
-    const renderingMode = edition.metadata.type;
+    const onActiveViewChange = ( params ) => {
+      this.setState( params );
+    };
 
     const FinalComponent = () => (
       <ContextProvider
@@ -149,6 +388,7 @@ class PreviewWrapper extends Component {
               lang,
               contextualizers,
               previewMode: true,
+              preprocessedData,
               locale,
             }
           }
@@ -160,10 +400,10 @@ class PreviewWrapper extends Component {
       return (
         <PagedPreviewer
           style={ { width: '100%', height: '100%', position: 'absolute', left: 0,
-          top: 0, } }
+              top: 0, } }
           Component={ FinalComponent }
           additionalHTML={ edition.data.additionalHTML }
-          updateTrigger={ production }
+          updateTrigger={ JSON.stringify( edition ) }
         />
       );
     }
@@ -190,6 +430,12 @@ class PreviewWrapper extends Component {
                     contextualizers,
                     previewMode: true,
                     locale,
+
+                    viewClass,
+                    viewId,
+                    viewParams,
+                    onActiveViewChange,
+                    preprocessedData,
                   }
                 }
               />
@@ -200,6 +446,8 @@ class PreviewWrapper extends Component {
     );
   }
 }
+
+const PreviewWrapper = debounceRender( PreviewWrapperInitial, 2000, { leading: false } );
 
 const MainEditionColumn = ( {
   production,
@@ -256,9 +504,8 @@ const MainEditionColumn = ( {
       isSize={ 'fullwidth' }
       style={ { position: 'relative' } }
     >
-      {
-        <PreviewWrapper
-          {
+      <PreviewWrapper
+        {
             ...{
               production,
               edition,
@@ -268,14 +515,9 @@ const MainEditionColumn = ( {
               locale
             }
           }
-        />
-      }
+      />
       <div
-        style={ {
-          position: 'absolute',
-          right: '1.5rem',
-          bottom: '1.5rem'
-        } }
+        className={ 'edition-actions' }
       >
         {availableGenerators.length > 0 &&
         <Button
@@ -289,6 +531,7 @@ const MainEditionColumn = ( {
             isAlign={ 'left' }
             className={ 'fa fa-download' }
           />
+          <span>{ translate( 'download this edition' ) }</span>
         </Button>
         }
         {
@@ -304,6 +547,7 @@ const MainEditionColumn = ( {
               isAlign={ 'left' }
               className={ 'fa fa-print' }
             />
+            <span>{ translate( 'print this edition' ) }</span>
           </Button>
         }
 

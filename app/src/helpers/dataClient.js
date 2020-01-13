@@ -6,6 +6,7 @@ import peritextConfig from '../peritextConfig.render';
 import downloadFile from './fileDownloader';
 import PQueue from 'p-queue';
 import { v4 as genId } from 'uuid';
+import preprocessEditionData from 'peritext-utils/dist/preprocessEditionData';
 
 const webAppPrefix = window.location.href.includes( 'ovide' ) ? `${window.location.href.split( 'ovide' )[0] }ovide/` : `${window.location.href.split( '/' ).slice( 0, 3 ).join( '/' ) }/`;
 
@@ -20,7 +21,6 @@ const addToUpdateQueue = ( job ) => {
   return new Promise( ( resolve, reject ) => {
     queue.add( job )
     .then( function() {
-      // console.log( 'job done' );
       resolve( ...arguments );
     } )
     .catch( reject );
@@ -191,6 +191,9 @@ export const requestAssetUpdate = ( productionId, asset ) => {
 
 export const requestAssetDeletion = ( productionId, asset ) => {
   // console.log( 'asset deletion before update queue' );
+  if ( !asset ) {
+    return Promise.resolve();
+  }
   return addToUpdateQueue( () => {
     if ( inElectron ) {
       return requestToMain( 'delete-asset', { productionId, asset } );
@@ -220,7 +223,7 @@ export const requestAssetDeletion = ( productionId, asset ) => {
  * @param {object} asset
  * @return {Promise} response promise
  */
-export const requestAssetData = ( productionId, asset ) => {
+export const requestAssetData = ( { productionId, asset } ) => {
   if ( inElectron ) {
     return new Promise( ( resolve, reject ) => {
       requestToMain( 'get-asset-data', { productionId, asset } )
@@ -232,13 +235,20 @@ export const requestAssetData = ( productionId, asset ) => {
   }
   else {
     return new Promise( ( resolve, reject ) => {
-      // console.log('get attachment', asset.id, asset.filename);
-      db.getAttachment( asset.id, asset.filename )
+      if ( asset && asset.id ) {
+        db.getAttachment( asset.id, asset.filename )
         .then( ( blobBuffer ) => {
               return convertBlobAssetToPreviewData( blobBuffer, asset.mimetype );
           } )
         .then( resolve )
         .catch( reject );
+      }
+      // else reject( 'no asset' );
+      else {
+        console.warn( 'asked to retrieve an inexisting asset' );
+        resolve( undefined );
+      }
+
     } );
   }
 };
@@ -680,7 +690,6 @@ export const requestEditionDownload = ( {
   const templateId = edition && edition.metadata && edition.metadata.templateId;
   const editionId = edition && edition.id;
   const title = production.metadata.title;
-  console.log( 'request' );
 
   if ( !inElectron && generatorId === 'single-page-html' && peritextConfig.htmlBuilds && peritextConfig.htmlBuilds[generatorId] && peritextConfig.htmlBuilds[generatorId][templateId] ) {
     return new Promise( ( resolve, reject ) => {
@@ -698,25 +707,15 @@ export const requestEditionDownload = ( {
         return requestHTMLBuild( { generatorId, templateId } );
       } )
       .then( ( { data: template } ) => {
+        const preprocessedData = preprocessEditionData( { production, edition } );
         const HTMLMetadata = buildHTMLMetadata( production, edition );
         const html = template
           .replace( '${metadata}', HTMLMetadata )
           .replace( '${productionJSON}', JSON.stringify( productionBundle ) )
+          .replace( '${preprocessedDataJSON}', JSON.stringify( preprocessedData ) )
           .replace( '${editionId}', `"${editionId}"` )
           .replace( '${locale}', JSON.stringify( locale ) );
 
-        /*
-         * if ( inElectron ) {
-         *   console.log( 'request with html' );
-         *   requestToMain( 'generate-edition', {
-         *     ...props,
-         *     html
-         *   } )
-         *   .then( resolve )
-         *   .catch( reject );
-         * }
-         * else {
-         */
           downloadFile( html, 'html', title );
           resolve();
         // }
@@ -727,7 +726,6 @@ export const requestEditionDownload = ( {
 
   }
   else if ( inElectron ) {
-    console.log( 'request generate edition with props', props );
     return requestToMain( 'generate-edition', {
       ...props
     } );

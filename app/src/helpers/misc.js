@@ -4,6 +4,34 @@
  */
 import trunc from 'unicode-byte-truncate';
 
+export const computeAssetsForProduction = ( { production } ) => {
+  const {
+        contextualizers,
+        contextualizations,
+        resources
+  } = production;
+  const assets = Object.keys( contextualizations )
+  .reduce( ( ass, id ) => {
+    const contextualization = contextualizations[id];
+    const contextualizer = contextualizers[contextualization.contextualizerId];
+    const resource = resources[contextualization.sourceId];
+    if ( contextualizer && resource ) {
+      return {
+        ...ass,
+        [id]: {
+          ...contextualization,
+          resource,
+          contextualizer,
+          type: contextualizer ? contextualizer.type : 'INLINE_ASSET'
+        }
+      };
+    }
+    return { ...ass };
+  }, {} );
+
+  return assets;
+};
+
 export const abbrevString = ( str = '', maxLength = 10 ) => {
   if ( str.length > maxLength ) {
    return `${trunc( str, maxLength ) }...`;
@@ -54,15 +82,15 @@ export const getBrowserInfo = () => {
  };
 
 export const computeSectionFirstWords = ( section, maxLength = 100 ) => {
-  if ( section.contents
-      && section.contents.blocks
-      && section.contents.blocks[0]
-      && section.contents.blocks[0].text
+  if ( section.data.contents.contents
+      && section.data.contents.contents.blocks
+      && section.data.contents.contents.blocks[0]
+      && section.data.contents.contents.blocks[0].text
   ) {
-    return section.contents.blocks[0].text.length > maxLength ?
-      `${section.contents.blocks[0].text.substr( 0, maxLength )}...`
+    return section.data.contents.contents.blocks[0].text.length > maxLength ?
+      `${section.data.contents.contents.blocks[0].text.substr( 0, maxLength )}...`
       :
-      section.contents.blocks[0].text;
+      section.data.contents.contents.blocks[0].text;
   }
   return '';
 };

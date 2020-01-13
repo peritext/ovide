@@ -14,10 +14,12 @@ import defaults from 'json-schema-defaults';
 import DatePicker from 'react-datepicker';
 import { SketchPicker as ColorPicker } from 'react-color';
 import Textarea from 'react-textarea-autosize';
+import Tooltip from 'react-tooltip';
 
 import {
   DropZone,
   CodeEditor,
+  Button,
 } from 'quinoa-design-library/components';
 
 import moment from 'moment';
@@ -26,16 +28,15 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import Ajv from 'ajv';
 
-import Select from 'react-select';
+// import Select from 'react-select';
 
-import 'react-select/dist/react-select.css';
+// import 'react-select/dist/react-select.css';
 
 // import {get, set} from 'dot-prop';
 import { get, set } from '../../helpers/dot-prop';
 
 import AssetWidget from '../AssetWidget';
 import ExplainedLabel from '../ExplainedLabel';
-import CustomSummaryEditor from '../CustomSummaryEditor';
 
 /*
  * import CodeEditor from '../CodeEditor/CodeEditor';
@@ -65,7 +66,7 @@ const ErrorDisplay = ( { error } ) => (
  * @param {boolean} required - whether edited property is required
  * @return {ReactMarkup} form - the form part corresponding to form scope
  */
-const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onChange, required, translate, assets, onAssetChange ) => {
+const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onChange, required, translate, assets, onAssetChange, onEditCustomSummary ) => {
   const render = () => {
         let onRadioClick;
 
@@ -85,6 +86,7 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                   onChange={ onRadioClick }
                   checked={ value || false }
                 />
+                <div><div /></div>
                 <label htmlFor={ key }>{translate( key )}</label>
               </div>
               );
@@ -102,19 +104,44 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                 />
               );
             }
- else if ( model.enum ) {
+            else if ( model.enum ) {
                 if ( model.enum.length > 1 ) {
                   return (
-                    <Select
-                      name={ key }
-                      value={ value }
-                      onChange={ ( e ) => onChange( path, e.value ) }
-                      clearable={ false }
-                      searchable={ false }
-                      options={
-                        model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
+                    <ul style={ { margin: 0, listStyle: 'none' } }>
+                      {
+                        model.enum.map( ( thatValue ) => {
+                          const handleClick = () => {
+                            onChange( path, thatValue );
+                          };
+                          return (
+                            <li key={ thatValue }>
+                              <Button
+                                isColor={ thatValue === value ? 'primary' : '' }
+                                onClick={ handleClick }
+                                isFullWidth
+                              >
+                                {translate( thatValue )}
+                              </Button>
+                            </li>
+                          );
+                        } )
                       }
-                    /> );
+                    </ul>
+                  );
+
+                  /*
+                   * return (
+                   *   <Select
+                   *     name={ key }
+                   *     value={ value }
+                   *     onChange={ ( e ) => onChange( path, e.value ) }
+                   *     clearable={ false }
+                   *     searchable={ false }
+                   *     options={
+                   *       model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
+                   *     }
+                   *   /> );
+                   */
               }
               // only one value enumerable --> informative
               else {
@@ -143,7 +170,9 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                   {
                     model.items.enum.map( ( item ) => {
                       const checked = activeValue.indexOf( item ) > -1;
-                      onRadioClick = () => {
+                      onRadioClick = ( e ) => {
+                        e.stopPropagation();
+                        e.preventDefault();
                         let newValue;
                         // uncheck option
                         if ( checked ) {
@@ -157,10 +186,13 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                         onChange( path, newValue );
                       };
                       return (
-                        <li key={ item }>
+                        <li
+                          key={ item }
+                        >
                           <label
                             className={ 'checkbox' }
                             htmlFor={ item }
+                            onClick={ onRadioClick }
                           >
                             <input
                               type={ 'checkbox' }
@@ -170,6 +202,7 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                               onChange={ onRadioClick }
                               checked={ checked || false }
                             />
+                            <div><div /></div>
                             {translate( item )}
                           </label>
                         </li>
@@ -324,16 +357,41 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
             else if ( model.enum ) {
               if ( model.enum.length > 1 ) {
                 return (
-                  <Select
-                    name={ key }
-                    value={ value }
-                    onChange={ ( e ) => onChange( path, e.value ) }
-                    clearable={ false }
-                    searchable={ false }
-                    options={
-                      model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
-                    }
-                  /> );
+                  <ul style={ { margin: 0, listStyle: 'none' } }>
+                    {
+                        model.enum.map( ( thatValue ) => {
+                          const handleClick = () => {
+                            onChange( path, thatValue );
+                          };
+                          return (
+                            <li key={ thatValue }>
+                              <Button
+                                isColor={ thatValue === value ? 'primary' : '' }
+                                onClick={ handleClick }
+                                isFullWidth
+                              >
+                                {translate( thatValue )}
+                              </Button>
+                            </li>
+                          );
+                        } )
+                      }
+                  </ul>
+                  );
+
+                /*
+                 * return (
+                 *   <Select
+                 *     name={ key }
+                 *     value={ value }
+                 *     onChange={ ( e ) => onChange( path, e.value ) }
+                 *     clearable={ false }
+                 *     searchable={ false }
+                 *     options={
+                 *       model.enum.map( ( thatValue ) => ( { value: thatValue, label: translate( thatValue ) } ) )
+                 *     }
+                 *   /> );
+                 */
               }
               // only one value enumerable --> informative
               else {
@@ -373,13 +431,29 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
             const actualValue = value || {};
             if ( model.uiType ) {
               switch ( model.uiType ) {
-                case 'customSummary':
+                case 'customResourcesSummary':
+                case 'customSectionsSummary':
+                  const handleClick = ( e ) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    onEditCustomSummary(
+                      {
+                        path,
+                        totalObject,
+                        value,
+                        level,
+                        key,
+                        summaryType: model.uiType,
+                      }
+                    );
+                  };
                   return (
-                    <CustomSummaryEditor
-                      value={ actualValue }
-                      onChange={ ( val ) => onChange( path, val ) }
-                      translate={ translate }
-                    />
+                    <Button
+                      isFullWidth
+                      isColor={ 'primary' }
+                      onClick={ handleClick }
+                    >{translate( 'edit composition' )}
+                    </Button>
                   );
                 default:
                   return null;
@@ -411,6 +485,7 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                         translate,
                         assets,
                         onAssetChange,
+                        onEditCustomSummary,
                       )}
                     </div>
                   ) )
@@ -424,7 +499,21 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
               const refs = totalSchema.definitions;
               const subModel = refs[type];
               if ( subModel ) {
-                return makeForm( totalSchema, subModel, totalObject, value, level + 1, key, [ ...path ], onChange, false, translate, assets, onAssetChange );
+                return makeForm(
+                  totalSchema,
+                  subModel,
+                  totalObject,
+                  value,
+                  level + 1,
+                  key,
+                  [ ...path ],
+                  onChange,
+                  false,
+                  translate,
+                  assets,
+                  onAssetChange,
+                  onEditCustomSummary
+                );
               }
             }
             // default: render as json
@@ -481,6 +570,8 @@ export default class SchemaForm extends Component {
         assets: nextProps.assets || {}
       } );
     }
+
+    Tooltip.rebuild();
   }
 
   onChange = ( path, value ) => {
@@ -557,26 +648,33 @@ export default class SchemaForm extends Component {
         errors,
       },
       props: {
-        schema,
+        schema: inputSchema,
         assets = {},
         onAssetChange,
+        omitProps = [],
+        onEditCustomSummary,
         title,
         // onCancel
       },
       context: {
-        t
+        t,
       },
       onChange,
       // onValidate
     } = this;
 
+    const schema = omitProps.reduce( ( res, propName ) => {
+      delete res.properties[propName];
+      return res;
+    }, inputSchema );
+
     return (
       <div
-        onSubmit={ ( e ) => e.preventDefault() }
+        onClick={ ( e ) => e.stopPropagation() }
         className={ 'ovide-SchemaForm' }
       >
         {title && <h1 className={ 'title is-3' }>{title}</h1>}
-        {makeForm( schema, schema, document, document, 0, undefined, [], onChange, false, t, assets, onAssetChange )}
+        {makeForm( schema, schema, document, document, 0, undefined, [], onChange, false, t, assets, onAssetChange, onEditCustomSummary )}
         {errors &&
           <ul>
             {errors.map( ( error, key ) => (

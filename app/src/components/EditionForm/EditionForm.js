@@ -9,8 +9,13 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import { isEmpty } from 'lodash';
+
+/*
+ * import { v4 as genId } from 'uuid';
+ * import { isEmpty } from 'lodash';
+ */
 import { Form, Text, TextArea } from 'react-form';
+import Tooltip from 'react-tooltip';
 import {
   BigSelect,
   Button,
@@ -42,6 +47,9 @@ import {
  * Imports Components
  */
 import ExplainedLabel from '../../components/ExplainedLabel';
+import SummaryEditor from '../../components/SummaryEditor';
+
+import './EditionForm.scss';
 
 /**
  * Shared variables
@@ -60,7 +68,7 @@ class EditionForm extends Component {
     super( props );
     const edition = props.edition || createDefaultEdition();
     this.state = {
-      edition
+      edition,
     };
     this.translate = translateNameSpacer( context.t, 'Components.EditionForm' );
   }
@@ -68,18 +76,36 @@ class EditionForm extends Component {
   componentDidMount = () => {
     setTimeout( () => {
       if ( this.form ) {
-        const inputs = this.form.getElementsByTagName( 'input' );
-        if ( inputs && inputs.length ) {
-          inputs[0].focus();
-        }
-        const flowing = this.form.getElementsByClassName( 'is-flowing' );
-        if ( flowing && flowing.length ) {
-          Array.prototype.forEach.call( flowing, ( el ) => {
-            el.scrollTop = 0;
-          } );
-        }
+        Tooltip.rebuild();
+        this.scrollToPosition( 0 );
       }
     } );
+  }
+
+  scrollToPosition = ( top ) => {
+    if ( this.form ) {
+      const inputs = this.form.getElementsByTagName( 'input' );
+      if ( inputs && inputs.length ) {
+        inputs[0].focus();
+      }
+      const flowing = this.form.getElementsByClassName( 'is-flowing' );
+      if ( flowing && flowing.length ) {
+        Array.prototype.forEach.call( flowing, ( el ) => {
+          el.scrollTop = top;
+        } );
+      }
+    }
+  }
+
+  scrollToElement = ( selector ) => {
+    setTimeout( () => {
+      const element = document.querySelector( selector );
+      console.log( 'scroll to', selector, element );
+      if ( element ) {
+        this.scrollToPosition( element.offsetTop );
+      }
+    } );
+
   }
 
   componentWillReceiveProps = ( nextProps, nextContext ) => {
@@ -111,50 +137,85 @@ class EditionForm extends Component {
         availableTemplates,
       },
       state: {
-        edition = {}
+        edition = {},
       },
       translate,
     } = this;
 
-    const handleSubmit = ( candidates ) => {
+    const handleSubmit = ( candidate ) => {
+      const templateId = candidate.metadata.templateId;
+      const template = this.props.availableTemplates.find( ( thatTemplate ) => thatTemplate.meta.id === templateId );
 
-      /*
-       * const edition = {
-       *   ...candidates,
-       *   data: {
-       *     ...candidates.data,
-       *     plan: {
-       *       ...candidates.data.plan,
-       *       summary: candidates.data.plan.summary.map( ( el ) => ( {
-       *         ...el,
-       *         id: genId()
-       *       } ) )
-       *     }
-       *   }
-       * };
-       */
-      onSubmit( candidates );
+      const newEdition = {
+        ...candidate,
+        data: {
+          ...edition.data
+        },
+      };
+
+      newEdition.data.bibType = template.meta.defaultBibType;
+      newEdition.data.additionalHTML = template.meta.defaultAdditionalHTML || '';
+      onSubmit( newEdition );
     };
 
+    const handleEditionTemplateIdChange = ( thatTemplateId, formApi ) => {
+      if ( thatTemplateId === undefined ) {
+        //"reset type" case
+        formApi.setValue( 'metadata.templateId', undefined );
+      }
+      const template = availableTemplates.find( ( t ) => t.meta.id === thatTemplateId );
+      if ( template ) {
+        const { meta: { defaultPlan } } = template;
+        this.setState( {
+          edition: {
+            ...edition,
+            data: {
+              ...edition.data,
+              plan: defaultPlan,
+            }
+          }
+        } );
+        // customSummary: { active: false, summary: [] }
+        formApi.setValue( 'metadata.title', `${translate( formApi.getValue( 'metadata.type' ) )} (${thatTemplateId})` );
+        formApi.setValue( 'metadata.templateId', thatTemplateId );
+      }
+
+      Tooltip.rebuild();
+    };
     const handleEditionTypeChange = ( thatType, formApi ) => {
       if ( thatType === undefined ) {
         //"reset type" case
         formApi.resetAll();
       }
       const defaultEdition = createDefaultEdition();
-      const firstTemplate = getAvailableTemplates( thatType, this.props.availableTemplates );
-      const firstTemplateId = firstTemplate.length && firstTemplate[0] && firstTemplate[0].meta.id;
+      const typeTemplates = getAvailableTemplates( thatType, this.props.availableTemplates );
       formApi.setAllValues( defaultEdition );
       formApi.setValue( 'metadata.type', thatType );
-      formApi.setValue( 'metadata.title', translate( thatType ) );
-      formApi.setValue( 'metadata.templateId', firstTemplateId );
-    };
-    const handleEditionTemplateIdChange = ( thatTemplateId, formApi ) => {
-      if ( thatTemplateId === undefined ) {
-        //"reset type" case
-        formApi.setValue( 'metadata.templateId', undefined );
+
+      /**
+       * If only one template available for that type auto-select it
+       */
+      if ( typeTemplates.length > 0 && typeTemplates.length < 2 ) {
+        const firstTemplate = typeTemplates[0];
+        const firstTemplateId = firstTemplate.meta.id;
+        setTimeout( () => handleEditionTemplateIdChange( firstTemplateId, formApi ) );
       }
-      formApi.setValue( 'metadata.templateId', thatTemplateId );
+      Tooltip.rebuild();
+    };
+
+    const handleSummaryChange = ( newSummary ) => {
+      this.setState( {
+        edition: {
+          ...edition,
+          data: {
+            ...edition.data,
+            plan: {
+              ...edition.data.plan,
+              summary: newSummary
+            },
+          }
+        }
+      } );
     };
 
     const handleSubmitFailure = ( error ) => {
@@ -183,7 +244,15 @@ class EditionForm extends Component {
       deucalion: {
         black: require( '../../sharedAssets/deucalion.black.png' ),
         white: require( '../../sharedAssets/deucalion.white.png' ),
-      }
+      },
+      callirhoe: {
+        black: require( '../../sharedAssets/callirhoe.black.png' ),
+        white: require( '../../sharedAssets/callirhoe.white.png' ),
+      },
+      chrysaor: {
+        black: require( '../../sharedAssets/chrysaor.black.png' ),
+        white: require( '../../sharedAssets/chrysaor.white.png' ),
+      },
     };
 
     return (
@@ -200,7 +269,7 @@ class EditionForm extends Component {
             return (
               <form
                 ref={ bindRef }
-                className={ 'is-wrapper' }
+                className={ 'ovide-EditionForm is-wrapper' }
                 onSubmit={ handleFormAPISubmit }
               >
                 <StretchedLayoutContainer isAbsolute>
@@ -225,6 +294,7 @@ class EditionForm extends Component {
                   <StretchedLayoutItem
                     isFlowing
                     isFlex={ 1 }
+                    style={ { overflowX: 'hidden' } }
                   >
                     {
                       asNewEdition && !editionType &&
@@ -232,7 +302,11 @@ class EditionForm extends Component {
                         <BigSelect
                           activeOptionId={ formApi.getValue( 'metadata.type' ) }
                           columns={ bigSelectColumnsNumber }
-                          onChange={ ( thatType ) => handleEditionTypeChange( thatType, formApi ) }
+                          onChange={ ( thatType ) => {
+                            console.log( 'type change' );
+                            handleEditionTypeChange( thatType, formApi );
+                            this.scrollToElement( '#template-choice' );
+                          } }
                           boxStyle={ { textAlign: 'center' } }
                           options={ formApi.getValue( 'metadata.type' ) ?
                               [ {
@@ -258,7 +332,7 @@ class EditionForm extends Component {
                     {
                       formApi.getValue( 'metadata.type' ) &&
                       getAvailableTemplates( formApi.getValue( 'metadata.type' ), availableTemplates ).length > 0 &&
-                      <Column>
+                      <Column id={ 'template-choice' }>
                         <Column>
                           <Label>
                             {translate( 'Choose a template' )}
@@ -268,7 +342,12 @@ class EditionForm extends Component {
                           <BigSelect
                             activeOptionId={ formApi.getValue( 'metadata.templateId' ) }
                             columns={ bigSelectColumnsNumber }
-                            onChange={ ( thatTemplateId ) => handleEditionTemplateIdChange( thatTemplateId, formApi ) }
+                            onChange={ ( thatTemplateId ) => {
+                              handleEditionTemplateIdChange( thatTemplateId, formApi );
+                              if ( thatTemplateId ) {
+                                this.scrollToElement( '#summary-choice' );
+                              }
+                            } }
                             boxStyle={ { textAlign: 'center' } }
                             options={ formApi.getValue( 'metadata.templateId' ) ?
                                 [ {
@@ -293,6 +372,23 @@ class EditionForm extends Component {
                       </Column>
                     }
 
+                    <div id={ 'summary-choice' } />
+                    {formApi.getValue( 'metadata.type' ) &&
+                      formApi.getValue( 'metadata.templateId' ) &&
+                      <SummaryEditor
+                        {
+                        ...{
+                          template: availableTemplates.find( ( tempate ) => tempate.meta.id === formApi.getValue( 'metadata.templateId' ) ),
+                          edition,
+                          translate,
+                          summaryEdited: true,
+                          onSummaryChange: handleSummaryChange,
+                          noScroll: true,
+                        }
+                      }
+                      />
+                    }
+                    <Level />
                     {formApi.getValue( 'metadata.type' ) &&
                     <Column>
                       <Column>
@@ -322,29 +418,6 @@ class EditionForm extends Component {
                               title={ translate( 'Description of the edition' ) }
                               explanation={ translate( 'Explanation about the edition description' ) }
                             />
-                            <TextArea
-                              className={ 'textarea' }
-                              type={ 'text' }
-                              id={ 'metadata.description' }
-                              field={ 'metadata.description' }
-                              placeholder={ translate( 'Edition description' ) }
-                            />
-                          </Control>
-                        </Field>
-                      </Column>
-                    </Column>}
-
-                    {formApi.getValue( 'metadata.type' ) &&
-                    <Column>
-                      <Column>
-                        <Field>
-                          <Control>
-                            <Label>
-                              {translate( 'Description of the edition' )}
-                              <HelpPin place={ 'right' }>
-                                {translate( 'Explanation about the edition description' )}
-                              </HelpPin>
-                            </Label>
                             <TextArea
                               className={ 'textarea' }
                               type={ 'text' }

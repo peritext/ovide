@@ -22,8 +22,8 @@ import { translateNameSpacer } from '../../../helpers/translateUtils';
 /**
  * Imports Components
  */
-import SectionEditor from '../../../components/SectionEditor';
-import { createBibData } from '../../../helpers/resourcesUtils';
+import ContentsEditor from '../../../components/ContentsEditor';
+import { createBibData, getResourceTitle } from '../../../helpers/resourcesUtils';
 import SectionHeader from './SectionHeader';
 
 import MainSectionAside from './MainSectionAside';
@@ -63,6 +63,7 @@ const MainSectionColumn = ( {
   createContextualizer,
   createResource,
   uploadResource,
+  createProductionObjects,
 
   setEditorPastingStatus,
   editorPastingStatus,
@@ -102,12 +103,19 @@ const MainSectionColumn = ( {
 
   editedContextualizationId,
   handleCloseEditedContextualization,
+  setEditedContextualizationId,
+  setEditedContextualizationType,
+  editedContextualizationType,
 
   createAsset,
   updateAsset,
   deleteAsset,
 
   updateContextualization,
+
+  onGoToResource,
+
+  onResourceEditAttempt,
 
 }, {
   t
@@ -170,13 +178,33 @@ const MainSectionColumn = ( {
   };
   const handleTitleBlur = ( title ) => {
     if ( title.length ) {
-      const newSection = {
-        ...section,
-        metadata: {
-          ...section.metadata,
-          title
-        }
-      };
+      let newSection;
+      if ( section.metadata.type === 'bib' ) {
+        newSection = {
+          ...section,
+          metadata: {
+            ...section.metadata,
+            title
+          },
+          data: {
+            ...section.data,
+            citations: [ {
+              ...section.data.citations[0],
+              title
+            } ]
+          }
+        };
+      }
+ else {
+        newSection = {
+          ...section,
+          metadata: {
+            ...section.metadata,
+            title
+          }
+        };
+      }
+
       handleUpdateSection( newSection );
     }
   };
@@ -184,8 +212,13 @@ const MainSectionColumn = ( {
     setEditorFocus( undefined );
   };
   const handleEditMetadataClick = () => {
-    if ( mainColumnMode !== 'editmetadata' ) {
+    if ( section.metadata.type === 'section' && mainColumnMode !== 'editmetadata' ) {
+
       onOpenSectionSettings( section.id );
+    }
+    else if ( section.metadata.type !== 'section' && mainColumnMode !== 'editresource' ) {
+
+      onResourceEditAttempt( section.id );
     }
     else {
       setMainColumnMode( 'edition' );
@@ -238,19 +271,24 @@ const MainSectionColumn = ( {
                 submitMultiResources,
                 editedContextualizationId,
                 handleCloseEditedContextualization,
+                setEditedContextualizationId,
+                editedContextualizationType,
 
                 previewMode,
                 updateContextualizer,
                 updateContextualization,
+                onResourceEditAttempt,
 
                 createAsset,
                 updateAsset,
                 deleteAsset,
+
+                onGoToResource,
               }
             }
           />
         </StretchedLayoutItem>
-        <StretchedLayoutItem isFlex={ mainColumnMode === 'edition' && !editedResourceId ? 12 : 6 }>
+        <StretchedLayoutItem isFlex={ mainColumnMode === 'edition' && !editedResourceId && !editedContextualizationId ? 12 : 6 }>
           <Column
             isWrapper
             isSize={ 12 }
@@ -278,7 +316,8 @@ const MainSectionColumn = ( {
                       isFlex={ 1 }
                     >
                       <SectionHeader
-                        title={ section.metadata.title }
+                        title={ getResourceTitle( section ) }
+                        type={ section.metadata.type }
                         onEdit={ handleEditMetadataClick }
                         onBlur={ handleTitleBlur }
                         onFocus={ handleTitleFocus }
@@ -286,8 +325,8 @@ const MainSectionColumn = ( {
 
                         isDisabled={ ( mainColumnMode !== 'edition' && mainColumnMode !== 'editmetadata' ) }
                         isColor={ mainColumnMode === 'editmetadata' ? 'primary' : '' }
-                        editTip={ translate( 'Edit section metadata' ) }
-                        inputTip={ translate( 'Section title' ) }
+                        editTip={ section.metadata.type === 'section' ? translate( 'Edit section metadata' ) : translate( 'Edit resource' ) }
+                        inputTip={ section.metadata.type === 'section' ? translate( 'Section title' ) : translate( 'Resource title' ) }
                       />
                     </StretchedLayoutItem>
                   </StretchedLayoutContainer>
@@ -296,7 +335,7 @@ const MainSectionColumn = ( {
               {/*editor*/}
               <StretchedLayoutItem isFlex={ 1 }>
                 <Column isWrapper>
-                  <SectionEditor
+                  <ContentsEditor
                     editorWidth={ editorWidth }
                     editorOffset={ editorX }
                     style={ { height: '100%' } }
@@ -323,6 +362,7 @@ const MainSectionColumn = ( {
                     createResource={ createResource }
 
                     selectedContextualizationId={ selectedContextualizationId }
+                    editedContextualizationId={ editedContextualizationId }
                     setSelectedContextualizationId={ setSelectedContextualizationId }
 
                     updateContextualizer={ updateContextualizer }
@@ -353,6 +393,9 @@ const MainSectionColumn = ( {
                       ...{
                         internalLinkModalFocusData,
                         setInternalLinkModalFocusData,
+                        createProductionObjects,
+                        setEditedContextualizationType,
+                        createAsset,
                       }
                     }
                   />

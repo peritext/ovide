@@ -120,7 +120,6 @@ class GlossaryViewLayout extends Component {
         updateAsset,
         deleteAsset,
 
-        updateSection,
         setSelectedResourcesIds,
         setResourcesPromptedToDelete,
         setMentionsSearchString,
@@ -131,14 +130,12 @@ class GlossaryViewLayout extends Component {
 
       },
       deleteResource,
+      onGoToResource,
     } = this.props;
     const { t } = this.context;
     const {
       resources = {},
       id: productionId,
-      metadata: {
-        coverImage = {}
-      },
       assets
     } = production;
 
@@ -150,7 +147,6 @@ class GlossaryViewLayout extends Component {
     /**
      * Computed variables
      */
-    const coverImageId = coverImage.resourceId;
 
     // const activeFilters = Object.keys( filterValues ).filter( ( key ) => filterValues[key] );
     const statusFilterValues = [
@@ -173,7 +169,7 @@ class GlossaryViewLayout extends Component {
     const resourcesNumberOfMentionsMap = {};
     const citedResources = uniq( Object.keys( production.contextualizations )
               .map( ( contextualizationId ) => {
-                const thisResourceId = production.contextualizations[contextualizationId].resourceId;
+                const thisResourceId = production.contextualizations[contextualizationId].sourceId;
                 resourcesNumberOfMentionsMap[thisResourceId] = resourcesNumberOfMentionsMap[thisResourceId] ?
                   resourcesNumberOfMentionsMap[thisResourceId] + 1 : 1;
                 return thisResourceId;
@@ -218,7 +214,7 @@ class GlossaryViewLayout extends Component {
     if ( actualResourcesPromptedToDelete.length ) {
       endangeredContextualizationsLength = actualResourcesPromptedToDelete.reduce( ( sum, resourceId ) => {
         return sum + Object.keys( production.contextualizations )
-                .filter( ( contextualizationId ) => production.contextualizations[contextualizationId].resourceId === resourceId )
+                .filter( ( contextualizationId ) => production.contextualizations[contextualizationId].sourceId === resourceId )
                 .length;
       }, 0 );
     }
@@ -246,15 +242,15 @@ class GlossaryViewLayout extends Component {
       };
       // deleting entities in content states
       const relatedContextualizations = Object.keys( production.contextualizations ).map( ( c ) => production.contextualizations[c] )
-        .filter( ( contextualization ) => contextualization.resourceId === realResourceId );
+        .filter( ( contextualization ) => contextualization.sourceId === realResourceId );
 
       const relatedContextualizationsIds = relatedContextualizations.map( ( c ) => c.id );
-      const relatedContextualizationsSectionIds = uniq( relatedContextualizations.map( ( c ) => c.sectionId ) );
+      const relatedContextualizationsSectionIds = uniq( relatedContextualizations.map( ( c ) => c.targetId ) );
 
       if ( relatedContextualizationsIds.length ) {
         const changedSections = relatedContextualizationsSectionIds.reduce( ( tempSections, sectionId ) => {
-          const section = tempSections[sectionId] || production.sections[sectionId];
-          const sectionRelatedContextualizations = relatedContextualizations.filter( ( c ) => c.sectionId === sectionId );
+          const section = tempSections[sectionId] || production.resources[sectionId];
+          const sectionRelatedContextualizations = relatedContextualizations.filter( ( c ) => c.targetId === sectionId );
           let sectionChanged;
           const newSection = {
             ...section,
@@ -264,18 +260,18 @@ class GlossaryViewLayout extends Component {
                 sectionChanged = true;
               }
               return result;
-            }, { ...section.contents } ),
-            notes: Object.keys( section.notes ).reduce( ( temp1, noteId ) => ( {
+            }, { ...section.data.contents.contents } ),
+            notes: Object.keys( section.data.contents.notes ).reduce( ( temp1, noteId ) => ( {
               ...temp1,
               [noteId]: {
-                ...section.notes[noteId],
+                ...section.data.contents.notes[noteId],
                 contents: sectionRelatedContextualizations.reduce( ( temp, cont ) => {
                   const { changed, result } = removeContextualizationReferenceFromRawContents( temp, cont.id );
                   if ( changed && !sectionChanged ) {
                     sectionChanged = true;
                   }
                   return result;
-                }, { ...section.notes[noteId].contents } )
+                }, { ...section.data.contents.notes[noteId].contents } )
               }
             } ), {} )
           };
@@ -288,10 +284,10 @@ class GlossaryViewLayout extends Component {
           return tempSections;
         }, {} );
         Object.keys( changedSections ).forEach( ( sectionId ) => {
-          updateSection( {
-            sectionId,
+          updateResource( {
+            resourceId: sectionId,
             productionId: production.id,
-            section: changedSections[sectionId],
+            resource: changedSections[sectionId],
           } );
         } );
 
@@ -329,16 +325,16 @@ class GlossaryViewLayout extends Component {
         // deleting entities in content states
         const relatedContextualizations = Object.keys( production.contextualizations ).map( ( c ) => production.contextualizations[c] )
           .filter( ( contextualization ) => {
-            return contextualization.resourceId === resourceId;
+            return contextualization.sourceId === resourceId;
           } );
 
         const relatedContextualizationsIds = relatedContextualizations.map( ( c ) => c.id );
-        const relatedContextualizationsSectionIds = uniq( relatedContextualizations.map( ( c ) => c.sectionId ) );
+        const relatedContextualizationsSectionIds = uniq( relatedContextualizations.map( ( c ) => c.targetId ) );
 
         if ( relatedContextualizationsIds.length ) {
           const changedSections = relatedContextualizationsSectionIds.reduce( ( tempSections, sectionId ) => {
-            const section = tempSections[sectionId] || production.sections[sectionId];
-            const sectionRelatedContextualizations = relatedContextualizations.filter( ( c ) => c.sectionId === sectionId );
+            const section = tempSections[sectionId] || production.resources[sectionId];
+            const sectionRelatedContextualizations = relatedContextualizations.filter( ( c ) => c.targetId === sectionId );
             let sectionChanged;
             const newSection = {
               ...section,
@@ -348,18 +344,18 @@ class GlossaryViewLayout extends Component {
                   sectionChanged = true;
                 }
                 return result;
-              }, { ...( section.contents || {} ) } ),
-              notes: Object.keys( section.notes ).reduce( ( temp1, noteId ) => ( {
+              }, { ...( section.data.contents.contents || {} ) } ),
+              notes: Object.keys( section.data.contents.notes ).reduce( ( temp1, noteId ) => ( {
                 ...temp1,
                 [noteId]: {
-                  ...section.notes[noteId],
+                  ...section.data.contents.notes[noteId],
                   contents: sectionRelatedContextualizations.reduce( ( temp, cont ) => {
                     const { changed, result } = removeContextualizationReferenceFromRawContents( temp, cont.id );
                     if ( changed && !sectionChanged ) {
                       sectionChanged = true;
                     }
                     return result;
-                  }, { ...section.notes[noteId].contents } )
+                  }, { ...section.data.contents.notes[noteId].contents } )
                 }
               } ), {} )
             };
@@ -385,10 +381,10 @@ class GlossaryViewLayout extends Component {
       Object.keys( finalChangedSections || {} ).reduce( ( cur, sectionId ) => {
         return cur.
         then( () => new Promise( ( resolve, reject ) => {
-          updateSection( {
-            sectionId,
+          updateResource( {
+            resourceId: sectionId,
             productionId: production.id,
-            section: finalChangedSections[sectionId],
+            resource: finalChangedSections[sectionId],
           }, ( err ) => {
             if ( err ) {
               reject( err );
@@ -524,6 +520,7 @@ class GlossaryViewLayout extends Component {
         <ResourceForm
           onCancel={ handleCancel }
           onSubmit={ handleSubmit }
+          onGoToResource={ () => onGoToResource( resource.id ) }
           bigSelectColumnsNumber={ 3 }
           productionId={ productionId }
           resource={ resource }
@@ -542,7 +539,7 @@ class GlossaryViewLayout extends Component {
           const resourceId = genId();
           let title;
           if ( resource.metadata.type === 'bib' ) {
-            title = resource.data && resource.data.length && resource.data[0].title;
+            title = resource.data && resource.data.citations && resource.data.citations.length && resource.data.citations[0].title;
           }
           else {
             title = ( !resource.metadata.title.length && Object.keys( newAssets ).length ) ?
@@ -668,6 +665,9 @@ class GlossaryViewLayout extends Component {
             setPromptedToDeleteResourceId( resource.id );
           };
           const isSelected = selectedResourcesIds.indexOf( resource.id ) > -1;
+          const handleGoTo = () => {
+            onGoToResource( resource.id );
+          };
           const handleClick = () => {
             let newSelectedResourcesIds;
               if ( isSelected ) {
@@ -692,9 +692,9 @@ class GlossaryViewLayout extends Component {
               isActive={ isSelected }
               onClick={ handleClick }
               key={ resource.id }
+              onGoToResource={ handleGoTo }
               onEdit={ handleEdit }
               onDelete={ handleDelete }
-              coverImageId={ coverImageId }
               numberOfMentions={ resourcesNumberOfMentionsMap[resource.id] }
               resource={ resource }
               assets={ relatedAssets }
@@ -792,7 +792,7 @@ class GlossaryViewLayout extends Component {
       selectedResourcesIds,
       editedProduction: production = {},
       actions: {
-        updateSection,
+        updateResource,
         createContextualization,
         createContextualizer,
       },
@@ -810,13 +810,13 @@ class GlossaryViewLayout extends Component {
     const contextualization = {
       id: contextualizationId,
       contextualizerId,
-      resourceId,
-      sectionId: prospect.sectionId,
+      sourceId: resourceId,
+      targetId: prospect.sectionId,
     };
     // update section
-    const section = production.sections[prospect.sectionId];
+    const section = production.resources[prospect.sectionId];
     const { notes } = section;
-    const contents = prospect.contentId === 'main' ? section.contents : notes[prospect.contentId].contents;
+    const contents = prospect.contentId === 'main' ? section.data.contents.contents : notes[prospect.contentId].contents;
     const key = +( Object.keys( contents.entityMap ).pop() || 0 ) + 1;
 //     console.log('block before', JSON.parse(JSON.stringify(contents.blocks.find(b => b.key === prospect.blockKey))))
 
@@ -855,10 +855,10 @@ class GlossaryViewLayout extends Component {
       ...section,
     };
     if ( prospect.contentId === 'main' ) {
-      newSection.contents = newContents;
+      newSection.data.contents.contents = newContents;
     }
     else {
-      newSection.notes[prospect.contentId].contents = newContents;
+      newSection.data.contents.notes[prospect.contentId].contents = newContents;
     }
     // trigger the changes
     return new Promise( ( resolve, reject ) => {
@@ -888,9 +888,9 @@ class GlossaryViewLayout extends Component {
         } );
       } ) )
       .then( () => new Promise( ( res, rej ) => {
-        updateSection( {
-          sectionId: prospect.sectionId,
-          section: newSection,
+        updateResource( {
+          resourceId: prospect.sectionId,
+          resource: newSection,
           productionId
         }, ( err ) => {
           if ( err ) {
@@ -912,7 +912,7 @@ class GlossaryViewLayout extends Component {
     const {
       editedProduction: production = {},
       actions: {
-        updateSection,
+        updateResource,
         deleteContextualization,
         deleteContextualizer
       },
@@ -926,18 +926,18 @@ class GlossaryViewLayout extends Component {
     const contextualizerId = production.contextualizations[contextualizationId].contextualizer;
 
     // update section
-    const section = production.sections[sectionId];
+    const section = production.resources[sectionId];
     const newSection = {
       ...section,
     };
     if ( contentId ) {
-      const contents = contentId === 'main' ? section.contents : section.notes[contentId].contents;
+      const contents = contentId === 'main' ? section.data.contents.contents : section.data.contents.notes[contentId].contents;
       const { result: newContents } = removeContextualizationReferenceFromRawContents( contents, contextualizationId );
       if ( contentId === 'main' ) {
-        newSection.contents = newContents;
+        newSection.data.contents.contents = newContents;
       }
       else {
-        newSection.notes[contentId].contents = newContents;
+        newSection.data.contents.notes[contentId].contents = newContents;
       }
     }
 
@@ -945,9 +945,9 @@ class GlossaryViewLayout extends Component {
     return new Promise( ( resolve, reject ) => {
       Promise.resolve()
       .then( () => new Promise( ( res, rej ) => {
-        updateSection( {
-          sectionId,
-          section: newSection,
+        updateResource( {
+          resourceId: sectionId,
+          resource: newSection,
           productionId
         }, ( err ) => {
           if ( err ) {

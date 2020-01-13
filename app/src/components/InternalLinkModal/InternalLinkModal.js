@@ -67,7 +67,7 @@ class InternalLinkModal extends Component {
         onClose,
         isActive,
         onCreateInternalLink,
-        inactiveSections,
+        sections = [],
         focusData
       },
       state: {
@@ -118,10 +118,10 @@ class InternalLinkModal extends Component {
       } );
     };
 
-    const getInactiveSectionTitle = ( id ) => {
-      const thatSection = inactiveSections.find( ( s ) => s.id === id );
+    const getSectionTitle = ( id ) => {
+      const thatSection = sections.find( ( s ) => s.id === id );
       if ( thatSection ) {
-        return thatSection.title;
+        return thatSection.metadata.title;
       }
       return translate( 'No section' );
     };
@@ -132,7 +132,6 @@ class InternalLinkModal extends Component {
      * const handleNewURLChange = ( e ) => this.setState( { url: e.target.value } );
      * const handleNewTitleChange = ( e ) => this.setState( { title: e.target.value } );
      */
-
     return (
       <ModalCard
         isActive={ isActive }
@@ -155,10 +154,10 @@ class InternalLinkModal extends Component {
                   closeOnChange
                   onChange={ handleChooseSection }
                   value={ { id: selectedSectionId } }
-                  options={ inactiveSections
-                              .filter( ( sectionMetadata ) => sectionMetadata )
-                              .map( ( sectionMetadata ) => ( {
-                              id: sectionMetadata.id,
+                  options={ sections
+                              .filter( ( section ) => section )
+                              .map( ( section ) => ( {
+                              id: section.id,
                               label: (
                                 <FlexContainer
                                   alignItems={ 'center' }
@@ -170,13 +169,13 @@ class InternalLinkModal extends Component {
                                     src={ icons.section.black.svg }
                                   />
                                   <span >
-                                    {`${sectionMetadata && sectionMetadata.title ? abbrevString( sectionMetadata.title, 30 ) : translate( 'No section' )}`}
+                                    {`${section && section.metadata && section.metadata.title ? abbrevString( section.metadata.title, 30 ) : translate( 'No section' )}`}
                                   </span>
                                 </FlexContainer>
                                 )
                             } ) ) }
                 >
-                  {selectedSectionId ? abbrevString( `${getInactiveSectionTitle( selectedSectionId )}`, 60 ) : translate( 'Choose a section' )}
+                  {selectedSectionId ? abbrevString( `${getSectionTitle( selectedSectionId )}`, 60 ) : translate( 'Choose a section' )}
                 </Dropdown>
               </StretchedLayoutItem>
             </StretchedLayoutContainer>

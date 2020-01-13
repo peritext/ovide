@@ -17,6 +17,7 @@ import {
   Icon,
 } from 'quinoa-design-library/components/';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
+import { getResourceTitle } from 'peritext-utils';
 
 /**
  * Imports Project utils
@@ -43,6 +44,7 @@ const SectionMiniCard = ( {
   cardStyle = {},
   isActive,
   section,
+  level = 0,
   productionId,
   onDeleteSection,
   onOpenSettings,
@@ -63,14 +65,15 @@ const SectionMiniCard = ( {
   /**
    * Computed variables
    */
+  const title = getResourceTitle( section );
   const sectionTitle = (
     <span
       data-for={ 'tooltip' }
       data-place={ 'right' }
       data-html
-      data-tip={ `<div class="content"><h5 style="color: white">${section.metadata.title}</h5><p>${computeSectionFirstWords( section )}</p></div>` }
+      data-tip={ `<div class="content"><h5 style="color: white">${title}</h5><p>${computeSectionFirstWords( section )}</p></div>` }
     >
-      {abbrevString( section.metadata.title || translate( 'Untitled section' ), 10 )}
+      {abbrevString( title || translate( 'Untitled section' ), 10 )}
     </span>
   );
 
@@ -149,19 +152,19 @@ const SectionMiniCard = ( {
                   } }
                 chevronsData={ {
                     left: {
-                      tooltip: translate( 'Title level {n}', { n: section.metadata.level } ),
-                      isDisabled: section.metadata.level === 0,
+                      tooltip: translate( 'Title level {n}', { n: level } ),
+                      isDisabled: level === 0,
                       onClick: ( e ) => {
                         e.stopPropagation();
-                        setSectionLevel( { sectionId: section.id, level: section.metadata.level - 1 } );
+                        setSectionLevel( { sectionId: section.id, level: level - 1 } );
                       }
                     },
                     right: {
-                      tooltip: translate( 'Title level {n}', { n: section.metadata.level + 2 } ),
-                      isDisabled: section.metadata.level >= config.maxSectionLevel - 1,
+                      tooltip: translate( 'Title level {n}', { n: level + 2 } ),
+                      isDisabled: level >= config.maxSectionLevel - 1,
                       onClick: ( e ) => {
                         e.stopPropagation();
-                        setSectionLevel( { sectionId: section.id, level: section.metadata.level + 1 } );
+                        setSectionLevel( { sectionId: section.id, level: level + 1 } );
                       }
                     },
                     up: {

@@ -75,13 +75,10 @@ class SummaryCard extends Component {
             bodyContent={
               <div style={ { position: 'relative' } }>
                 <StretchedLayoutContainer
-                  style={ { minHeight: '5.5rem' } }
+                  style={ { minHeight: isEdited ? undefined : '5.5rem' } }
                   isDirection={ 'horizontal' }
                 >
-                  <StretchedLayoutItem
-                    isFlex={ 1 }
-                    style={ { minWidth: '70%' } }
-                  >
+                  <StretchedLayoutItem >
                     <Title isSize={ 6 }>
                       {
                         customTitle && customTitle.length ?

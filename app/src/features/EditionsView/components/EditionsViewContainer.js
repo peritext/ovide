@@ -6,6 +6,7 @@
  * Imports Libraries
  */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -52,9 +53,17 @@ import DataUrlProvider from '../../../components/DataUrlProvider';
 )
 class EditionsViewContainer extends Component {
 
+  static childContextTypes = {
+    production: PropTypes.object,
+  }
+
   constructor( props ) {
     super( props );
   }
+
+  getChildContext = () => ( {
+    production: this.props.editedProduction,
+  } )
 
   componentDidMount = () => {
     const productionId = this.props.match.params.productionId;

@@ -81,6 +81,7 @@ const SectionViewLayout = ( {
   editedResourceId,
   previewMode,
   editedContextualizationId,
+  editedContextualizationType,
 
   actions: {
     setAsideTabMode,
@@ -100,10 +101,6 @@ const SectionViewLayout = ( {
     setPromptedToDeleteResourceId,
     setUploadStatus,
 
-    updateSection,
-    createSection,
-    deleteSection,
-
     updateContextualization,
 
     updateSectionsOrder,
@@ -116,7 +113,6 @@ const SectionViewLayout = ( {
     createResource,
     // uploadResource,
     setCoverImage,
-    setSectionLevel,
 
     updateDraftEditorState,
     updateDraftEditorsStates,
@@ -136,6 +132,7 @@ const SectionViewLayout = ( {
     setProductionIsSaved,
     setErrorMessage,
     setSelectedContextualizationId,
+    createProductionObjects,
     setEditedResourceId,
 
     createAsset,
@@ -143,6 +140,7 @@ const SectionViewLayout = ( {
     deleteAsset,
 
     setEditedContextualizationId,
+    setEditedContextualizationType,
   },
   goToSection,
   summonAsset,
@@ -158,6 +156,7 @@ const SectionViewLayout = ( {
   onResourceEditAttempt: handleResourceEditAttempt,
   deleteResource,
   history,
+  onGoToResource,
 }, { t } ) => {
 
   /**
@@ -175,10 +174,9 @@ const SectionViewLayout = ( {
    */
   const defaultSection = createDefaultSection();
 
-  const sectionsList = production.sectionsOrder.map( ( thatSectionId ) => production.sections[thatSectionId] );
-
+  const sectionsList = production.sectionsOrder.map( ( { resourceId, level } ) => ( { resource: production.resources[resourceId], level } ) );
   const activeFilters = Object.keys( resourceFilterValues ).filter( ( key ) => resourceFilterValues[key] );
-  const resourcesList = Object.keys( resources ).map( ( resourceId ) => resources[resourceId] );
+  const resourcesList = Object.keys( resources ).map( ( resourceId ) => resources[resourceId] ).filter( ( r ) => r.metadata.type !== 'section' );
 
   let visibleResources = resourceSearchString.length === 0 ? resourcesList : searchResources( resourcesList, resourceSearchString );
   visibleResources = visibleResources
@@ -215,7 +213,7 @@ const SectionViewLayout = ( {
   let editedContextualization;
   if ( editedContextualizationId && production.contextualizations[editedContextualizationId] ) {
     const candidate = production.contextualizations[editedContextualizationId];
-    if ( production.resources[candidate.resourceId] ) {
+    if ( production.resources[candidate.sourceId] ) {
       editedContextualization = candidate;
     }
   }
@@ -229,6 +227,7 @@ const SectionViewLayout = ( {
    * Callbacks handlers
    */
   const handleNewSectionSubmit = ( metadata ) => {
+
     const newSection = {
       ...defaultSection,
       metadata: {
@@ -238,15 +237,48 @@ const SectionViewLayout = ( {
       id: genId()
     };
 
-    const currentSectionOrder = sectionsOrder.indexOf( section.id ) || 0;
-    createSection( {
-      section: newSection,
-      sectionId: newSection.id,
+    let currentSectionIndex;
+    const currentSectionItem = sectionsOrder.find( ( { resourceId }, index ) => {
+      if ( resourceId === sectionId ) {
+        currentSectionIndex = index;
+        return true;
+      }
+    } );
+
+    const newItem = {
+      resourceId: newSection.id,
+      level: currentSectionItem ? currentSectionItem.level : 0
+    };
+
+    const newSectionsOrder = [
+      ...(
+        currentSectionIndex === 0 ?
+        [ sectionsOrder[0] ] : sectionsOrder.slice( 0, currentSectionIndex + 1 )
+      ),
+      newItem,
+      ...(
+        currentSectionIndex === sectionsOrder.length - 1 ?
+        []
+        :
+        sectionsOrder.slice( currentSectionIndex + 1 )
+      )
+    ];
+
+    createResource( {
+      resource: newSection,
+      resourceId: newSection.id,
       productionId,
-      sectionOrder: currentSectionOrder + 1,
     }, ( err ) => {
       if ( !err ) {
-        goToSection( newSection.id );
+
+        updateSectionsOrder( {
+          productionId,
+          sectionsOrder: newSectionsOrder
+        }, ( err2 ) => {
+          if ( !err2 ) {
+            goToSection( newSection.id );
+          }
+        } );
       }
     } );
     setMainColumnMode( 'edition' );
@@ -260,10 +292,20 @@ const SectionViewLayout = ( {
     setPromptedToDeleteResourceId( thatResourceId );
   };
   const handleDeleteSectionExecution = ( thatSectionId ) => {
-    deleteSection( {
-      sectionId: thatSectionId,
-      productionId,
+    const newSectionsOrder = sectionsOrder.filter( ( { resourceId } ) => resourceId !== thatSectionId );
+    updateSectionsOrder( {
+      sectionsOrder: newSectionsOrder,
+      productionId
+    }, ( err ) => {
+      if ( !err ) {
+        deleteResource( {
+          resourceId: thatSectionId,
+          resource: production.resources[thatSectionId],
+          productionId,
+        } );
+      }
     } );
+
   };
 
   const handleDeleteSectionConfirm = () => {
@@ -280,25 +322,25 @@ const SectionViewLayout = ( {
     };
     const relatedContextualizations = Object.keys( production.contextualizations ).map( ( c ) => production.contextualizations[c] )
         .filter( ( contextualization ) => {
-          return contextualization.resourceId === promptedToDeleteResourceId;
+          return contextualization.sourceId === promptedToDeleteResourceId;
         } );
 
     const relatedContextualizationsIds = relatedContextualizations.map( ( c ) => c.id );
-    const relatedContextualizationsSectionIds = relatedContextualizations.map( ( c ) => c.sectionId );
+    const relatedContextualizationsSectionIds = relatedContextualizations.map( ( c ) => c.targetId );
 
     const changedContentStates = {};
     if ( relatedContextualizationsIds.length ) {
       relatedContextualizationsSectionIds.forEach( ( key ) => {
-        const thatSection = production.sections[key];
+        const thatSection = production.resources[key];
         if ( !thatSection ) return;
         let sectionChanged;
         let newSection;
         // resource is cited in this section view
         if ( Object.keys( editorStates ).indexOf( key ) !== -1 ) {
-          const sectionContents = editorStates[thatSection.id] ? { ...convertToRaw( editorStates[thatSection.id].getCurrentContent() ) } : thatSection.contents;
-          const notesContents = Object.keys( thatSection.notes ).reduce( ( res, noteId ) => ( {
+          const sectionContents = editorStates[thatSection.id] ? { ...convertToRaw( editorStates[thatSection.id].getCurrentContent() ) } : thatSection.data.contents.contents;
+          const notesContents = Object.keys( thatSection.data.contents.notes ).reduce( ( res, noteId ) => ( {
             ...res,
-            [noteId]: editorStates[noteId] ? convertToRaw( editorStates[noteId].getCurrentContent() ) : thatSection.notes[noteId].contents
+            [noteId]: editorStates[noteId] ? convertToRaw( editorStates[noteId].getCurrentContent() ) : thatSection.data.contents.notes[noteId].contents
           } ), {} );
 
           newSection = {
@@ -311,10 +353,10 @@ const SectionViewLayout = ( {
               }
               return result;
             }, { ...sectionContents } ),
-            notes: Object.keys( thatSection.notes ).reduce( ( temp1, noteId ) => ( {
+            notes: Object.keys( thatSection.data.contents.notes ).reduce( ( temp1, noteId ) => ( {
               ...temp1,
               [noteId]: {
-                ...thatSection.notes[noteId],
+                ...thatSection.data.contents.notes[noteId],
                 contents: relatedContextualizationsIds.reduce( ( temp, contId ) => {
                   const { changed, result } = removeContextualizationReferenceFromRawContents( temp, contId );
                   if ( changed && !sectionChanged ) {
@@ -351,27 +393,27 @@ const SectionViewLayout = ( {
                 sectionChanged = true;
               }
               return result;
-            }, thatSection.contents ),
-            notes: Object.keys( thatSection.notes ).reduce( ( temp1, noteId ) => ( {
+            }, thatSection.data.contents.contents ),
+            notes: Object.keys( thatSection.data.contents.notes ).reduce( ( temp1, noteId ) => ( {
               ...temp1,
               [noteId]: {
-                ...thatSection.notes[noteId],
+                ...thatSection.data.contents.notes[noteId],
                 contents: relatedContextualizationsIds.reduce( ( temp, contId ) => {
                   const { changed, result } = removeContextualizationReferenceFromRawContents( temp, contId );
                   if ( changed && !sectionChanged ) {
                     sectionChanged = true;
                   }
                   return result;
-                }, thatSection.notes[noteId].contents )
+                }, thatSection.data.contents.notes[noteId].contents )
               }
             } ), {} )
           };
         }
         if ( sectionChanged ) {
-          updateSection( {
-            sectionId: thatSection.id,
+          updateResource( {
+            resourceId: thatSection.id,
             productionId: production.id,
-            section: newSection,
+            resource: newSection,
           } );
         }
       } );
@@ -405,31 +447,58 @@ const SectionViewLayout = ( {
   };
 
   const handleSectionsSortEnd = ( { oldIndex, newIndex } ) => {
-    const sectionsIds = sectionsList.map( ( thatSection ) => thatSection.id );
-    const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex );
+    const levelsMap = sectionsOrder.reduce( ( res, { resourceId, level } ) => ( {
+      ...res,
+      [resourceId]: level
+    } ), {} );
+    const sectionsIds = sectionsOrder.map( ( { resourceId } ) => resourceId );
+
+    const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex ).map( ( resourceId ) => ( {
+      resourceId,
+      level: levelsMap[resourceId]
+    } ) );
 
     updateSectionsOrder( {
       productionId,
-      sectionsOrder: newSectionsOrder,
+      sectionsOrder: newSectionsOrder
     } );
+
+    /*
+     * const sectionsIds = sectionsList.map( ( thatSection ) => thatSection.id );
+     * const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex );
+     */
+
+    /*
+     * updateSectionsOrder( {
+     *   productionId,
+     *   sectionsOrder: newSectionsOrder,
+     * } );
+     */
   };
   const handleSectionIndexChange = ( oldIndex, newIndex ) => {
-    const sectionsIds = sectionsList.map( ( thatSection ) => thatSection.id );
-    const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex );
+    const levelMaps = sectionsOrder.reduce( ( res, item ) => ( {
+      ...res,
+      [item.resourceId]: item.level
+    } ), {} );
+    const sectionsIds = sectionsOrder.map( ( { resourceId } ) => resourceId );
 
+    const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex ).map( ( resourceId ) => ( {
+      resourceId,
+      level: levelMaps[resourceId]
+    } ) );
     updateSectionsOrder( {
       productionId,
-      sectionsOrder: newSectionsOrder,
+      sectionsOrder: newSectionsOrder
     } );
   };
 
   const handleUpdateSection = ( thatSection, callback ) => {
     if ( thatSection && !editedContextualizationId ) {
-      updateSection( {
-        sectionId,
+      updateResource( {
+        resourceId: thatSection.id,
         productionId,
 
-        section: thatSection,
+        resource: thatSection,
       }, callback );
     }
   };
@@ -472,10 +541,21 @@ const SectionViewLayout = ( {
   };
 
   const handleSetSectionLevel = ( { sectionId: thatSectionId, level } ) => {
-    setSectionLevel( {
+    const newSectionsOrder = sectionsOrder.map( ( { resourceId: thatResourceId, level: thatLevel } ) => {
+      if ( thatResourceId === thatSectionId ) {
+        return {
+          resourceId: thatResourceId,
+          level
+        };
+      }
+      return {
+        resourceId: thatResourceId,
+        level: thatLevel
+      };
+    } );
+    updateSectionsOrder( {
       productionId,
-      sectionId: thatSectionId,
-      level,
+      sectionsOrder: newSectionsOrder
     } );
   };
 
@@ -497,7 +577,6 @@ const SectionViewLayout = ( {
   const handleAbortGlossaryCreation = () => setGlossaryModalFocusData( undefined );
    const handleAbortInternalLinkCreation = () => setInternalLinkModalFocusData( undefined );
   const handleCloseShortcuts = () => setShortcutsHelpVisible( false );
-
   return (
     <StretchedLayoutContainer
       isAbsolute
@@ -533,6 +612,7 @@ const SectionViewLayout = ( {
                   production,
                   submitMultiResources,
                   visibleResources,
+                  onGoToResource,
             }
           }
           sections={ sectionsList }
@@ -581,6 +661,7 @@ const SectionViewLayout = ( {
                 selectedContextualizationId,
                 setAssetRequestContentId,
                 setEditedResourceId,
+                setEditedContextualizationId,
                 setEditorPastingStatus,
                 setErrorMessage,
                 setInternalLinkModalFocusData,
@@ -602,9 +683,16 @@ const SectionViewLayout = ( {
                 updateDraftEditorState,
                 updateResource,
                 uploadStatus,
+                createProductionObjects,
 
                 updateContextualization,
                 editedContextualizationId,
+
+                editedContextualizationType,
+                setEditedContextualizationType,
+
+                onGoToResource,
+                onResourceEditAttempt: handleResourceEditAttempt,
               }
             }
 
@@ -665,6 +753,10 @@ const SectionViewLayout = ( {
         onClose={ handleAbortInternalLinkCreation }
         inactiveSections={ inactiveSections }
         onCreateInternalLink={ handleCreateInternalLink }
+        sections={
+          sectionsList.filter( ( { resource } ) => resource.id !== section.id )
+          .map( ( { resource } ) => resource )
+        }
       />
       <ShortcutsModal
         isActive={ shortcutsHelpVisible }

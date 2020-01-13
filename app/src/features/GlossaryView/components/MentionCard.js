@@ -38,8 +38,8 @@ const buildMentionRawContent = ( {
     mention,
     production
 } ) => {
-    const section = production.sections[mention.sectionId];
-    const contents = mention.contentId === 'main' ? section.contents : section.notes[mention.contentId];
+    const section = production.resources[mention.sectionId];
+    const contents = mention.contentId === 'main' ? section.data.contents.contents : section.data.contents.notes[mention.contentId];
     if ( !contents || !contents.entityMap || !contents.blocks ) {
       return undefined;
     }
@@ -158,7 +158,7 @@ class MentionCard extends Component {
                     {translate( 'Bugged glossary mention' )}
                   </Notification>
                 }
-                <p><i>{production.sections[mention.sectionId].metadata.title}</i></p>
+                <p><i>{production.resources[mention.sectionId].metadata.title}</i></p>
               </StretchedLayoutItem>
               <StretchedLayoutItem>
                 <Button
