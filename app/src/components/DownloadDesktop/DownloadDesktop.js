@@ -12,9 +12,9 @@ import './DownloadDesktop.scss';
 const repo = __SOURCE_REPOSITORY__ || '';
 const version = __OVIDE_VERSION__ || '0.0.1';
 const links = {
-  macos: `${repo}/releases/download/${version}/ovide-${version}-mac.zip`,
-  linux: `${repo}/releases/download/${version}/ovide-${version}.tar.gz`,
-  windows: `${repo}/releases/download/${version}/ovide.Setup.${version}.exe`,
+  macos: `${repo}/releases/download/${version}/ovide-${version}-mac.pkg`,
+  linux: `${repo}/releases/download/${version}/ovide-${version}-linux.zip`,
+  windows: `${repo}/releases/download/${version}/ovide-${version}-windows.zip`,
 };
 
 const DownloadDesktop = ( { mode = 'horizontal' }, { t } ) => {
