@@ -193,18 +193,24 @@ if ( window.Paged ) {
            * If overflow adjustments handle them
            */
           const noOverflow = document.querySelectorAll('.pagedjs_no-page-overflow-y');
+          // hacky : retrieving pages transform to apply it to overflow adjustments
+          let pageScale = 1;
+          const pagesContainer = document.querySelector( '.pagedjs_pages' )
+          if (pagesContainer && pagesContainer.style.transform && pagesContainer.style.transform.match(/scale\((.+)\)/)) {
+            pageScale = +pagesContainer.style.transform.match(/scale\((.+)\)/)[1];
+          }
           [].forEach.call(noOverflow, (before, index1) => {
             [].forEach.call(noOverflow, (after, index2) => {
               if (index1 < index2) {
                 if (before.parentNode.parentNode === after.parentNode.parentNode) {
-                  const {top: y1, height: h1} = before.getBoundingClientRect();
-                  const {top: y2, height: h2} = after.getBoundingClientRect();
-                  if (y2 > y1 && y2 < (y1 + h1)) {
-                    const {top: parent1} = before.parentNode.getBoundingClientRect();
-                    const {top: parent2} = after.parentNode.getBoundingClientRect();
-                    const absY = y1 - y2 + h1 * 3;
+                  const {top: yBefore, height: hBefore} = before.getBoundingClientRect();
+                  const {top: yAfter, height: hAfter} = after.getBoundingClientRect();
+                  if (yAfter >= yBefore && yAfter <= (yBefore + hBefore)) {
+                    const absY = ((yAfter - yBefore) + hBefore) / pageScale;
+                    before.parentNode.style.position = 'relative';
+                    after.parentNode.style.position = 'relative';
                     after.style.top = absY + 'px';
-                    // console.log({absY, parent1, parent2, y1,y2,h1,h2});
+                    console.log({yBefore, yAfter, hBefore})
                   }
                 }
               }
