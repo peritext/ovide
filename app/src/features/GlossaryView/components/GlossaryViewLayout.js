@@ -818,7 +818,6 @@ class GlossaryViewLayout extends Component {
     const { notes } = section;
     const contents = prospect.contentId === 'main' ? section.data.contents.contents : notes[prospect.contentId].contents;
     const key = +( Object.keys( contents.entityMap ).pop() || 0 ) + 1;
-//     console.log('block before', JSON.parse(JSON.stringify(contents.blocks.find(b => b.key === prospect.blockKey))))
 
     const newContents = {
       ...contents,
@@ -833,8 +832,8 @@ class GlossaryViewLayout extends Component {
           }
         }
       },
-      blocks: contents.blocks.map( ( block ) => {
-        if ( block.key === prospect.blockKey ) {
+      blocks: contents.blocks.map( ( block, index ) => {
+        if ( index === prospect.blockIndex ) {
           return {
             ...block,
             entityRanges: [

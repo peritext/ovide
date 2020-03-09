@@ -262,14 +262,14 @@ class AsideGlossary extends Component {
                 const entity = contents.entityMap[entityKey];
                 if ( entity.type === 'INLINE_ASSET' && entity.data.asset.id === contextualizationId ) {
                     // console.log('found with entity', entity, entityKey);
-                    contents.blocks.find( ( block ) => {
+                    contents.blocks.find( ( block, blockIndex ) => {
                         const match = block.entityRanges.find( ( range ) => +range.key === +entityKey );
                         // console.log('match', match);
                         if ( match ) {
                             mention = {
                                 offset: match.offset,
                                 length: match.length,
-                                blockKey: block.key,
+                                blockIndex,
                                 sectionId,
                                 contentId: editorId,
                                 contextualizationId
@@ -284,10 +284,10 @@ class AsideGlossary extends Component {
             return mention;
         } )
         .filter( ( mention ) => {
-          if ( searchString.length > MIN_SEARCH_LENGTH && mention.contentId && mention.blockKey ) {
+          if ( searchString.length > MIN_SEARCH_LENGTH && mention.contentId && mention.blockIndex !== undefined ) {
             const section = production.resources[mention.sectionId];
             const contents = mention.contentId === 'main' ? section.data.contents.contents : section.data.contents.notes[mention.contentId].contents;
-            const block = contents.blocks.find( ( thatBlock ) => thatBlock.key === mention.blockKey );
+            const block = contents.blocks[mention.blockIndex];
             return block.text.toLowerCase().includes( searchStringLower );
           }
           return true;

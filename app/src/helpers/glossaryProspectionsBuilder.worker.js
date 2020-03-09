@@ -27,14 +27,13 @@ export const findProspectionMatches = ( {
   let counter = 0;
 
   return contents.blocks.filter( ( b ) => b.type !== 'atomic' )
-      .reduce( ( result, block ) => {
+      .reduce( ( result, block, blockIndex ) => {
           const matches = [];
           let match = null;
           const text = block.text;
           do {
               match = regexp.exec( text );
               if ( match ) {
-                  // console.log('its a match', match)
                   const startIndex = match.index;
                   const endIndex = match.index + searchTerm.length;
                   let isLegit = true;
@@ -68,7 +67,7 @@ export const findProspectionMatches = ( {
                       matches.push( {
                           sectionId,
                           contentId,
-                          blockKey: block.key,
+                          blockIndex,
                           offset: startIndex,
                           id: counter,
                           endIndex,

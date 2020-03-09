@@ -33,63 +33,62 @@ import CenteredIcon from '../../../components/CenteredIcon';
 import MatchRenderer from './MatchRenderer';
 
 const buildProspectRawContent = ( {
-    prospect,
-    production
+  prospect,
+  production
 } ) => {
-    const section = production.resources[prospect.sectionId];
-    const contents = prospect.contentId === 'main' ? section.data.contents.contents : section.data.contents.notes[prospect.contentId];
-    if ( !contents || !contents.entityMap ) {
-      return;
-    }
-    const matchEntityKey = `${+( Object.keys( contents.entityMap ).pop() || 0 ) + 1 }`;
-    const entitiesDedupMap = {};
-    const finalContents = {
-        ...contents,
-        blocks: [ ...contents.blocks
-                    .filter( ( b ) => b.key === prospect.blockKey )
-                    .map( ( block ) => ( {
-                        ...block,
-                        entityRanges: [
-                            ...block.entityRanges.filter( ( r ) => {
-                              if ( r.key !== +matchEntityKey &&
-                              contents.entityMap[r.key] &&
-                              !entitiesDedupMap[r.key]
-                              ) {
-                                entitiesDedupMap[r.key] = true;
-                                return true;
-                              }
-                            }
-
-                            ),
-                            {
-                                offset: prospect.offset,
-                                length: prospect.length,
-                                key: +matchEntityKey
-                            }
-                        ]
-                    } ) ) ],
-        entityMap: {
-            ...contents.entityMap,
-            [matchEntityKey]: {
-                type: 'MATCH_MARKER',
-                data: {
-                  id: prospect.id
-                }
-            }
+  const section = production.resources[prospect.sectionId];
+  const contents = prospect.contentId === 'main' ? section.data.contents.contents : section.data.contents.notes[prospect.contentId];
+  if ( !contents || !contents.entityMap ) {
+    return;
+  }
+  const matchEntityKey = `${+( Object.keys( contents.entityMap ).pop() || 0 ) + 1}`;
+  const entitiesDedupMap = {};
+  const block = contents.blocks[prospect.blockIndex];
+  const finalContents = {
+    ...contents,
+    blocks: [ {
+      ...block,
+      entityRanges: [
+        ...block.entityRanges.filter( ( r ) => {
+          if ( r.key !== +matchEntityKey &&
+            contents.entityMap[r.key] &&
+            !entitiesDedupMap[r.key]
+          ) {
+            entitiesDedupMap[r.key] = true;
+            return true;
+          }
         }
-    };
-    return { ...finalContents };
+
+        ),
+        {
+          offset: prospect.offset,
+          length: prospect.length,
+          key: +matchEntityKey
+        }
+      ]
+    } ],
+    entityMap: {
+      ...contents.entityMap,
+      [matchEntityKey]: {
+        type: 'MATCH_MARKER',
+        data: {
+          id: prospect.id
+        }
+      }
+    }
+  };
+  return { ...finalContents };
 };
 
 class ProspectionCard extends Component {
-  constructor ( props ) {
+  constructor( props ) {
     super( props );
   }
 
   getChildContext = () => ( {
-      production: this.props.production,
-      renderingMode: 'paged',
-      contextualizers: contextualizersModules
+    production: this.props.production,
+    renderingMode: 'paged',
+    contextualizers: contextualizersModules
   } )
 
   render = () => {
@@ -123,7 +122,7 @@ class ProspectionCard extends Component {
      * Callbacks handlers
      */
     const handleClick = () => {
-        addProspect( prospect );
+      addProspect( prospect );
     };
     return (
       <Column
@@ -157,7 +156,7 @@ class ProspectionCard extends Component {
                 </Button>
               </StretchedLayoutItem>
             </StretchedLayoutContainer>
-        }
+          }
         />
       </Column>
     );
@@ -165,9 +164,9 @@ class ProspectionCard extends Component {
 }
 
 ProspectionCard.childContextTypes = {
-    production: PropTypes.object,
-    renderingMode: PropTypes.string,
-    contextualizers: PropTypes.object,
+  production: PropTypes.object,
+  renderingMode: PropTypes.string,
+  contextualizers: PropTypes.object,
 };
 
 ProspectionCard.contextTypes = {

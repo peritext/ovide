@@ -35,69 +35,68 @@ import CenteredIcon from '../../../components/CenteredIcon';
 import MatchRenderer from './MatchRenderer';
 
 const buildMentionRawContent = ( {
-    mention,
-    production
+  mention,
+  production
 } ) => {
-    const section = production.resources[mention.sectionId];
-    const contents = mention.contentId === 'main' ? section.data.contents.contents : section.data.contents.notes[mention.contentId];
-    if ( !contents || !contents.entityMap || !contents.blocks ) {
-      return undefined;
-    }
-    const matchEntityKey = `${+Object.keys( contents.entityMap || {} ).pop() + 1 }`;
-    const entitiesDedupMap = {};
-    const contextualizationEntityKey = Object.keys( contents.entityMap || {} )
-        .find( ( entityKey ) => contents.entityMap[entityKey].type === 'INLINE_ASSET' && contents.entityMap[entityKey].data.asset.id === mention.contextualizationId );
-        const finalContents = {
-        ...contents,
-        blocks: contents.blocks
-                    .filter( ( b ) => b.key === mention.blockKey )
-                    .map( ( block ) => ( {
-                        ...block,
-                        entityRanges: [
-                            ...block.entityRanges,
-                            {
-                                offset: mention.offset,
-                                length: mention.length,
-                                key: matchEntityKey
-                            }
-                        ]
-                        .filter( ( range ) => {
-
-                          if (
-                            +range.key !== +contextualizationEntityKey &&
-                            ( range.key === matchEntityKey || (
-                            contents.entityMap[range.key]
-                            && !entitiesDedupMap[range.key]
-                            )
-                            )
-                            ) {
-                              entitiesDedupMap[range.key] = true;
-                              return true;
-                            }
-                        } )
-                    } ) ),
-        entityMap: {
-            ...contents.entityMap,
-            [matchEntityKey]: {
-                type: 'MENTION_MARKER',
-                data: {
-                  id: mention.id
-                }
-            }
+  const section = production.resources[mention.sectionId];
+  const contents = mention.contentId === 'main' ? section.data.contents.contents : section.data.contents.notes[mention.contentId];
+  if ( !contents || !contents.entityMap || !contents.blocks ) {
+    return undefined;
+  }
+  const matchEntityKey = `${+Object.keys( contents.entityMap || {} ).pop() + 1}`;
+  const entitiesDedupMap = {};
+  const contextualizationEntityKey = Object.keys( contents.entityMap || {} )
+    .find( ( entityKey ) => contents.entityMap[entityKey].type === 'INLINE_ASSET' && contents.entityMap[entityKey].data.asset.id === mention.contextualizationId );
+  const block = contents.blocks[mention.blockIndex];
+  const finalContents = {
+    ...contents,
+    blocks: [ {
+      ...block,
+      entityRanges: [
+        ...block.entityRanges,
+        {
+          offset: mention.offset,
+          length: mention.length,
+          key: matchEntityKey
         }
-    };
-    return finalContents;
+      ]
+        .filter( ( range ) => {
+
+          if (
+            +range.key !== +contextualizationEntityKey &&
+            ( range.key === matchEntityKey || (
+              contents.entityMap[range.key]
+              && !entitiesDedupMap[range.key]
+            )
+            )
+          ) {
+            entitiesDedupMap[range.key] = true;
+            return true;
+          }
+        } )
+    } ],
+    entityMap: {
+      ...contents.entityMap,
+      [matchEntityKey]: {
+        type: 'MENTION_MARKER',
+        data: {
+          id: mention.id
+        }
+      }
+    }
+  };
+  return finalContents;
 };
 
 class MentionCard extends Component {
-  constructor ( props ) {
+  constructor( props ) {
     super( props );
   }
 
   getChildContext = () => ( {
-      production: this.props.production,
-      renderingMode: 'paged',
-      contextualizers: contextualizersModules
+    production: this.props.production,
+    renderingMode: 'paged',
+    contextualizers: contextualizersModules
   } )
 
   render = () => {
@@ -126,7 +125,7 @@ class MentionCard extends Component {
      */
     const cardSize = 12;
     let raw;
-    if ( mention.contentId && mention.blockKey ) {
+    if ( mention.contentId && mention.blockIndex !== undefined ) {
       raw = buildMentionRawContent( { mention, production } );
     }
 
@@ -134,7 +133,7 @@ class MentionCard extends Component {
      * Callbacks handlers
      */
     const handleClick = () => {
-        removeMention( mention );
+      removeMention( mention );
     };
     return (
       <Column
@@ -153,7 +152,7 @@ class MentionCard extends Component {
                   <Content>
                     <MatchRenderer raw={ raw } />
                   </Content>
-                :
+                  :
                   <Notification isColor={ 'danger' }>
                     {translate( 'Bugged glossary mention' )}
                   </Notification>
@@ -174,7 +173,7 @@ class MentionCard extends Component {
                 </Button>
               </StretchedLayoutItem>
             </StretchedLayoutContainer>
-        }
+          }
         />
       </Column>
     );
@@ -182,9 +181,9 @@ class MentionCard extends Component {
 }
 
 MentionCard.childContextTypes = {
-    production: PropTypes.object,
-    renderingMode: PropTypes.string,
-    contextualizers: PropTypes.object,
+  production: PropTypes.object,
+  renderingMode: PropTypes.string,
+  contextualizers: PropTypes.object,
 };
 
 MentionCard.contextTypes = {
