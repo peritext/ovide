@@ -61,7 +61,9 @@ class SummaryEditor extends Component {
     if ( this.props.edition !== nextProps.edition ) {
       const summary = this.getSummaryFromEdition( nextProps.edition );
       this.setState( {
-        summary
+        summary,
+        editedCustomSummaryIndex: this.props.edition.id === nextProps.edition.id ? this.state.editedCustomSummaryIndex : undefined,
+        editedCustomSummaryData: this.props.edition.id === nextProps.edition.id ? this.state.editedCustomSummaryData : undefined
       } );
     }
   }
@@ -74,7 +76,6 @@ class SummaryEditor extends Component {
     this.setState( {
       editedCustomSummaryIndex: index,
       editedCustomSummaryData: data,
-
     } );
   }
 
@@ -208,8 +209,20 @@ class SummaryEditor extends Component {
       };
       const blockData = summary[editedCustomSummaryIndex].data;
       const handleChange = ( newValue ) => {
-        const newSummary = [ ...summary ];
-        newSummary[editedCustomSummaryIndex].data.customSummary = newValue;
+        const newSummary = [
+          ...summary.map( ( s, index ) => {
+            if ( index === editedCustomSummaryIndex ) {
+              return {
+                ...s,
+                data: {
+                  ...s.data,
+                  customSummary: { ...newValue }
+                }
+              };
+            }
+            return s;
+          } )
+        ];
         onSummaryChange( newSummary );
       };
       return (

@@ -100,7 +100,7 @@ class EditionForm extends Component {
   scrollToElement = ( selector ) => {
     setTimeout( () => {
       const element = document.querySelector( selector );
-      console.log( 'scroll to', selector, element );
+      // console.log( 'scroll to', selector, element );
       if ( element ) {
         this.scrollToPosition( element.offsetTop );
       }
@@ -166,12 +166,13 @@ class EditionForm extends Component {
       const template = availableTemplates.find( ( t ) => t.meta.id === thatTemplateId );
       if ( template ) {
         const { meta: { defaultPlan } } = template;
+        console.log( { defaultPlan } );
         this.setState( {
           edition: {
             ...edition,
             data: {
               ...edition.data,
-              plan: defaultPlan,
+              plan: { ...defaultPlan },
             }
           }
         } );
@@ -303,7 +304,6 @@ class EditionForm extends Component {
                           activeOptionId={ formApi.getValue( 'metadata.type' ) }
                           columns={ bigSelectColumnsNumber }
                           onChange={ ( thatType ) => {
-                            console.log( 'type change' );
                             handleEditionTypeChange( thatType, formApi );
                             this.scrollToElement( '#template-choice' );
                           } }
