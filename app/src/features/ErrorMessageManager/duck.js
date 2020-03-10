@@ -22,10 +22,6 @@ import {
   UPDATE_PRODUCTION_METADATA,
   UPDATE_PRODUCTION_SETTINGS,
   UPDATE_SECTIONS_ORDER,
-  SET_SECTION_LEVEL,
-  CREATE_SECTION,
-  UPDATE_SECTION,
-  DELETE_SECTION,
   CREATE_CONTEXTUALIZATION,
   UPDATE_CONTEXTUALIZATION,
   DELETE_CONTEXTUALIZATION,
@@ -93,9 +89,6 @@ const fails = ( state = FAIL_DEFAULT_STATE, action ) => {
     case `${UPDATE_PRODUCTION_METADATA}_FAIL`:
     case `${UPDATE_PRODUCTION_SETTINGS}_FAIL`:
     case `${UPDATE_SECTIONS_ORDER}_FAIL`:
-    case `${SET_SECTION_LEVEL}_FAIL`:
-    case `${CREATE_SECTION}_FAIL`:
-    case `${UPDATE_SECTION}_FAIL`:
     case `${CREATE_CONTEXTUALIZATION}_FAIL`:
     case `${UPDATE_CONTEXTUALIZATION}_FAIL`:
     case `${DELETE_CONTEXTUALIZATION}_FAIL`:
@@ -115,11 +108,6 @@ const fails = ( state = FAIL_DEFAULT_STATE, action ) => {
     case `${DELETE_RESOURCE}_FAIL`:
       return {
         ...state,
-      };
-    case `${DELETE_SECTION}_FAIL`:
-      return {
-        ...state,
-        lastErrorTime: new Date().getTime()
       };
     case `${ACTIVATE_PRODUCTION}_FAIL`:
       if ( action.error && action.error.response && action.error.response.status === 422 ) {

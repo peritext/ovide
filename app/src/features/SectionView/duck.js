@@ -18,7 +18,10 @@ import { getStatePropFromActionSet } from '../../helpers/reduxUtils';
  * ===================================================
  */
 
-import { CREATE_RESOURCE, UPDATE_SECTION, UPDATE_RESOURCE } from '../ProductionManager/duck';
+import {
+  CREATE_RESOURCE,
+  UPDATE_RESOURCE
+} from '../ProductionManager/duck';
 
 /**
  * UI
@@ -363,8 +366,6 @@ function ui( state = UI_DEFAULT_STATE, action ) {
      *   productionIsSaved: false
      * };
      */
-    case `${UPDATE_SECTION}`:
-    case `${UPDATE_SECTION}_SUCCESS`:
     case `${UPDATE_RESOURCE}`:
     case `${UPDATE_RESOURCE}_SUCCESS`:
       return {
