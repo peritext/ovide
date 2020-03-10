@@ -8,7 +8,7 @@ const peritextConfig = {
     video: require( 'peritext-contextualizer-video' ),
     image: require( 'peritext-contextualizer-image' ),
     sourceCode: require( 'peritext-contextualizer-source-code' ),
-    vegaLite: require( 'peritext-contextualizer-vegalite' ),
+    // vegaLite: require( 'peritext-contextualizer-vegalite' ),
     table: require( 'peritext-contextualizer-table' ),
     },
   templates: [
