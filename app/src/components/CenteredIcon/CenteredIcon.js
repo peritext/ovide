@@ -8,7 +8,7 @@ const CenteredIcon = ( {
   src,
   style = {},
   isSize = '16x16',
-  ...props,
+  ...props
 } ) => (
   <Image
     isSize={ isSize }

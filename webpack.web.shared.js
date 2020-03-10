@@ -25,7 +25,8 @@ module.exports = {
         options: {
           babelrc: true,
           extends: path.join(process.cwd(), './.babelrc'),
-          cacheDirectory: true
+          cacheDirectory: true,
+          presets: ['@babel/preset-env']
         }
       },
       // {

@@ -679,7 +679,7 @@ export const requestHTMLBuild = ( { generatorId, templateId } ) => {
  * ========================
  */
 export const requestEditionDownload = ( {
-  ...props,
+  ...props
 } ) => {
   const {
     edition,

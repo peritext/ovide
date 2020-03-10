@@ -1,24 +1,33 @@
 {
-    "plugins": [
-      ["transform-runtime", {
-        "polyfill": false,
+  "plugins": [
+    [
+      "@babel/plugin-transform-runtime",
+      {
+        "corejs": 2,
         "regenerator": true
-      }],
-      "transform-async-to-generator",
-      "transform-decorators-legacy",
-      "transform-decorators",
-      "transform-object-rest-spread",
-      "transform-class-properties",
-      "transform-export-extensions"
+      }
     ],
-    "presets": [
-      [
-        "env", {
-          "targets": {
-            "node": "current"
-          }
+    "@babel/plugin-transform-async-to-generator",
+    [
+      "@babel/plugin-proposal-decorators",
+      {
+        "legacy": true
+      }
+    ],
+    "@babel/plugin-proposal-object-rest-spread",
+    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-export-default-from",
+    "@babel/plugin-proposal-export-namespace-from"
+  ],
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "targets": {
+          "node": "current"
         }
-      ],
-      "react"
-    ]
-  }
+      }
+    ],
+    "@babel/preset-react"
+  ]
+}

@@ -13,7 +13,7 @@ import StretchedLayoutItem from 'quinoa-design-library/components/StretchedLayou
 const ControlledInput = ( {
   value,
   onChange,
-  ...props,
+  ...props
 } ) => {
   const [ actualValue, setActualValue ] = useState( value );
 
