@@ -10,18 +10,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   StretchedLayoutContainer,
-  StretchedLayoutItem,
-  ModalCard,
-  Column,
-  BigSelect,
-
-  /*
-   * ModalCard,
-   * Content,
-   * Button,
-   */
 } from 'quinoa-design-library/components';
-import icons from 'quinoa-design-library/src/themes/millet/icons';
 
 /**
  * Imports Project utils
@@ -33,7 +22,6 @@ import { templates, contextualizers, generators } from '../../../peritextConfig.
 /**
  * Imports Components
  */
-import ExplainedLabel from '../../../components/ExplainedLabel';
 import AsideEditionColumn from './AsideEditionColumn';
 import MainEditionColumn from './MainEditionColumn';
 
@@ -44,7 +32,6 @@ const EditionViewLayout = ( {
   edition,
   addItemsToSummaryVisible,
   // referenceTypesVisible,
-  downloadModalOpen,
 
   citationStylesList,
   citationLocalesList,
@@ -57,7 +44,6 @@ const EditionViewLayout = ( {
     updateCitationStyle,
     updateCitationLocale,
     setAddItemsToSummaryVisible,
-    setDownloadModalOpen,
     setSummaryEdited,
   },
 
@@ -124,8 +110,6 @@ const EditionViewLayout = ( {
       productionId,
     } );
   };
-  const promptDownloadModal = () => setDownloadModalOpen( true );
-  const unpromptDownloadModal = () => setDownloadModalOpen( false );
 
   const renderingLocale = {
     'Table of contents': translate( 'Table of contents' ),
@@ -168,6 +152,16 @@ const EditionViewLayout = ( {
     'Glossary list': translate( 'Glossary list' ),
   };
 
+  const handleExportChoice = ( id ) => {
+    if ( id === 'print' ) {
+      window.frames.preview.focus();
+      window.frames.preview.print();
+    }
+ else {
+      downloadEdition( generators[id], renderingLocale );
+    }
+  };
+
   return (
     <StretchedLayoutContainer
       isDirection={ 'horizontal' }
@@ -186,7 +180,6 @@ const EditionViewLayout = ( {
                 setSummaryEdited,
                 citationStylesList,
                 availableGenerators,
-                promptDownloadModal,
                 citationLocalesList,
                 editionAsideTabMode,
                 onCitationStyleChange,
@@ -196,6 +189,7 @@ const EditionViewLayout = ( {
                 addItemsToSummaryVisible,
                 setEditionAsideTabCollapsed,
                 setAddItemsToSummaryVisible,
+                onExportChoice: handleExportChoice,
             }
           }
       />
@@ -211,42 +205,10 @@ const EditionViewLayout = ( {
               translate,
               contextualizers,
               onEditionChange,
-              availableGenerators,
               summaryEdited,
               setSummaryEdited,
-              onClickOnDownload: promptDownloadModal
             }
           }
-      />
-      <ModalCard
-        isActive={ downloadModalOpen }
-        onClose={ unpromptDownloadModal }
-        headerContent={ translate( 'Download edition' ) }
-        mainContent={
-          <StretchedLayoutContainer isDirection={ 'vertical' }>
-            <StretchedLayoutItem isFlex={ 1 }>
-              <Column>
-                <BigSelect
-                  activeOptionId={ undefined }
-                  onChange={ ( id ) => downloadEdition( generators[id], renderingLocale ) }
-                  boxStyle={ { minHeight: '12rem', textAlign: 'center' } }
-                  options={
-                  availableGenerators.map( ( generator ) => ( {
-                    id: generator.id,
-                    label: (
-                      <ExplainedLabel
-                        title={ translate( `download as ${generator.id}` ) }
-                        explanation={ translate( `explanation about ${generator.id} download` ) }
-                      />
-                    ),
-                    iconUrl: icons.takeAway.black.svg
-                  } ) )
-                }
-                />
-              </Column>
-            </StretchedLayoutItem>
-          </StretchedLayoutContainer>
-        }
       />
     </StretchedLayoutContainer>
   );

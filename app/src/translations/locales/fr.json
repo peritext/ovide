@@ -1109,5 +1109,12 @@
   "Components.TagsEditor.Tag color": "Couleur de l'étiquette",
   "Components.TagsEditor.Tag name": "Nom de l'étiquette",
   "Features.LibraryView.Show items with tags": "Montrer les matériaux étiquettés ...",
-  "Features.SectionView.Show items with tags": "Montrer les matériaux étiquettés ..."
+  "Features.SectionView.Show items with tags": "Montrer les matériaux étiquettés ...",
+  "Features.EditionView.Exports": "Exports",
+  "Features.EditionView.exports": "exports",
+  "Features.EditionView.print or save this view": "imprimer ou sauvegarder cette édition",
+  "Features.EditionView.explanation about print or save this view": "imprimer cette édition ou la sauvegarder au format .pdf via la fenêtre de dialogue d'impression de votre navigateur",
+  "Features.EditionView.styles": "styles",
+  "Features.EditionView.Edition": "Édition",
+  "Features.EditionView.fa-download": "fa-download"
 }

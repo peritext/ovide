@@ -27,7 +27,6 @@ import { RESET_VIEWS_UI } from '../EditionUiWrapper/duck';
 const SET_EDITION_ASIDE_TAB_MODE = 'SET_EDITION_ASIDE_TAB_MODE';
 const SET_EDITION_ASIDE_TAB_COLLAPSED = 'SET_EDITION_ASIDE_TAB_COLLAPSED';
 const SET_LOADED_ASSET = 'SET_LOADED_ASSET';
-const SET_DOWNLOAD_MODAL_OPEN = 'SET_DOWNLOAD_MODAL_OPEN';
 const SET_SUMMARY_EDITED = 'SET_SUMMARY_EDITED';
 
 const GET_CITATION_STYLES_LIST = 'GET_CITATION_STYLES_LIST';
@@ -69,11 +68,6 @@ export const setLoadedAsset = ( payload ) => ( {
   payload,
 } );
 
-export const setDownloadModalOpen = ( payload ) => ( {
-  type: SET_DOWNLOAD_MODAL_OPEN,
-  payload,
-} );
-
 export const setSummaryEdited = ( payload ) => ( {
   type: SET_SUMMARY_EDITED,
   payload,
@@ -89,7 +83,6 @@ const UI_DEFAULT_STATE = {
   editionAsideTabMode: 'settings',
   editionAsideTabCollapsed: false,
   referenceTypesVisible: false,
-  downloadModalOpen: false,
   summaryEdited: false,
   lastGeneratorMessage: undefined,
 };
@@ -107,7 +100,6 @@ function ui( state = UI_DEFAULT_STATE, action ) {
       return UI_DEFAULT_STATE;
     case SET_EDITION_ASIDE_TAB_MODE:
     case SET_EDITION_ASIDE_TAB_COLLAPSED:
-    case SET_DOWNLOAD_MODAL_OPEN:
     case SET_SUMMARY_EDITED:
       const propName = getStatePropFromActionSet( action.type );
       return {
@@ -178,7 +170,6 @@ export default combineReducers( {
 
 const editionAsideTabMode = ( state ) => state.ui.editionAsideTabMode;
 const editionAsideTabCollapsed = ( state ) => state.ui.editionAsideTabCollapsed;
-const downloadModalOpen = ( state ) => state.ui.downloadModalOpen;
 const summaryEdited = ( state ) => state.ui.summaryEdited;
 const lastGeneratorMessage = ( state ) => state.ui.lastGeneratorMessage;
 
@@ -196,7 +187,6 @@ export const selector = createStructuredSelector( {
   citationStylesList,
   citationLocalesList,
   loadedAssets,
-  downloadModalOpen,
   summaryEdited,
   lastGeneratorMessage
 } );

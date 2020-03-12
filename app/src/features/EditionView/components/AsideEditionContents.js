@@ -15,7 +15,10 @@ import {
   Field,
   Label,
   Level,
+  Icon,
   Select,
+  StretchedLayoutContainer,
+  StretchedLayoutItem,
 } from 'quinoa-design-library/components/';
 import debounce from 'lodash/debounce';
 import Tooltip from 'react-tooltip';
@@ -39,8 +42,7 @@ import AuthorsManager from '../../../components/AuthorsManager';
 import ExplainedLabel from '../../../components/ExplainedLabel';
 import DebouncedInput from '../../../components/DebouncedInput';
 import DebouncedTextarea from '../../../components/DebouncedTextarea';
-import StretchedLayoutContainer from 'quinoa-design-library/components/StretchedLayoutContainer';
-import StretchedLayoutItem from 'quinoa-design-library/components/StretchedLayoutItem';
+import HelpPin from '../../../components/HelpPin';
 
 class AsideEditionContents extends Component {
   constructor( props ) {
@@ -82,6 +84,9 @@ class AsideEditionContents extends Component {
         onCitationLocaleChange,
 
         setSummaryEdited,
+
+        availableGenerators,
+        onExportChoice: handleExportChoice,
 
         /*
          * production,
@@ -266,6 +271,32 @@ class AsideEditionContents extends Component {
         case 'settings':
           return (
             <Column>
+              <Level>
+                <Button
+                  onClick={ handleToggleSummaryEdited }
+                  isColor={ summaryEdited ? 'primary' : 'primary' }
+                  isFullWidth
+                >
+                  {summaryEdited ? translate( 'Close summary edition' ) : translate( 'Edit summary' )}
+                </Button>
+              </Level>
+              <Label>
+                {translate( 'Current summary' )}
+              </Label>
+              <ol style={ { marginLeft: '1rem', marginBottom: '1rem' } }>
+                {
+                      summary.map( ( summaryBlock, index ) => (
+                        <li key={ index }>
+                          {
+                            summaryBlock.data && summaryBlock.data.customTitle && summaryBlock.data.customTitle.length ?
+                            `${summaryBlock.data.customTitle} (${translate( summaryBlock.type )})`
+                            : translate( summaryBlock.type )
+                          }
+                        </li>
+                      ) )
+                    }
+              </ol>
+              
               <Field>
                 <Control>
                   <ExplainedLabel
@@ -508,36 +539,78 @@ class AsideEditionContents extends Component {
               </Level>
             </Column>
           );
-        case 'summary':
+        case 'exports':
           return (
             <Column>
-              <div style={ { marginLeft: '1rem' } }>
-                <Label>
-                  {translate( 'Current summary' )}
-                </Label>
-                <ol style={ { marginLeft: '2rem' } } >
-                  {
-                      summary.map( ( summaryBlock, index ) => (
-                        <li key={ index }>
-                          {
-                            summaryBlock.data && summaryBlock.data.customTitle && summaryBlock.data.customTitle.length ?
-                            `${summaryBlock.data.customTitle} (${translate( summaryBlock.type )})`
-                            : translate( summaryBlock.type )
-                          }
-                        </li>
-                      ) )
-                    }
-                </ol>
-              </div>
-              <Column>
-                <Button
-                  onClick={ handleToggleSummaryEdited }
-                  isColor={ summaryEdited ? 'primary' : 'primary' }
-                  isFullWidth
-                >
-                  {summaryEdited ? translate( 'Close summary edition' ) : translate( 'Edit summary' )}
-                </Button>
-              </Column>
+              <StretchedLayoutContainer
+                style={ { paddingBottom: '2rem' } }
+                isDirection={ 'vertical' }
+              >
+                {
+                    [
+                      ...availableGenerators
+                      .map( ( generator ) => ( {
+                        id: generator.id,
+                        title: translate( `download as ${generator.id}` ),
+                        explanation: translate( `explanation about ${generator.id} download` ),
+                        icon: 'fa-download'
+                      } ) ),
+                      edition.metadata.type === 'paged' ?
+                      {
+                        id: 'print',
+                        title: translate( 'print or save this view' ),
+                        explanation: translate( 'explanation about print or save this view' ),
+                        icon: 'fa-print'
+                      } : undefined
+                    ]
+                    .filter( ( o ) => o )
+                    .map( ( option, index ) => {
+                      return (
+                        <StretchedLayoutItem key={ index }>
+                          <Column>
+                            <Button
+                              onClick={ () => handleExportChoice( option.id ) }
+                              isFullWidth
+                            >
+                              <Icon
+                                isSize={ 'small' }
+                                isAlign={ 'left' }
+                                className={ `fa ${option.icon}` }
+                              />
+                              <span style={ { marginRight: '.5rem' } }>{ option.title }</span>
+                              <HelpPin>
+                                {option.explanation}
+                              </HelpPin>
+                            </Button>
+                          </Column>
+                        </StretchedLayoutItem>
+                        );
+                    } )
+                  }
+                {/* <StretchedLayoutItem isFlex={ 1 }>
+                    <Column>
+                      <BigSelect
+                        activeOptionId={ undefined }
+                        onChange={ ( id ) => downloadEdition( generators[id], renderingLocale ) }
+                        boxStyle={ { minHeight: '12rem', textAlign: 'center' } }
+                        options={
+                          [
+                            ...availableGenerators.map( ( generator ) => ( {
+                              id: generator.id,
+                              label: (
+                                <ExplainedLabel
+                                  title={ translate( `download as ${generator.id}` ) }
+                                  explanation={ translate( `explanation about ${generator.id} download` ) }
+                                />
+                              ),
+                              iconUrl: icons.takeAway.black.svg
+                            } ) )
+                          ]
+                      }
+                      />
+                    </Column>
+                  </StretchedLayoutItem> */}
+              </StretchedLayoutContainer>
             </Column>
           );
         case 'styles':

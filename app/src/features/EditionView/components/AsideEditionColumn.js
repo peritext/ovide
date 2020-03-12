@@ -55,6 +55,8 @@ const AsideEditionColumn = ( {
   template,
   summaryEdited,
   setSummaryEdited,
+  availableGenerators,
+  onExportChoice,
 
 }, { t } ) => {
 
@@ -78,7 +80,7 @@ const AsideEditionColumn = ( {
    * Callbacks handlers
    */
   const handleSetAsideAsSettings = () => setEditionAsideTabMode( 'settings' );
-  const handleSetAsideAsSummary = () => setEditionAsideTabMode( 'summary' );
+  const handleSetAsideAsExports = () => setEditionAsideTabMode( 'exports' );
   const handleSetAsideAsStyles = () => setEditionAsideTabMode( 'styles' );
   const handleToggleAsideCollapsed = () => setEditionAsideTabCollapsed( !editionAsideTabCollapsed );
 
@@ -110,18 +112,10 @@ const AsideEditionColumn = ( {
                     onClick={ handleSetAsideAsSettings }
                     isActive={ editionAsideTabMode === 'settings' }
                   >
-                    <TabLink>{translate( 'Settings' )}</TabLink>
+                    <TabLink>{translate( 'Edition' )}</TabLink>
                   </Tab>
                 }
-                {
-                  !editionAsideTabCollapsed &&
-                  <Tab
-                    onClick={ handleSetAsideAsSummary }
-                    isActive={ editionAsideTabMode === 'summary' }
-                  >
-                    <TabLink>{translate( 'Summary' )}</TabLink>
-                  </Tab>
-                }
+
                 {
                   !editionAsideTabCollapsed &&
                   <Tab
@@ -131,6 +125,15 @@ const AsideEditionColumn = ( {
                     <TabLink>
                       {translate( 'Styles' )}
                     </TabLink>
+                  </Tab>
+                }
+                {
+                  !editionAsideTabCollapsed &&
+                  <Tab
+                    onClick={ handleSetAsideAsExports }
+                    isActive={ editionAsideTabMode === 'exports' }
+                  >
+                    <TabLink>{translate( 'Exports' )}</TabLink>
                   </Tab>
                 }
                 <Tab
@@ -185,6 +188,8 @@ const AsideEditionColumn = ( {
                 template,
                 summaryEdited,
                 setSummaryEdited,
+                availableGenerators,
+                onExportChoice,
               }
             }
           />

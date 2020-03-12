@@ -8,8 +8,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button,
-  Icon,
   Column,
 } from 'quinoa-design-library/components/';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
@@ -455,8 +453,6 @@ const MainEditionColumn = ( {
   edition,
   template,
   contextualizers,
-  availableGenerators,
-  onClickOnDownload: handleClickOnDownload,
   translate,
   summaryEdited,
   setSummaryEdited,
@@ -476,11 +472,6 @@ const MainEditionColumn = ( {
       }
     } );
   };
-
-   const handleClickOnPrint = () => {
-     window.frames.preview.focus();
-     window.frames.preview.print();
-   };
 
   if ( summaryEdited ) {
     return (
@@ -517,42 +508,6 @@ const MainEditionColumn = ( {
             }
           }
       />
-      <div
-        className={ 'edition-actions' }
-      >
-        {availableGenerators.length > 0 &&
-        <Button
-          className={ 'is-rounded' }
-          onClick={ handleClickOnDownload }
-          data-for={ 'tooltip' }
-          data-tip={ translate( 'download this edition' ) }
-        >
-          <Icon
-            isSize={ 'small' }
-            isAlign={ 'left' }
-            className={ 'fa fa-download' }
-          />
-          <span>{ translate( 'download this edition' ) }</span>
-        </Button>
-        }
-        {
-          // edition.metadata.type === 'paged' &&
-          <Button
-            className={ 'is-rounded' }
-            onClick={ handleClickOnPrint }
-            data-for={ 'tooltip' }
-            data-tip={ translate( 'print this edition' ) }
-          >
-            <Icon
-              isSize={ 'small' }
-              isAlign={ 'left' }
-              className={ 'fa fa-print' }
-            />
-            <span>{ translate( 'print this edition' ) }</span>
-          </Button>
-        }
-
-      </div>
     </Column>
   );
 };

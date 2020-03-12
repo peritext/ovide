@@ -1109,5 +1109,12 @@
   "Components.TagsEditor.Tag color": "Tag color",
   "Components.TagsEditor.Tag name": "Tag name",
   "Features.LibraryView.Show items with tags": "Show materials tagged with...",
-  "Features.SectionView.Show items with tags": "Show materials tagged with..."
+  "Features.SectionView.Show items with tags": "Show materials tagged with...",
+  "Features.EditionView.Exports": "Exports",
+  "Features.EditionView.exports": "exports",
+  "Features.EditionView.print or save this view": "print or save this edition",
+  "Features.EditionView.explanation about print or save this view": "print this edition - or save it as a .pdf file through your browser print dialog window",
+  "Features.EditionView.styles": "styles",
+  "Features.EditionView.Edition": "Edition",
+  "Features.EditionView.fa-download": "fa-download"
 }
