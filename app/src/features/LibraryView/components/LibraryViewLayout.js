@@ -101,6 +101,7 @@ class LibraryViewLayout extends Component {
       mainColumnMode,
       optionsVisible,
       filterValues,
+      tagsFilterValues,
       sortValue,
       statusFilterValue,
       searchString,
@@ -113,6 +114,7 @@ class LibraryViewLayout extends Component {
         setMainColumnMode,
         // setSearchString,
         setFilterValues,
+        setTagsFilterValues,
         setSortValue,
         setStatusFilterValue,
         setPromptedToDeleteResourceId,
@@ -129,6 +131,10 @@ class LibraryViewLayout extends Component {
         createAsset,
         updateAsset,
         deleteAsset,
+
+        createTag,
+        updateTag,
+        deleteTag,
 
         setSelectedResourcesIds,
         setResourcesPromptedToDelete,
@@ -156,6 +162,7 @@ class LibraryViewLayout extends Component {
      */
 
     const activeFilters = Object.keys( filterValues ).filter( ( key ) => filterValues[key] );
+    const activeTagsFilters = Object.keys( tagsFilterValues ).filter( ( key ) => tagsFilterValues[key] );
     const statusFilterValues = [
       {
         id: 'all',
@@ -181,11 +188,16 @@ class LibraryViewLayout extends Component {
                   resourcesNumberOfMentionsMap[thisResourceId] + 1 : 1;
                 return thisResourceId;
               } ) );
-
     visibleResources = visibleResources
       .filter( ( resource ) => {
         if ( activeFilters.length ) {
           return activeFilters.indexOf( resource.metadata.type ) > -1;
+        }
+        return true;
+      } )
+      .filter( ( resource ) => {
+        if ( activeTagsFilters.length ) {
+          return activeTagsFilters.find( ( id ) => resource.metadata.tags.includes( id ) ) !== undefined;
         }
         return true;
       } )
@@ -236,6 +248,12 @@ class LibraryViewLayout extends Component {
       setFilterValues( {
         ...filterValues,
         [type]: filterValues[type] ? false : true
+      } );
+    };
+    const handleTagsToggle = ( tagId ) => {
+      setTagsFilterValues( {
+        ...tagsFilterValues,
+        [tagId]: tagsFilterValues[tagId] ? false : true
       } );
     };
 
@@ -540,6 +558,10 @@ class LibraryViewLayout extends Component {
           onGoToResource={ handleGoToResource }
           existingAssets={ relatedAssets }
           asNewResource={ false }
+          tags={ production.tags }
+          createTag={ createTag }
+          updateTag={ updateTag }
+          deleteTag={ deleteTag }
         />
       );
     }
@@ -634,6 +656,11 @@ class LibraryViewLayout extends Component {
             onCancel={ handleSetMainColumnToList }
             onSubmit={ handleSubmit }
             bigSelectColumnsNumber={ 3 }
+            tags={ production.tags }
+            createTag={ createTag }
+            updateTag={ updateTag }
+            deleteTag={ deleteTag }
+            productionId={ production.id }
             asNewResource
           />
         );
@@ -646,6 +673,9 @@ class LibraryViewLayout extends Component {
         const handleFiltersChange = ( option, optionDomain ) => {
           if ( optionDomain === 'filter' ) {
             handleFilterToggle( option );
+          }
+          else if ( optionDomain === 'tags' ) {
+            handleTagsToggle( option );
           }
           else if ( optionDomain === 'sort' ) {
             setSortValue( option );
@@ -703,6 +733,7 @@ class LibraryViewLayout extends Component {
               productionId={ productionId }
               getTitle={ getResourceTitle }
               key={ resource.id }
+              tags={ production.tags }
             />
           );
         };
@@ -714,6 +745,7 @@ class LibraryViewLayout extends Component {
               <Column style={ { paddingRight: 0 } }>
                 <LibraryFiltersBar
                   filterValues={ filterValues }
+                  tagsFilterValues={ tagsFilterValues }
                   onDeleteSelection={ handleDeleteSelection }
                   onDeselectAllVisibleResources={ handleDeselectAllVisibleResources }
                   onSearchStringChange={ handleResourceSearchChange }
@@ -729,6 +761,7 @@ class LibraryViewLayout extends Component {
                   statusFilterValues={ statusFilterValues }
                   translate={ translate }
                   visibleResources={ visibleResources }
+                  tags={ production.tags }
                 />
               </Column>
             </StretchedLayoutItem>

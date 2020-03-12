@@ -78,6 +78,10 @@ const MainSectionAside = ( {
   updateAsset,
   deleteAsset,
 
+  createTag,
+  updateTag,
+  deleteTag,
+
   editedContextualizationId,
   editedContextualizationType,
   handleCloseEditedContextualization,
@@ -342,6 +346,10 @@ const MainSectionAside = ( {
               <ResourceForm
                 onCancel={ handleCancelResourceEdition }
                 onSubmit={ handleSubmitExistingResource }
+                tags={ production.tags }
+                createTag={ createTag }
+                updateTag={ updateTag }
+                deleteTag={ deleteTag }
                 resource={ editedResource }
                 existingAssets={ relatedAssets }
                 asNewResource={ false }
@@ -455,6 +463,10 @@ const MainSectionAside = ( {
                     resourceType={ newResourceType }
                     onCancel={ handleSetMainColumnModeEdition }
                     onSubmit={ handleSubmitNewResource }
+                    tags={ production.tags }
+                    createTag={ createTag }
+                    updateTag={ updateTag }
+                    deleteTag={ deleteTag }
                     asNewResource
                   />
                 </Column>
@@ -517,8 +529,13 @@ const MainSectionAside = ( {
                     ...defaultSectionMetadata,
                     title: guessTitle( section.metadata.title )
                   } }
+                  tags={ production.tags || {} }
+                  createTag={ createTag }
+                  updateTag={ updateTag }
+                  deleteTag={ deleteTag }
                   onSubmit={ onNewSectionSubmit }
                   onCancel={ handleSetMainColumnModeEdition }
+                  productionId={ productionId }
                 />
               </Column>
             </StretchedLayoutItem>
@@ -560,6 +577,11 @@ const MainSectionAside = ( {
                   metadata={ { ...section.metadata } }
                   onSubmit={ handleUpdateMetadata }
                   onCancel={ handleSetMainColumnModeEdition }
+                  tags={ production.tags || {} }
+                  createTag={ createTag }
+                  updateTag={ updateTag }
+                  deleteTag={ deleteTag }
+                  productionId={ productionId }
                 />
               </Column>
             </StretchedLayoutItem>

@@ -22,6 +22,7 @@ import {
 import icons from 'quinoa-design-library/src/themes/millet/icons';
 import CenteredIcon from '../../../components/CenteredIcon';
 import { translateNameSpacer } from '../../../helpers/translateUtils';
+import ColorMarker from '../../../components/ColorMarker/ColorMarker';
 
 const LibraryFiltersBar = ( {
   filterValues,
@@ -38,10 +39,13 @@ const LibraryFiltersBar = ( {
   sortValue,
   statusFilterValue,
   statusFilterValues,
+  tagsFilterValues,
   // translate,
   visibleResources,
+  tags = {},
 }, { t } ) => {
   const translate = translateNameSpacer( t, 'Features.LibraryView' );
+
   return (
     <Level
       isMobile
@@ -64,15 +68,18 @@ const LibraryFiltersBar = ( {
             isActive={ optionsVisible }
             isColor={ Object.keys( filterValues ).filter( ( f ) => filterValues[f] ).length > 0 ? 'info' : '' }
             value={ {
-            sort: {
-              value: sortValue,
-            },
-            filter: {
-              value: Object.keys( filterValues ).filter( ( f ) => filterValues[f] ),
-            },
-            status: {
-              value: statusFilterValue,
-            }
+              sort: {
+                value: sortValue,
+              },
+              filter: {
+                value: Object.keys( filterValues ).filter( ( f ) => filterValues[f] ),
+              },
+              status: {
+                value: statusFilterValue,
+              },
+              tags: {
+                value: Object.keys( tagsFilterValues ).filter( ( id ) => tagsFilterValues[id] ),
+              }
           } }
             options={
             [
@@ -115,6 +122,28 @@ const LibraryFiltersBar = ( {
                 )
               } ) ),
             },
+            Object.keys( tags ).length ?
+            {
+              label: translate( 'Show items with tags' ),
+              id: 'tags',
+              options:
+                Object.entries( tags )
+                .sort( ( [ key1, tag1 ], [ key2, tag2 ] ) => { /* eslint no-unused-vars : 0 */
+                  if ( tag1.name > tag2.name ) {
+                    return 1;
+                  }
+ else return -1;
+                } )
+                .map( ( [ key, tag ] ) => ( {
+                  id: key,
+                  label: (
+                    <span>
+                      <ColorMarker color={ tag.color } />
+                      <span>{tag.name}</span>
+                    </span>
+                   )
+                } ) )
+            } : undefined,
             {
               label: translate( 'Show ...' ),
               id: 'status',
@@ -123,7 +152,7 @@ const LibraryFiltersBar = ( {
                 label: type.label
               } ) ),
             }
-          ]
+          ].filter( ( d ) => d )
         }
           >
             {translate( 'Filters' )}

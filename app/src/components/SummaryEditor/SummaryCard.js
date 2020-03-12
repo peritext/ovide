@@ -49,6 +49,7 @@ class SummaryCard extends Component {
         onMoveDown,
         onBlockDataChange,
         onEditCustomSummary,
+        production,
       },
       state: {
         isEdited,
@@ -65,7 +66,6 @@ class SummaryCard extends Component {
     };
 
     const customTitle = summaryBlock.data && summaryBlock.data.customTitle;
-
     return (
       <div
         ref={ providedBlock.innerRef }
@@ -180,6 +180,7 @@ class SummaryCard extends Component {
                     document={ summaryBlock.data }
                     onAfterChange={ onBlockDataChange }
                     onEditCustomSummary={ onEditCustomSummary }
+                    contextDocument={ production }
                   />
                 </div>
               </div>

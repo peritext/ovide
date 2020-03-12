@@ -488,6 +488,7 @@ const MainEditionColumn = ( {
         {
           ...{
             template,
+            production,
             edition,
             translate,
             setSummaryEdited,

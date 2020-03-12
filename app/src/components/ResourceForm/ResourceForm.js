@@ -18,6 +18,8 @@ import {
   Column,
   Control,
   Delete,
+  Label,
+  HelpPin,
   DropZone,
   Field,
   Help,
@@ -58,6 +60,7 @@ import SchemaForm from '../SchemaForm';
 import ExplainedLabel from '../ExplainedLabel';
 import ImageGalleryEditor from '../ImageGalleryEditor';
 import GlossaryForm from '../GlossaryForm';
+import TagsEditor from '../TagsEditor';
 
 /**
  * Imports Assets
@@ -97,7 +100,11 @@ class DataForm extends Component {
       // existingAssetsIds,
       onAssetChange,
       assets,
-      formApi
+      formApi,
+      tags,
+      createTag,
+      updateTag,
+      deleteTag,
     } = this.props;
     const { t } = this.context;
 
@@ -188,6 +195,12 @@ class DataForm extends Component {
           onAssetChange={ onAssetChange }
           translate={ translate }
           onChange={ handleDataChange }
+          tags={ tags }
+          resourceTags={ formApi.getValue( 'metadata.tags' ) }
+          onTagsUpdate={ ( theseTags ) => formApi.setValue( 'metadata.tags', theseTags ) }
+          createTag={ createTag }
+          updateTag={ updateTag }
+          deleteTag={ deleteTag }
         />
       );
 
@@ -225,6 +238,13 @@ class DataForm extends Component {
                 style={ { minWidth: '10rem' } }
                 data={ resource.data.citations }
                 onChange={ handleEditBib }
+                tags={ tags }
+                resourceTags={ formApi.getValue( 'metadata.tags' ) }
+                onTagsUpdate={ ( theseTags ) => formApi.setValue( 'metadata.tags', theseTags ) }
+                createTag={ createTag }
+                updateTag={ updateTag }
+                deleteTag={ deleteTag }
+                translate={ translate }
               />
             }
 
@@ -364,7 +384,7 @@ class ResourceForm extends Component {
         resource.metadata.type = nextProps.resourceType;
       }
       this.setState( {
-        resource
+        resource,
       } );
     }
     if ( this.props.existingAssets !== nextProps.existingAssets ) {
@@ -426,7 +446,12 @@ class ResourceForm extends Component {
         showTitle = true,
         bigSelectColumnsNumber = 2,
         onGoToResource,
-        allowGoToResource = true
+        allowGoToResource = true,
+        tags = {},
+
+        createTag,
+        updateTag,
+        deleteTag,
 
         /*
          * existingAssetsIds,
@@ -591,6 +616,11 @@ class ResourceForm extends Component {
                             onAssetChange={ onAssetChange }
                             resourceType={ resource.metadata.type ? resource.metadata.type : formApi.getValue( 'metadata.type' ) }
                             formApi={ formApi }
+                            tags={ tags }
+                            createTag={ createTag }
+                            updateTag={ updateTag }
+                            deleteTag={ deleteTag }
+                            productionId={ productionId }
                           />
                         </NestedField>
                         {
@@ -686,6 +716,31 @@ class ResourceForm extends Component {
                               </Control>
                             </Field>
                           </Column>
+                          <Column>
+                            <Field>
+                              <Control>
+                                <Label>
+                                  {translate( 'Tags attached to the material' )}
+                                  <HelpPin place={ 'right' }>
+                                    {translate( 'Explanation about tags' )}
+                                  </HelpPin>
+                                </Label>
+                                <TagsEditor
+                                  activeTagsIds={ formApi.getValue( 'metadata.tags' ) }
+                                  {
+                                    ...{
+                                      tags,
+                                      createTag,
+                                      updateTag,
+                                      deleteTag,
+                                      productionId,
+                                      onUpdateTags: ( theseTags ) => formApi.setValue( 'metadata.tags', theseTags ),
+                                    }
+                                  }
+                                />
+                              </Control>
+                            </Field>
+                          </Column>
                         </Column>
                       }
                     <Level />
@@ -708,22 +763,8 @@ class ResourceForm extends Component {
                             </Button>
                           </StretchedLayoutItem>
 
-                          <StretchedLayoutItem isFlex={ 1 }>
-                            <Button
-                              isFullWidth
-                              isColor={ 'danger' }
-                              onClick={ onCancel }
-                            >
-                              {translate( 'Cancel' )}
-                            </Button>
-                          </StretchedLayoutItem>
-                        </StretchedLayoutContainer>
-                        {
-                          !asNewResource && allowGoToResource &&
-                          <StretchedLayoutContainer
-                            style={ { marginTop: '1rem' } }
-                            isDirection={ 'horizontal' }
-                          >
+                          {
+                            !asNewResource && allowGoToResource &&
                             <StretchedLayoutItem isFlex={ 1 }>
                               <Button
                                 type={ 'submit' }
@@ -735,9 +776,19 @@ class ResourceForm extends Component {
                                 {translate( 'Edit contents' )}
                               </Button>
                             </StretchedLayoutItem>
-                          </StretchedLayoutContainer>
-                        }
+                          }
 
+                          <StretchedLayoutItem isFlex={ 1 }>
+                            <Button
+                              isFullWidth
+                              isColor={ 'danger' }
+                              onClick={ onCancel }
+                            >
+                              {translate( 'Cancel' )}
+                            </Button>
+                          </StretchedLayoutItem>
+
+                        </StretchedLayoutContainer>
                       </Column>
                     </StretchedLayoutItem>
                   </StretchedLayoutItem>

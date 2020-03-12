@@ -66,7 +66,22 @@ const ErrorDisplay = ( { error } ) => (
  * @param {boolean} required - whether edited property is required
  * @return {ReactMarkup} form - the form part corresponding to form scope
  */
-const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onChange, required, translate, assets, onAssetChange, onEditCustomSummary ) => {
+const makeForm = (
+  totalSchema,
+  model,
+  totalObject,
+  value,
+  level,
+  key,
+  path,
+  onChange,
+  required,
+  translate,
+  assets,
+  onAssetChange,
+  onEditCustomSummary,
+  contextDocument
+) => {
   const render = () => {
         let onRadioClick;
 
@@ -212,6 +227,67 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                 </ul>
               );
             }
+            // value has a dynamic enum
+            else if ( model.enumTargetMap ) {
+              const target = contextDocument && contextDocument[model.enumTargetMap];
+              if ( target ) {
+                const options = Object.entries( target )
+                .map( ( [ _key, obj ] ) => { /* eslint no-unused-vars : 0 */
+                  return {
+                    id: obj[model.enumId],
+                    label: obj[model.enumLabel]
+                  };
+                } );
+                const activeValue = value || [];
+                return (
+                  <ul className={ 'items-list checkbox-list' }>
+                    {
+                      options.map( ( { id, label } ) => {
+                        const checked = activeValue.indexOf( id ) > -1;
+                        onRadioClick = ( e ) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          let newValue;
+                          // uncheck option
+                          if ( checked ) {
+                            newValue = activeValue.filter( ( val ) => val !== id );
+                            onChange( path, newValue );
+                          // check option
+                          }
+                          else {
+                            newValue = [ ...activeValue, id ];
+                          }
+                          onChange( path, newValue );
+                        };
+                        return (
+                          <li
+                            key={ id }
+                          >
+                            <label
+                              className={ 'checkbox' }
+                              htmlFor={ id }
+                              onClick={ onRadioClick }
+                            >
+                              <input
+                                type={ 'checkbox' }
+                                id={ id }
+                                name={ translate( key ) }
+                                value={ label }
+                                onChange={ onRadioClick }
+                                checked={ checked || false }
+                              />
+                              <div><div /></div>
+                              {label}
+                            </label>
+                          </li>
+                        );
+                      } )
+                    }
+                  </ul>
+                );
+              }
+              return null;
+            }
             // array allowing to manage a list of objects (e.g. authors)
             else {
               const activeValue = ( value && Array.isArray( value ) ) ? value : [];
@@ -253,6 +329,7 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                           translate,
                           assets,
                           onAssetChange,
+                          contextDocument,
                         )}
                           {index > 0 &&
                             <button
@@ -486,6 +563,7 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                         assets,
                         onAssetChange,
                         onEditCustomSummary,
+                        contextDocument
                       )}
                     </div>
                   ) )
@@ -512,7 +590,8 @@ const makeForm = ( totalSchema, model, totalObject, value, level, key, path, onC
                   translate,
                   assets,
                   onAssetChange,
-                  onEditCustomSummary
+                  onEditCustomSummary,
+                  contextDocument
                 );
               }
             }
@@ -653,6 +732,7 @@ export default class SchemaForm extends Component {
         onAssetChange,
         omitProps = [],
         onEditCustomSummary,
+        contextDocument,
         title,
         // onCancel
       },
@@ -674,7 +754,22 @@ export default class SchemaForm extends Component {
         className={ 'ovide-SchemaForm' }
       >
         {title && <h1 className={ 'title is-3' }>{title}</h1>}
-        {makeForm( schema, schema, document, document, 0, undefined, [], onChange, false, t, assets, onAssetChange, onEditCustomSummary )}
+        {makeForm(
+          schema,
+          schema,
+          document,
+          document,
+          0,
+          undefined,
+          [],
+          onChange,
+          false,
+          t,
+          assets,
+          onAssetChange,
+          onEditCustomSummary,
+          contextDocument
+        )}
         {errors &&
           <ul>
             {errors.map( ( error, key ) => (

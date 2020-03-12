@@ -65,6 +65,10 @@ export const CREATE_EDITION = 'CREATE_EDITION';
 export const UPDATE_EDITION = 'UPDATE_EDITION';
 export const DELETE_EDITION = 'DELETE_EDITION';
 
+export const CREATE_TAG = 'CREATE_TAG';
+export const UPDATE_TAG = 'UPDATE_TAG';
+export const DELETE_TAG = 'DELETE_TAG';
+
 export const UPDATE_CITATION_STYLE = 'UPDATE_CITATION_STYLE';
 export const UPDATE_CITATION_LOCALE = 'UPDATE_CITATION_LOCALE';
 
@@ -243,6 +247,91 @@ function production( state = PRODUCTION_DEFAULT_STATE, action ) {
               }, {} ),
             contextualizers,
             contextualizations,
+            lastUpdateAt: payload.lastUpdateAt,
+          }
+      };
+
+    /**
+     * PRODUCTION TAGS
+     */
+    case `${CREATE_TAG}`:
+      if ( !state.production ) {
+        return state;
+      }
+      return {
+          ...state,
+          production: {
+            ...state.production,
+            tags: {
+              ...state.production.tags,
+              [payload.tagId]: {
+                ...payload.tag,
+                lastUpdateAt: payload.lastUpdateAt,
+                createdAt: payload.lastUpdateAt
+              }
+            },
+            lastUpdateAt: payload.lastUpdateAt,
+          }
+      };
+    case `${UPDATE_TAG}`:
+      if ( !state.production ) {
+        return state;
+      }
+      return {
+          ...state,
+          production: {
+            ...state.production,
+            tags: {
+              ...state.production.tags,
+              [payload.tagId]: {
+                ...payload.tag,
+                lastUpdateAt: payload.lastUpdateAt,
+              }
+            },
+            lastUpdateAt: payload.lastUpdateAt,
+          }
+      };
+
+    case `${DELETE_TAG}`:
+    case `${DELETE_TAG}_SUCCESS`:
+      if ( !state.production ) {
+        return state;
+      }
+
+      return {
+          ...state,
+          production: {
+            ...state.production,
+            // filter out tag mentions in other resources
+            resources: Object.keys( state.production.resources )
+              .reduce( ( thatResult, thatResourceId ) => {
+                const thatResource = state.production.resources[thatResourceId];
+
+                return {
+                  ...thatResult,
+                  [thatResourceId]: thatResource.metadata.tags && thatResource.metadata.tags.includes( payload.tagId ) ?
+                    {
+                      ...thatResource,
+                      metadata: {
+                        ...thatResource.metadata,
+                        tags: thatResource.metadata.tags.filter( ( t ) => t !== payload.tagId )
+                      }
+                    }
+                  :
+                    thatResource
+                };
+              }, {} ),
+              // filter out tag mentions in other resources
+              tags: Object.keys( state.production.tags )
+              .reduce( ( thatResult, thatTagId ) => {
+                if ( thatTagId === payload.tagId ) {
+                  return thatResult;
+                }
+                else return {
+                  ...thatResult,
+                  [thatTagId]: state.production.tags[thatTagId]
+                };
+              }, {} ),
             lastUpdateAt: payload.lastUpdateAt,
           }
       };
@@ -596,10 +685,31 @@ export const updateProduction = ( TYPE, payload, callback ) => {
         ...DEFAULT_PAYLOAD_SCHEMA,
         properties: {
           ...DEFAULT_PAYLOAD_SCHEMA.properties,
-          asset: productionSchema.definitions.edition.properties.id
+          edition: productionSchema.definitions.edition.properties.id
         }
       };
       break;
+
+      case CREATE_TAG:
+      case UPDATE_TAG:
+        payloadSchema = {
+          ...DEFAULT_PAYLOAD_SCHEMA,
+          properties: {
+            ...DEFAULT_PAYLOAD_SCHEMA.properties,
+            edition: productionSchema.definitions.tag
+          }
+        };
+        break;
+      case DELETE_TAG:
+        payloadSchema = {
+          ...DEFAULT_PAYLOAD_SCHEMA,
+          properties: {
+            ...DEFAULT_PAYLOAD_SCHEMA.properties,
+            edition: productionSchema.definitions.tag.properties.id
+          }
+        };
+        break;
+
     case CREATE_ASSET:
     case UPDATE_ASSET:
       payloadSchema = {
@@ -796,6 +906,10 @@ export const createProductionObjects = ( payload, callback ) => updateProduction
 export const createEdition = ( payload, callback ) => updateProduction( CREATE_EDITION, payload, callback );
 export const updateEdition = ( payload, callback ) => updateProduction( UPDATE_EDITION, payload, callback );
 export const deleteEdition = ( payload, callback ) => updateProduction( DELETE_EDITION, payload, callback );
+
+export const createTag = ( payload, callback ) => updateProduction( CREATE_TAG, payload, callback );
+export const updateTag = ( payload, callback ) => updateProduction( UPDATE_TAG, payload, callback );
+export const deleteTag = ( payload, callback ) => updateProduction( DELETE_TAG, payload, callback );
 
 export const updateCitationStyle = ( payload ) => {
   return ( dispatch ) => {

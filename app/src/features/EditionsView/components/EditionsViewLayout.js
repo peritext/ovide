@@ -169,6 +169,7 @@ class EditionsViewLayout extends Component {
           onCancel={ handleNewEditionCancel }
           onSubmit={ handleNewEditionSubmit }
           availableTemplates={ templates }
+          production={ editedProduction }
         />
       );
     }

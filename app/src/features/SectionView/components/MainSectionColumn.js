@@ -111,6 +111,10 @@ const MainSectionColumn = ( {
   updateAsset,
   deleteAsset,
 
+  createTag,
+  updateTag,
+  deleteTag,
+
   updateContextualization,
 
   onGoToResource,
@@ -282,6 +286,10 @@ const MainSectionColumn = ( {
                 createAsset,
                 updateAsset,
                 deleteAsset,
+
+                createTag,
+                updateTag,
+                deleteTag,
 
                 onGoToResource,
               }

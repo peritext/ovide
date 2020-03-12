@@ -64,6 +64,7 @@ class AsideSectionColumn extends Component {
 
       'resourceSearchString',
       'resourceFilterValues',
+      'tagsFilterValues',
       'resourceSortValue',
     ];
     const {
@@ -135,7 +136,9 @@ class AsideSectionColumn extends Component {
 
       visibleResources,
       resourceFilterValues,
+      tagsFilterValues,
       setResourceFilterValues,
+      setTagsFilterValues,
       resourceSortValue,
       setResourceSortValue,
 
@@ -174,6 +177,12 @@ class AsideSectionColumn extends Component {
       setResourceFilterValues( {
         ...resourceFilterValues,
         [type]: resourceFilterValues[type] ? false : true
+      } );
+    };
+    const handleTagsFilterToggle = ( type ) => {
+      setTagsFilterValues( {
+        ...tagsFilterValues,
+        [type]: tagsFilterValues[type] ? false : true
       } );
     };
     const handleSetAsideTabSummary = () => setAsideTabMode( 'summary' );
@@ -261,6 +270,8 @@ class AsideSectionColumn extends Component {
                     editedResourceId,
                     getResourceTitle,
                     handleResourceFilterToggle,
+                    tags: production.tags,
+                    handleTagsFilterToggle,
                     history,
                     mainColumnMode,
                     onCloseActiveResource,
@@ -272,6 +283,7 @@ class AsideSectionColumn extends Component {
                     onSetCoverImage,
                     onSortEnd,
                     resourceFilterValues,
+                    tagsFilterValues,
                     resourceOptionsVisible,
                     resourceSortValue,
                     resourceTypes,

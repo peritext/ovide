@@ -30,8 +30,16 @@ import { translateNameSpacer } from '../../helpers/translateUtils';
  * Imports Components
  */
 import AuthorsManager from '../AuthorsManager';
+import TagsEditor from '../TagsEditor';
 
 class NewSectionForm extends Component {
+  constructor( props ) {
+    super( props );
+    this.state = {
+      tags: props.metadata && props.metadata.tags ? props.metadata.tags : []
+    };
+  }
+
   componentDidMount = () => {
     setTimeout( () => {
       if ( this.form ) {
@@ -42,6 +50,13 @@ class NewSectionForm extends Component {
       }
     } );
   }
+
+  componentWillReceiveProps = ( nextProps ) => {
+    if ( nextProps.metadata.tags && nextProps.metadata.tags.join() !== this.state.tags.join() ) {
+      this.setState( { tags: nextProps.metadata.tags } );
+    }
+  }
+
   render = () => {
 
     /**
@@ -60,11 +75,19 @@ class NewSectionForm extends Component {
      * References bindings
      */
     const {
+      state: {
+        tags: localTags = [],
+      },
       props: {
         metadata,
+        tags = {},
+        createTag,
+        updateTag,
+        deleteTag,
         onSubmit,
         onCancel,
         submitMessage,
+        productionId,
         style = {},
       },
       context: { t }
@@ -83,7 +106,10 @@ class NewSectionForm extends Component {
     };
 
     const handleSubmitMetadata = ( values ) => {
-      onSubmit( values );
+      onSubmit( {
+        ...values,
+        tags: localTags,
+      } );
     };
 
     const bindRef = ( form ) => {
@@ -100,6 +126,14 @@ class NewSectionForm extends Component {
         {( formApi ) => {
           const handleAuthorsChange = ( authors ) => formApi.setValue( 'authors', authors );
           const handleSubmit = formApi.submitForm;
+          const handleUpdateTags = ( theseTags ) => {
+            setTimeout( () => {
+              this.setState( {
+                tags: theseTags
+              } );
+            } );
+
+          };
           return (
             <form
               style={ style }
@@ -145,8 +179,32 @@ class NewSectionForm extends Component {
                       onChange={ handleAuthorsChange }
                       authors={ formApi.getValue( 'authors' ) }
                     />
+                    <Field>
+                      <Control>
+                        <Label>
+                          {translate( 'Tags attached to the section' )}
+                          <HelpPin place={ 'right' }>
+                            {translate( 'Explanation about tags' )}
+                          </HelpPin>
+                        </Label>
+                        <TagsEditor
+                          activeTagsIds={ localTags }
+                          {
+                            ...{
+                              tags,
+                              createTag,
+                              updateTag,
+                              deleteTag,
+                              productionId,
+                              onUpdateTags: handleUpdateTags,
+                            }
+                          }
+                        />
+                      </Control>
+                    </Field>
                   </Column>
                 </StretchedLayoutItem>
+
                 <StretchedLayoutItem>
                   <StretchedLayoutContainer isDirection={ 'horizontal' }>
                     <StretchedLayoutItem isFlex={ 1 }>
@@ -175,6 +233,7 @@ class NewSectionForm extends Component {
                   </StretchedLayoutContainer>
                 </StretchedLayoutItem>
               </StretchedLayoutContainer>
+
             </form>
           );
         }}

@@ -26,6 +26,7 @@ import { RESET_VIEWS_UI } from '../EditionUiWrapper/duck';
 const SET_MAIN_COLUMN_MODE = 'SET_MAIN_COLUMN_MODE';
 const SET_OPTIONS_VISIBLE = 'SET_OPTIONS_VISIBLE';
 const SET_FILTER_VALUES = 'SET_FILTER_VALUES';
+const SET_TAGS_FILTER_VALUES = 'SET_TAGS_FILTER_VALUES';
 const SET_SORT_VALUE = 'SET_SORT_VALUE';
 const SET_SEARCH_STRING = 'SET_SEARCH_STRING';
 const SET_PROMPTED_TO_DELETE_RESOURCE_ID = 'SET_PROMPTED_TO_DELETE_RESOURCE_ID';
@@ -62,6 +63,10 @@ export const setSearchString = ( payload ) => ( {
 } );
 export const setFilterValues = ( payload ) => ( {
   type: SET_FILTER_VALUES,
+  payload
+} );
+export const setTagsFilterValues = ( payload ) => ( {
+  type: SET_TAGS_FILTER_VALUES,
   payload
 } );
 export const setSortValue = ( payload ) => ( {
@@ -125,7 +130,8 @@ const UI_DEFAULT_STATE = {
   sortVisible: false,
   filterVisible: false,
   searchString: '',
-  filterValues: [],
+  filterValues: {},
+  tagsFilterValues: {},
   sortValue: 'edited recently',
   promptedToDeleteResourceId: undefined,
   selectedResourcesIds: [],
@@ -153,6 +159,7 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_OPTIONS_VISIBLE:
     case SET_SEARCH_STRING:
     case SET_FILTER_VALUES:
+      case SET_TAGS_FILTER_VALUES:
     case SET_SORT_VALUE:
     case SET_PROMPTED_TO_DELETE_RESOURCE_ID:
     case SET_SELECTED_RESOURCES_IDS:
@@ -205,6 +212,7 @@ const mainColumnMode = ( state ) => state.ui.mainColumnMode;
 const optionsVisible = ( state ) => state.ui.optionsVisible;
 const searchString = ( state ) => state.ui.searchString;
 const filterValues = ( state ) => state.ui.filterValues;
+const tagsFilterValues = ( state ) => state.ui.tagsFilterValues;
 const sortValue = ( state ) => state.ui.sortValue;
 const promptedToDeleteResourceId = ( state ) => state.ui.promptedToDeleteResourceId;
 const selectedResourcesIds = ( state ) => state.ui.selectedResourcesIds;
@@ -224,6 +232,7 @@ export const selector = createStructuredSelector( {
   optionsVisible,
   searchString,
   filterValues,
+  tagsFilterValues,
   sortValue,
   promptedToDeleteResourceId,
   selectedResourcesIds,

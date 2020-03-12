@@ -6,6 +6,7 @@ import {
   Label,
   Control,
   Select,
+  HelpPin,
 } from 'quinoa-design-library/components/';
 import { translateNameSpacer } from '../../helpers/translateUtils';
 
@@ -13,10 +14,12 @@ import resourceSchema from 'peritext-schemas/resource';
 
 import LocationPicker from '../LocationPicker';
 import DatesPicker from '../DatesPicker';
+import TagsEditor from '../TagsEditor';
 
 const glossaryTypes = resourceSchema.definitions.glossary.properties.entryType.enum;
 
 export default class GlossaryForm extends Component {
+
   static contextTypes = {
     t: PropTypes.func,
   }
@@ -24,7 +27,14 @@ export default class GlossaryForm extends Component {
     const {
       props: {
         onChange,
-        data = {}
+        resourceTags,
+        onTagsUpdate,
+        data = {},
+        createTag,
+        updateTag,
+        deleteTag,
+        tags,
+        productionId,
       },
       context: {
         t
@@ -142,6 +152,29 @@ export default class GlossaryForm extends Component {
               placeholder={ translate( 'Glossary entry' ) }
               value={ description }
               onChange={ handleNewDescriptionChange }
+            />
+          </Control>
+        </Field>
+        <Field>
+          <Control>
+            <Label>
+              {translate( 'Tags attached to the material' )}
+              <HelpPin place={ 'right' }>
+                {translate( 'Explanation about tags' )}
+              </HelpPin>
+            </Label>
+            <TagsEditor
+              activeTagsIds={ resourceTags }
+              {
+                ...{
+                  tags,
+                  createTag,
+                  updateTag,
+                  deleteTag,
+                  productionId,
+                  onUpdateTags: onTagsUpdate,
+                }
+              }
             />
           </Control>
         </Field>

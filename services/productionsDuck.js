@@ -11,7 +11,7 @@
  * ===========
  */
 
-const validCollections = [ 'resources', 'contextualizations', 'contextualizers', 'assets', 'editions' ];
+const validCollections = [ 'resources', 'contextualizations', 'contextualizers', 'assets', 'editions', 'tags' ];
 const validActionTypes = [ 'create', 'update', 'delete' ];
 
 /*
@@ -91,13 +91,13 @@ module.exports = function( state = STORIES_DEFAULT_STATE, action ) {
           }
         )
       } );
-      if ( action.type === 'DELETE_SECTION' ) {
+      if ( action.type === 'DELETE_RESOURCE' ) {
         const contextualizations = Object.assign( {}, production.contextualizations );
         const contextualizers = Object.assign( {}, production.contextualizers );
 
         const contextualizationsToDeleteIds = Object.keys( contextualizations )
         .filter( ( id ) => {
-          return contextualizations[id].sectionId === payload.sectionId;
+          return contextualizations[id].sourceId === payload.resourceId;
         } );
         const contextualizersToDeleteIds = [];
 
@@ -112,10 +112,23 @@ module.exports = function( state = STORIES_DEFAULT_STATE, action ) {
         contextualizationsToDeleteIds.forEach( ( contextualizationId ) => {
           delete contextualizations[contextualizationId];
         } );
-        const newSectionsOrder = production.sectionsOrder.filter( ( id ) => id !== payload.sectionId );
+        const newSectionsOrder = production.sectionsOrder.filter( ( { resourceId } ) => resourceId !== payload.resourceId );
         newState[payload.productionId].sectionsOrder = newSectionsOrder;
         newState[payload.productionId].contextualizers = contextualizers;
         newState[payload.productionId].contextualizations = contextualizations;
+      }
+ else if ( action.type === 'DELETE_TAG' ) {
+
+        let resources = Object.assign( {}, production.resources );
+
+        resources = Object.keys( resources ).reduce( ( res, resourceId ) => {
+          const resource = resources[resourceId];
+          if ( resource.metadata.tags && resource.metadata.tags.includes( payload.tagId ) ) {
+            resource.metadata.tags = resource.metadata.tags.filter( ( t ) => t !== payload.tagId );
+          }
+          return Object.assign( res, resource );
+        }, {} );
+        newState[payload.productionId].resources = resources;
       }
       return newState;
       default:

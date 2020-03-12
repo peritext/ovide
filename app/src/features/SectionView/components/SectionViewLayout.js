@@ -51,6 +51,7 @@ const SectionViewLayout = ( {
   newResourceMode,
   resourceOptionsVisible,
   resourceFilterValues,
+  tagsFilterValues,
   resourceSortValue,
   resourceSearchString,
   linkModalFocusData,
@@ -89,6 +90,7 @@ const SectionViewLayout = ( {
     setMainColumnMode,
     setResourceOptionsVisible,
     setResourceFilterValues,
+    setTagsFilterValues,
     setResourceSortValue,
     setResourceSearchString,
     setNewResourceMode,
@@ -139,6 +141,10 @@ const SectionViewLayout = ( {
     updateAsset,
     deleteAsset,
 
+    createTag,
+    updateTag,
+    deleteTag,
+
     setEditedContextualizationId,
     setEditedContextualizationType,
   },
@@ -176,6 +182,7 @@ const SectionViewLayout = ( {
 
   const sectionsList = production.sectionsOrder.map( ( { resourceId, level } ) => ( { resource: production.resources[resourceId], level } ) );
   const activeFilters = Object.keys( resourceFilterValues ).filter( ( key ) => resourceFilterValues[key] );
+  const activeTagsFilters = Object.keys( tagsFilterValues ).filter( ( key ) => tagsFilterValues[key] );
   const resourcesList = Object.keys( resources ).map( ( resourceId ) => resources[resourceId] ).filter( ( r ) => r.metadata.type !== 'section' );
 
   let visibleResources = resourceSearchString.length === 0 ? resourcesList : searchResources( resourcesList, resourceSearchString );
@@ -183,6 +190,12 @@ const SectionViewLayout = ( {
     .filter( ( resource ) => {
       if ( activeFilters.length ) {
         return activeFilters.indexOf( resource.metadata.type ) > -1;
+      }
+      return true;
+    } )
+    .filter( ( resource ) => {
+      if ( activeTagsFilters.length ) {
+        return activeTagsFilters.find( ( id ) => resource.metadata.tags.includes( id ) ) !== undefined;
       }
       return true;
     } )
@@ -598,6 +611,7 @@ const SectionViewLayout = ( {
                   history,
                   mainColumnMode,
                   resourceFilterValues,
+                  tagsFilterValues,
                   resourceOptionsVisible,
                   resourceSearchString,
                   resourceSortValue,
@@ -605,6 +619,7 @@ const SectionViewLayout = ( {
                   setAsideTabMode,
                   setMainColumnMode,
                   setResourceFilterValues,
+                  setTagsFilterValues,
                   setResourceOptionsVisible,
                   setResourceSearchString,
                   setResourceSortValue,
@@ -640,6 +655,11 @@ const SectionViewLayout = ( {
                 createAsset,
                 createContextualization,
                 createContextualizer,
+
+                createTag,
+                updateTag,
+                deleteTag,
+
                 deleteAsset,
                 deleteContextualization,
                 deleteContextualizer,

@@ -115,6 +115,7 @@ class SummaryEditor extends Component {
         setSummaryEdited,
         summaryEdited,
         noScroll,
+        production,
       },
       state: {
         summary,
@@ -309,6 +310,7 @@ class SummaryEditor extends Component {
                                       providedBlock={ providedBlock }
                                       summaryBlock={ summaryBlock }
                                       onRemove={ handleRemove }
+                                      production={ production }
                                       translate={ translate }
                                       index={ index }
                                       maxIndex={ summary.length - 1 }

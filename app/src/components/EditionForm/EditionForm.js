@@ -135,6 +135,7 @@ class EditionForm extends Component {
         showTitle = true,
         bigSelectColumnsNumber = 2,
         availableTemplates,
+        production,
       },
       state: {
         edition = {},
@@ -378,11 +379,12 @@ class EditionForm extends Component {
                       <SummaryEditor
                         {
                         ...{
-                          template: availableTemplates.find( ( tempate ) => tempate.meta.id === formApi.getValue( 'metadata.templateId' ) ),
+                          template: availableTemplates.find( ( template ) => template.meta.id === formApi.getValue( 'metadata.templateId' ) ),
                           edition,
                           translate,
                           summaryEdited: true,
                           onSummaryChange: handleSummaryChange,
+                          production,
                           noScroll: true,
                         }
                       }

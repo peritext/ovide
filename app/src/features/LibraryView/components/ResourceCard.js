@@ -17,6 +17,8 @@ import {
   Button,
   Title,
   Card,
+
+  Tag,
 } from 'quinoa-design-library/components';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
 import { resourceHasContents } from 'peritext-utils';
@@ -30,6 +32,7 @@ import {
 } from '../../../helpers/misc';
 import { translateNameSpacer } from '../../../helpers/translateUtils';
 import { requestAssetData } from '../../../helpers/dataClient';
+import { getColorByBgColor } from '../../../helpers/misc';
 
 /**
  * Imports Components
@@ -102,6 +105,7 @@ class ResourceCard extends Component {
         isSelectable,
         productionId,
         onGoToResource,
+        tags,
       },
       context: {
         t,
@@ -167,6 +171,7 @@ class ResourceCard extends Component {
     /**
      * Callbacks handlers
      */
+
     return (
       <Column
         isSize={ cardSize }
@@ -228,7 +233,7 @@ class ResourceCard extends Component {
                 </Column>
               </Columns>
               {![ 'webpage', 'glossary', 'bib' ].includes( resource.metadata.type ) &&
-              <Columns>
+              <Columns style={ { marginBottom: 0 } }>
                 <Column
                   style={ { position: 'relative' } }
                   isSize={ 12 }
@@ -244,6 +249,33 @@ class ResourceCard extends Component {
 
                 </Column>
               </Columns>
+              }
+              {
+                resource.metadata.tags && resource.metadata.tags.length ?
+                  <div style={ { padding: '1rem', paddingBottom: '.5rem', paddingTop: '.5rem', paddingLeft: '4rem', fontSize: '.6rem' } }>
+                    {
+                    resource.metadata.tags.map( ( tagId ) => {
+                      const tag = tags[tagId];
+                      if ( tag ) {
+                        return (
+                          <Tag
+                            style={ {
+                              background: tag.color,
+                              color: getColorByBgColor( tag.color )
+                            } }
+                            key={ tagId }
+                          >
+                            {tag.name}
+                          </Tag>
+                        );
+                      }
+                      return null;
+
+                    } )
+                  }
+                  </div>
+                :
+                null
               }
               {
                 numberOfMentions > 0 ?

@@ -32,6 +32,7 @@ const SET_ASIDE_TAB_MODE = 'SET_ASIDE_TAB_MODE';
 const SET_ASIDE_TAB_COLLAPSED = 'SET_ASIDE_TAB_COLLAPSED';
 const SET_MAIN_COLUMN_MODE = 'SET_MAIN_COLUMN_MODE';
 const SET_RESOURCE_FILTER_VALUES = 'SET_RESOURCE_FILTER_VALUES';
+const SET_TAGS_FILTER_VALUES = 'SET_TAGS_FILTER_VALUES';
 const SET_RESOURCE_OPTIONS_VISIBLE = 'SET_RESOURCE_OPTIONS_VISIBLE';
 const SET_RESOURCE_SORT_VALUE = 'SET_RESOURCE_SORT_VALUE';
 const SET_RESOURCE_SEARCH_STRING = 'SET_RESOURCE_SEARCH_STRING';
@@ -102,6 +103,10 @@ export const setResourceOptionsVisible = ( payload ) => ( {
 } );
 export const setResourceFilterValues = ( payload ) => ( {
   type: SET_RESOURCE_FILTER_VALUES,
+  payload
+} );
+export const setTagsFilterValues = ( payload ) => ( {
+  type: SET_TAGS_FILTER_VALUES,
   payload
 } );
 
@@ -334,6 +339,7 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_MAIN_COLUMN_MODE:
     case SET_RESOURCE_OPTIONS_VISIBLE:
     case SET_RESOURCE_FILTER_VALUES:
+    case SET_TAGS_FILTER_VALUES:
     case SET_RESOURCE_SORT_VALUE:
     case SET_RESOURCE_SEARCH_STRING:
     case SET_NEW_RESOURCE_MODE:
@@ -582,6 +588,7 @@ const asideTabCollapsed = ( state ) => state.ui.asideTabCollapsed;
 const mainColumnMode = ( state ) => state.ui.mainColumnMode;
 const resourceOptionsVisible = ( state ) => state.ui.resourceOptionsVisible;
 const resourceFilterValues = ( state ) => state.ui.resourceFilterValues;
+const tagsFilterValue = ( state ) => state.ui.tagsFilterValue;
 const resourceSortValue = ( state ) => state.ui.resourceSortValue;
 const resourceSearchString = ( state ) => state.ui.resourceSearchString;
 const newResourceMode = ( state ) => state.ui.newResourceMode;
@@ -630,6 +637,7 @@ export const selector = createStructuredSelector( {
   editedContextualizationType,
   editedResourceId,
   previewMode,
+  tagsFilterValue,
 
   resourceOptionsVisible,
   resourceFilterValues,

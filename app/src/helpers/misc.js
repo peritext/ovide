@@ -101,3 +101,13 @@ export const silentEvent = ( event ) => {
     event.preventDefault();
   }
 };
+
+export const getColorByBgColor = ( bgColor ) => {
+  if ( !bgColor ) {
+    return '';
+  }
+  else if ( bgColor.toUpperCase() === '#FFF' ) {
+    return '#000';
+  }
+  return ( parseInt( bgColor.replace( '#', '' ).toUpperCase(), 16 ) > 0xffffff / 2 ) ? '#000' : '#fff';
+};

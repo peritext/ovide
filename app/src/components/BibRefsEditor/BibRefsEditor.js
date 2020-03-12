@@ -10,9 +10,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  CodeEditor
+  CodeEditor,
+  Field,
+  Control,
+  Label,
+  HelpPin,
 } from 'quinoa-design-library';
 import Cite from 'citation-js';
+
+import TagsEditor from '../TagsEditor';
 
 class BibRefsEditor extends Component {
   constructor( props ) {
@@ -48,6 +54,14 @@ class BibRefsEditor extends Component {
     const {
       onChange,
       style,
+      resourceTags,
+      onTagsUpdate,
+      createTag,
+      updateTag,
+      deleteTag,
+      tags,
+      productionId,
+      translate,
     } = this.props;
     const { refsInput } = this.state;
 
@@ -69,6 +83,29 @@ class BibRefsEditor extends Component {
           onChange={ handleBibTeXInputChange }
           value={ refsInput }
         />
+        <Field>
+          <Control>
+            <Label>
+              {translate( 'Tags attached to the material' )}
+              <HelpPin place={ 'right' }>
+                {translate( 'Explanation about tags' )}
+              </HelpPin>
+            </Label>
+            <TagsEditor
+              activeTagsIds={ resourceTags }
+              {
+                ...{
+                  tags,
+                  createTag,
+                  updateTag,
+                  deleteTag,
+                  productionId,
+                  onUpdateTags: onTagsUpdate,
+                }
+              }
+            />
+          </Control>
+        </Field>
       </div>
     );
   }
