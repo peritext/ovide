@@ -44,7 +44,6 @@
   },
   "precommit": [
     "lint",
-    "build:html:bundles",
     "build:web",
     "private:add:docs"
   ],
