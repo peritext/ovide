@@ -21,6 +21,7 @@ import {
 } from 'quinoa-design-library/components/';
 
 import ColorMarker from '../ColorMarker';
+import { SketchPicker as ColorPicker } from 'react-color';
 
 /**
  * Imports Project utils
@@ -139,11 +140,11 @@ class TagsEditor extends Component {
         }
       } );
     };
-    const handleUpdateTempTagDataColor = ( e ) => {
+    const handleUpdateTempTagDataColor = ( color ) => {
       this.setState( {
         tempTagData: {
           ...tempTagData,
-          color: e.target.value
+          color
         }
       } );
     };
@@ -319,16 +320,6 @@ class TagsEditor extends Component {
           mainContent={
             <div>
               <form onSubmit={ handleSaveEditedTag }>
-                <Control>
-                  <Label>
-                    {translate( 'Tag color' )}
-                  </Label>
-                  <ColorMarker color={ tempTagData.color } />
-                  <Input
-                    value={ tempTagData.color }
-                    onChange={ handleUpdateTempTagDataColor }
-                  />
-                </Control>
 
                 <Control>
                   <Label>
@@ -339,6 +330,17 @@ class TagsEditor extends Component {
                     onChange={ handleUpdateTempTagDataName }
                   />
                 </Control>
+
+                <Control>
+                  <Label>
+                    {translate( 'Tag color' )}
+                  </Label>
+                  <ColorPicker
+                    color={ tempTagData.color }
+                    onChange={ ( val ) => handleUpdateTempTagDataColor( val.hex ) }
+                  />
+                </Control>
+
               </form>
               <div style={ { paddingTop: '1rem' } }>
                 <Button
