@@ -47,8 +47,9 @@ class EditionUiWrapperContainer extends Component {
 
   getNavLocation = ( path ) => {
     switch ( path ) {
-      case '/productions/:productionId/library':
-        return 'library';
+      case '/productions/:productionId/materials':
+      case '/productions/:productionId':
+        return 'materials';
         case '/productions/:productionId/glossary':
         return 'glossary';
       case '/productions/:productionId/editions':
@@ -59,9 +60,8 @@ class EditionUiWrapperContainer extends Component {
         return 'editor-section';
       case '/productions/:productionId/resources/:sectionId':
         return 'editor-resource';
-        case '/productions/:productionId/summary':
-      case '/productions/:productionId':
-        return 'summary';
+      case '/productions/:productionId/summary':
+        return 'parameters';
       default:
         return undefined;
     }

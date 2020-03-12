@@ -97,6 +97,7 @@ class LibraryViewContainer extends Component {
       errors: []
     } );
     setTimeout( () => {
+      this.props.actions.setOpenTabId( 'resources' );
       const { setErrorMessage } = this.props.actions;
       if ( files.length > maxBatchNumber ) {
         setErrorMessage( { type: 'SUBMIT_MULTI_RESOURCES_FAIL', error: 'Too many files uploaded' } );

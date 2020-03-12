@@ -19,9 +19,7 @@ import { getStatePropFromActionSet } from '../../helpers/reduxUtils';
 /**
  * ui
  */
-const SET_NEW_SECTION_OPEN = 'SET_NEW_SECTION_OPEN';
 const SET_METADATA_OPEN = 'SET_METADATA_OPEN';
-const SET_IS_SORTING = 'SET_IS_SORTING';
 
 /**
  * lock system
@@ -47,16 +45,6 @@ export const setMetadataOpen = ( payload ) => ( {
   payload
 } );
 
-export const setNewSectionOpen = ( payload ) => ( {
-  type: SET_NEW_SECTION_OPEN,
-  payload
-} );
-
-export const setIsSorting = ( payload ) => ( {
-  type: SET_IS_SORTING,
-  payload
-} );
-
 /**
  * ===================================================
  * REDUCERS
@@ -66,12 +54,6 @@ export const setIsSorting = ( payload ) => ( {
  * Default/fallback state of the ui state
  */
 const UI_DEFAULT_STATE = {
-
-  /**
-   * Whether new section dialog is open
-   */
-  newSectionOpen: false,
-  isSorting: false,
   metadataOpen: false,
 };
 
@@ -84,8 +66,6 @@ const UI_DEFAULT_STATE = {
 function ui( state = UI_DEFAULT_STATE, action ) {
   const { payload } = action;
   switch ( action.type ) {
-    case SET_NEW_SECTION_OPEN:
-    case SET_IS_SORTING:
     case SET_METADATA_OPEN:
       const propName = getStatePropFromActionSet( action.type );
       return {
@@ -107,8 +87,6 @@ export default combineReducers( {
  * ===================================================
  */
 
-const newSectionOpen = ( state ) => state.ui.newSectionOpen;
-const isSorting = ( state ) => state.ui.isSorting;
 const metadataOpen = ( state ) => state.ui.metadataOpen;
 
 /**
@@ -117,6 +95,4 @@ const metadataOpen = ( state ) => state.ui.metadataOpen;
  */
 export const selector = createStructuredSelector( {
   metadataOpen,
-  newSectionOpen,
-  isSorting,
 } );

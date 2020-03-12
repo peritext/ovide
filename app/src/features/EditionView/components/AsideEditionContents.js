@@ -296,7 +296,6 @@ class AsideEditionContents extends Component {
                       ) )
                     }
               </ol>
-              
               <Field>
                 <Control>
                   <ExplainedLabel

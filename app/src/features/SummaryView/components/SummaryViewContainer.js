@@ -62,22 +62,12 @@ class SummaryViewContainer extends Component {
 
   shouldComponentUpdate = () => true;
 
-  goToSection = ( sectionId ) => {
-    const {
-      editedProduction: {
-        id
-      }
-    } = this.props;
-    this.props.history.push( `/productions/${id}/sections/${sectionId}` );
-  }
-
   render() {
     return this.props.editedProduction ?
           (
             <EditionUiWrapper>
               <SummaryViewLayout
                 { ...this.props }
-                goToSection={ this.goToSection }
               />
             </EditionUiWrapper>
           )

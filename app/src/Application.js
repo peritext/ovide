@@ -36,7 +36,7 @@ const EditionRoutes = ( { match } ) => {
       <Route
         exact
         path={ `${match.path}:productionId` }
-        component={ SummaryView }
+        component={ LibraryView }
       />
       <Route
         exact
@@ -50,8 +50,8 @@ const EditionRoutes = ( { match } ) => {
       />
       <Route
         exact
-        path={ `${match.path}:productionId/library` }
-        component={ LibraryView }
+        path={ `${match.path}:productionId/parameters` }
+        component={ SummaryView }
       />
       <Route
         exact

@@ -10,6 +10,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { v4 as genId } from 'uuid';
 import { debounce, uniq } from 'lodash';
+import { arrayMove } from 'react-sortable-hoc';
+import ReactTooltip from 'react-tooltip';
 import {
   Button,
   Column,
@@ -22,6 +24,11 @@ import {
   Title,
   StretchedLayoutContainer,
   StretchedLayoutItem,
+  Tabs,
+  TabList,
+  Tab,
+  TabLink,
+  Delete,
 } from 'quinoa-design-library/components';
 
 /**
@@ -30,6 +37,7 @@ import {
 import { getResourceTitle, searchResources } from '../../../helpers/resourcesUtils';
 import { createBibData } from '../../../helpers/resourcesUtils';
 import { getRelatedAssetsIds } from '../../../helpers/assetsUtils';
+import { createDefaultSection } from '../../../helpers/schemaUtils';
 import {
   removeContextualizationReferenceFromRawContents
 } from '../../../helpers/assetsUtils';
@@ -46,7 +54,9 @@ import ConfirmBatchDeleteModal from './ConfirmBatchDeleteModal';
 import LibraryFiltersBar from './LibraryFiltersBar';
 import ConfirmToDeleteModal from '../../../components/ConfirmToDeleteModal';
 import ResourceForm from '../../../components/ResourceForm';
+import NewSectionForm from '../../../components/NewSectionForm';
 import ResourceCard from './ResourceCard';
+import SortableSectionsList from './SortableSectionsList';
 
 /**
  * Imports Assets
@@ -109,6 +119,8 @@ class LibraryViewLayout extends Component {
       selectedResourcesIds,
       resourcesPromptedToDelete,
       editedResourceId,
+      openTabId,
+      isSorting,
       actions: {
         setOptionsVisible,
         setMainColumnMode,
@@ -141,6 +153,12 @@ class LibraryViewLayout extends Component {
         setIsBatchDeleting,
         setResourceDeleteStep,
         setEditedResourceId,
+
+        setOpenTabId,
+
+        setIsSorting,
+
+        updateSectionsOrder,
       },
       deleteResource,
       onGoToResource,
@@ -149,7 +167,8 @@ class LibraryViewLayout extends Component {
     const {
       resources = {},
       id: productionId,
-      assets
+      assets,
+      sectionsOrder,
     } = production;
 
     /**
@@ -570,7 +589,7 @@ class LibraryViewLayout extends Component {
       /**
        * UI case 2 : user creates a new resource
        */
-      case 'new':
+      case 'newResource':
         const handleSubmit = ( resource, newAssets ) => {
           const resourceId = genId();
 
@@ -649,6 +668,7 @@ class LibraryViewLayout extends Component {
             .catch( console.error );
           }
           setMainColumnMode( 'list' );
+          setOpenTabId( 'resources' );
         };
         const handleSetMainColumnToList = () => setMainColumnMode( 'list' );
         return (
@@ -666,7 +686,87 @@ class LibraryViewLayout extends Component {
         );
 
       /**
-       * UI case 3 : user browses list of resources
+       * UI case 2 : user creates a new resource
+       */
+      case 'newSection':
+
+        const defaultSection = createDefaultSection();
+        const defaultSectionMetadata = defaultSection.metadata;
+
+        const handleCloseNewSection = () => {
+          setMainColumnMode( 'sections' );
+        };
+        const handleNewSectionSubmit = ( metadata ) => {
+          const newSection = {
+            ...defaultSection,
+            metadata,
+            id: genId()
+          };
+          createResource( {
+            resourceId: newSection.id,
+            resource: newSection,
+            productionId,
+          }, ( err ) => {
+            if ( !err ) {
+              const newSectionsOrder = [
+                ...sectionsOrder,
+                {
+                  resourceId: newSection.id,
+                  level: 0
+                }
+              ];
+              updateSectionsOrder( {
+                productionId,
+                sectionsOrder: newSectionsOrder
+              }, ( thatErr ) => {
+                if ( !thatErr ) {
+                  onGoToResource( newSection.id );
+              }
+              } );
+
+            }
+          } );
+        };
+        return (
+          <StretchedLayoutItem
+            isFluid
+            isFlex={ 2 }
+            isFlowing
+            style={ { height: '100%' } }
+          >
+            <StretchedLayoutContainer
+              isAbsolute
+              isDirection={ 'vertical' }
+            >
+              <StretchedLayoutItem>
+                <Title isSize={ 2 }>
+                  <StretchedLayoutContainer
+                    style={ { paddingTop: '1rem' } }
+                    isDirection={ 'horizontal' }
+                  >
+                    <StretchedLayoutItem isFlex={ 11 }>
+                      {translate( 'Add a section' )}
+                    </StretchedLayoutItem>
+                    <StretchedLayoutItem>
+                      <Delete onClick={ handleCloseNewSection } />
+                    </StretchedLayoutItem>
+                  </StretchedLayoutContainer>
+                </Title>
+                <Level />
+              </StretchedLayoutItem>
+              <StretchedLayoutItem isFlex={ 1 }>
+                <NewSectionForm
+                  metadata={ { ...defaultSectionMetadata } }
+                  onSubmit={ handleNewSectionSubmit }
+                  onCancel={ handleCloseNewSection }
+                />
+              </StretchedLayoutItem>
+            </StretchedLayoutContainer>
+          </StretchedLayoutItem>
+        );
+
+      /**
+       * UI case 4 : user browses list of resources
        */
       case 'list':
       default:
@@ -737,65 +837,226 @@ class LibraryViewLayout extends Component {
             />
           );
         };
-        const handleAbortResourceDeletion = () => setPromptedToDeleteResourceId( undefined );
-        const handleAbortResourcesDeletion = () => setResourcesPromptedToDelete( [] );
+        const renderOpenTab = () => {
+          switch ( openTabId ) {
+            case 'sections':
+              const sectionsList = sectionsOrder
+              .filter( ( { resourceId } ) => resources[resourceId] )
+              .map( ( { resourceId, level } ) => ( {
+                resource: resources[resourceId],
+                level
+              } ) );
+              const handleDeleteSection = ( thatSectionId ) => {
+                setPromptedToDeleteResourceId( thatSectionId );
+              };
+              const handleDeleteSectionExecution = ( thatSectionId ) => {
+                const newSectionsOrder = sectionsOrder.filter( ( { resourceId } ) => resourceId !== thatSectionId );
+                updateSectionsOrder( {
+                  productionId,
+                  sectionsOrder: newSectionsOrder
+                }, () => {
+                  deleteResource( {
+                    resourceId: thatSectionId,
+                    productionId,
+                  } );
+                } );
+              };
+
+              const handleDeleteSectionConfirm = () => {
+                handleDeleteSectionExecution( promptedToDeleteResourceId );
+                setPromptedToDeleteResourceId( undefined );
+              };
+
+              const handleSortEnd = ( { oldIndex, newIndex } ) => {
+
+                setIsSorting( false );
+                const levelsMap = sectionsOrder.reduce( ( res, { resourceId, level } ) => ( {
+                  ...res,
+                  [resourceId]: level
+                } ), {} );
+                const sectionsIds = sectionsOrder.map( ( { resourceId } ) => resourceId );
+
+                const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex ).map( ( resourceId ) => ( {
+                  resourceId,
+                  level: levelsMap[resourceId]
+                } ) );
+
+                updateSectionsOrder( {
+                  productionId,
+                  sectionsOrder: newSectionsOrder
+                } );
+                ReactTooltip.rebuild();
+              };
+              const goToSection = ( id ) => onGoToResource( id );
+              const handleActiveIsSorting = () => setIsSorting( true );
+              const handleSectionIndexChange = ( oldIndex, newIndex ) => {
+                const levelMaps = sectionsOrder.reduce( ( res, item ) => ( {
+                  ...res,
+                  [item.resourceId]: item.level
+                } ), {} );
+                const sectionsIds = sectionsOrder.map( ( { resourceId } ) => resourceId );
+
+                const newSectionsOrder = arrayMove( sectionsIds, oldIndex, newIndex ).map( ( resourceId ) => ( {
+                  resourceId,
+                  level: levelMaps[resourceId]
+                } ) );
+                updateSectionsOrder( {
+                  productionId,
+                  sectionsOrder: newSectionsOrder
+                } );
+                setIsSorting( false );
+              };
+              const handleSetSectionLevel = ( { sectionId, level } ) => {
+                const newSectionsOrder = sectionsOrder.map( ( { resourceId: thatResourceId, level: thatLevel } ) => {
+                  if ( thatResourceId === sectionId ) {
+                    return {
+                      resourceId: thatResourceId,
+                      level
+                    };
+                  }
+                  return {
+                    resourceId: thatResourceId,
+                    level: thatLevel
+                  };
+                } );
+                updateSectionsOrder( {
+                  productionId,
+                  sectionsOrder: newSectionsOrder
+                } );
+              };
+              return (
+                <StretchedLayoutItem
+                  isFluid
+                  isFlex={ 2 }
+                  isFlowing
+                >
+                  <Column style={ { paddingRight: 0 } }>
+                    <SortableSectionsList
+                      items={ sectionsList }
+                      production={ production }
+                      onSortEnd={ handleSortEnd }
+                      renderNoItem={ () => <div>{translate( 'No sections to display' )}</div> }
+                      goToSection={ goToSection }
+                      setSectionIndex={ handleSectionIndexChange }
+                      onSortStart={ handleActiveIsSorting }
+                      isSorting={ isSorting }
+                      onDelete={ handleDeleteSection }
+                      setSectionLevel={ handleSetSectionLevel }
+                      useDragHandle
+                    />
+                  </Column>
+                  <ConfirmToDeleteModal
+                    isActive={ promptedToDeleteResourceId !== undefined }
+                    deleteType={ 'section' }
+                    production={ production }
+                    id={ promptedToDeleteResourceId }
+                    onClose={ () => setPromptedToDeleteResourceId( undefined ) }
+                    onDeleteConfirm={ handleDeleteSectionConfirm }
+                  />
+                </StretchedLayoutItem>
+              );
+            case 'resources':
+              const handleAbortResourceDeletion = () => setPromptedToDeleteResourceId( undefined );
+              const handleAbortResourcesDeletion = () => setResourcesPromptedToDelete( [] );
+              return (
+                <StretchedLayoutContainer isAbsolute>
+                  <StretchedLayoutItem style={ { paddingRight: 0 } }>
+                    <Column>
+                      <LibraryFiltersBar
+                        filterValues={ filterValues }
+                        tagsFilterValues={ tagsFilterValues }
+                        onDeleteSelection={ handleDeleteSelection }
+                        onDeselectAllVisibleResources={ handleDeselectAllVisibleResources }
+                        onSearchStringChange={ handleResourceSearchChange }
+                        searchString={ this.state.searchString }
+                        onSelectAllVisibleResources={ handleSelectAllVisibleResources }
+                        onToggleOptionsVisibility={ handleToggleOptionsVisibility }
+                        optionsVisible={ optionsVisible }
+                        resourceTypes={ resourceTypes }
+                        selectedResourcesIds={ selectedResourcesIds }
+                        onChange={ handleFiltersChange }
+                        sortValue={ sortValue }
+                        statusFilterValue={ statusFilterValue }
+                        statusFilterValues={ statusFilterValues }
+                        translate={ translate }
+                        visibleResources={ visibleResources }
+                        tags={ production.tags }
+                      />
+                    </Column>
+                  </StretchedLayoutItem>
+                  <StretchedLayoutItem isFlex={ 1 }>
+                    <StretchedLayoutContainer
+                      isAbsolute
+                      isDirection={ 'vertical' }
+                    >
+                      <PaginatedList
+                        items={ visibleResources }
+                        itemsPerPage={ 30 }
+                        style={ { height: '100%' } }
+                        renderNoItem={ renderNoResource }
+                        renderItem={ renderResourceInList }
+                      />
+                    </StretchedLayoutContainer>
+                  </StretchedLayoutItem>
+                  <ConfirmToDeleteModal
+                    isActive={ promptedToDeleteResourceId !== undefined }
+                    deleteType={ 'resource' }
+                    production={ production }
+                    id={ promptedToDeleteResourceId }
+                    onClose={ handleAbortResourceDeletion }
+                    onDeleteConfirm={ handleDeleteResourceConfirm }
+                  />
+                  <ConfirmBatchDeleteModal
+                    translate={ translate }
+                    isActive={ actualResourcesPromptedToDelete.length > 0 }
+                    actualResourcesPromptedToDelete={ actualResourcesPromptedToDelete }
+                    resourcesPromptedToDelete={ resourcesPromptedToDelete }
+                    endangeredContextualizationsLength={ endangeredContextualizationsLength }
+                    onDelete={ handleDeleteResourcesPromptedToDelete }
+                    onCancel={ handleAbortResourcesDeletion }
+                  />
+                </StretchedLayoutContainer>
+              );
+            default:
+              return <div>coucou</div>;
+          }
+        };
         return (
           <StretchedLayoutContainer isAbsolute>
             <StretchedLayoutItem>
-              <Column style={ { paddingRight: 0 } }>
-                <LibraryFiltersBar
-                  filterValues={ filterValues }
-                  tagsFilterValues={ tagsFilterValues }
-                  onDeleteSelection={ handleDeleteSelection }
-                  onDeselectAllVisibleResources={ handleDeselectAllVisibleResources }
-                  onSearchStringChange={ handleResourceSearchChange }
-                  searchString={ this.state.searchString }
-                  onSelectAllVisibleResources={ handleSelectAllVisibleResources }
-                  onToggleOptionsVisibility={ handleToggleOptionsVisibility }
-                  optionsVisible={ optionsVisible }
-                  resourceTypes={ resourceTypes }
-                  selectedResourcesIds={ selectedResourcesIds }
-                  onChange={ handleFiltersChange }
-                  sortValue={ sortValue }
-                  statusFilterValue={ statusFilterValue }
-                  statusFilterValues={ statusFilterValues }
-                  translate={ translate }
-                  visibleResources={ visibleResources }
-                  tags={ production.tags }
-                />
+              <Column style={ { paddingRight: 0, marginTop: '.5rem' } }>
+                <Tabs
+                  isBoxed
+                  isFullWidth
+                  style={ { overflow: 'hidden' } }
+                >
+                  <TabList>
+                    <Tab
+                      onClick={ () => setOpenTabId( 'sections' ) }
+                      isActive={ openTabId === 'sections' }
+                    >
+                      <TabLink>
+                        <Title isSize={ 5 }>{translate( 'Sections' )}</Title>
+                      </TabLink>
+                    </Tab>
+                    <Tab
+                      onClick={ () => setOpenTabId( 'resources' ) }
+                      isActive={ openTabId === 'resources' }
+                    >
+                      <TabLink>
+                        <Title isSize={ 5 }>{translate( 'Other materials' )}</Title>
+                      </TabLink>
+                    </Tab>
+                  </TabList>
+                </Tabs>
               </Column>
             </StretchedLayoutItem>
-            <StretchedLayoutItem isFlex={ 1 }>
-              <StretchedLayoutContainer
-                isAbsolute
-                isDirection={ 'vertical' }
-              >
-                <PaginatedList
-                  items={ visibleResources }
-                  itemsPerPage={ 30 }
-                  style={ { height: '100%' } }
-                  renderNoItem={ renderNoResource }
-                  renderItem={ renderResourceInList }
-                />
-              </StretchedLayoutContainer>
+            <StretchedLayoutItem
+              isFlex={ 1 }
+              style={ { position: 'relative' } }
+            >
+              {renderOpenTab()}
             </StretchedLayoutItem>
-            <ConfirmToDeleteModal
-              isActive={ promptedToDeleteResourceId !== undefined }
-              deleteType={ 'resource' }
-              production={ production }
-              id={ promptedToDeleteResourceId }
-              onClose={ handleAbortResourceDeletion }
-              onDeleteConfirm={ handleDeleteResourceConfirm }
-            />
-            <ConfirmBatchDeleteModal
-              translate={ translate }
-              isActive={ actualResourcesPromptedToDelete.length > 0 }
-              actualResourcesPromptedToDelete={ actualResourcesPromptedToDelete }
-              resourcesPromptedToDelete={ resourcesPromptedToDelete }
-              endangeredContextualizationsLength={ endangeredContextualizationsLength }
-              onDelete={ handleDeleteResourcesPromptedToDelete }
-              onCancel={ handleAbortResourcesDeletion }
-            />
           </StretchedLayoutContainer>
       );
     }
@@ -832,10 +1093,14 @@ class LibraryViewLayout extends Component {
      * Callbacks handlers
      */
     const handleNewResourceClick = () => {
-      if ( mainColumnMode === 'new' ) {
+      if ( mainColumnMode === 'newResource' ) {
         setMainColumnMode( 'list' );
       }
-      else setMainColumnMode( 'new' );
+      else setMainColumnMode( 'newResource' );
+    };
+
+    const handleOpenNewSection = () => {
+      setMainColumnMode( 'newSection' );
     };
 
     return (
@@ -857,20 +1122,33 @@ class LibraryViewLayout extends Component {
               >
                 {translate( 'Production library' )}
               </Title>
+
               <Level>
                 <Content>
                   {translate( 'Your library contains all the items that can be used within the production.' )}
                 </Content>
               </Level>
+
+              <Level>
+                <Button
+                  onClick={ handleOpenNewSection }
+                  isFullWidth
+                  isColor={ 'primary' }
+                >
+                  {translate( 'New section' )}
+                </Button>
+              </Level>
+
               <Level>
                 <Button
                   isFullWidth
                   onClick={ handleNewResourceClick }
-                  isColor={ mainColumnMode === 'new' ? 'primary' : 'primary' }
+                  isColor={ mainColumnMode === 'newResource' ? 'primary' : 'primary' }
                 >
                   {translate( 'New item' )}
                 </Button>
               </Level>
+
               <Level>
                 <DropZone
                   onDrop={ submitMultiResources }
@@ -885,6 +1163,7 @@ class LibraryViewLayout extends Component {
                   </HelpPin>
                 </DropZone>
               </Level>
+
             </Column>
           </StretchedLayoutItem>
           <StretchedLayoutItem isFlex={ '3' }>

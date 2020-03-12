@@ -9,13 +9,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import {
-  Button,
   Navbar,
   StretchedLayoutContainer,
   StretchedLayoutItem,
 } from 'quinoa-design-library/components/';
 import Helmet from 'react-helmet';
-import stringify from 'fast-json-stable-stringify';
 import ReduxToastr from 'react-redux-toastr';
 
 import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
@@ -24,30 +22,20 @@ import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
  * Imports Project utils
  */
 import { translateNameSpacer } from '../../../helpers/translateUtils';
-import downloadFile from '../../../helpers/fileDownloader';
-import {
-  bundleProjectAsJSON,
-  bundleProjectAsZIP,
-  bundleProjectAsHTML,
-  bundleProjectAsMarkdown,
-  bundleProjectAsTEI,
-} from '../../../helpers/projectBundler';
 import {
   abbrevString
 } from '../../../helpers/misc';
-import { requestAssetData } from '../../../helpers/dataClient';
 
 /**
  * Imports Components
  */
-import LanguageToggler from '../../../components/LanguageToggler'; import ExportModal from '../../../components/ExportModal';
+import LanguageToggler from '../../../components/LanguageToggler';
 
 /**
  * Imports Assets
  */
 
 const EditionUiWrapperLayout = ( {
-  exportModalOpen,
   editedProduction = {},
   sectionId,
   editionId,
@@ -55,7 +43,6 @@ const EditionUiWrapperLayout = ( {
   navbarOpen,
   withLargeHeader,
   actions: {
-    setExportModalOpen,
     toggleNavbarOpen,
   },
   children,
@@ -103,50 +90,6 @@ const EditionUiWrapperLayout = ( {
   /**
    * Callbacks handlers
    */
-  const handleExportToFile = ( type ) => {
-    // console.log( 'handle export to file', type );
-    const title = editedProduction.metadata.title;
-    // @todo: handle failure error in UI
-    const onRejection = ( e ) => console.error( e );/* eslint no-console : 0 */
-    switch ( type ) {
-      case 'html':
-        bundleProjectAsHTML( { production: editedProduction, requestAssetData } )
-          .then( ( HTMLbundle ) => {
-            downloadFile( HTMLbundle, 'html', title );
-          } )
-          .catch( onRejection );
-        break;
-      case 'json':
-        bundleProjectAsJSON( { production: editedProduction, requestAssetData } )
-          .then( ( JSONbundle ) => {
-            downloadFile( stringify( JSONbundle ), 'json', title );
-          } )
-          .catch( onRejection );
-        break;
-        case 'zip':
-            bundleProjectAsZIP( { production: editedProduction, requestAssetData } );
-            break;
-      case 'markdown':
-        bundleProjectAsMarkdown( { production: editedProduction, requestAssetData } )
-          .then( ( markdownBundle ) => {
-            downloadFile( markdownBundle, 'md', title );
-          } )
-          .catch( onRejection );
-        break;
-      case 'tei':
-        bundleProjectAsTEI( { production: editedProduction, requestAssetData } )
-          .then( ( teiBundle ) => {
-            downloadFile( teiBundle, 'xml', title );
-          } )
-          .catch( onRejection );
-        break;
-      default:
-        break;
-    }
-  };
-  const handleOpenExportModal = () => setExportModalOpen( true );
-  const handleCloseExportModal = () => setExportModalOpen( false );
-
   return (
     <StretchedLayoutContainer isAbsolute>
       <Helmet>
@@ -172,17 +115,11 @@ const EditionUiWrapperLayout = ( {
               href: `/productions/${productionId}`,
               content: computedTitle
               || translate( 'Unnamed production' ),
-              isActive: navLocation === 'summary'
+              isActive: navLocation === 'parameters'
             },
           ] }
 
         menuOptions={ [
-            // link to summary view
-            {
-              href: `/productions/${productionId}`,
-              isActive: navLocation === 'summary',
-              content: `${translate( 'Contents' )}`,
-            },
             navLocation === 'editor-section' ?
             {
               isActive: true,
@@ -190,11 +127,11 @@ const EditionUiWrapperLayout = ( {
               href: `/productions/${productionId}/sections/${sectionId}`,
             }
             : undefined,
-            // link to library view
+            // link to materials view
             {
-              href: `/productions/${productionId}/library`,
-              isActive: navLocation === 'library',
-              content: translate( 'Library' ),
+              href: `/productions/${productionId}`,
+              isActive: navLocation === 'materials',
+              content: translate( 'Materials' ),
             },
             navLocation === 'editor-resource' ?
             {
@@ -221,20 +158,18 @@ const EditionUiWrapperLayout = ( {
               href: `/productions/${productionId}/editions/${editionId}`,
             }
             : undefined,
+            // link to summary view
+            {
+              href: `/productions/${productionId}/parameters`,
+              isActive: navLocation === 'parameters',
+              content: `${translate( 'Parameters' )}`,
+            },
           ].filter( ( d ) => d ) }
-        actionOptions={ [ {
-            content: (
-              <Button
-                onClick={ handleOpenExportModal }
-                className={ 'button' }
-              >
-                {translate( 'Export' )}
-              </Button>
-            )
-          },
+        actionOptions={ [
           {
             content: <LanguageToggler />
-          } ] }
+          }
+] }
       />
       <StretchedLayoutItem
         isFlex={ 1 }
@@ -242,11 +177,6 @@ const EditionUiWrapperLayout = ( {
       >
         {children}
       </StretchedLayoutItem>
-      <ExportModal
-        isActive={ exportModalOpen }
-        onClose={ handleCloseExportModal }
-        onChange={ handleExportToFile }
-      />
       <ReactTooltip id={ 'tooltip' } />
       <ReactTooltip id={ 'help-tooltip' } />
       <ReactTooltip id={ 'card-tooltip' } />

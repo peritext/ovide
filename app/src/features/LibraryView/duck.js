@@ -23,6 +23,7 @@ import { getStatePropFromActionSet } from '../../helpers/reduxUtils';
  */
 import { RESET_VIEWS_UI } from '../EditionUiWrapper/duck';
 
+const SET_OPEN_TAB_ID = 'SET_OPEN_TAB_ID';
 const SET_MAIN_COLUMN_MODE = 'SET_MAIN_COLUMN_MODE';
 const SET_OPTIONS_VISIBLE = 'SET_OPTIONS_VISIBLE';
 const SET_FILTER_VALUES = 'SET_FILTER_VALUES';
@@ -37,10 +38,8 @@ const SET_IS_BATCH_DELETING = 'SET_IS_BATCH_DELETING';
 const SET_RESOURCE_DELETE_STEP = 'SET_RESOURCE_DELETE_STEP';
 const SET_UPLOAD_STATUS = 'SET_UPLOAD_STATUS';
 const SET_EDITED_RESOURCE_ID = 'SET_EDITED_RESOURCE_ID';
+const SET_IS_SORTING = 'SET_IS_SORTING';
 
-/**
- * lock system
- */
 /**
  * data
  */
@@ -98,6 +97,11 @@ export const setResourceDeleteStep = ( payload ) => ( {
   payload,
 } );
 
+export const setOpenTabId = ( payload ) => ( {
+  type: SET_OPEN_TAB_ID,
+  payload,
+} );
+
 export const setUploadStatus = ( payload ) => ( {
   type: SET_UPLOAD_STATUS,
   payload
@@ -106,6 +110,11 @@ export const setUploadStatus = ( payload ) => ( {
 export const setEditedResourceId = ( payload ) => ( {
   type: SET_EDITED_RESOURCE_ID,
   payload,
+} );
+
+export const setIsSorting = ( payload ) => ( {
+  type: SET_IS_SORTING,
+  payload
 } );
 
 /**
@@ -127,6 +136,7 @@ export const setEditedResourceId = ( payload ) => ( {
 
 const UI_DEFAULT_STATE = {
   mainColumnMode: 'list',
+  openTabId: 'sections',
   sortVisible: false,
   filterVisible: false,
   searchString: '',
@@ -159,7 +169,7 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_OPTIONS_VISIBLE:
     case SET_SEARCH_STRING:
     case SET_FILTER_VALUES:
-      case SET_TAGS_FILTER_VALUES:
+    case SET_TAGS_FILTER_VALUES:
     case SET_SORT_VALUE:
     case SET_PROMPTED_TO_DELETE_RESOURCE_ID:
     case SET_SELECTED_RESOURCES_IDS:
@@ -169,6 +179,8 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_RESOURCE_DELETE_STEP:
     case SET_UPLOAD_STATUS:
     case SET_EDITED_RESOURCE_ID:
+    case SET_OPEN_TAB_ID:
+    case SET_IS_SORTING:
       const propName = getStatePropFromActionSet( action.type );
       return {
         ...state,
@@ -209,6 +221,7 @@ export default combineReducers( {
  * ===================================================
  */
 const mainColumnMode = ( state ) => state.ui.mainColumnMode;
+const openTabId = ( state ) => state.ui.openTabId;
 const optionsVisible = ( state ) => state.ui.optionsVisible;
 const searchString = ( state ) => state.ui.searchString;
 const filterValues = ( state ) => state.ui.filterValues;
@@ -222,6 +235,7 @@ const isBatchDeleting = ( state ) => state.ui.isBatchDeleting;
 const resourceDeleteStep = ( state ) => state.ui.resourceDeleteStep;
 const uploadStatus = ( state ) => state.ui.uploadStatus;
 const editedResourceId = ( state ) => state.ui.editedResourceId;
+const isSorting = ( state ) => state.ui.isSorting;
 
 /**
  * The selector is a set of functions for accessing this feature's state
@@ -233,6 +247,7 @@ export const selector = createStructuredSelector( {
   searchString,
   filterValues,
   tagsFilterValues,
+  openTabId,
   sortValue,
   promptedToDeleteResourceId,
   selectedResourcesIds,
@@ -242,4 +257,5 @@ export const selector = createStructuredSelector( {
   resourceDeleteStep,
   uploadStatus,
   editedResourceId,
+  isSorting,
 } );

@@ -20,7 +20,6 @@ if ( inElectron ) {
  * ACTION NAMES
  * ===================================================
  */
-const SET_EXPORT_MODAL_OPEN = 'SET_EXPORT_MODAL_OPEN';
 
 const TOGGLE_NAVBAR_OPEN = 'TOGGLE_NAVBAR_OPEN';
 
@@ -33,11 +32,6 @@ const SET_RGPD_AGREEMENT_PROMPTED = 'ovide/ChunksEdition/SET_RGPD_AGREEMENT_PROM
  * ACTION CREATORS
  * ===================================================
  */
-export const setExportModalOpen = ( payload ) => ( {
-  type: SET_EXPORT_MODAL_OPEN,
-  payload
-} );
-
 export const toggleNavbarOpen = () => ( {
   type: TOGGLE_NAVBAR_OPEN,
 } );
@@ -57,10 +51,6 @@ export const setRgpdAgreementPrompted = ( payload ) => ( {
  * ===================================================
  */
 
-const getStatePropFromActionSet = ( actionName ) => {
-  return actionName.replace( 'SET_', '' ).toLowerCase().replace( /(_[a-z])/gi, ( a, b ) => b.substr( 1 ).toUpperCase() );
-};
-
 const UI_DEFAULT_STATE = {
   exportModalOpen: false,
   navbarOpen: false,
@@ -73,18 +63,11 @@ const UI_DEFAULT_STATE = {
  * @return {object} newState - the resulting state
  */
 function ui( state = UI_DEFAULT_STATE, action ) {
-  const { payload } = action;
   switch ( action.type ) {
 
     case RESET_VIEWS_UI:
       return UI_DEFAULT_STATE;
 
-    case SET_EXPORT_MODAL_OPEN:
-      const propName = getStatePropFromActionSet( action.type );
-      return {
-        ...state,
-        [propName]: payload
-      };
     case TOGGLE_NAVBAR_OPEN:
       return {
         ...state,
@@ -135,7 +118,6 @@ export default combineReducers( {
  * SELECTORS
  * ===================================================
  */
-const exportModalOpen = ( state ) => state.ui.exportModalOpen;
 const navbarOpen = ( state ) => state.ui.navbarOpen;
 
 /**
@@ -143,6 +125,5 @@ const navbarOpen = ( state ) => state.ui.navbarOpen;
  * @type {object}
  */
 export const selector = createStructuredSelector( {
-  exportModalOpen,
   navbarOpen,
 } );
