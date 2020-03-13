@@ -105,7 +105,7 @@ class ResourceCard extends Component {
         isSelectable,
         productionId,
         onGoToResource,
-        tags,
+        tags = {},
       },
       context: {
         t,

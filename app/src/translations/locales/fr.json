@@ -1137,5 +1137,7 @@
   "Features.GlossaryView.event": "évènement",
   "Features.GlossaryView.person": "personne",
   "Features.GlossaryView.other": "autre",
-  "Features.GlossaryView.Show entries with tags": "Montrer les entrées étiquettées"
+  "Features.GlossaryView.Show entries with tags": "Montrer les entrées étiquettées",
+  "Features.LibraryView.Tag selection with": "Étiquetter la sélection avec",
+  "Features.LibraryView.Tag selection": "Étiquetter"
 }

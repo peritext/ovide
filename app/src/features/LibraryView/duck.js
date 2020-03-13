@@ -26,6 +26,7 @@ import { RESET_VIEWS_UI } from '../EditionUiWrapper/duck';
 const SET_OPEN_TAB_ID = 'SET_OPEN_TAB_ID';
 const SET_MAIN_COLUMN_MODE = 'SET_MAIN_COLUMN_MODE';
 const SET_OPTIONS_VISIBLE = 'SET_OPTIONS_VISIBLE';
+const SET_TAG_SELECTION_VISIBLE = 'SET_TAG_SELECTION_VISIBLE';
 const SET_FILTER_VALUES = 'SET_FILTER_VALUES';
 const SET_TAGS_FILTER_VALUES = 'SET_TAGS_FILTER_VALUES';
 const SET_SORT_VALUE = 'SET_SORT_VALUE';
@@ -55,6 +56,10 @@ export const setMainColumnMode = ( payload ) => ( {
 } );
 export const setOptionsVisible = ( payload ) => ( {
   type: SET_OPTIONS_VISIBLE,
+  payload
+} );
+export const setTagSelectionVisible = ( payload ) => ( {
+  type: SET_TAG_SELECTION_VISIBLE,
   payload
 } );
 export const setSearchString = ( payload ) => ( {
@@ -144,6 +149,8 @@ const UI_DEFAULT_STATE = {
   openTabId: 'sections',
   sortVisible: false,
   filterVisible: false,
+  optionsVisible: false,
+  tagSelectionVisible: false,
   searchString: '',
   filterValues: {},
   tagsFilterValues: {},
@@ -173,6 +180,7 @@ function ui( state = UI_DEFAULT_STATE, action ) {
       return UI_DEFAULT_STATE;
     case SET_MAIN_COLUMN_MODE:
     case SET_OPTIONS_VISIBLE:
+    case SET_TAG_SELECTION_VISIBLE:
     case SET_SEARCH_STRING:
     case SET_FILTER_VALUES:
     case SET_TAGS_FILTER_VALUES:
@@ -244,6 +252,7 @@ const resourceDeleteStep = ( state ) => state.ui.resourceDeleteStep;
 const uploadStatus = ( state ) => state.ui.uploadStatus;
 const editedResourceId = ( state ) => state.ui.editedResourceId;
 const isSorting = ( state ) => state.ui.isSorting;
+const tagSelectionVisible = ( state ) => state.ui.tagSelectionVisible;
 
 /**
  * The selector is a set of functions for accessing this feature's state
@@ -252,6 +261,7 @@ const isSorting = ( state ) => state.ui.isSorting;
 export const selector = createStructuredSelector( {
   mainColumnMode,
   optionsVisible,
+  tagSelectionVisible,
   searchString,
   filterValues,
   tagsFilterValues,

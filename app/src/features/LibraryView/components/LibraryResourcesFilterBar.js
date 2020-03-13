@@ -31,7 +31,9 @@ const LibraryFiltersBar = ( {
   onSearchStringChange,
   onSelectAllVisibleResources,
   onToggleOptionsVisibility,
+  onToggleTagSelectionVisibility,
   optionsVisible,
+  tagSelectionVisible,
   resourceTypes,
   searchString,
   selectedResourcesIds,
@@ -41,10 +43,32 @@ const LibraryFiltersBar = ( {
   statusFilterValues,
   tagsFilterValues,
   // translate,
+  resources,
   visibleResources,
+  onBatchUntag,
+  onBatchTag,
   tags = {},
 }, { t } ) => {
   const translate = translateNameSpacer( t, 'Features.LibraryView' );
+
+  const handleBatchTag = ( tagId ) => {
+    const consensual = !selectedResourcesIds.find( ( resourceId ) => {
+      const theseTags = resources[resourceId].metadata.tags || [];
+      return !theseTags.includes( tagId );
+    } );
+    if ( consensual ) {
+      onBatchUntag( {
+        tagId,
+        resourcesIds: selectedResourcesIds
+      } );
+    }
+ else {
+      onBatchTag( {
+        tagId,
+        resourcesIds: selectedResourcesIds
+      } );
+    }
+  };
 
   return (
     <Level
@@ -132,7 +156,7 @@ const LibraryFiltersBar = ( {
                   if ( tag1.name > tag2.name ) {
                     return 1;
                   }
- else return -1;
+                  else return -1;
                 } )
                 .map( ( [ key, tag ] ) => ( {
                   id: key,
@@ -167,6 +191,62 @@ const LibraryFiltersBar = ( {
           >
             {translate( 'Select all' )} ({visibleResources.length})
           </Button>
+        </LevelItem>
+        <LevelItem>
+          <div
+            style={ {
+              opacity: selectedResourcesIds.length ? 1 : 0.5,
+              pointerEvents: selectedResourcesIds.length ? 'all' : 'none'
+            } }
+          >
+            <Dropdown
+              closeOnChange={ false }
+              menuAlign={ 'left' }
+              onToggle={ onToggleTagSelectionVisibility }
+              onChange={ handleBatchTag }
+              isActive={ tagSelectionVisible }
+              value={ {
+                tags: {
+                  // set as value only "consensual" tags (all selected resources are tagged)
+                  value: Object.keys( tags ).filter( ( tagId ) => {
+                    return !selectedResourcesIds.find( ( resourceId ) => {
+                      const theseTags = resources[resourceId].metadata.tags || [];
+                      return !theseTags.includes( tagId );
+                    } );
+                  } )
+                }
+            } }
+              options={
+              [
+
+              Object.keys( tags ).length ?
+              {
+                label: translate( 'Tag selection with' ),
+                id: 'tags',
+                options:
+                  Object.entries( tags )
+                  .sort( ( [ key1, tag1 ], [ key2, tag2 ] ) => { /* eslint no-unused-vars : 0 */
+                    if ( tag1.name > tag2.name ) {
+                      return 1;
+                    }
+                    else return -1;
+                  } )
+                  .map( ( [ key, tag ] ) => ( {
+                    id: key,
+                    label: (
+                      <span>
+                        <ColorMarker color={ tag.color } />
+                        <span>{tag.name}</span>
+                      </span>
+                    )
+                  } ) )
+              } : undefined,
+            ].filter( ( d ) => d )
+          }
+            >
+              {translate( 'Tag selection' )}
+            </Dropdown>
+          </div>
         </LevelItem>
         <LevelItem>
           <Button

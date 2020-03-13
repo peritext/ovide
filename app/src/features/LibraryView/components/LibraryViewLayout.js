@@ -111,6 +111,7 @@ class LibraryViewLayout extends Component {
 
       mainColumnMode,
       optionsVisible,
+      tagSelectionVisible,
       filterValues,
       tagsFilterValues,
       sortValue,
@@ -125,6 +126,7 @@ class LibraryViewLayout extends Component {
       isSorting,
       actions: {
         setOptionsVisible,
+        setTagSelectionVisible,
         setMainColumnMode,
         // setSearchString,
         setFilterValues,
@@ -624,7 +626,6 @@ class LibraryViewLayout extends Component {
               errors: []
             } );
             setTimeout( () => {
-              console.log( 'bib', resource );
 
               createBibData( resource, this.props )
                 .then( () => {
@@ -797,6 +798,9 @@ class LibraryViewLayout extends Component {
         const handleToggleOptionsVisibility = () => {
           setOptionsVisible( !optionsVisible );
         };
+        const handleTagSelectionVisibility = () => {
+          setTagSelectionVisible( !tagSelectionVisible );
+        };
         const handleSelectAllVisibleResources = () => setSelectedResourcesIds( visibleResources.map( ( res ) => res.id ) );
         const handleDeselectAllVisibleResources = () => setSelectedResourcesIds( [] );
         const handleDeleteSelection = () => setResourcesPromptedToDelete( [ ...selectedResourcesIds ] );
@@ -871,7 +875,7 @@ class LibraryViewLayout extends Component {
                   case 'editedRecently':
                     return ( !resource2.lastUpdateAt || resource1.lastUpdateAt > resource2.lastUpdateAt ) ? -1 : 1;
                   case 'title':
-                    return resource1.metadata.title > resource2.metadata.title ? -1 : 1;
+                    return resource1.metadata.title > resource2.metadata.title ? 1 : -1;
                   case 'summary':
                   default:
                     return -1;
@@ -1025,6 +1029,58 @@ class LibraryViewLayout extends Component {
             case 'resources':
               const handleAbortResourceDeletion = () => setPromptedToDeleteResourceId( undefined );
               const handleAbortResourcesDeletion = () => setResourcesPromptedToDelete( [] );
+              const handleBatchUntag = ( { tagId, resourcesIds } ) => {
+                resourcesIds.reduce( ( cur, resourceId ) =>
+                  cur.then( () => {
+                    return new Promise( ( res, rej ) => {
+                      const prevResource = resources[resourceId];
+                      const resource = {
+                        ...prevResource,
+                        metadata: {
+                          ...prevResource.metadata,
+                          tags: ( prevResource.metadata.tags || [] ).filter( ( thatTagId ) => thatTagId !== tagId )
+                        }
+                      };
+                      updateResource( {
+                        productionId,
+                        resourceId,
+                        resource
+                      }, ( err ) => {
+                        if ( err ) {
+                          rej( err );
+                        }
+                        else res();
+                      } );
+                    } );
+                  } )
+                , Promise.resolve() );
+              };
+              const handleBatchTag = ( { tagId, resourcesIds } ) => {
+                resourcesIds.reduce( ( cur, resourceId ) =>
+                  cur.then( () => {
+                    return new Promise( ( res, rej ) => {
+                      const prevResource = resources[resourceId];
+                      const resource = {
+                        ...prevResource,
+                        metadata: {
+                          ...prevResource.metadata,
+                          tags: [ ...( prevResource.metadata.tags || [] ), tagId ]
+                        }
+                      };
+                      updateResource( {
+                        productionId,
+                        resourceId,
+                        resource
+                      }, ( err ) => {
+                        if ( err ) {
+                          rej( err );
+                        }
+ else res();
+                      } );
+                    } );
+                  } )
+                , Promise.resolve() );
+              };
               return (
                 <StretchedLayoutContainer isAbsolute>
                   <StretchedLayoutItem style={ { paddingRight: 0 } }>
@@ -1039,7 +1095,11 @@ class LibraryViewLayout extends Component {
                         searchString={ this.state.searchString }
                         onSelectAllVisibleResources={ handleSelectAllVisibleResources }
                         onToggleOptionsVisibility={ handleToggleOptionsVisibility }
+                        onToggleTagSelectionVisibility={ handleTagSelectionVisibility }
+                        tagSelectionVisible={ tagSelectionVisible }
                         optionsVisible={ optionsVisible }
+                        onBatchUntag={ handleBatchUntag }
+                        onBatchTag={ handleBatchTag }
                         resourceTypes={ resourceTypes }
                         selectedResourcesIds={ selectedResourcesIds }
                         onChange={ handleFiltersChange }
@@ -1047,6 +1107,7 @@ class LibraryViewLayout extends Component {
                         statusFilterValue={ statusFilterValue }
                         statusFilterValues={ statusFilterValues }
                         translate={ translate }
+                        resources={ resources }
                         visibleResources={ visibleResources }
                         tags={ production.tags }
 
