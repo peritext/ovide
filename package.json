@@ -208,7 +208,7 @@
     "peritext-template-chrysaor": "0.0.6",
     "peritext-template-deucalion": "^0.3.3",
     "peritext-template-pyrrah": "^0.3.4",
-    "peritext-utils": "^0.2.13",
+    "peritext-utils": "^0.2.14",
     "pigeon-maps": "^0.12.1",
     "pigeon-overlay": "^0.2.3",
     "pouchdb": "^6.4.3",
