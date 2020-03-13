@@ -122,6 +122,12 @@ const EditionUiWrapperLayout = ( {
           ] }
 
         menuOptions={ [
+            // link to materials view
+            {
+              href: `/productions/${productionId}`,
+              isActive: navLocation === 'materials',
+              content: translate( 'Materials' ),
+            },
             navLocation === 'editor-section' ?
             {
               isActive: true,
@@ -129,12 +135,7 @@ const EditionUiWrapperLayout = ( {
               href: `/productions/${productionId}/sections/${sectionId}`,
             }
             : undefined,
-            // link to materials view
-            {
-              href: `/productions/${productionId}`,
-              isActive: navLocation === 'materials',
-              content: translate( 'Materials' ),
-            },
+            
             navLocation === 'editor-resource' ?
             {
               isActive: true,
