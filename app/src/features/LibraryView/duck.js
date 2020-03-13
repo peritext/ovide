@@ -29,6 +29,7 @@ const SET_OPTIONS_VISIBLE = 'SET_OPTIONS_VISIBLE';
 const SET_FILTER_VALUES = 'SET_FILTER_VALUES';
 const SET_TAGS_FILTER_VALUES = 'SET_TAGS_FILTER_VALUES';
 const SET_SORT_VALUE = 'SET_SORT_VALUE';
+const SET_SECTIONS_SORT_VALUE = 'SET_SECTIONS_SORT_VALUE';
 const SET_SEARCH_STRING = 'SET_SEARCH_STRING';
 const SET_PROMPTED_TO_DELETE_RESOURCE_ID = 'SET_PROMPTED_TO_DELETE_RESOURCE_ID';
 const SET_SELECTED_RESOURCES_IDS = 'SET_SELECTED_RESOURCES_IDS';
@@ -70,6 +71,10 @@ export const setTagsFilterValues = ( payload ) => ( {
 } );
 export const setSortValue = ( payload ) => ( {
   type: SET_SORT_VALUE,
+  payload
+} );
+export const setSectionsSortValue = ( payload ) => ( {
+  type: SET_SECTIONS_SORT_VALUE,
   payload
 } );
 export const setPromptedToDeleteResourceId = ( payload ) => ( {
@@ -143,6 +148,7 @@ const UI_DEFAULT_STATE = {
   filterValues: {},
   tagsFilterValues: {},
   sortValue: 'edited recently',
+  sectionsSortValue: 'summary',
   promptedToDeleteResourceId: undefined,
   selectedResourcesIds: [],
   statusFilterValue: 'all',
@@ -171,6 +177,7 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_FILTER_VALUES:
     case SET_TAGS_FILTER_VALUES:
     case SET_SORT_VALUE:
+    case SET_SECTIONS_SORT_VALUE:
     case SET_PROMPTED_TO_DELETE_RESOURCE_ID:
     case SET_SELECTED_RESOURCES_IDS:
     case SET_STATUS_FILTER_VALUE:
@@ -227,6 +234,7 @@ const searchString = ( state ) => state.ui.searchString;
 const filterValues = ( state ) => state.ui.filterValues;
 const tagsFilterValues = ( state ) => state.ui.tagsFilterValues;
 const sortValue = ( state ) => state.ui.sortValue;
+const sectionsSortValue = ( state ) => state.ui.sectionsSortValue;
 const promptedToDeleteResourceId = ( state ) => state.ui.promptedToDeleteResourceId;
 const selectedResourcesIds = ( state ) => state.ui.selectedResourcesIds;
 const statusFilterValue = ( state ) => state.ui.statusFilterValue;
@@ -249,6 +257,7 @@ export const selector = createStructuredSelector( {
   tagsFilterValues,
   openTabId,
   sortValue,
+  sectionsSortValue,
   promptedToDeleteResourceId,
   selectedResourcesIds,
   statusFilterValue,

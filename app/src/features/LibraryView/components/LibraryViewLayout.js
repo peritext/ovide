@@ -51,7 +51,8 @@ import {
  */
 import PaginatedList from '../../../components/PaginatedList';
 import ConfirmBatchDeleteModal from './ConfirmBatchDeleteModal';
-import LibraryFiltersBar from './LibraryFiltersBar';
+import LibraryResourcesFilterBar from './LibraryResourcesFilterBar';
+import LibrarySectionsFilterBar from './LibrarySectionsFilterBar';
 import ConfirmToDeleteModal from '../../../components/ConfirmToDeleteModal';
 import ResourceForm from '../../../components/ResourceForm';
 import NewSectionForm from '../../../components/NewSectionForm';
@@ -113,6 +114,7 @@ class LibraryViewLayout extends Component {
       filterValues,
       tagsFilterValues,
       sortValue,
+      sectionsSortValue,
       statusFilterValue,
       searchString,
       promptedToDeleteResourceId,
@@ -128,6 +130,7 @@ class LibraryViewLayout extends Component {
         setFilterValues,
         setTagsFilterValues,
         setSortValue,
+        setSectionsSortValue,
         setStatusFilterValue,
         setPromptedToDeleteResourceId,
         setUploadStatus,
@@ -216,7 +219,7 @@ class LibraryViewLayout extends Component {
       } )
       .filter( ( resource ) => {
         if ( activeTagsFilters.length ) {
-          return activeTagsFilters.find( ( id ) => resource.metadata.tags.includes( id ) ) !== undefined;
+          return activeTagsFilters.find( ( id ) => ( resource.metadata.tags || [] ).includes( id ) ) !== undefined;
         }
         return true;
       } )
@@ -781,6 +784,10 @@ class LibraryViewLayout extends Component {
             setSortValue( option );
             setOptionsVisible( false );
           }
+          else if ( optionDomain === 'sectionsSort' ) {
+            setSectionsSortValue( option );
+            setOptionsVisible( false );
+          }
           else if ( optionDomain === 'status' ) {
             setStatusFilterValue( option );
             setOptionsVisible( false );
@@ -845,7 +852,31 @@ class LibraryViewLayout extends Component {
               .map( ( { resourceId, level } ) => ( {
                 resource: resources[resourceId],
                 level
-              } ) );
+              } ) )
+              .filter( ( { resource } ) => {
+                if ( searchString.length > 2 ) {
+                  const title = resource.metadata.title.toLowerCase();
+                  return title.includes( searchString.toLowerCase() );
+                }
+                return true;
+              } )
+              .filter( ( { resource } ) => {
+                if ( activeTagsFilters.length ) {
+                  return activeTagsFilters.find( ( id ) => ( resource.metadata.tags || [] ).includes( id ) ) !== undefined;
+                }
+                return true;
+              } )
+              .sort( ( { resource: resource1 }, { resource: resource2 } ) => {
+                switch ( sectionsSortValue ) {
+                  case 'editedRecently':
+                    return ( !resource2.lastUpdateAt || resource1.lastUpdateAt > resource2.lastUpdateAt ) ? -1 : 1;
+                  case 'title':
+                    return resource1.metadata.title > resource2.metadata.title ? -1 : 1;
+                  case 'summary':
+                  default:
+                    return -1;
+                }
+              } );
               const handleDeleteSection = ( thatSectionId ) => {
                 setPromptedToDeleteResourceId( thatSectionId );
               };
@@ -925,38 +956,71 @@ class LibraryViewLayout extends Component {
                 } );
               };
               return (
-                <StretchedLayoutItem
-                  isFlex={ 2 }
-                  style={ {
+                <StretchedLayoutContainer
+                  isAbsolute
+                  isDirection={ 'vertical' }
+                >
+                  <StretchedLayoutItem
+                    style={ { paddingRight: 0 } }
+                  >
+                    <Column>
+                      <LibrarySectionsFilterBar
+                        sectionsSortValue={ sectionsSortValue }
+                        filterValues={ filterValues }
+                        tagsFilterValues={ tagsFilterValues }
+                        onSearchStringChange={ handleResourceSearchChange }
+                        searchString={ this.state.searchString }
+                        onToggleOptionsVisibility={ handleToggleOptionsVisibility }
+                        optionsVisible={ optionsVisible }
+                        onChange={ handleFiltersChange }
+                        sortValue={ sortValue }
+                        statusFilterValue={ statusFilterValue }
+                        statusFilterValues={ statusFilterValues }
+                        translate={ translate }
+                        tags={ production.tags }
+                      />
+                    </Column>
+                  </StretchedLayoutItem>
+                  <StretchedLayoutItem
+                    isFlex={ 2 }
+                    style={ {
+                    position: 'relative'
+                  } }
+                  >
+                    <div style={ {
                     position: 'absolute',
                     width: '100%',
                     height: '100%',
                     top: 0,
                     left: 0,
                   } }
-                >
-                  <SortableSectionsList
-                    items={ sectionsList }
-                    production={ production }
-                    onSortEnd={ handleSortEnd }
-                    renderNoItem={ () => <div>{translate( 'No sections to display' )}</div> }
-                    goToSection={ goToSection }
-                    setSectionIndex={ handleSectionIndexChange }
-                    onSortStart={ handleActiveIsSorting }
-                    isSorting={ isSorting }
-                    onDelete={ handleDeleteSection }
-                    setSectionLevel={ handleSetSectionLevel }
-                    useDragHandle
-                  />
-                  <ConfirmToDeleteModal
-                    isActive={ promptedToDeleteResourceId !== undefined }
-                    deleteType={ 'section' }
-                    production={ production }
-                    id={ promptedToDeleteResourceId }
-                    onClose={ () => setPromptedToDeleteResourceId( undefined ) }
-                    onDeleteConfirm={ handleDeleteSectionConfirm }
-                  />
-                </StretchedLayoutItem>
+                    >
+
+                      <SortableSectionsList
+                        items={ sectionsList }
+                        production={ production }
+                        allowMove={ sectionsSortValue === 'summary' }
+                        onSortEnd={ handleSortEnd }
+                        renderNoItem={ () => <div>{translate( 'No sections to display' )}</div> }
+                        goToSection={ goToSection }
+                        setSectionIndex={ handleSectionIndexChange }
+                        onSortStart={ handleActiveIsSorting }
+                        isSorting={ isSorting }
+                        onDelete={ handleDeleteSection }
+                        setSectionLevel={ handleSetSectionLevel }
+                        useDragHandle
+                      />
+                    </div>
+                    <ConfirmToDeleteModal
+                      isActive={ promptedToDeleteResourceId !== undefined }
+                      deleteType={ 'section' }
+                      production={ production }
+                      id={ promptedToDeleteResourceId }
+                      onClose={ () => setPromptedToDeleteResourceId( undefined ) }
+                      onDeleteConfirm={ handleDeleteSectionConfirm }
+                    />
+                  </StretchedLayoutItem>
+                </StretchedLayoutContainer>
               );
             case 'resources':
               const handleAbortResourceDeletion = () => setPromptedToDeleteResourceId( undefined );
@@ -965,7 +1029,8 @@ class LibraryViewLayout extends Component {
                 <StretchedLayoutContainer isAbsolute>
                   <StretchedLayoutItem style={ { paddingRight: 0 } }>
                     <Column>
-                      <LibraryFiltersBar
+                      <LibraryResourcesFilterBar
+
                         filterValues={ filterValues }
                         tagsFilterValues={ tagsFilterValues }
                         onDeleteSelection={ handleDeleteSelection }
@@ -984,6 +1049,7 @@ class LibraryViewLayout extends Component {
                         translate={ translate }
                         visibleResources={ visibleResources }
                         tags={ production.tags }
+
                       />
                     </Column>
                   </StretchedLayoutItem>
@@ -1021,7 +1087,7 @@ class LibraryViewLayout extends Component {
                 </StretchedLayoutContainer>
               );
             default:
-              return <div>coucou</div>;
+              return null;
           }
         };
         return (
@@ -1035,7 +1101,13 @@ class LibraryViewLayout extends Component {
                 >
                   <TabList>
                     <Tab
-                      onClick={ () => setOpenTabId( 'sections' ) }
+                      onClick={ () => {
+                        setOpenTabId( 'sections' );
+                        setTagsFilterValues( [] );
+                        this.setState( {
+                          searchString: '',
+                        } );
+                      } }
                       isActive={ openTabId === 'sections' }
                     >
                       <TabLink>
@@ -1043,7 +1115,13 @@ class LibraryViewLayout extends Component {
                       </TabLink>
                     </Tab>
                     <Tab
-                      onClick={ () => setOpenTabId( 'resources' ) }
+                      onClick={ () => {
+                        setOpenTabId( 'resources' );
+                        setTagsFilterValues( [] );
+                        this.setState( {
+                          searchString: ''
+                        } );
+                       } }
                       isActive={ openTabId === 'resources' }
                     >
                       <TabLink>

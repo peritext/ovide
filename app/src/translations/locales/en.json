@@ -598,7 +598,7 @@
   "Features.LibraryView.Deleting {n} resources": "Deleting {n} materials",
   "Features.LibraryView.Deselect all": "Deselect all",
   "Features.LibraryView.Drop files to include in your library": "Drop files to include in the production",
-  "Features.LibraryView.Filters": "Filters",
+  "Features.LibraryView.Filters": "Options",
   "Features.LibraryView.Find a resource": "Find a material",
   "Features.LibraryView.New resource": "New material",
   "Features.LibraryView.No resource in your library yet": "No matching glossary entry",
@@ -1124,5 +1124,8 @@
   "Features.LibraryView.New section": "New section",
   "Features.EditionUiWrapper.Materials": "Materials",
   "Features.EditionUiWrapper.Parameters": "Parameters",
-  "Features.SectionView.this material has tag {name}": "this material is annotated with tag {name}"
+  "Features.SectionView.this material has tag {name}": "this material is annotated with tag {name}",
+  "Features.LibraryView.order in production default summary": "order according to production default summary",
+  "Components.SectionCard.Last update:": "Last update:",
+  "Components.ContextualizationEditor.showOnlyFirstImage": "Show only first image"
 }

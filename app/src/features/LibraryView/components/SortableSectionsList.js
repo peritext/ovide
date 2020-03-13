@@ -22,6 +22,7 @@ const SortableItem = SortableElement( ( {
   value,
   production,
   goToSection,
+  allowMove = true,
   onDelete,
   setSectionLevel,
   isSorting,
@@ -30,7 +31,9 @@ const SortableItem = SortableElement( ( {
   maxSectionIndex,
   setSectionIndex,
 } ) => {
-    const { resource, level } = value;
+    const { resource, level: initialLevel } = value;
+    let level = allowMove ? initialLevel : 0;
+    level = isNaN( level ) ? 0 : level;
     return (
       <Level style={ { marginBottom: 0, width: '100%' } }>
         <Column
@@ -42,6 +45,7 @@ const SortableItem = SortableElement( ( {
             minified={ isSorting }
             tags={ production.tags }
             level={ level }
+            showMoveUi={ allowMove }
             sectionIndex={ sectionIndex }
             maxSectionIndex={ maxSectionIndex }
             goTo={ goToSection }

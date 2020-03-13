@@ -59,6 +59,7 @@ const SectionCard = ( {
   production,
   onDelete,
   setSectionIndex,
+  showMoveUi,
   tags,
 }, { t } ) => {
 
@@ -136,7 +137,7 @@ const SectionCard = ( {
 
               <Column
                 style={ { paddingBottom: 0 } }
-                isSize={ 7 }
+                isSize={ showMoveUi ? 7 : 5 }
               >
                 <Title isSize={ titleSize }>
                   <Link
@@ -177,14 +178,57 @@ const SectionCard = ( {
                   :
                   null
                 }
+                {
+                  !showMoveUi &&
+                  <div style={ { marginTop: '1rem' } }>
+                    <Button
+                      onClick={ handleEdit }
+                      data-effect={ 'solid' }
+                      data-place={ 'left' }
+                      data-for={ 'card-tooltip' }
+                      data-tip={ translate( 'edit section' ) }
+                    >
+                      <CenteredIcon src={ icons.edit.black.svg } />
+                    </Button>
+                    <Button
+                      onClick={ handleDelete }
+                      data-effect={ 'solid' }
+                      data-place={ 'left' }
+                      data-for={ 'card-tooltip' }
+                      data-tip={ translate( 'delete this section' ) }
+                    >
+                      <CenteredIcon src={ icons.remove.black.svg } />
+                    </Button>
+                  </div>
+                }
               </Column>
+              {
+                !showMoveUi &&
+                <Column isSize={ 6 }>
+                  <i>{computeSectionFirstWords( section )}</i>
+                  {
+                  section.lastUpdateAt &&
+                  <div style={ { paddingTop: '1rem', fontSize: '.6rem' } }>
+                    <i>{translate( 'Last update:' )} {new Date( section.lastUpdateAt ).toLocaleString()}</i>
+                  </div>
+                }
+
+                </Column>
+              }
             </Columns>
+            {showMoveUi &&
             <Columns>
               <Column
                 isOffset={ 1 }
-                isSize={ 7 }
+                isSize={ showMoveUi ? 7 : 6 }
               >
                 <i>{computeSectionFirstWords( section )}</i>
+                {
+                  section.lastUpdateAt &&
+                  <div style={ { paddingTop: '1rem', fontSize: '.6rem' } }>
+                    <i>{translate( 'Last update:' )} {new Date( section.lastUpdateAt ).toLocaleString()}</i>
+                  </div>
+                }
                 <div style={ { marginTop: '1rem' } }>
                   <Button
                     onClick={ handleEdit }
@@ -208,52 +252,53 @@ const SectionCard = ( {
               </Column>
               <Column
                 style={ { position: 'relative' } }
-                isSize={ 2 }
+                isSize={ showMoveUi ? 2 : 6 }
               >
                 <MovePad
                   style={ {
-                      position: 'absolute',
-                      top: '-3rem',
-                      right: '1rem'
-                    } }
+                        position: 'absolute',
+                        top: '-3rem',
+                        right: '1rem'
+                      } }
                   chevronsData={ {
-                      left: {
-                        tooltip: translate( 'Title level {n}', { n: level } ),
-                        isDisabled: level === 0,
-                        onClick: () => setSectionLevel( { sectionId: section.id, level: level - 1 } )
-                      },
-                      right: {
-                        tooltip: translate( 'Title level {n}', { n: level + 2 } ),
-                        isDisabled: level >= config.maxSectionLevel - 1,
-                        onClick: () => setSectionLevel( { sectionId: section.id, level: level + 1 } )
-                      },
-                      up: {
-                        isDisabled: sectionIndex === 0,
-                        tooltip: translate( 'Move up in the summary' ),
-                        onClick: () => setSectionIndex( sectionIndex, sectionIndex - 1 )
-                      },
-                      down: {
-                        isDisabled: sectionIndex === maxSectionIndex,
-                        tooltip: translate( 'Move down in the summary' ),
-                        onClick: () => setSectionIndex( sectionIndex, sectionIndex + 1 )
-                      }
-                    } }
+                        left: {
+                          tooltip: translate( 'Title level {n}', { n: level } ),
+                          isDisabled: level === 0,
+                          onClick: () => setSectionLevel( { sectionId: section.id, level: level - 1 } )
+                        },
+                        right: {
+                          tooltip: translate( 'Title level {n}', { n: level + 2 } ),
+                          isDisabled: level >= config.maxSectionLevel - 1,
+                          onClick: () => setSectionLevel( { sectionId: section.id, level: level + 1 } )
+                        },
+                        up: {
+                          isDisabled: sectionIndex === 0,
+                          tooltip: translate( 'Move up in the summary' ),
+                          onClick: () => setSectionIndex( sectionIndex, sectionIndex - 1 )
+                        },
+                        down: {
+                          isDisabled: sectionIndex === maxSectionIndex,
+                          tooltip: translate( 'Move down in the summary' ),
+                          onClick: () => setSectionIndex( sectionIndex, sectionIndex + 1 )
+                        }
+                      } }
                   moveComponentToolTip={ translate( 'Move section in summary' ) }
                   MoveComponent={ SortableHandle( () =>
-                      (
-                        <span
-                          onClick={ silentEvent }
-                          onMouseUp={ silentEvent }
-                          style={ { cursor: 'move' } }
-                          className={ 'button' }
-                        >
-                          <Icon className={ 'fa fa-arrows-alt' } />
-                        </span>
-                      )
-                    ) }
+                        (
+                          <span
+                            onClick={ silentEvent }
+                            onMouseUp={ silentEvent }
+                            style={ { cursor: 'move' } }
+                            className={ 'button' }
+                          >
+                            <Icon className={ 'fa fa-arrows-alt' } />
+                          </span>
+                        )
+                      ) }
                 />
+
               </Column>
-            </Columns>
+            </Columns>}
           </div>
                     }
       />

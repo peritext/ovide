@@ -587,7 +587,7 @@
   "Features.LibraryView.Deleting {n} items": "Suppression de {n} matériaux",
   "Features.LibraryView.Deselect all": "Tout déselectionner",
   "Features.LibraryView.Drop files to include in your library": "Déposer des fichier à intégrer dans la production",
-  "Features.LibraryView.Filters": "Filtres",
+  "Features.LibraryView.Filters": "Options",
   "Features.LibraryView.Find a resource": "Trouver un matériau",
   "Features.LibraryView.New item": "Nouveau matériau",
   "Features.LibraryView.New resource": "Nouveau matériau",
@@ -1124,5 +1124,8 @@
   "Features.LibraryView.New section": "Nouvelle section",
   "Features.EditionUiWrapper.Materials": "Matériaux",
   "Features.EditionUiWrapper.Parameters": "Paramètres",
-  "Features.SectionView.this material has tag {name}": "ce matériau est annoté avec l'étiquette {name}"
+  "Features.SectionView.this material has tag {name}": "ce matériau est annoté avec l'étiquette {name}",
+  "Features.LibraryView.order in production default summary": "ordonner en fonction du sommaire de la production",
+  "Components.SectionCard.Last update:": "Dernière mise à jour:",
+  "Components.ContextualizationEditor.showOnlyFirstImage": "Montrer uniquement la première image"
 }
