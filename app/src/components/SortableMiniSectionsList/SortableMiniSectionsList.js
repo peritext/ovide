@@ -21,7 +21,7 @@ import SectionMiniCard from '../SectionMiniCard';
 
 const SortableItem = SortableElement( ( {
   value: {
-    level,
+    level: inputLevel,
     resource
   },
   onOpenSettings,
@@ -34,10 +34,12 @@ const SortableItem = SortableElement( ( {
   setSectionIndex,
   sectionIndex,
   maxSectionIndex,
+  allowMove = true,
   history,
   tags,
 
 } ) => {
+  const level = allowMove ? inputLevel : 0;
   const handleDelete = ( event ) => {
     event.stopPropagation();
     onDeleteSection( resource.id );
@@ -62,6 +64,7 @@ const SortableItem = SortableElement( ( {
           setSectionLevel={ setSectionLevel }
           productionId={ productionId }
           onSelect={ handleSelect }
+          allowMove={ allowMove }
           tags={ tags }
           level={ level }
           onDeleteSection={ handleDelete }

@@ -82,9 +82,10 @@ export const getResourceTitle = ( resource ) => {
 /**
  * fuzzy search resource object
  */
-export const searchResources = ( items, string ) => {
+export const searchResources = ( items, string, prefix = '' ) => {
+
   const options = {
-    keys: [ 'metadata.title', 'data.name', 'data.title', 'metadata.type' ],
+    keys: [ `${prefix}metadata.title`, `${prefix}data.name`, `${prefix}data.title`, `${prefix}metadata.type` ],
     threshold: 0.5
   };
   const fuse = new Fuse( items, options );

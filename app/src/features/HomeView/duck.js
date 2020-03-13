@@ -162,11 +162,20 @@ export const importProduction = ( file, callback ) => ( {
   promise: () =>
     new Promise( ( resolve, reject ) => {
       return new Promise( ( res, rej ) => {
-                if ( file.name ) {
+                if ( typeof file === 'string' ) {
+                  try {
+                    const parsed = JSON.parse( file.trim() );
+                    res( parsed );
+                  }
+ catch ( e ) {
+                    rej( e );
+                  }
+                }
+                else if ( file.name ) {
                   parseImportedFile( file )
                   .then( res ).catch( rej );
                 }
- else {
+                else {
                   res( file );
                 }
               } )

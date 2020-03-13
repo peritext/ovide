@@ -55,6 +55,7 @@ const SectionMiniCard = ( {
   setSectionIndex,
   sectionIndex,
   maxSectionIndex,
+  allowMove,
   onSelect,
 }, { t } ) => {
 
@@ -177,13 +178,15 @@ const SectionMiniCard = ( {
               style={ { position: 'relative' } }
               isSize={ 2 }
             >
-              <MovePad
-                style={ {
+              {
+                allowMove &&
+                <MovePad
+                  style={ {
                     position: 'absolute',
                         top: '-4rem',
                         right: '5rem',
                   } }
-                chevronsData={ {
+                  chevronsData={ {
                     left: {
                       tooltip: translate( 'Title level {n}', { n: level } ),
                       isDisabled: level === 0,
@@ -217,9 +220,9 @@ const SectionMiniCard = ( {
                       }
                     }
                   } }
-                moveComponentToolTip={ translate( 'Move section in summary' ) }
-                hideMainButton={ disableMove }
-                MoveComponent={ SortableHandle( () =>
+                  moveComponentToolTip={ translate( 'Move section in summary' ) }
+                  hideMainButton={ disableMove }
+                  MoveComponent={ SortableHandle( () =>
                     (
                       <span
                         onClick={ silentEvent }
@@ -232,7 +235,9 @@ const SectionMiniCard = ( {
                       </span>
                     )
                   ) }
-              />
+                />
+              }
+
             </Column>
 
           </Columns>

@@ -216,6 +216,38 @@ const SectionViewLayout = ( {
             return -1;
         }
       } );
+      let visibleSections = resourceSearchString.length === 0 ? sectionsList : searchResources( sectionsList, resourceSearchString, 'resource.' );
+      visibleSections = visibleSections
+        .filter( ( { resource } ) => {
+          if ( activeFilters.length ) {
+            return activeFilters.indexOf( resource.metadata.type ) > -1;
+          }
+          return true;
+        } )
+        .filter( ( { resource } ) => {
+          if ( activeTagsFilters.length ) {
+            return activeTagsFilters.find( ( id ) => resource.metadata.tags.includes( id ) ) !== undefined;
+          }
+          return true;
+        } )
+        .sort( ( { resource: a }, { resource: b } ) => {
+            switch ( resourceSortValue ) {
+              case 'edited recently':
+                if ( !b.lastUpdateAt || a.lastUpdateAt > b.lastUpdateAt ) {
+                  return -1;
+                }
+                return 1;
+              case 'title':
+                const aTitle = getResourceTitle( a );
+                const bTitle = getResourceTitle( b );
+                if ( ( aTitle && bTitle ) && aTitle.toLowerCase().trim() > bTitle.toLowerCase().trim() ) {
+                  return 1;
+                }
+                return -1;
+              default:
+                return -1;
+             }
+          } );
   const hyperlinks = linkModalFocusData ? Object.keys( production.resources )
     .filter( ( resourceId ) => production.resources[resourceId].metadata.type === 'webpage' )
     .map( ( resourceId ) => production.resources[resourceId] ) : [];
@@ -627,6 +659,7 @@ const SectionViewLayout = ( {
                   production,
                   submitMultiResources,
                   visibleResources,
+                  visibleSections,
                   onGoToResource,
             }
           }
@@ -774,7 +807,7 @@ const SectionViewLayout = ( {
         inactiveSections={ inactiveSections }
         onCreateInternalLink={ handleCreateInternalLink }
         sections={
-          sectionsList.filter( ( { resource } ) => resource.id !== section.id )
+          sectionsList.filter( ( { resource } ) => resource && resource.id !== section.id )
           .map( ( { resource } ) => resource )
         }
       />

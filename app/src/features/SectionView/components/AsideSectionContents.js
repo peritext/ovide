@@ -57,6 +57,7 @@ const AsideSectionContents = ( {
   resourceTypes,
   searchString,
   sections,
+  visibleSections,
   section,
   setEditorFocus,
   setMainColumnMode,
@@ -77,23 +78,24 @@ const AsideSectionContents = ( {
   if ( asideTabCollapsed ) {
         return null;
       }
+      const setOption = ( option, optionDomain ) => {
+        if ( optionDomain === 'filter' ) {
+          handleResourceFilterToggle( option );
+        }
+        if ( optionDomain === 'tags' ) {
+          handleTagsFilterToggle( option );
+        }
+        else if ( optionDomain === 'sort' ) {
+          setResourceSortValue( option );
+        }
+      };
+      const handleResourceSearchChange = ( e ) => setResourceSearchStringDebounce( e.target.value );
+      const handleToggleResourcesOptionVisible = () => {
+        setResourceOptionsVisible( !resourceOptionsVisible );
+      };
       switch ( asideTabMode ) {
         case 'library':
-          const setOption = ( option, optionDomain ) => {
-            if ( optionDomain === 'filter' ) {
-              handleResourceFilterToggle( option );
-            }
-            if ( optionDomain === 'tags' ) {
-              handleTagsFilterToggle( option );
-            }
-            else if ( optionDomain === 'sort' ) {
-              setResourceSortValue( option );
-            }
-          };
-          const handleResourceSearchChange = ( e ) => setResourceSearchStringDebounce( e.target.value );
-          const handleToggleResourcesOptionVisible = () => {
-            setResourceOptionsVisible( !resourceOptionsVisible );
-          };
+
           const handleClickAddItemsToLibrary = () => {
             if ( mainColumnMode === 'edition' ) {
               setEditorFocus( undefined );
@@ -123,7 +125,11 @@ const AsideSectionContents = ( {
                         <Dropdown
                           closeOnChange={ false }
                           menuAlign={ 'right' }
-                          isColor={ Object.keys( resourceFilterValues ).filter( ( f ) => resourceFilterValues[f] ).length > 0 ? 'info' : '' }
+                          isColor={
+                            Object.keys( resourceFilterValues ).filter( ( f ) => resourceFilterValues[f] ).length > 0 ||
+                            Object.keys( tagsFilterValues ).filter( ( f ) => tagsFilterValues[f] ).length > 0
+                            ? 'info' : ''
+                          }
                           onToggle={ handleToggleResourcesOptionVisible }
                           onChange={ setOption }
                           isActive={ resourceOptionsVisible }
@@ -262,6 +268,89 @@ const AsideSectionContents = ( {
               isFluid
               isAbsolute
             >
+              <StretchedLayoutItem>
+                <Column style={ { paddingTop: 0, paddingBottom: 0 } }>
+                  <Column style={ { paddingTop: 0, paddingBottom: 0 } }>
+                    <Field hasAddons>
+                      <Control style={ { flex: 1 } }>
+                        <Input
+                          value={ searchString }
+                          onChange={ handleResourceSearchChange }
+                          placeholder={ translate( 'find a section' ) }
+                        />
+                        {/*<Input value={resourceSearchString} onChange={e => setResourceSearchString(e.target.value)} placeholder={translate('find a resource')} />*/}
+                      </Control>
+                      <Control>
+                        <Dropdown
+                          closeOnChange={ false }
+                          menuAlign={ 'right' }
+                          isColor={
+                            Object.keys( resourceFilterValues ).filter( ( f ) => resourceFilterValues[f] ).length > 0 ||
+                            Object.keys( tagsFilterValues ).filter( ( f ) => tagsFilterValues[f] ).length > 0
+                            ? 'info' : ''
+                          }
+                          onToggle={ handleToggleResourcesOptionVisible }
+                          onChange={ setOption }
+                          isActive={ resourceOptionsVisible }
+                          value={ {
+                          sort: {
+                            value: resourceSortValue,
+                          },
+                          tags: {
+                            value: Object.keys( tagsFilterValues ).filter( ( f ) => tagsFilterValues[f] ),
+                          }
+                        } }
+                          options={ [
+                          {
+                            label: translate( 'Sort items by' ),
+                            id: 'sort',
+                            options: [
+                              {
+                                id: 'summary',
+                                label: translate( 'order in production default summary' )
+                              },
+                              {
+                                id: 'edited recently',
+                                label: translate( 'edited recently' )
+                              },
+                              {
+                                id: 'title',
+                                label: translate( 'title' )
+                              },
+                            ]
+                          },
+                          Object.keys( tags ).length ?
+                          {
+                            label: translate( 'Show items with tags' ),
+                            id: 'tags',
+                            options:
+                              Object.entries( tags )
+                              .sort( ( [ key1, tag1 ], [ key2, tag2 ] ) => { /* eslint no-unused-vars : 0 */
+                                if ( tag1.name > tag2.name ) {
+                                  return 1;
+                                }
+                                else return -1;
+                              } )
+                              .map( ( [ key, tag ] ) => ( {
+                                id: key,
+                                label: (
+                                  <span>
+                                    <ColorMarker color={ tag.color } />
+                                    <span>{tag.name}</span>
+                                  </span>
+                                )
+                              } ) )
+                          } : undefined,
+
+                        ].filter( ( d ) => d ) }
+                        >
+                          {translate( 'Filters' )}
+                        </Dropdown>
+                      </Control>
+                    </Field>
+                  </Column>
+                </Column>
+              </StretchedLayoutItem>
               <StretchedLayoutItem
                 isFlex={ 1 }
                 isFlowing
@@ -269,9 +358,10 @@ const AsideSectionContents = ( {
                 <Column isWrapper>
                   <SortableMiniSectionsList
                     productionId={ productionId }
-                    items={ sections }
+                    items={ visibleSections }
                     onSortEnd={ onSortEnd }
                     history={ history }
+                    allowMove={ !searchString.length && resourceSortValue === 'summary' && !tagsFilterValues.length }
                     activeSectionId={ section.id }
                     setSectionIndex={ handleSectionIndexChange }
                     maxSectionIndex={ sections.length - 1 }

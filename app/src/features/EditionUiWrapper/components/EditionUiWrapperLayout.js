@@ -135,7 +135,7 @@ const EditionUiWrapperLayout = ( {
               href: `/productions/${productionId}/sections/${sectionId}`,
             }
             : undefined,
-            
+
             navLocation === 'editor-resource' ?
             {
               isActive: true,

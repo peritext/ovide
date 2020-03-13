@@ -68,6 +68,7 @@ class GlossaryViewContainer extends Component {
     if ( !( this.props.editedProduction && this.props.editedProduction.id === productionId ) ) {
       this.props.actions.activateProduction( { productionId } );
     }
+    Tooltip.rebuild();
   }
 
   componentWillReceiveProps = ( nextProps ) => {

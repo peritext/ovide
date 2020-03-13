@@ -1141,5 +1141,7 @@
   "Features.LibraryView.Tag selection with": "Étiquetter la sélection avec",
   "Features.LibraryView.Tag selection": "Étiquetter",
   "Features.LibraryView.search for a tag": "chercher une étiquette",
-  "Features.LibraryView.Add tag {name}": "Créer l'étiquette {name}"
+  "Features.LibraryView.Add tag {name}": "Créer l'étiquette {name}",
+  "Features.SectionView.order in production default summary": "sommaire de la production",
+  "Features.SectionView.find a section": "trouver une note"
 }

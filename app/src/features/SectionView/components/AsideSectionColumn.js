@@ -135,6 +135,7 @@ class AsideSectionColumn extends Component {
       setEditorFocus,
 
       visibleResources,
+      visibleSections,
       resourceFilterValues,
       tagsFilterValues,
       setResourceFilterValues,
@@ -185,8 +186,20 @@ class AsideSectionColumn extends Component {
         [type]: tagsFilterValues[type] ? false : true
       } );
     };
-    const handleSetAsideTabSummary = () => setAsideTabMode( 'summary' );
-    const handleSetAsideTabLibrary = () => setAsideTabMode( 'library' );
+    const handleSetAsideTabSummary = () => {
+      setAsideTabMode( 'summary' );
+      setResourceSortValue( 'summary' );
+      this.setResourceSearchString( '' );
+      setResourceFilterValues( {} );
+      setTagsFilterValues( {} );
+    };
+    const handleSetAsideTabLibrary = () => {
+      setAsideTabMode( 'library' );
+      setResourceSortValue( 'edited recently' );
+      this.setResourceSearchString( '' );
+      setResourceFilterValues( {} );
+      setTagsFilterValues( {} );
+    };
     const handleToggleAsideTabCollapsed = () => setAsideTabCollapsed( !asideTabCollapsed );
 
     return (
@@ -296,6 +309,7 @@ class AsideSectionColumn extends Component {
                     setSectionLevel,
                     productionId,
                     visibleResources,
+                    visibleSections,
                     onGoToResource,
                   }
                 }
