@@ -926,25 +926,28 @@ class LibraryViewLayout extends Component {
               };
               return (
                 <StretchedLayoutItem
-                  isFluid
                   isFlex={ 2 }
-                  isFlowing
+                  style={ {
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    top: 0,
+                    left: 0,
+                  } }
                 >
-                  <Column style={ { paddingRight: 0 } }>
-                    <SortableSectionsList
-                      items={ sectionsList }
-                      production={ production }
-                      onSortEnd={ handleSortEnd }
-                      renderNoItem={ () => <div>{translate( 'No sections to display' )}</div> }
-                      goToSection={ goToSection }
-                      setSectionIndex={ handleSectionIndexChange }
-                      onSortStart={ handleActiveIsSorting }
-                      isSorting={ isSorting }
-                      onDelete={ handleDeleteSection }
-                      setSectionLevel={ handleSetSectionLevel }
-                      useDragHandle
-                    />
-                  </Column>
+                  <SortableSectionsList
+                    items={ sectionsList }
+                    production={ production }
+                    onSortEnd={ handleSortEnd }
+                    renderNoItem={ () => <div>{translate( 'No sections to display' )}</div> }
+                    goToSection={ goToSection }
+                    setSectionIndex={ handleSectionIndexChange }
+                    onSortStart={ handleActiveIsSorting }
+                    isSorting={ isSorting }
+                    onDelete={ handleDeleteSection }
+                    setSectionLevel={ handleSetSectionLevel }
+                    useDragHandle
+                  />
                   <ConfirmToDeleteModal
                     isActive={ promptedToDeleteResourceId !== undefined }
                     deleteType={ 'section' }

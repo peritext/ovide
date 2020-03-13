@@ -63,6 +63,7 @@ const SortableSectionsList = SortableContainer( ( {
   return (
     <PaginatedList
       items={ items }
+      style={ { height: '100%' } }
       defaultColumns={ 1 }
       renderNoItem={ renderNoItem }
       renderItem={ ( { resource, level }, index ) => {

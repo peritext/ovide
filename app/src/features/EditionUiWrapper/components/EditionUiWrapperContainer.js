@@ -60,7 +60,7 @@ class EditionUiWrapperContainer extends Component {
         return 'editor-section';
       case '/productions/:productionId/resources/:sectionId':
         return 'editor-resource';
-      case '/productions/:productionId/summary':
+      case '/productions/:productionId/parameters':
         return 'parameters';
       default:
         return undefined;
