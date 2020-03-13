@@ -220,6 +220,7 @@ const AsideSectionContents = ( {
                     onCloseSettings={ onCloseActiveResource }
                     onResourceEditAttempt={ onResourceEditAttempt }
                     getResourceTitle={ getResourceTitle }
+                    tags={ tags }
                   />
                 </Column>
               </StretchedLayoutItem>
@@ -277,6 +278,7 @@ const AsideSectionContents = ( {
                     onOpenSettings={ handleOpenSettings }
                     onDeleteSection={ onDeleteSection }
                     setSectionLevel={ setSectionLevel }
+                    tags={ tags }
                     useDragHandle
                   />
                 </Column>

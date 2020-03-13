@@ -44,6 +44,7 @@ const SectionMiniCard = ( {
   cardStyle = {},
   isActive,
   section,
+  tags = {},
   level = 0,
   productionId,
   onDeleteSection,
@@ -76,6 +77,8 @@ const SectionMiniCard = ( {
       {abbrevString( title || translate( 'Untitled section' ), 10 )}
     </span>
   );
+  const sectionTags = ( section.metadata.tags || [] )
+  .map( ( tagId ) => tags[tagId] ).filter( ( tag ) => tag );
 
   return (
     <Card
@@ -93,6 +96,36 @@ const SectionMiniCard = ( {
               />
             </Column>
 
+            {
+              sectionTags && sectionTags.length ?
+                <div
+                  style={ {
+                  position: 'absolute',
+                  left: '2rem',
+                  top: '5rem',
+                  minWidth: '1rem',
+                  minHeight: '1rem',
+                  display: 'flex',
+                  flexFlow: 'column nowrap',
+                  alignItems: 'stretch'
+                } }
+                >
+                  {
+                  sectionTags.map( ( tag ) => (
+                    <div
+                      key={ tag.id }
+                      data-for={ 'tooltip' }
+                      data-tip={ translate( 'this material has tag {name}', { name: tag.name } ) }
+                      style={ {
+                        flex: 1,
+                        background: tag.color
+                      } }
+                    />
+                  ) )
+                }
+                </div>
+              : null
+            }
             <Column
               style={ { paddingBottom: 0 } }
               isSize={ 8 }

@@ -1123,5 +1123,6 @@
   "Features.LibraryView.Other materials": "Other materials",
   "Features.LibraryView.New section": "New section",
   "Features.EditionUiWrapper.Materials": "Materials",
-  "Features.EditionUiWrapper.Parameters": "Parameters"
+  "Features.EditionUiWrapper.Parameters": "Parameters",
+  "Features.SectionView.this material has tag {name}": "this material is annotated with tag {name}"
 }

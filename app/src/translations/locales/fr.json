@@ -79,7 +79,7 @@
   "Explanation about displayPageNumber": "choisir si les numéros de page doivent être affichés pour ce bloc",
   "Explanation about notesPosition": "choisir comment afficher les notes dans les contenus",
   "mapStyle": "vous pouvez personnaliser le fond de carte de cette vue",
-  "Explanation about showUncitedReferences": "choisir si les matériaux non mentionnés dans vos contenus doivent quand même être affichés",
+  "Explanation about showUncitedReferences": "choisir si les matériaux non mentionnés par d'autres matériaux doivent quand même être affichés",
   "Explanation about showAllResources": "choisir si tous les matériaux doivent être affichés dans le réseau",
   "Explanation about customSummary": "choisir si c'est le sommaire de la production ou un sommaire spécifique qui doit être utilisé",
   "Explanation about customPresentationText": "Vous pouvez écrire un texte de présentation spécifique pour cette vue",
@@ -606,7 +606,7 @@
   "Features.LibraryView.embed": "code embarqué",
   "Features.LibraryView.glossary": "entrée de glossaire",
   "Features.LibraryView.image": "image",
-  "Features.LibraryView.only unused items (not mentionned anywhere in the production)": "matériaux inutilisés (non mentionnés dans vos contenus)",
+  "Features.LibraryView.only unused items (not mentionned anywhere in the production)": "matériaux inutilisés (non mentionnés par d'autres matériaux)",
   "Features.LibraryView.settings": "paramètres",
   "Features.LibraryView.table": "table",
   "Features.LibraryView.title": "titre",
@@ -1123,5 +1123,6 @@
   "Features.LibraryView.Other materials": "Autres matériaux",
   "Features.LibraryView.New section": "Nouvelle section",
   "Features.EditionUiWrapper.Materials": "Matériaux",
-  "Features.EditionUiWrapper.Parameters": "Paramètres"
+  "Features.EditionUiWrapper.Parameters": "Paramètres",
+  "Features.SectionView.this material has tag {name}": "ce matériau est annoté avec l'étiquette {name}"
 }

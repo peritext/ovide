@@ -17,7 +17,7 @@ import LoadingScreen from '../LoadingScreen';
  */
 import addons from 'raw-loader!./addons.paged.js';
 import previewStyleData from 'raw-loader!./previewStyle.paged.csx';
-
+console.log( 'first', { addons } );
 class PreviewWrapper extends Component {
 
   constructor( props ) {
@@ -95,6 +95,7 @@ class PreviewWrapper extends Component {
     // load addons script
     const addonsScript = thatDocument.createElement( 'script' );
     addonsScript.type = 'text/javascript';
+    console.log( 'after', { addons } );
     addonsScript.innerHTML = addons;
     thatDocument.getElementsByTagName( 'head' )[0].appendChild( addonsScript );
     // load paged js preview

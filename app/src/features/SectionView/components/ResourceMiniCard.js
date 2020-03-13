@@ -131,6 +131,7 @@ class ResourceCard extends Component {
       onDelete,
       getTitle,
       selectMode,
+      tags = {},
 
       connectDragSource,
       onMouseDown,
@@ -172,6 +173,9 @@ class ResourceCard extends Component {
        resourceTitle = getTitle( resource ) || translate( 'untitled resource' );
     }
     resourceTitle = abbrevString( resourceTitle, 10 );
+
+    const resourceTags = ( resource.metadata.tags || [] )
+    .map( ( tagId ) => tags[tagId] ).filter( ( tag ) => tag );
 
     /**
      * Callbacks handlers
@@ -255,6 +259,36 @@ class ResourceCard extends Component {
                       >
                         ☰
                       </span>
+                    : null
+                  }
+                  {
+                    resourceTags && resourceTags.length ?
+                      <div
+                        style={ {
+                        position: 'absolute',
+                        left: '2rem',
+                        top: '6rem',
+                        minWidth: '1rem',
+                        minHeight: '1rem',
+                        display: 'flex',
+                        flexFlow: 'column nowrap',
+                        alignItems: 'stretch'
+                      } }
+                      >
+                        {
+                        resourceTags.map( ( tag ) => (
+                          <div
+                            key={ tag.id }
+                            data-for={ 'tooltip' }
+                            data-tip={ translate( 'this material has tag {name}', { name: tag.name } ) }
+                            style={ {
+                              flex: 1,
+                              background: tag.color
+                            } }
+                          />
+                        ) )
+                      }
+                      </div>
                     : null
                   }
                   {/*<Icon

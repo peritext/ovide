@@ -35,6 +35,7 @@ const SortableItem = SortableElement( ( {
   sectionIndex,
   maxSectionIndex,
   history,
+  tags,
 
 } ) => {
   const handleDelete = ( event ) => {
@@ -61,6 +62,7 @@ const SortableItem = SortableElement( ( {
           setSectionLevel={ setSectionLevel }
           productionId={ productionId }
           onSelect={ handleSelect }
+          tags={ tags }
           level={ level }
           onDeleteSection={ handleDelete }
           onOpenSettings={ onOpenSettings }

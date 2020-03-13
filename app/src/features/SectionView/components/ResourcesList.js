@@ -33,7 +33,8 @@ class ResourceCardWrapper extends Component {
       editedResourceId,
       handleEdit,
       activeSectionId,
-      onGoToResource
+      onGoToResource,
+      tags
     } = this.props;
     return (
       <Column key={ resource.id }>
@@ -44,6 +45,7 @@ class ResourceCardWrapper extends Component {
           isActive={ resource.id === editedResourceId || resource.id === activeSectionId }
           onGoToResource={ onGoToResource }
           onEdit={ handleEdit }
+          tags={ tags }
         />
       </Column>
     );
@@ -66,6 +68,7 @@ export default @DragDropContext( HTML5Backend ) class ResourcesList extends Comp
       editedResourceId,
       activeSectionId,
       onGoToResource,
+      tags,
     } = this.props;
 
     const rowRenderer = ( {
@@ -101,6 +104,7 @@ export default @DragDropContext( HTML5Backend ) class ResourcesList extends Comp
             activeSectionId={ activeSectionId }
             onGoToResource={ onGoToResource }
             handleEdit={ handleEdit }
+            tags={ tags }
           />
         </div>
       );
