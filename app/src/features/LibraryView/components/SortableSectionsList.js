@@ -40,6 +40,7 @@ const SortableItem = SortableElement( ( {
           <SectionCard
             section={ resource }
             minified={ isSorting }
+            tags={ production.tags }
             level={ level }
             sectionIndex={ sectionIndex }
             maxSectionIndex={ maxSectionIndex }

@@ -16,6 +16,7 @@ import {
   Icon,
   Columns,
   Column,
+  Tag,
   Title,
 } from 'quinoa-design-library/components/';
 import icons from 'quinoa-design-library/src/themes/millet/icons';
@@ -27,7 +28,8 @@ import { silentEvent } from '../../../helpers/misc';
 import { translateNameSpacer } from '../../../helpers/translateUtils';
 import {
   abbrevString,
-  computeSectionFirstWords
+  computeSectionFirstWords,
+  getColorByBgColor
 } from '../../../helpers/misc';
 
 /**
@@ -57,6 +59,7 @@ const SectionCard = ( {
   production,
   onDelete,
   setSectionIndex,
+  tags,
 }, { t } ) => {
 
   /**
@@ -146,8 +149,34 @@ const SectionCard = ( {
                       {sectionTitle}
                     </span>
                   </Link>
-
                 </Title>
+                {
+                  section.metadata.tags && section.metadata.tags.length ?
+                    <div style={ { fontSize: '.6rem' } }>
+                      {
+                      section.metadata.tags.map( ( tagId ) => {
+                        const tag = tags[tagId];
+                        if ( tag ) {
+                          return (
+                            <Tag
+                              style={ {
+                                background: tag.color,
+                                color: getColorByBgColor( tag.color )
+                              } }
+                              key={ tagId }
+                            >
+                              {tag.name}
+                            </Tag>
+                          );
+                        }
+                        return null;
+
+                      } )
+                    }
+                    </div>
+                  :
+                  null
+                }
               </Column>
             </Columns>
             <Columns>
