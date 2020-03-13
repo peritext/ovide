@@ -520,6 +520,7 @@ class GlossaryViewLayout extends Component {
         <ResourceForm
           onCancel={ handleCancel }
           onSubmit={ handleSubmit }
+          allowGoToResource={ false }
           onGoToResource={ () => onGoToResource( resource.id ) }
           bigSelectColumnsNumber={ 3 }
           productionId={ productionId }

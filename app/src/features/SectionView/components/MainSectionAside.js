@@ -355,7 +355,7 @@ const MainSectionAside = ( {
                 asNewResource={ false }
                 productionId={ productionId }
                 onGoToResource={ handleGoToResource }
-                allowGoToResource={ false /*editedResource.id !== section.id*/ }
+                allowGoToResource={ false /* editedResource.id !== section.id*/ }
               />
             </Column>
           </StretchedLayoutItem>
