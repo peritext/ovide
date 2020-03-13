@@ -15,6 +15,7 @@ import {
 
   Icon,
   Button,
+  Tag,
   Title,
   Card,
 } from 'quinoa-design-library/components';
@@ -26,7 +27,8 @@ import { getResourceTitle, resourceHasContents } from 'peritext-utils';
  */
 import {
   abbrevString,
-  silentEvent
+  silentEvent,
+  getColorByBgColor
 } from '../../../helpers/misc';
 import { translateNameSpacer } from '../../../helpers/translateUtils';
 import { requestAssetData } from '../../../helpers/dataClient';
@@ -105,6 +107,7 @@ class ResourceCard extends Component {
         onGoToResource,
         isSelectable,
         productionId,
+        tags = {},
       },
       context: {
         t,
@@ -229,6 +232,33 @@ class ResourceCard extends Component {
 
                     </span>
                   </Title>
+                  {
+                resource.metadata.tags && resource.metadata.tags.length ?
+                  <div style={ { fontSize: '.6rem' } }>
+                    {
+                    resource.metadata.tags.map( ( tagId ) => {
+                      const tag = tags[tagId];
+                      if ( tag ) {
+                        return (
+                          <Tag
+                            style={ {
+                              background: tag.color,
+                              color: getColorByBgColor( tag.color )
+                            } }
+                            key={ tagId }
+                          >
+                            {tag.name}
+                          </Tag>
+                        );
+                      }
+                      return null;
+
+                    } )
+                  }
+                  </div>
+                :
+                null
+              }
                 </Column>
               </Columns>
               {![ 'webpage', 'glossary', 'bib' ].includes( resource.metadata.type ) &&

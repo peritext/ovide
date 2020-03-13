@@ -90,6 +90,8 @@ class GlossaryViewLayout extends Component {
       mainColumnMode,
       optionsVisible,
       filterValues,
+      glossaryFilterValues,
+      tagsFilterValues,
       sortValue,
       statusFilterValue,
       searchString,
@@ -103,6 +105,7 @@ class GlossaryViewLayout extends Component {
         setMainColumnMode,
         // setSearchString,
         setFilterValues,
+        setGlossaryFilterValues,
         setSortValue,
         setStatusFilterValue,
         setPromptedToDeleteResourceId,
@@ -110,6 +113,8 @@ class GlossaryViewLayout extends Component {
 
         createResource,
         updateResource,
+
+        setTagsFilterValues,
 
         /*
          * deleteResource,
@@ -119,6 +124,10 @@ class GlossaryViewLayout extends Component {
         createAsset,
         updateAsset,
         deleteAsset,
+
+        createTag,
+        updateTag,
+        deleteTag,
 
         setSelectedResourcesIds,
         setResourcesPromptedToDelete,
@@ -136,7 +145,8 @@ class GlossaryViewLayout extends Component {
     const {
       resources = {},
       id: productionId,
-      assets
+      assets,
+      tags = {}
     } = production;
 
     /**
@@ -175,6 +185,10 @@ class GlossaryViewLayout extends Component {
                 return thisResourceId;
               } ) );
 
+    const allowedTypes = Object.entries( glossaryFilterValues )
+    .filter( ( val ) => val[1] )
+    .map( ( [ key ] ) => key );
+    const activeTagsFilters = Object.keys( tagsFilterValues ).filter( ( key ) => tagsFilterValues[key] );
     visibleResources = visibleResources
       .filter( ( resource ) => {
         return resource.metadata.type === 'glossary';
@@ -187,6 +201,18 @@ class GlossaryViewLayout extends Component {
           default:
             return true;
         }
+      } )
+      .filter( ( resource ) => {
+        if ( allowedTypes.length ) {
+          return allowedTypes.includes( resource.data.entryType );
+        }
+        return true;
+      } )
+      .filter( ( resource ) => {
+        if ( activeTagsFilters.length ) {
+          return activeTagsFilters.find( ( id ) => ( resource.metadata.tags || [] ).includes( id ) ) !== undefined;
+        }
+        return true;
       } )
       .sort( ( a, b ) => {
           switch ( sortValue ) {
@@ -226,6 +252,18 @@ class GlossaryViewLayout extends Component {
       setFilterValues( {
         ...filterValues,
         [type]: filterValues[type] ? false : true
+      } );
+    };
+    const handleGlossaryFilterToggle = ( type ) => {
+      setGlossaryFilterValues( {
+        ...filterValues,
+        [type]: glossaryFilterValues[type] ? false : true
+      } );
+    };
+    const handleTagsToggle = ( id ) => {
+      setTagsFilterValues( {
+        ...tagsFilterValues,
+        [id]: tagsFilterValues[id] ? false : true
       } );
     };
 
@@ -524,6 +562,10 @@ class GlossaryViewLayout extends Component {
           onGoToResource={ () => onGoToResource( resource.id ) }
           bigSelectColumnsNumber={ 3 }
           productionId={ productionId }
+          createTag={ createTag }
+          updateTag={ updateTag }
+          deleteTag={ deleteTag }
+          tags={ tags }
           resource={ resource }
           existingAssets={ relatedAssets }
           asNewResource={ false }
@@ -625,6 +667,11 @@ class GlossaryViewLayout extends Component {
             onSubmit={ handleSubmit }
             bigSelectColumnsNumber={ 3 }
             resourceType={ 'glossary' }
+            createTag={ createTag }
+            updateTag={ updateTag }
+            deleteTag={ deleteTag }
+            productionId={ productionId }
+            tags={ tags }
             asNewResource
           />
         );
@@ -637,6 +684,12 @@ class GlossaryViewLayout extends Component {
         const handleFiltersChange = ( option, optionDomain ) => {
           if ( optionDomain === 'filter' ) {
             handleFilterToggle( option );
+          }
+          else if ( optionDomain === 'tags' ) {
+            handleTagsToggle( option );
+          }
+          else if ( optionDomain === 'glossaryType' ) {
+            handleGlossaryFilterToggle( option );
           }
           else if ( optionDomain === 'sort' ) {
             setSortValue( option );
@@ -693,6 +746,8 @@ class GlossaryViewLayout extends Component {
               isActive={ isSelected }
               onClick={ handleClick }
               key={ resource.id }
+              tags={ tags }
+
               onGoToResource={ handleGoTo }
               onEdit={ handleEdit }
               onDelete={ handleDelete }
@@ -722,7 +777,10 @@ class GlossaryViewLayout extends Component {
               <Column style={ { paddingLeft: 0 } }>
                 <GlossaryFiltersBar
                   filterValues={ filterValues }
+                  tags={ tags }
+                  glossaryFilterValues={ glossaryFilterValues }
                   onDeleteSelection={ handleDeleteSelection }
+                  tagsFilterValues={ tagsFilterValues }
                   onDeselectAllVisibleResources={ handleDeselectAllVisibleResources }
                   onSearchStringChange={ handleResourceSearchChange }
                   searchString={ this.state.searchString }

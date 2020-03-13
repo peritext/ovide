@@ -567,7 +567,7 @@
   "Features.HomeView.Testing version!": "Version de test!",
   "Features.HomeView.The source code of Ovide is licensed under free software license ": "Le code source d'Ovide est partagé sous license libre.",
   "Features.HomeView.Welcome to Ovide!": "Bienvenue sur Ovide!",
-  "Features.HomeView.Work in progress!": "Peinture fraîche !",
+  "Features.HomeView.Work in progress!": "⚠ Peinture fraîche !",
   "Features.HomeView.Yes, use the local storage": "Oui, utiliser le stockage local",
   "Features.HomeView.You have no productions yet": "Vous n'avez pas encore de productions",
   "Features.HomeView.find a production": "trouver une production",
@@ -1130,5 +1130,12 @@
   "Components.ContextualizationEditor.showOnlyFirstImage": "Montrer uniquement la première image",
   "Components.ExamplesModal.Load an example": "Charger un exemple",
   "Components.ExamplesModal.The demonstration cases could not be loaded": "Les cas de démonstration n'ont pas pu être chargés",
-  "Features.HomeView.Load an example": "Charger un exemple"
+  "Features.HomeView.Load an example": "Charger un exemple",
+  "Features.GlossaryView.Show types": "Montrer les types ...",
+  "Features.GlossaryView.notion": "notion",
+  "Features.GlossaryView.place": "lieu",
+  "Features.GlossaryView.event": "évènement",
+  "Features.GlossaryView.person": "personne",
+  "Features.GlossaryView.other": "autre",
+  "Features.GlossaryView.Show entries with tags": "Montrer les entrées étiquettées"
 }

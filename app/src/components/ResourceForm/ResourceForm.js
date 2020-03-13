@@ -97,6 +97,7 @@ class DataForm extends Component {
       resource,
       resourceType,
       asNewResource,
+      productionId,
       // existingAssetsIds,
       onAssetChange,
       assets,
@@ -196,6 +197,7 @@ class DataForm extends Component {
           translate={ translate }
           onChange={ handleDataChange }
           tags={ tags }
+          productionId={ productionId }
           resourceTags={ formApi.getValue( 'metadata.tags' ) }
           onTagsUpdate={ ( theseTags ) => formApi.setValue( 'metadata.tags', theseTags ) }
           createTag={ createTag }

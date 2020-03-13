@@ -20,6 +20,11 @@ import {
 } from 'quinoa-design-library/components';
 import { translateNameSpacer } from '../../../helpers/translateUtils';
 
+import { resourcesSchemas } from '../../../peritextConfig.render';
+import ColorMarker from '../../../components/ColorMarker/ColorMarker';
+
+const glossaryTypes = resourcesSchemas.glossary.properties.entryType.enum;
+
 const GlossaryFiltersBar = ( {
   filterValues,
   onSearchStringChange,
@@ -29,7 +34,10 @@ const GlossaryFiltersBar = ( {
   onChange,
   sortValue,
   statusFilterValue,
+  tagsFilterValues,
+  glossaryFilterValues,
   statusFilterValues,
+  tags = {},
 }, { t } ) => {
   const translate = translateNameSpacer( t, 'Features.GlossaryView' );
   return (
@@ -75,8 +83,14 @@ const GlossaryFiltersBar = ( {
             filter: {
               value: Object.keys( filterValues ).filter( ( f ) => filterValues[f] ),
             },
+            glossaryType: {
+              value: Object.keys( glossaryFilterValues ).filter( ( f ) => glossaryFilterValues[f] ),
+            },
             status: {
               value: statusFilterValue,
+            },
+            tags: {
+              value: Object.keys( tagsFilterValues ).filter( ( id ) => tagsFilterValues[id] ),
             }
           } }
               options={
@@ -99,6 +113,38 @@ const GlossaryFiltersBar = ( {
                 }
               ]
             },
+
+            {
+               label: translate( 'Show types' ),
+               id: 'glossaryType',
+               options: glossaryTypes.map( ( type ) => ( {
+                 id: type,
+                 label: translate( type )
+               } ) ),
+            },
+            Object.keys( tags ).length ?
+            {
+              label: translate( 'Show entries with tags' ),
+              id: 'tags',
+              options:
+                Object.entries( tags )
+                .sort( ( [ key1, tag1 ], [ key2, tag2 ] ) => { /* eslint no-unused-vars : 0 */
+                  if ( tag1.name > tag2.name ) {
+                    return 1;
+                  }
+                  else return -1;
+                } )
+                .map( ( [ key, tag ] ) => ( {
+                  id: key,
+                  label: (
+                    <span>
+                      <ColorMarker color={ tag.color } />
+                      <span>{tag.name}</span>
+                    </span>
+                   )
+                } ) )
+            } : undefined,
+
             {
               label: translate( 'Show ...' ),
               id: 'status',
@@ -106,8 +152,9 @@ const GlossaryFiltersBar = ( {
                 id: type.id,
                 label: type.label
               } ) ),
-            }
-          ]
+            },
+
+          ].filter( ( option ) => option )
         }
             >
               {translate( 'Filters' )}

@@ -568,7 +568,7 @@
   "Features.HomeView.Testing version!": "Testing version!",
   "Features.HomeView.The source code of Ovide is licensed under free software license ": "The source code of Ovide is licensed under free software license ",
   "Features.HomeView.Welcome to Ovide!": "Welcome to Ovide!",
-  "Features.HomeView.Work in progress!": "Work in progress!",
+  "Features.HomeView.Work in progress!": "⚠ Work in progress!",
   "Features.HomeView.Yes, use the local storage": "Yes, use the local storage",
   "Features.HomeView.You have no productions yet": "You have no productions yet",
   "Features.HomeView.find a production": "find a production",
@@ -1130,5 +1130,12 @@
   "Components.ContextualizationEditor.showOnlyFirstImage": "Show only first image",
   "Components.ExamplesModal.Load an example": "Load an example",
   "Components.ExamplesModal.The demonstration cases could not be loaded": "The demonstration cases could not be loaded",
-  "Features.HomeView.Load an example": "Load an example"
+  "Features.HomeView.Load an example": "Load an example",
+  "Features.GlossaryView.Show types": "Show types",
+  "Features.GlossaryView.notion": "notion",
+  "Features.GlossaryView.place": "place",
+  "Features.GlossaryView.event": "event",
+  "Features.GlossaryView.person": "person",
+  "Features.GlossaryView.other": "other",
+  "Features.GlossaryView.Show entries with tags": "Show entries with tags"
 }
