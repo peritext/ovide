@@ -1139,5 +1139,7 @@
   "Features.GlossaryView.other": "other",
   "Features.GlossaryView.Show entries with tags": "Show entries with tags",
   "Features.LibraryView.Tag selection with": "Tag selection with",
-  "Features.LibraryView.Tag selection": "Tag selection"
+  "Features.LibraryView.Tag selection": "Tag selection",
+  "Features.LibraryView.search for a tag": "search for a tag",
+  "Features.LibraryView.Add tag {name}": "Create tag {name}"
 }

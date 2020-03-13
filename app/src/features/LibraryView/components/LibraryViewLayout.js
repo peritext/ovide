@@ -43,7 +43,8 @@ import {
 } from '../../../helpers/assetsUtils';
 import { translateNameSpacer } from '../../../helpers/translateUtils';
 import {
-  base64ToBytesLength
+  base64ToBytesLength,
+  genRandomHex
 } from '../../../helpers/misc';
 
 /**
@@ -124,6 +125,7 @@ class LibraryViewLayout extends Component {
       editedResourceId,
       openTabId,
       isSorting,
+      searchTagString,
       actions: {
         setOptionsVisible,
         setTagSelectionVisible,
@@ -136,6 +138,7 @@ class LibraryViewLayout extends Component {
         setStatusFilterValue,
         setPromptedToDeleteResourceId,
         setUploadStatus,
+        setSearchTagString,
 
         createResource,
         updateResource,
@@ -580,6 +583,7 @@ class LibraryViewLayout extends Component {
           productionId={ productionId }
           resource={ resource }
           onGoToResource={ handleGoToResource }
+          allowGoToResource={ false }
           existingAssets={ relatedAssets }
           asNewResource={ false }
           tags={ production.tags }
@@ -801,7 +805,7 @@ class LibraryViewLayout extends Component {
         const handleTagSelectionVisibility = () => {
           setTagSelectionVisible( !tagSelectionVisible );
         };
-        const handleSelectAllVisibleResources = () => setSelectedResourcesIds( visibleResources.map( ( res ) => res.id ) );
+
         const handleDeselectAllVisibleResources = () => setSelectedResourcesIds( [] );
         const handleDeleteSelection = () => setResourcesPromptedToDelete( [ ...selectedResourcesIds ] );
         const renderNoResource = () => <div>{translate( 'No item in your library yet' )}</div>;
@@ -848,7 +852,86 @@ class LibraryViewLayout extends Component {
             />
           );
         };
+        const handleAbortResourceDeletion = () => setPromptedToDeleteResourceId( undefined );
+        const handleAbortResourcesDeletion = () => setResourcesPromptedToDelete( [] );
         const renderOpenTab = () => {
+
+            const handleBatchUntag = ( { tagId, resourcesIds } ) => {
+                resourcesIds.reduce( ( cur, resourceId ) =>
+                  cur.then( () => {
+                    return new Promise( ( res, rej ) => {
+                      const prevResource = resources[resourceId];
+                      const resource = {
+                        ...prevResource,
+                        metadata: {
+                          ...prevResource.metadata,
+                          tags: ( prevResource.metadata.tags || [] ).filter( ( thatTagId ) => thatTagId !== tagId )
+                        }
+                      };
+                      updateResource( {
+                        productionId,
+                        resourceId,
+                        resource
+                      }, ( err ) => {
+                        if ( err ) {
+                          rej( err );
+                        }
+                        else res();
+                      } );
+                    } );
+                  } )
+                , Promise.resolve() );
+              };
+              const handleBatchTag = ( { tagId, resourcesIds } ) => {
+                resourcesIds.reduce( ( cur, resourceId ) =>
+                  cur.then( () => {
+                    return new Promise( ( res, rej ) => {
+                      const prevResource = resources[resourceId];
+                      const resource = {
+                        ...prevResource,
+                        metadata: {
+                          ...prevResource.metadata,
+                          tags: ( prevResource.metadata.tags || [] ).includes( tagId ) ? ( prevResource.metadata.tags || [] ) : [ ...( prevResource.metadata.tags || [] ), tagId ]
+                        }
+                      };
+                      updateResource( {
+                        productionId,
+                        resourceId,
+                        resource
+                      }, ( err ) => {
+                        if ( err ) {
+                          rej( err );
+                        }
+                        else res();
+                      } );
+                    } );
+                  } )
+                , Promise.resolve() );
+              };
+              const handleSearchTagStringChange = ( e ) => {
+                setSearchTagString( e.target.value );
+              };
+              const handleCreateTagFromSearch = () => {
+                setSearchTagString( '' );
+                const newTag = {
+                  id: genId(),
+                  color: genRandomHex(),
+                  name: searchTagString
+                };
+                createTag( {
+                  tag: newTag,
+                  tagId: newTag.id,
+                  productionId
+                }, ( err ) => {
+                  if ( !err ) {
+                    handleBatchTag( {
+                      tagId: newTag.id,
+                      resourcesIds: selectedResourcesIds,
+                    } );
+                  }
+                } );
+              };
+          let handleSelectAllVisibleResources;
           switch ( openTabId ) {
             case 'sections':
               const sectionsList = sectionsOrder
@@ -959,6 +1042,20 @@ class LibraryViewLayout extends Component {
                   sectionsOrder: newSectionsOrder
                 } );
               };
+              handleSelectAllVisibleResources = () => setSelectedResourcesIds(
+                sectionsList.map( ( { resource } ) => resource.id )
+              );
+              const handleToggleSectionSelection = ( resourceId ) => {
+                let newSelectedResourcesIds;
+                const isSelected = selectedResourcesIds.includes( resourceId );
+                  if ( isSelected ) {
+                    newSelectedResourcesIds = selectedResourcesIds.filter( ( id ) => id !== resourceId );
+                  }
+                  else {
+                    newSelectedResourcesIds = [ ...selectedResourcesIds, resourceId ];
+                  }
+                  setSelectedResourcesIds( newSelectedResourcesIds );
+              };
               return (
                 <StretchedLayoutContainer
                   isAbsolute
@@ -982,6 +1079,22 @@ class LibraryViewLayout extends Component {
                         statusFilterValues={ statusFilterValues }
                         translate={ translate }
                         tags={ production.tags }
+
+                        searchTagString={ searchTagString }
+                        onCreateTagFromSearch={ handleCreateTagFromSearch }
+                        onSearchTagStringChange={ handleSearchTagStringChange }
+                        onDeleteSelection={ handleDeleteSelection }
+                        onDeselectAllVisibleResources={ handleDeselectAllVisibleResources }
+
+                        onSelectAllVisibleResources={ handleSelectAllVisibleResources }
+                        onToggleTagSelectionVisibility={ handleTagSelectionVisibility }
+                        tagSelectionVisible={ tagSelectionVisible }
+                        onBatchUntag={ handleBatchUntag }
+                        onBatchTag={ handleBatchTag }
+                        resourceTypes={ resourceTypes }
+                        selectedResourcesIds={ selectedResourcesIds }
+                        resources={ resources }
+                        visibleResources={ sectionsList }
                       />
                     </Column>
                   </StretchedLayoutItem>
@@ -1003,8 +1116,10 @@ class LibraryViewLayout extends Component {
                       <SortableSectionsList
                         items={ sectionsList }
                         production={ production }
+                        onToggleSectionSelection={ handleToggleSectionSelection }
                         allowMove={ sectionsSortValue === 'summary' }
                         onSortEnd={ handleSortEnd }
+                        selectedResourcesIds={ selectedResourcesIds }
                         renderNoItem={ () => <div>{translate( 'No sections to display' )}</div> }
                         goToSection={ goToSection }
                         setSectionIndex={ handleSectionIndexChange }
@@ -1027,66 +1142,17 @@ class LibraryViewLayout extends Component {
                 </StretchedLayoutContainer>
               );
             case 'resources':
-              const handleAbortResourceDeletion = () => setPromptedToDeleteResourceId( undefined );
-              const handleAbortResourcesDeletion = () => setResourcesPromptedToDelete( [] );
-              const handleBatchUntag = ( { tagId, resourcesIds } ) => {
-                resourcesIds.reduce( ( cur, resourceId ) =>
-                  cur.then( () => {
-                    return new Promise( ( res, rej ) => {
-                      const prevResource = resources[resourceId];
-                      const resource = {
-                        ...prevResource,
-                        metadata: {
-                          ...prevResource.metadata,
-                          tags: ( prevResource.metadata.tags || [] ).filter( ( thatTagId ) => thatTagId !== tagId )
-                        }
-                      };
-                      updateResource( {
-                        productionId,
-                        resourceId,
-                        resource
-                      }, ( err ) => {
-                        if ( err ) {
-                          rej( err );
-                        }
-                        else res();
-                      } );
-                    } );
-                  } )
-                , Promise.resolve() );
-              };
-              const handleBatchTag = ( { tagId, resourcesIds } ) => {
-                resourcesIds.reduce( ( cur, resourceId ) =>
-                  cur.then( () => {
-                    return new Promise( ( res, rej ) => {
-                      const prevResource = resources[resourceId];
-                      const resource = {
-                        ...prevResource,
-                        metadata: {
-                          ...prevResource.metadata,
-                          tags: [ ...( prevResource.metadata.tags || [] ), tagId ]
-                        }
-                      };
-                      updateResource( {
-                        productionId,
-                        resourceId,
-                        resource
-                      }, ( err ) => {
-                        if ( err ) {
-                          rej( err );
-                        }
- else res();
-                      } );
-                    } );
-                  } )
-                , Promise.resolve() );
-              };
+              handleSelectAllVisibleResources = () => setSelectedResourcesIds(
+                visibleResources.map( ( res ) => res.id )
+              );
               return (
                 <StretchedLayoutContainer isAbsolute>
                   <StretchedLayoutItem style={ { paddingRight: 0 } }>
                     <Column>
                       <LibraryResourcesFilterBar
-
+                        searchTagString={ searchTagString }
+                        onCreateTagFromSearch={ handleCreateTagFromSearch }
+                        onSearchTagStringChange={ handleSearchTagStringChange }
                         filterValues={ filterValues }
                         tagsFilterValues={ tagsFilterValues }
                         onDeleteSelection={ handleDeleteSelection }
@@ -1128,23 +1194,7 @@ class LibraryViewLayout extends Component {
                       />
                     </StretchedLayoutContainer>
                   </StretchedLayoutItem>
-                  <ConfirmToDeleteModal
-                    isActive={ promptedToDeleteResourceId !== undefined }
-                    deleteType={ 'resource' }
-                    production={ production }
-                    id={ promptedToDeleteResourceId }
-                    onClose={ handleAbortResourceDeletion }
-                    onDeleteConfirm={ handleDeleteResourceConfirm }
-                  />
-                  <ConfirmBatchDeleteModal
-                    translate={ translate }
-                    isActive={ actualResourcesPromptedToDelete.length > 0 }
-                    actualResourcesPromptedToDelete={ actualResourcesPromptedToDelete }
-                    resourcesPromptedToDelete={ resourcesPromptedToDelete }
-                    endangeredContextualizationsLength={ endangeredContextualizationsLength }
-                    onDelete={ handleDeleteResourcesPromptedToDelete }
-                    onCancel={ handleAbortResourcesDeletion }
-                  />
+
                 </StretchedLayoutContainer>
               );
             default:
@@ -1165,6 +1215,7 @@ class LibraryViewLayout extends Component {
                       onClick={ () => {
                         setOpenTabId( 'sections' );
                         setTagsFilterValues( [] );
+                        setSelectedResourcesIds( [] );
                         this.setState( {
                           searchString: '',
                         } );
@@ -1179,6 +1230,7 @@ class LibraryViewLayout extends Component {
                       onClick={ () => {
                         setOpenTabId( 'resources' );
                         setTagsFilterValues( [] );
+                        setSelectedResourcesIds( [] );
                         this.setState( {
                           searchString: ''
                         } );
@@ -1199,6 +1251,23 @@ class LibraryViewLayout extends Component {
             >
               {renderOpenTab()}
             </StretchedLayoutItem>
+            <ConfirmToDeleteModal
+              isActive={ promptedToDeleteResourceId !== undefined }
+              deleteType={ 'resource' }
+              production={ production }
+              id={ promptedToDeleteResourceId }
+              onClose={ handleAbortResourceDeletion }
+              onDeleteConfirm={ handleDeleteResourceConfirm }
+            />
+            <ConfirmBatchDeleteModal
+              translate={ translate }
+              isActive={ actualResourcesPromptedToDelete.length > 0 }
+              actualResourcesPromptedToDelete={ actualResourcesPromptedToDelete }
+              resourcesPromptedToDelete={ resourcesPromptedToDelete }
+              endangeredContextualizationsLength={ endangeredContextualizationsLength }
+              onDelete={ handleDeleteResourcesPromptedToDelete }
+              onCancel={ handleAbortResourcesDeletion }
+            />
           </StretchedLayoutContainer>
       );
     }

@@ -1139,5 +1139,7 @@
   "Features.GlossaryView.other": "autre",
   "Features.GlossaryView.Show entries with tags": "Montrer les entrées étiquettées",
   "Features.LibraryView.Tag selection with": "Étiquetter la sélection avec",
-  "Features.LibraryView.Tag selection": "Étiquetter"
+  "Features.LibraryView.Tag selection": "Étiquetter",
+  "Features.LibraryView.search for a tag": "chercher une étiquette",
+  "Features.LibraryView.Add tag {name}": "Créer l'étiquette {name}"
 }

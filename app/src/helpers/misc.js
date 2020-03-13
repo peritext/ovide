@@ -111,3 +111,5 @@ export const getColorByBgColor = ( bgColor ) => {
   }
   return ( parseInt( bgColor.replace( '#', '' ).toUpperCase(), 16 ) > 0xffffff / 2 ) ? '#000' : '#fff';
 };
+
+export const genRandomHex = () => `#${( Math.random() * 0xFFFFFF << 0 ).toString( 16 )}`;

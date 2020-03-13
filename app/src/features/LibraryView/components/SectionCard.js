@@ -56,10 +56,12 @@ const SectionCard = ( {
   sectionIndex,
   maxSectionIndex,
   // minified,
+  onToggleSelected,
   production,
   onDelete,
   setSectionIndex,
   showMoveUi,
+  isActive,
   tags,
 }, { t } ) => {
 
@@ -110,10 +112,15 @@ const SectionCard = ( {
 
   const handleClick = ( e ) => {
     e.stopPropagation();
-    goTo( section.id );
+    // goTo( section.id );
+    onToggleSelected( section.id );
   };
-  const handleEdit = ( e ) => handleAction( 'edit', e );
-  const handleDelete = ( e ) => handleAction( 'delete', e );
+  const handleEdit = ( e ) => {
+    handleAction( 'edit', e );
+  };
+  const handleDelete = ( e ) => {
+    handleAction( 'delete', e );
+  };
 
   return (
     <div
@@ -122,6 +129,7 @@ const SectionCard = ( {
     >
       <Card
         onAction={ handleAction }
+        isActive={ isActive }
         bodyContent={
           <div>
             <Columns style={ { marginBottom: 0 } }>
@@ -140,16 +148,21 @@ const SectionCard = ( {
                 isSize={ showMoveUi ? 7 : 5 }
               >
                 <Title isSize={ titleSize }>
-                  <Link
-                    to={ `/productions/${production.id}/sections/${section.id}` }
-                    data-tip={ section.metadata.title.length > MAX_TITLE_LEN ? section.metadata.title : undefined }
-                    data-for={ 'card-tooltip' }
-                    data-place={ 'bottom' }
-                  >
-                    <span>
-                      {sectionTitle}
-                    </span>
-                  </Link>
+                  {
+                    isActive ?
+                    sectionTitle :
+                    <Link
+                      to={ `/productions/${production.id}/sections/${section.id}` }
+                      data-tip={ section.metadata.title.length > MAX_TITLE_LEN ? section.metadata.title : undefined }
+                      data-for={ 'card-tooltip' }
+                      data-place={ 'bottom' }
+                    >
+                      <span>
+                        {sectionTitle}
+                      </span>
+                    </Link>
+                  }
+
                 </Title>
                 {
                   section.metadata.tags && section.metadata.tags.length ?

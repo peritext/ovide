@@ -30,10 +30,14 @@ const SortableItem = SortableElement( ( {
   // sectionIndex,
   maxSectionIndex,
   setSectionIndex,
+  selectedResourcesIds,
+  onToggleSectionSelection,
 } ) => {
     const { resource, level: initialLevel } = value;
     let level = allowMove ? initialLevel : 0;
     level = isNaN( level ) ? 0 : level;
+    const isSelected = selectedResourcesIds.includes( resource.id );
+
     return (
       <Level style={ { marginBottom: 0, width: '100%' } }>
         <Column
@@ -50,6 +54,8 @@ const SortableItem = SortableElement( ( {
             maxSectionIndex={ maxSectionIndex }
             goTo={ goToSection }
             production={ production }
+            isActive={ isSelected }
+            onToggleSelected={ onToggleSectionSelection }
             onDelete={ onDelete }
             setSectionIndex={ setSectionIndex }
             setSectionLevel={ setSectionLevel }

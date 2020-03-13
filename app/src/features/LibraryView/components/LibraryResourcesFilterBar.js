@@ -48,10 +48,14 @@ const LibraryFiltersBar = ( {
   onBatchUntag,
   onBatchTag,
   tags = {},
+  searchTagString,
+  onSearchTagStringChange,
+  onCreateTagFromSearch,
 }, { t } ) => {
   const translate = translateNameSpacer( t, 'Features.LibraryView' );
 
   const handleBatchTag = ( tagId ) => {
+    if ( tagId === 'search' || tagId === 'add' ) return;
     const consensual = !selectedResourcesIds.find( ( resourceId ) => {
       const theseTags = resources[resourceId].metadata.tags || [];
       return !theseTags.includes( tagId );
@@ -69,6 +73,21 @@ const LibraryFiltersBar = ( {
       } );
     }
   };
+
+  const visibleTags = Object.entries( tags )
+  .filter( ( [ key, tag ] ) => { /* eslint no-unused-vars : 0 */
+    if ( searchTagString.length > 2 ) {
+      return tag.name.toLowerCase().includes( searchTagString.toLowerCase() );
+    }
+    return true;
+  } )
+  .sort( ( [ key1, tag1 ], [ key2, tag2 ] ) => { /* eslint no-unused-vars : 0 */
+    if ( tag1.name > tag2.name ) {
+      return 1;
+    }
+    else return -1;
+  } )
+  .map( ( tuple ) => tuple[1] );
 
   return (
     <Level
@@ -216,33 +235,49 @@ const LibraryFiltersBar = ( {
                   } )
                 }
             } }
-              options={
-              [
-
-              Object.keys( tags ).length ?
-              {
+              options={ [ {
                 label: translate( 'Tag selection with' ),
                 id: 'tags',
-                options:
-                  Object.entries( tags )
-                  .sort( ( [ key1, tag1 ], [ key2, tag2 ] ) => { /* eslint no-unused-vars : 0 */
-                    if ( tag1.name > tag2.name ) {
-                      return 1;
-                    }
-                    else return -1;
-                  } )
-                  .map( ( [ key, tag ] ) => ( {
-                    id: key,
+                options: [
+                  {
+                    id: 'search',
                     label: (
                       <span>
-                        <ColorMarker color={ tag.color } />
-                        <span>{tag.name}</span>
+                        <Input
+                          value={ searchTagString }
+                          onChange={ onSearchTagStringChange }
+                          placeholder={ translate( 'search for a tag' ) }
+                        />
                       </span>
                     )
-                  } ) )
-              } : undefined,
-            ].filter( ( d ) => d )
-          }
+                  },
+                  ...visibleTags
+                    .map( ( tag ) => ( {
+                      id: tag.id,
+                      label: (
+                        <span>
+                          <ColorMarker color={ tag.color } />
+                          <span>{tag.name}</span>
+                        </span>
+                      )
+                    } ) ),
+                  !visibleTags.length && searchTagString.length > 2 ?
+                  {
+                    id: 'add',
+                    label: (
+                      <span>
+                        <Button
+                          onClick={ onCreateTagFromSearch }
+                          isColor={ 'primary' }
+                        >
+                          {translate( 'Add tag {name}', { name: searchTagString } )}
+                        </Button>
+                      </span>
+                    )
+
+                  } : undefined
+                  ].filter( ( o ) => o )
+              } ] }
             >
               {translate( 'Tag selection' )}
             </Dropdown>

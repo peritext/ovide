@@ -20,6 +20,7 @@ import {
   StretchedLayoutItem
 } from 'quinoa-design-library/components/';
 
+import { genRandomHex } from '../../helpers/misc';
 import ColorMarker from '../ColorMarker';
 import { SketchPicker as ColorPicker } from 'react-color';
 
@@ -27,8 +28,6 @@ import { SketchPicker as ColorPicker } from 'react-color';
  * Imports Project utils
  */
 import { translateNameSpacer } from '../../helpers/translateUtils';
-
-const genRandomHex = () => `#${( Math.random() * 0xFFFFFF << 0 ).toString( 16 )}`;
 
 class TagsEditor extends Component {
   constructor( props ) {

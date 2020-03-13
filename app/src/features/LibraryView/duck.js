@@ -32,6 +32,7 @@ const SET_TAGS_FILTER_VALUES = 'SET_TAGS_FILTER_VALUES';
 const SET_SORT_VALUE = 'SET_SORT_VALUE';
 const SET_SECTIONS_SORT_VALUE = 'SET_SECTIONS_SORT_VALUE';
 const SET_SEARCH_STRING = 'SET_SEARCH_STRING';
+const SET_SEARCH_TAG_STRING = 'SET_SEARCH_TAG_STRING';
 const SET_PROMPTED_TO_DELETE_RESOURCE_ID = 'SET_PROMPTED_TO_DELETE_RESOURCE_ID';
 const SET_SELECTED_RESOURCES_IDS = 'SET_SELECTED_RESOURCES_IDS';
 const SET_STATUS_FILTER_VALUE = 'SET_STATUS_FILTER_VALUE';
@@ -64,6 +65,10 @@ export const setTagSelectionVisible = ( payload ) => ( {
 } );
 export const setSearchString = ( payload ) => ( {
   type: SET_SEARCH_STRING,
+  payload,
+} );
+export const setSearchTagString = ( payload ) => ( {
+  type: SET_SEARCH_TAG_STRING,
   payload,
 } );
 export const setFilterValues = ( payload ) => ( {
@@ -152,6 +157,7 @@ const UI_DEFAULT_STATE = {
   optionsVisible: false,
   tagSelectionVisible: false,
   searchString: '',
+  searchTagString: '',
   filterValues: {},
   tagsFilterValues: {},
   sortValue: 'edited recently',
@@ -182,6 +188,7 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_OPTIONS_VISIBLE:
     case SET_TAG_SELECTION_VISIBLE:
     case SET_SEARCH_STRING:
+    case SET_SEARCH_TAG_STRING:
     case SET_FILTER_VALUES:
     case SET_TAGS_FILTER_VALUES:
     case SET_SORT_VALUE:
@@ -239,6 +246,7 @@ const mainColumnMode = ( state ) => state.ui.mainColumnMode;
 const openTabId = ( state ) => state.ui.openTabId;
 const optionsVisible = ( state ) => state.ui.optionsVisible;
 const searchString = ( state ) => state.ui.searchString;
+const searchTagString = ( state ) => state.ui.searchTagString;
 const filterValues = ( state ) => state.ui.filterValues;
 const tagsFilterValues = ( state ) => state.ui.tagsFilterValues;
 const sortValue = ( state ) => state.ui.sortValue;
@@ -261,6 +269,7 @@ const tagSelectionVisible = ( state ) => state.ui.tagSelectionVisible;
 export const selector = createStructuredSelector( {
   mainColumnMode,
   optionsVisible,
+  searchTagString,
   tagSelectionVisible,
   searchString,
   filterValues,
