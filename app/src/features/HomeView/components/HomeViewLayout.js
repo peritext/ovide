@@ -208,21 +208,21 @@ class HomeViewLayout extends Component {
     };
     const handleCreateNewProduction = ( payload ) => {
       const startingSectionId = genId();
-      const defaultSection = createDefaultSection();
-      const startingSection = {
-        ...defaultSection,
-        id: startingSectionId,
-        metadata: {
-          ...defaultSection.metadata,
-          title: 'Introduction'
-        }
-      };
+      // const defaultSection = createDefaultSection();
+      // const startingSection = {
+      //   ...defaultSection,
+      //   id: startingSectionId,
+      //   metadata: {
+      //     ...defaultSection.metadata,
+      //     title: 'Introduction'
+      //   }
+      // };
       const production = {
         ...payload.payload,
-        resources: {
-          [startingSectionId]: startingSection,
-        },
-        sectionsOrder: [ { resourceId: startingSectionId, level: 0 } ],
+        // resources: {
+        //   [startingSectionId]: startingSection,
+        // },
+        // sectionsOrder: [ { resourceId: startingSectionId, level: 0 } ],
         id: genId(),
       };
 
