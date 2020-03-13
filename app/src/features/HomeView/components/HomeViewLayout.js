@@ -35,7 +35,6 @@ import ReduxToastr from 'react-redux-toastr';
 /**
  * Imports Project utils
  */
-import { createDefaultSection } from '../../../helpers/schemaUtils';
 import { translateNameSpacer } from '../../../helpers/translateUtils';
 import { inElectron } from '../../../helpers/electronUtils';
 
@@ -48,6 +47,7 @@ import LanguageToggler from '../../../components/LanguageToggler';
 import NewProductionForm from './NewProductionForm';
 import ProductionCardWrapper from './ProductionCardWrapper';
 import DownloadDesktop from '../../../components/DownloadDesktop';
+import ExamplesModal from '../../../components/ExamplesModal';
 
 /**
  * Imports Assets
@@ -103,7 +103,8 @@ class HomeViewLayout extends Component {
 
       isImporting,
       isDeleting,
-
+      examplesOpen,
+      lang,
       actions: {
         createProduction,
         // overrideProduction,
@@ -123,6 +124,7 @@ class HomeViewLayout extends Component {
         setErrorMessage,
         setRgpdAgreementPrompted,
         setDownloadModalVisible,
+        setExamplesOpen,
       }
     } = this.props;
 
@@ -207,22 +209,28 @@ class HomeViewLayout extends Component {
       } );
     };
     const handleCreateNewProduction = ( payload ) => {
-      const startingSectionId = genId();
-      // const defaultSection = createDefaultSection();
-      // const startingSection = {
-      //   ...defaultSection,
-      //   id: startingSectionId,
-      //   metadata: {
-      //     ...defaultSection.metadata,
-      //     title: 'Introduction'
-      //   }
-      // };
+      // const startingSectionId = genId();
+
+      /*
+       * const defaultSection = createDefaultSection();
+       * const startingSection = {
+       *   ...defaultSection,
+       *   id: startingSectionId,
+       *   metadata: {
+       *     ...defaultSection.metadata,
+       *     title: 'Introduction'
+       *   }
+       * };
+       */
       const production = {
         ...payload.payload,
-        // resources: {
-        //   [startingSectionId]: startingSection,
-        // },
-        // sectionsOrder: [ { resourceId: startingSectionId, level: 0 } ],
+
+        /*
+         * resources: {
+         *   [startingSectionId]: startingSection,
+         * },
+         * sectionsOrder: [ { resourceId: startingSectionId, level: 0 } ],
+         */
         id: genId(),
       };
 
@@ -252,6 +260,31 @@ class HomeViewLayout extends Component {
     const handleCloseOverrideImport = () => setOverrideImport( false );
     const handleConfirmImportOverride = () => handleConfirmImport( 'override' );
     const handleConfirmImportCreate = () => handleConfirmImport( 'create' );
+    const handleImportExample = ( data ) => {
+      setIsImporting( true );
+      setTimeout( () => {
+        // console.log( 'import production', files[0], importProduction );
+        importProduction( data, ( err ) => {
+          setIsImporting( false );
+          if ( err ) {
+            console.error( err );/* eslint no-console: 0 */
+            const message = {
+              'validation-error': this.translate( 'The JSON data is not valid' ),
+              'parsing-error': this.translate( 'The file could not be parsed (it is probably corrupted)' ),
+              'data-creation-error': this.translate( 'The data could not be created (maybe not enough space on device)' )
+            };
+
+            toastr.error( this.translate( 'The production could not be imported' ), message[err.type] );
+            setNewProductionOpen( false );
+          }
+          else {
+            setNewProductionOpen( false );
+            fetchProductions();
+          }
+
+        } );
+      } );
+    };
 
     return (
       <Container>
@@ -316,13 +349,26 @@ class HomeViewLayout extends Component {
                 className={ 'column' }
               >
                 {( inElectron || !rgpdAgreementPrompted ) &&
-                  <Button
-                    isFullWidth
-                    onClick={ handleToggleNewProductionOpened }
-                    isColor={ newProductionOpen ? 'primary' : 'primary' }
-                  >
-                    {this.translate( 'New production' )}
-                  </Button>
+                  <Level>
+                    <Button
+                      isFullWidth
+                      onClick={ handleToggleNewProductionOpened }
+                      isColor={ newProductionOpen ? 'primary' : 'primary' }
+                    >
+                      {this.translate( 'New production' )}
+                    </Button>
+                  </Level>
+                }
+
+                {( inElectron || !rgpdAgreementPrompted ) &&
+                  <Level>
+                    <Button
+                      isFullWidth
+                      onClick={ () => setExamplesOpen( true ) }
+                    >
+                      {this.translate( 'Load an example' )}
+                    </Button>
+                  </Level>
                 }
 
               </div>
@@ -600,6 +646,12 @@ class HomeViewLayout extends Component {
               {this.translate( 'Cancel' )}
             </Button>
               ] }
+        />
+        <ExamplesModal
+          isActive={ examplesOpen }
+          onClose={ () => setExamplesOpen( false ) }
+          onImportExample={ handleImportExample }
+          lang={ lang }
         />
       </Container>
     );

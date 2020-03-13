@@ -51,6 +51,7 @@ const SET_OVERRIDE_PRODUCTION_MODE = 'SET_OVERRIDE_PRODUCTION_MODE';
 const SET_DOWNLOAD_MODAL_VISIBLE = 'SET_DOWNLOAD_MODAL_VISIBLE';
 const SET_IS_IMPORTING = 'SET_IS_IMPORTING';
 const SET_IS_DELETING = 'SET_IS_DELETING';
+const SET_EXAMPLES_OPEN = 'SET_EXAMPLES_OPEN';
 
 export const FETCH_PRODUCTIONS = 'FETCH_PRODUCTIONS';
 export const CREATE_PRODUCTION = 'CREATE_PRODUCTION';
@@ -99,6 +100,11 @@ export const setSortingMode = ( payload ) => ( {
 } );
 export const setPreviewedProductionId = ( payload ) => ( {
   type: SET_PREVIEWED_PRODUCTION_ID,
+  payload
+} );
+
+export const setExamplesOpen = ( payload ) => ( {
+  type: SET_EXAMPLES_OPEN,
   payload
 } );
 
@@ -155,7 +161,15 @@ export const importProduction = ( file, callback ) => ( {
   type: IMPORT_PRODUCTION,
   promise: () =>
     new Promise( ( resolve, reject ) => {
-      return parseImportedFile( file )
+      return new Promise( ( res, rej ) => {
+                if ( file.name ) {
+                  parseImportedFile( file )
+                  .then( res ).catch( rej );
+                }
+ else {
+                  res( file );
+                }
+              } )
              .then( ( production ) => {
 
                 /**
@@ -370,6 +384,8 @@ const UI_DEFAULT_STATE = {
   isImporting: false,
 
   isDeleting: false,
+
+  examplesOpen: false,
 };
 
 /**
@@ -395,6 +411,7 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_DOWNLOAD_MODAL_VISIBLE:
     case SET_IS_IMPORTING:
     case SET_IS_DELETING:
+    case SET_EXAMPLES_OPEN:
       propName = getStatePropFromActionSet( action.type );
       return {
         ...state,
@@ -574,6 +591,7 @@ const overrideProductionMode = ( state ) => state.ui.overrideProductionMode;
 const downloadModalVisible = ( state ) => state.ui.downloadModalVisible;
 const isImporting = ( state ) => state.ui.isImporting;
 const isDeleting = ( state ) => state.ui.isDeleting;
+const examplesOpen = ( state ) => state.ui.examplesOpen;
 
 const newProduction = ( state ) => state.data.newProduction;
 const productions = ( state ) => state.data.productions;
@@ -600,4 +618,5 @@ export const selector = createStructuredSelector( {
   productions,
   isImporting,
   isDeleting,
+  examplesOpen,
 } );

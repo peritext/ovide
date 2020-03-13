@@ -610,7 +610,7 @@
   "Features.LibraryView.Up to {n} files, with a maximum size of {s} Mb each": "Up to {n} files, with a maximum size of {s} Mb each",
   "Features.LibraryView.You will destroy one resource mention in your content if you delete these resources.": "You will destroy one material mention in your content if you delete these materials.",
   "Features.LibraryView.You will destroy {n} resource mentions in your content if your delete these resources.": "You will destroy {n} materials mentions in your content if your delete these materials.",
-  "Features.LibraryView.Your library contains all the resources that can be used within the production.": "All the materials of your production are configurable and editable. You can write from a textual note, or from one of the materials (image, vidéo, data, ...) imported in your production.",
+  "Features.LibraryView.Your library contains all the resources that can be used within the production.": "All the materials of your production are configurable and editable. You can write from a textual note, or from one of the materials (image, vidéo, data, ...) integrated in your production.",
   "Features.LibraryView.all resources": "all materials",
   "Features.LibraryView.bib": "bibliographic record",
   "Features.LibraryView.edited recently": "edited recently",
@@ -1127,5 +1127,8 @@
   "Features.SectionView.this material has tag {name}": "this material is annotated with tag {name}",
   "Features.LibraryView.order in production default summary": "order according to production default summary",
   "Components.SectionCard.Last update:": "Last update:",
-  "Components.ContextualizationEditor.showOnlyFirstImage": "Show only first image"
+  "Components.ContextualizationEditor.showOnlyFirstImage": "Show only first image",
+  "Components.ExamplesModal.Load an example": "Load an example",
+  "Components.ExamplesModal.The demonstration cases could not be loaded": "The demonstration cases could not be loaded",
+  "Features.HomeView.Load an example": "Load an example"
 }

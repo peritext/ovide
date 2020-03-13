@@ -599,7 +599,7 @@
   "Features.LibraryView.Up to {n} files, with a maximum size of {s} Mb each": "Jusqu'à {n} fichiers, avec une taille maximale de {s} Mb chacun",
   "Features.LibraryView.You will destroy one item mention in your content if you delete these items.": "Vous allez détruire une mention de matériau dans vos contenus si vous supprimez ces matériaux.",
   "Features.LibraryView.You will destroy {n} item mentions in your content if your delete these items.": "Vous allez détruire {n} mentions de matériaux dans vos contenus si vous supprimez ces matériaux.",
-  "Features.LibraryView.Your library contains all the items that can be used within the production.": "L'ensemble des matériaux de votre production sont configurables et éditables. Vous pouvez écrire à partir d'une note textuelle, ou d'un des matériaux (image, vidéo, données, ...) importés dans votre production.",
+  "Features.LibraryView.Your library contains all the items that can be used within the production.": "L'ensemble des matériaux de votre production sont configurables et éditables. Vous pouvez écrire à partir d'une note textuelle, ou d'un des matériaux (image, vidéo, données, ...) intégrés dans votre production.",
   "Features.LibraryView.all items": "tous les matériaux",
   "Features.LibraryView.bib": "référence bibliographique",
   "Features.LibraryView.edited recently": "édité récemment",
@@ -1118,7 +1118,7 @@
   "Features.EditionView.Edition": "Édition",
   "Features.EditionView.fa-download": "fa-download",
   "Features.LibraryView.Add a section": "Ajouter une note",
-  "Features.LibraryView.No sections to display": "Pas de note à afficher",
+  "Features.LibraryView.No sections to display": "Pas de notes à afficher",
   "Features.LibraryView.Sections": "Notes",
   "Features.LibraryView.Other materials": "Autres matériaux",
   "Features.LibraryView.New section": "Nouvelle note",
@@ -1127,5 +1127,8 @@
   "Features.SectionView.this material has tag {name}": "ce matériau est annoté avec l'étiquette {name}",
   "Features.LibraryView.order in production default summary": "ordonner en fonction du sommaire de la production",
   "Components.SectionCard.Last update:": "Dernière mise à jour:",
-  "Components.ContextualizationEditor.showOnlyFirstImage": "Montrer uniquement la première image"
+  "Components.ContextualizationEditor.showOnlyFirstImage": "Montrer uniquement la première image",
+  "Components.ExamplesModal.Load an example": "Charger un exemple",
+  "Components.ExamplesModal.The demonstration cases could not be loaded": "Les cas de démonstration n'ont pas pu être chargés",
+  "Features.HomeView.Load an example": "Charger un exemple"
 }
