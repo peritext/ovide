@@ -9,12 +9,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import {
+  NavbarItem,
   Navbar,
   StretchedLayoutContainer,
   StretchedLayoutItem,
 } from 'quinoa-design-library/components/';
 import Helmet from 'react-helmet';
 import ReduxToastr from 'react-redux-toastr';
+import { Link } from 'react-router-dom';
 
 import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
 
@@ -158,18 +160,23 @@ const EditionUiWrapperLayout = ( {
               href: `/productions/${productionId}/editions/${editionId}`,
             }
             : undefined,
-            // link to summary view
-            {
-              href: `/productions/${productionId}/parameters`,
-              isActive: navLocation === 'parameters',
-              content: `${translate( 'Parameters' )}`,
-            },
           ].filter( ( d ) => d ) }
         actionOptions={ [
           {
+              content: (
+                <NavbarItem
+                  isActive={ navLocation === 'parameters' }
+                  to={ `/productions/${productionId}/parameters` }
+                  tag={ Link }
+                >
+                  {translate( 'Parameters' )}
+                </NavbarItem>
+              )
+          },
+          {
             content: <LanguageToggler />
           }
-] }
+        ] }
       />
       <StretchedLayoutItem
         isFlex={ 1 }
