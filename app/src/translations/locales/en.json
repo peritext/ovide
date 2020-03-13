@@ -1143,5 +1143,8 @@
   "Features.LibraryView.search for a tag": "search for a tag",
   "Features.LibraryView.Add tag {name}": "Create tag {name}",
   "Features.SectionView.order in production default summary": "order according to production default summary",
-  "Features.SectionView.find a section": "find a section"
+  "Features.SectionView.find a section": "find a section",
+  "Components.PagedPreviewer.Rendering pages": "Rendering pages",
+  "Components.PagedPreviewer.Attaching footnotes to ${ pages.length } pages": "length } pages",
+  "Components.PagedPreviewer.Rendering finished !": "Rendering finished !"
 }

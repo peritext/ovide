@@ -1143,5 +1143,8 @@
   "Features.LibraryView.search for a tag": "chercher une étiquette",
   "Features.LibraryView.Add tag {name}": "Créer l'étiquette {name}",
   "Features.SectionView.order in production default summary": "sommaire de la production",
-  "Features.SectionView.find a section": "trouver une note"
+  "Features.SectionView.find a section": "trouver une note",
+  "Components.PagedPreviewer.Rendering pages": "Composition des pages",
+  "Components.PagedPreviewer.Attaching footnotes to ${ pages.length } pages": "Positionnement des notes de bas de page pour ${ pages.length } pages",
+  "Components.PagedPreviewer.Rendering finished !": "Composition terminée !"
 }

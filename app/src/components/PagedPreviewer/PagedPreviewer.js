@@ -7,17 +7,27 @@
  * Imports Libraries
  */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Frame, { FrameContextConsumer } from 'react-frame-component';
 import fetch from 'axios';
 
 import LoadingScreen from '../LoadingScreen';
 
 /**
+ * Import project utils
+ */
+import { translateNameSpacer } from '../../helpers/translateUtils';
+
+/**
  * Imports Dependencies
  */
-import addons from '!!raw-loader!./addons.paged.js';
+import addonsData from '!!raw-loader!./addons.paged.js';
 import previewStyleData from '!!raw-loader!./previewStyle.paged.csx';
 class PreviewWrapper extends Component {
+
+  static contextTypes = {
+    t: PropTypes.func,
+  }
 
   constructor( props ) {
     super( props );
@@ -52,6 +62,16 @@ class PreviewWrapper extends Component {
   }
 
   injectRenderer = ( thatDocument, additionalHTML ) => {
+    const translate = translateNameSpacer( this.context.t, 'Components.PagedPreviewer' );
+    const translations = {
+      'Rendering pages': translate( 'Rendering pages' ),
+      'Attaching footnotes to ${ pages.length } pages': translate( 'Attaching footnotes to ${ pages.length } pages' ),
+      'Rendering finished !': translate( 'Rendering finished !' ),
+    };
+    const addons = Object.entries( translations ).reduce(
+      ( str, [ exp, rep ] ) => str.replace( exp, rep ),
+      addonsData
+    );
     console.info( 'inject renderer' );/* eslint no-console: 0 */
     // 1. swap body content to have sections as direct children (paged js requirement)
     const container = thatDocument.body.children[0].querySelector( '.frame-content > div' );
