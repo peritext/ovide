@@ -1594,7 +1594,7 @@ class ContentsEditor extends Component {
 
     let shouldHidePlaceholder;
     if ( focusedEditorId ) {
-      const editorState = focusedEditorId === 'main' ? mainEditorState : notes[focusedEditorId].editorState;
+      const editorState = focusedEditorId === 'main' ? mainEditorState : ( notes[focusedEditorId] && notes[focusedEditorId].editorState ) || mainEditorState;
       if ( editorState ) {
         shouldHidePlaceholder = this.shouldHidePlaceholder( editorState );
       }
@@ -1623,11 +1623,25 @@ class ContentsEditor extends Component {
         targetedEditorId = this.props.editorFocus;
       }
       cancelAssetRequest();
-      summonAsset( targetedEditorId, id );
+      summonAsset( targetedEditorId, id )
+      .then( () => {
+        const resource = production.resources[id];
+        if ( resource.metadata.type === 'bib' ) {
+          this.postCitationsBuilderMessage( {
+            type: 'BUILD_CITATIONS_FOR_RESOURCE_CONTENTS',
+            payload: {
+              resourceId: this.props.activeSection.id,
+              production: this.props.production,
+            }
+           } );
+        }
+
+      } );
       setTimeout( () => setEditorFocus( undefined ) );
       setTimeout( () => {
         setEditorFocus( targetedEditorId );
         this.updateStateFromProps( this.props );
+
         // setTimeout( () => this.updateStateFromProps( this.props ) );
       }, timers.medium );
     };
