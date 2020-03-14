@@ -83,12 +83,31 @@ export const getResourceTitle = ( resource ) => {
  * fuzzy search resource object
  */
 export const searchResources = ( items, string, prefix = '' ) => {
-
   const options = {
-    keys: [ `${prefix}metadata.title`, `${prefix}data.name`, `${prefix}data.title`, `${prefix}metadata.type` ],
+    keys: [
+      `${prefix}metadata.title`,
+      `${prefix}data.name`,
+      'authors',
+      'title',
+      `${prefix}metadata.type`
+    ],
     threshold: 0.5
   };
-  const fuse = new Fuse( items, options );
+  const fuse = new Fuse(
+    items.map( ( item ) => {
+      if ( item.data && item.data.citations && item.data.citations.length && item.data.citations[0].author ) {
+        return {
+          ...item,
+          title: item.data.citations[0].title,
+          authors: item.data.citations[0].author
+            .reduce( ( str, a ) =>
+              `${str} ${Object.entries( a ).map( ( tuple ) => tuple[1] ).join( ' ' )}`
+            , '' )
+        };
+      }
+      return item;
+    } )
+    , options );
   return fuse.search( string );
 };
 
