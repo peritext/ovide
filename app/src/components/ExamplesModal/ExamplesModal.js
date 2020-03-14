@@ -15,6 +15,8 @@ import {
   ModalCard,
   Notification,
   Box,
+  Columns,
+  Column,
   Content,
   Tag,
   Title,
@@ -117,30 +119,43 @@ class ExamplesModal extends Component {
         isActive={ isActive }
         headerContent={ translate( 'Load an example' ) }
         onClose={ onClose }
+        style={ {
+          minWidth: '90vw'
+        } }
         mainContent={
-          <div>
-            {
-              networkError ?
-                <Notification isType={ 'error' }>
-                  {translate( 'The demonstration cases could not be loaded' )}
-                </Notification>
-              : null
-            }
-            <Notification isColor={'success'}>
-              <Content>
-                <p>
-                  {translate('Click on one of the items to include in your edited productions list.')}
-                </p>
-                <p
-                  dangerouslySetInnerHTML={{
-                    __html: translate('This list is ongoing ! go to <a target="blank" rel="noopener noreferer" href="https://github.com/peritext/peritext-usecases">peritext-usecases</a> github repository to propose improvements or new usecases.')
-                  }}
+          <div style={ { paddingBottom: '2rem' } }>
+            <Columns >
+              <Column isSize={ 4 }>
+                <Notification
+                  style={ {
+                position: 'absolute',
+                left: '1rem',
+                top: '6rem',
+                maxWidth: 'calc(33% - 2rem)'
+              } }
+                  isColor={ 'success' }
                 >
-                </p>
-              </Content>
-            </Notification>
-            
-            {
+                  <Content>
+                    <p>
+                      {translate( 'Click on one of the items to include in your edited productions list.' )}
+                    </p>
+                    <p
+                      dangerouslySetInnerHTML={ {/* eslint react/no-danger : 0 */
+                    __html: translate( 'This list is ongoing ! go to <a target="blank" rel="noopener noreferer" href="https://github.com/peritext/peritext-usecases">peritext-usecases</a> github repository to propose improvements or new usecases.' )
+                  } }
+                    />
+                  </Content>
+                </Notification>
+              </Column>
+              <Column isSize={ 8 }>
+                {
+                  networkError ?
+                    <Notification isColor={ 'error' }>
+                      {translate( 'The demonstration cases could not be loaded' )}
+                    </Notification>
+                  : null
+                }
+                {
               cases && cases.length > 0 &&
               cases.map( ( c ) => {
                 const handleClick = () => {
@@ -155,8 +170,8 @@ class ExamplesModal extends Component {
                     <Title isSize={ 3 }>{c.title[lang]}</Title>
                     <Title isSize={ 4 }>{c.author}</Title>
                     <div>
-                      <Tag isColor="info">
-                        {translate(c.language)}
+                      <Tag isColor={ 'info' }>
+                        {translate( c.language )}
                       </Tag>
                     </div>
                     <Content>
@@ -166,6 +181,9 @@ class ExamplesModal extends Component {
                 );
               } )
             }
+              </Column>
+            </Columns>
+
           </div>
         }
       />
