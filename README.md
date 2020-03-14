@@ -1,7 +1,7 @@
 Ovide [alpha]
 ===
 
-## *an experimental application for context-rich & polymorphic scholarly publishing.*
+## *an experimental writing and publishing application for materials-based composition*
 
 [![Price](https://img.shields.io/badge/price-FREE-0098f7.svg)](https://github.com/peritext/ovide/blob/master/LICENSE)
 [![License: AGPL v3.0](https://img.shields.io/badge/license-AGPL-blue.svg)](https://github.com/peritext/ovide/blob/master/LICENSE)
