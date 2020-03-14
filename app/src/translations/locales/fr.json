@@ -873,7 +873,7 @@
   "Features.GlossaryView.Creating a mention": "Création d'une mention",
   "Features.GlossaryView.Creating mention {k} of {n}": "Création de la mention {k} sur {n}",
   "Features.GlossaryView.Your glossary entries": "Vos entrées de glossaire",
-  "Features.GlossaryView.This view allows you to manage your glossary entries and to handle where to mention them in your sections contents": "Cette vue vous permet de gérer les entrées de votre glossaire et de définir où les mentionner dans les contenus des notes",
+  "Features.GlossaryView.This view allows you to manage your glossary entries and to handle where to mention them in your sections contents": "Cette vue vous permet de gérer les entrées de votre glossaire et de définir où les mentionner dans les contenus des notes et des autres matériaux",
   "Features.GlossaryView.Find a resource": "Trouver un matériau",
   "Features.GlossaryView.Sort items by": "Trier les items par",
   "Features.GlossaryView.edited recently": "édité récemment",
