@@ -731,7 +731,7 @@ class LibraryViewLayout extends Component {
               }, ( thatErr ) => {
                 if ( !thatErr ) {
                   onGoToResource( newSection.id );
-                  setResourceSortValue('summary')
+                  setResourceSortValue( 'summary' );
               }
               } );
 

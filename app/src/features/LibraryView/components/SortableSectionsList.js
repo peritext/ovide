@@ -43,7 +43,7 @@ const SortableItem = SortableElement( ( {
         <Column
           isSize={ 12 - level }
           isOffset={ level }
-          style={{marginBottom: 0}}
+          style={ { marginBottom: 0 } }
         >
           <SectionCard
             section={ resource }
