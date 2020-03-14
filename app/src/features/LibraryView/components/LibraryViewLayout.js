@@ -152,6 +152,8 @@ class LibraryViewLayout extends Component {
         updateAsset,
         deleteAsset,
 
+        setResourceSortValue,
+
         createTag,
         updateTag,
         deleteTag,
@@ -729,6 +731,7 @@ class LibraryViewLayout extends Component {
               }, ( thatErr ) => {
                 if ( !thatErr ) {
                   onGoToResource( newSection.id );
+                  setResourceSortValue('summary')
               }
               } );
 

@@ -24,6 +24,7 @@ import * as editedProductionDuck from '../../ProductionManager/duck';
 import * as sectionsManagementDuck from '../../SectionsManager/duck';
 import * as errorMessageDuck from '../../ErrorMessageManager/duck';
 import * as editionUiDuck from '../../EditionUiWrapper/duck';
+import {setResourceSortValue} from '../../SectionView/duck';
 
 /**
  * Imports Components
@@ -55,7 +56,8 @@ const { maxBatchNumber } = config;
       ...editedProductionDuck,
       ...sectionsManagementDuck,
       ...errorMessageDuck,
-      ...duck
+      ...duck,
+      setResourceSortValue
     }, dispatch )
   } )
 )
