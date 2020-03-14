@@ -1146,5 +1146,10 @@
   "Features.SectionView.find a section": "find a section",
   "Components.PagedPreviewer.Rendering pages": "Rendering pages",
   "Components.PagedPreviewer.Attaching footnotes to ${ pages.length } pages": "length } pages",
-  "Components.PagedPreviewer.Rendering finished !": "Rendering finished !"
+  "Components.PagedPreviewer.Rendering finished !": "Rendering finished !",
+  "delete asset": "supprimer le fichier",
+  "Components.ExamplesModal.french": "french language",
+  "Components.ExamplesModal.english": "english language",
+  "Components.ExamplesModal.Click on one of the items to include in your edited productions list.": "Click on one of the items to include in your edited productions list.",
+  "Components.ExamplesModal.This list is ongoing ! go to <a target=\"blank\" rel=\"noopener noreferer\" href=\"https://github.com/peritext/peritext-usecases\">peritext-usecases</a> github repository to propose improvements or new usecases.": "This list is ongoing ! please browse to <a target=\"blank\" rel=\"noopener noreferer\" href=\"https://github.com/peritext/peritext-usecases\">peritext-usecases</a> github repository to propose improvements or new examples."
 }

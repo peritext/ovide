@@ -16,6 +16,7 @@ import {
   Notification,
   Box,
   Content,
+  Tag,
   Title,
 } from 'quinoa-design-library/components/';
 
@@ -120,11 +121,25 @@ class ExamplesModal extends Component {
           <div>
             {
               networkError ?
-                <Notification type={ 'error' }>
+                <Notification isType={ 'error' }>
                   {translate( 'The demonstration cases could not be loaded' )}
                 </Notification>
               : null
             }
+            <Notification isColor={'success'}>
+              <Content>
+                <p>
+                  {translate('Click on one of the items to include in your edited productions list.')}
+                </p>
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: translate('This list is ongoing ! go to <a target="blank" rel="noopener noreferer" href="https://github.com/peritext/peritext-usecases">peritext-usecases</a> github repository to propose improvements or new usecases.')
+                  }}
+                >
+                </p>
+              </Content>
+            </Notification>
+            
             {
               cases && cases.length > 0 &&
               cases.map( ( c ) => {
@@ -137,8 +152,13 @@ class ExamplesModal extends Component {
                     onClick={ handleClick }
                     key={ c.id }
                   >
-                    <Title isSize={ 3 }>{c.title}</Title>
+                    <Title isSize={ 3 }>{c.title[lang]}</Title>
                     <Title isSize={ 4 }>{c.author}</Title>
+                    <div>
+                      <Tag isColor="info">
+                        {translate(c.language)}
+                      </Tag>
+                    </div>
                     <Content>
                       <i>{c.description[lang]}</i>
                     </Content>
