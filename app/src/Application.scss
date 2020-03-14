@@ -162,6 +162,10 @@ input[type="checkbox"]
   cursor: pointer;
 }
 
+.ovide-PaginatedList .items-container > div{
+  align-content: flex-start;
+}
+
 @media print
 {
   .navbar,
