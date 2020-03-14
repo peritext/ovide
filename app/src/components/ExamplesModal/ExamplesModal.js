@@ -53,6 +53,7 @@ class ExamplesModal extends Component {
       this.setState( { cases } );
     } )
     .catch( ( networkError ) => {
+      console.error( networkError );/* eslint no-console : 0 */
       this.setState( {
         networkError
       } );

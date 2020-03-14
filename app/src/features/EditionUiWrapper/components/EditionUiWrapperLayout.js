@@ -9,6 +9,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import {
+  Button,
   NavbarItem,
   Navbar,
   StretchedLayoutContainer,
@@ -173,6 +174,21 @@ const EditionUiWrapperLayout = ( {
                   {translate( 'Parameters' )}
                 </NavbarItem>
               )
+          },
+          {
+            content: (
+              <Button
+                target={ 'blank' }
+                rel={ 'noopener no-referer' }
+                href={ 'https://framaforms.org/ovide-feedback-form-1584195913' }
+                data-for={ 'tooltip' }
+                data-tip={ translate( 'report a bug or suggest an improvement' ) }
+                data-place={ 'bottom' }
+                data-effect={ 'solid' }
+              >
+                { translate( 'feedbacks' ) }
+              </Button>
+            )
           },
           {
             content: <LanguageToggler />
