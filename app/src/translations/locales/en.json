@@ -1151,5 +1151,14 @@
   "Components.ExamplesModal.french": "french language",
   "Components.ExamplesModal.english": "english language",
   "Components.ExamplesModal.Click on one of the items to include in your edited productions list.": "Click on one of the items to include in your edited productions list.",
-  "Components.ExamplesModal.This list is ongoing ! go to <a target=\"blank\" rel=\"noopener noreferer\" href=\"https://github.com/peritext/peritext-usecases\">peritext-usecases</a> github repository to propose improvements or new usecases.": "This list is ongoing ! please browse to <a target=\"blank\" rel=\"noopener noreferer\" href=\"https://github.com/peritext/peritext-usecases\">peritext-usecases</a> github repository to propose improvements or new examples."
+  "Components.ExamplesModal.This list is ongoing ! go to <a target=\"blank\" rel=\"noopener noreferer\" href=\"https://github.com/peritext/peritext-usecases\">peritext-usecases</a> github repository to propose improvements or new usecases.": "This list is ongoing ! please browse to <a target=\"blank\" rel=\"noopener noreferer\" href=\"https://github.com/peritext/peritext-usecases\">peritext-usecases</a> github repository to propose improvements or new examples.",
+  "Features.EditionUiWrapper.report a bug or suggest an improvement": "report a bug or suggest an improvement",
+  "Features.EditionUiWrapper.feedbacks": "feedbacks",
+  "Features.EditionView.expand contents": "Afficher les contenus",
+  "Features.EditionView.person": "personne",
+  "Features.EditionView.place": "lieu",
+  "Features.EditionView.notion": "notion",
+  "Features.EditionView.persons": "persons",
+  "Features.EditionView.notions": "notions",
+  "Features.EditionView.event": "event"
 }

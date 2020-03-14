@@ -469,6 +469,10 @@
   "Features.EditionView.Point of view of": "Point de vue de",
   "Components.SummaryEditor.Possible items": "Items de sommaire possibles",
   "Features.EditionView.Print mentions": "Imprimer les mentions",
+  "Features.EditionView.expand contents": "Afficher les contenus",
+  "Features.EditionView.person": "personne",
+  "Features.EditionView.place": "lieu",
+  "Features.EditionView.notion": "notion",
   "Features.EditionView.References": "Références",
   "Components.SummaryEditor.References": "Références",
   "Features.EditionView.Settings": "Paramètres",
@@ -1148,10 +1152,13 @@
   "Components.PagedPreviewer.Rendering pages": "Composition des pages",
   "Components.PagedPreviewer.Attaching footnotes to ${ pages.length } pages": "Positionnement des notes de bas de page pour ${ pages.length } pages",
   "Components.PagedPreviewer.Rendering finished !": "Composition terminée !",
-  
   "Components.ExamplesModal.french": "langue française",
   "Components.ExamplesModal.english": "langue anglaise",
   "Components.ExamplesModal.Click on one of the items to include in your edited productions list.": "Cliquez sur l'un des éléments pour l'inclure dans votre liste de production éditées.",
-  "Components.ExamplesModal.This list is ongoing ! go to <a target=\"blank\" rel=\"noopener noreferer\" href=\"https://github.com/peritext/peritext-usecases\">peritext-usecases</a> github repository to propose improvements or new usecases.": "Cette liste est ouverte ! veuillez vous rendre sur le répertoire github <a target=\"blank\" rel=\"noopener noreferer\" href=\"https://github.com/peritext/peritext-usecases\">peritext-usecases</a> pour proposer des améliorations ou de nouveaux exemples."
-
+  "Components.ExamplesModal.This list is ongoing ! go to <a target=\"blank\" rel=\"noopener noreferer\" href=\"https://github.com/peritext/peritext-usecases\">peritext-usecases</a> github repository to propose improvements or new usecases.": "Cette liste est ouverte ! veuillez vous rendre sur le répertoire github <a target=\"blank\" rel=\"noopener noreferer\" href=\"https://github.com/peritext/peritext-usecases\">peritext-usecases</a> pour proposer des améliorations ou de nouveaux exemples.",
+  "Features.EditionUiWrapper.report a bug or suggest an improvement": "rapporter un bug ou suggérer une amélioration",
+  "Features.EditionUiWrapper.feedbacks": "feedbacks",
+  "Features.EditionView.persons": "personnes",
+  "Features.EditionView.notions": "notions",
+  "Features.EditionView.event": "événement"
 }
