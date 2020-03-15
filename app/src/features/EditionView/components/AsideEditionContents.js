@@ -11,6 +11,7 @@ import {
   Button,
   CodeEditor,
   Column,
+  Box,
   Input,
   Control,
   Field,
@@ -637,20 +638,33 @@ class AsideEditionContents extends Component {
                       return (
                         <StretchedLayoutItem key={ index }>
                           <Column>
-                            <Button
+                            <Box
                               onClick={ () => handleExportChoice( option.id ) }
                               isFullWidth
+                              style={ { cursor: 'pointer' } }
                             >
-                              <Icon
-                                isSize={ 'small' }
-                                isAlign={ 'left' }
-                                className={ `fa ${option.icon}` }
-                              />
-                              <span style={ { marginRight: '.5rem' } }>{ option.title }</span>
-                              <HelpPin>
-                                {option.explanation}
-                              </HelpPin>
-                            </Button>
+                              <StretchedLayoutContainer
+                                isDirection={ 'horizontal' }
+                                style={ { alignItems: 'center' } }
+                              >
+                                <StretchedLayoutItem>
+                                  <Icon
+                                    isSize={ 'small' }
+                                    isAlign={ 'left' }
+                                    className={ `fa ${option.icon}` }
+                                  />
+                                </StretchedLayoutItem>
+                                <StretchedLayoutItem
+                                  isFlex={ 1 }
+                                  style={ { margin: '.5rem' } }
+                                >
+                                  <span style={ { marginRight: '.2rem' } }>{ option.title }</span>
+                                  <HelpPin>
+                                    {option.explanation}
+                                  </HelpPin>
+                                </StretchedLayoutItem>
+                              </StretchedLayoutContainer>
+                            </Box>
                           </Column>
                         </StretchedLayoutItem>
                         );
