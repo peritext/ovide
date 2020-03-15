@@ -56,7 +56,7 @@ import LibraryResourcesFilterBar from './LibraryResourcesFilterBar';
 import LibrarySectionsFilterBar from './LibrarySectionsFilterBar';
 import ConfirmToDeleteModal from '../../../components/ConfirmToDeleteModal';
 import ResourceForm from '../../../components/ResourceForm';
-import NewSectionForm from '../../../components/NewSectionForm';
+import SectionForm from '../../../components/SectionForm';
 import ResourceCard from './ResourceCard';
 import SortableSectionsList from './SortableSectionsList';
 
@@ -766,10 +766,15 @@ class LibraryViewLayout extends Component {
                 <Level />
               </StretchedLayoutItem>
               <StretchedLayoutItem isFlex={ 1 }>
-                <NewSectionForm
+                <SectionForm
                   metadata={ { ...defaultSectionMetadata } }
                   onSubmit={ handleNewSectionSubmit }
                   onCancel={ handleCloseNewSection }
+                  tags={ production.tags }
+                  createTag={ createTag }
+                  updateTag={ updateTag }
+                  deleteTag={ deleteTag }
+                  productionId={production.id}
                 />
               </StretchedLayoutItem>
             </StretchedLayoutContainer>

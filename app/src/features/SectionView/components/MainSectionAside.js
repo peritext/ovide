@@ -35,7 +35,7 @@ import { getRelatedAssetsIds } from '../../../helpers/assetsUtils';
 /**
  * Imports Components
  */
-import NewSectionForm from '../../../components/NewSectionForm';
+import SectionForm from '../../../components/SectionForm';
 import ResourceForm from '../../../components/ResourceForm';
 import ContextualizationEditor from '../../../components/ContextualizationEditor';
 
@@ -524,7 +524,7 @@ const MainSectionAside = ( {
               isFlex={ 1 }
             >
               <Column>
-                <NewSectionForm
+                <SectionForm
                   metadata={ {
                     ...defaultSectionMetadata,
                     title: guessTitle( section.metadata.title )
@@ -572,7 +572,7 @@ const MainSectionAside = ( {
               isFlex={ 1 }
             >
               <Column>
-                <NewSectionForm
+                <SectionForm
                   submitMessage={ translate( 'Save changes' ) }
                   metadata={ { ...section.metadata } }
                   onSubmit={ handleUpdateMetadata }

@@ -1,6 +1,6 @@
 /**
  * This module provides a form for creating a new section
- * @module ovide/components/NewSectionForm
+ * @module ovide/components/SectionForm
  */
 /**
  * Imports Libraries
@@ -32,7 +32,7 @@ import { translateNameSpacer } from '../../helpers/translateUtils';
 import AuthorsManager from '../AuthorsManager';
 import TagsEditor from '../TagsEditor';
 
-class NewSectionForm extends Component {
+class SectionForm extends Component {
   constructor( props ) {
     super( props );
     this.state = {
@@ -93,7 +93,7 @@ class NewSectionForm extends Component {
       context: { t }
     } = this;
 
-    const translate = translateNameSpacer( t, 'Components.NewSectionForm' );
+    const translate = translateNameSpacer( t, 'Components.SectionForm' );
 
      const errorValidator = ( values ) => {
       return {
@@ -242,7 +242,7 @@ class NewSectionForm extends Component {
   }
 }
 
-NewSectionForm.contextTypes = {
+SectionForm.contextTypes = {
   t: PropTypes.func,
 };
-export default NewSectionForm;
+export default SectionForm;
