@@ -1,12 +1,10 @@
 import get from 'axios';
 import { inElectron, default as requestToMain } from './electronUtils';
 import { b64toBlob, convertBlobAssetToPreviewData } from './assetsUtils';
-import { buildHTMLMetadata, loadAssetsForEdition } from 'peritext-utils';
+import { downloadProjectAsWebsite } from './bundlersUtils';
 import peritextConfig from '../peritextConfig.render';
-import downloadFile from './fileDownloader';
 import PQueue from 'p-queue';
 import { v4 as genId } from 'uuid';
-import preprocessEditionData from 'peritext-utils/dist/preprocessEditionData';
 
 const webAppPrefix = window.location.href.includes( 'ovide' ) ? `${window.location.href.split( 'ovide' )[0] }ovide/` : `${window.location.href.split( '/' ).slice( 0, 3 ).join( '/' ) }/`;
 
@@ -673,6 +671,16 @@ export const requestHTMLBuild = ( { generatorId, templateId } ) => {
   }
 };
 
+export const requestJSBuild = ( { generatorId, templateId } ) => {
+  if ( inElectron ) {
+    return requestToMain( 'get-js-build', { generatorId, templateId } );
+  }
+  else {
+    // console.log( 'get html template at', `${webAppPrefix}htmlBuilds/${generatorId}/${templateId}/index.html` );
+    return get( `${webAppPrefix}htmlBuilds/${generatorId}/${templateId}/bundle.js` );
+  }
+};
+
 /**
  * ========================
  * Edition generation driver
@@ -686,44 +694,38 @@ export const requestEditionDownload = ( {
     production,
     generatorId,
     locale = {},
+    urlPrefix,
   } = props;
   const templateId = edition && edition.metadata && edition.metadata.templateId;
-  const editionId = edition && edition.id;
-  const title = production.metadata.title;
-
-  if ( !inElectron && generatorId === 'single-page-html' && peritextConfig.htmlBuilds && peritextConfig.htmlBuilds[generatorId] && peritextConfig.htmlBuilds[generatorId][templateId] ) {
-    return new Promise( ( resolve, reject ) => {
-      let productionBundle;
-      loadAssetsForEdition( {
-        production,
+  if ( generatorId === 'single-page-html' && peritextConfig.htmlBuilds && peritextConfig.htmlBuilds[generatorId] && peritextConfig.htmlBuilds[generatorId][templateId] ) {
+    return requestJSBuild( { generatorId, templateId } )
+    .then( ( { data: bundleData } ) => {
+      return downloadProjectAsWebsite( {
+        bundleData,
         edition,
+        production,
         requestAssetData,
-      } )
-      .then( ( loadedAssets ) => {
-        productionBundle = {
-          ...production,
-          assets: loadedAssets
-        };
-        return requestHTMLBuild( { generatorId, templateId } );
-      } )
-      .then( ( { data: template } ) => {
-        const preprocessedData = preprocessEditionData( { production, edition } );
-        const HTMLMetadata = buildHTMLMetadata( production, edition );
-        const html = template
-          .replace( '${metadata}', HTMLMetadata )
-          .replace( '${productionJSON}', JSON.stringify( productionBundle ) )
-          .replace( '${preprocessedDataJSON}', JSON.stringify( preprocessedData ) )
-          .replace( '${editionId}', `"${editionId}"` )
-          .replace( '${locale}', JSON.stringify( locale ) );
-
-          downloadFile( html, 'html', title );
-          resolve();
-        // }
-
-      } )
-      .catch( reject );
+        locale,
+        singlePage: true,
+        urlPrefix,
+        onFeedback: props.onFeedback,
+      } );
     } );
-
+  }
+  else if ( !inElectron && generatorId === 'multi-page-html' && peritextConfig.htmlBuilds && peritextConfig.htmlBuilds['single-page-html'] && peritextConfig.htmlBuilds['single-page-html'][templateId] ) {
+    return requestJSBuild( { generatorId: 'single-page-html', templateId } )
+    .then( ( { data: bundleData } ) => {
+      return downloadProjectAsWebsite( {
+        bundleData,
+        edition,
+        production,
+        requestAssetData,
+        locale,
+        singlePage: false,
+        urlPrefix,
+        onFeedback: props.onFeedback,
+      } );
+    } );
   }
   else if ( inElectron ) {
     return requestToMain( 'generate-edition', {

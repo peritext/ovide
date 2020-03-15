@@ -46,6 +46,7 @@ const EditionViewLayout = ( {
   citationLocalesList,
   summaryEdited,
   lang,
+  exportPrefix,
   actions: {
     setEditionAsideTabMode,
     setEditionAsideTabCollapsed,
@@ -54,6 +55,7 @@ const EditionViewLayout = ( {
     updateCitationLocale,
     setAddItemsToSummaryVisible,
     setSummaryEdited,
+    setExportPrefix,
   },
 
   downloadEdition,
@@ -224,6 +226,9 @@ const EditionViewLayout = ( {
           downloadEdition( generators[id], renderingLocale );
         }
       };
+  const handleExportPrefixChange = ( e ) => {
+    setExportPrefix( e.target.value );
+  };
 
   return (
     <StretchedLayoutContainer
@@ -253,6 +258,8 @@ const EditionViewLayout = ( {
                 setEditionAsideTabCollapsed,
                 setAddItemsToSummaryVisible,
                 onExportChoice: handleExportChoice,
+                exportPrefix,
+                onExportPrefixChange: handleExportPrefixChange,
             }
           }
       />

@@ -35,6 +35,7 @@ const generateEdition = ( {
   locale,
   outputPath,
   generatorId,
+  urlPrefix = '',
   html
 }, socket, mainWindow ) => {
   return new Promise( ( resolve, reject ) => {
@@ -60,6 +61,7 @@ const generateEdition = ( {
       locale,
       outputPath,
       tempDirPath,
+      urlPrefix,
       peritextConfig,
       onFeedback,
       assetsPath: `${contentPath}/${production.id}/assets/`,

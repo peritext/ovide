@@ -405,9 +405,9 @@
   "Components.SummaryEditor.Explanation about colophon": "Legal information about this edition",
   "Components.SummaryEditor.Delete": "Delete",
   "Features.EditionView.Citation locale": "Citation locale",
-  "Features.EditionView.download as single-page-html": "download as a single HTML page",
+  "Features.EditionView.download as single-page-html": "download as a single page website",
   "Features.EditionView.explanation about single-page-html download": "appropriate for small editions",
-  "Features.EditionView.download as multi-page-html": "download as a static website",
+  "Features.EditionView.download as multi-page-html": "download as a multipages website",
   "Features.EditionView.explanation about multi-page-html download": "appropriate for medium and large editions",
   "Features.EditionView.download as pdf": "download as pdf",
   "Features.EditionView.explanation about pdf download": "For printing or screen reading",
@@ -1168,5 +1168,7 @@
   "Features.EditionView.download contents as markdown": "download contents as markdown",
   "Features.EditionView.download contents as xml-tei": "download contents as xml-tei",
   "Features.EditionView.explanation about xml-tei": "download this edition as an xml-tei file (work in progress: only materials and notes's contents blocks will be displayed)",
-  "Features.EditionView.explanation about markdown": "download this edition as a markdown file (work in progress: only materials and notes's contents blocks will be displayed)"
+  "Features.EditionView.explanation about markdown": "download this edition as a markdown file (work in progress: only materials and notes's contents blocks will be displayed)",
+  "Features.EditionView.Website prefix": "Published website URL",
+  "Features.EditionView.Explanation about website prefix": "Write here the URL of your target website URL (e.g. : 'https://user.github.io/project/') or keep it empty to test your publication locally"
 }

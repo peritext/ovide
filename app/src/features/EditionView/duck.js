@@ -28,6 +28,7 @@ const SET_EDITION_ASIDE_TAB_MODE = 'SET_EDITION_ASIDE_TAB_MODE';
 const SET_EDITION_ASIDE_TAB_COLLAPSED = 'SET_EDITION_ASIDE_TAB_COLLAPSED';
 const SET_LOADED_ASSET = 'SET_LOADED_ASSET';
 const SET_SUMMARY_EDITED = 'SET_SUMMARY_EDITED';
+const SET_EXPORT_PREFIX = 'SET_EXPORT_PREFIX';
 
 const GET_CITATION_STYLES_LIST = 'GET_CITATION_STYLES_LIST';
 const GET_CITATION_LOCALES_LIST = 'GET_CITATION_LOCALES_LIST';
@@ -46,6 +47,11 @@ export const setEditionAsideTabMode = ( payload ) => ( {
 
 export const setEditionAsideTabCollapsed = ( payload ) => ( {
   type: SET_EDITION_ASIDE_TAB_COLLAPSED,
+  payload,
+} );
+
+export const setExportPrefix = ( payload ) => ( {
+  type: SET_EXPORT_PREFIX,
   payload,
 } );
 
@@ -85,6 +91,7 @@ const UI_DEFAULT_STATE = {
   referenceTypesVisible: false,
   summaryEdited: false,
   lastGeneratorMessage: undefined,
+  exportPrefix: ''
 };
 
 /**
@@ -101,6 +108,7 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_EDITION_ASIDE_TAB_MODE:
     case SET_EDITION_ASIDE_TAB_COLLAPSED:
     case SET_SUMMARY_EDITED:
+    case SET_EXPORT_PREFIX:
       const propName = getStatePropFromActionSet( action.type );
       return {
         ...state,
@@ -172,6 +180,7 @@ const editionAsideTabMode = ( state ) => state.ui.editionAsideTabMode;
 const editionAsideTabCollapsed = ( state ) => state.ui.editionAsideTabCollapsed;
 const summaryEdited = ( state ) => state.ui.summaryEdited;
 const lastGeneratorMessage = ( state ) => state.ui.lastGeneratorMessage;
+const exportPrefix = ( state ) => state.ui.exportPrefix;
 
 const citationStylesList = ( state ) => state.data.citationStylesList;
 const citationLocalesList = ( state ) => state.data.citationLocalesList;
@@ -188,5 +197,6 @@ export const selector = createStructuredSelector( {
   citationLocalesList,
   loadedAssets,
   summaryEdited,
-  lastGeneratorMessage
+  lastGeneratorMessage,
+  exportPrefix,
 } );

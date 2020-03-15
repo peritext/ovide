@@ -58,6 +58,9 @@ const AsideEditionColumn = ( {
   availableGenerators,
   onExportChoice,
 
+  exportPrefix,
+  onExportPrefixChange,
+
 }, { t } ) => {
 
   /**
@@ -190,6 +193,8 @@ const AsideEditionColumn = ( {
                 setSummaryEdited,
                 availableGenerators,
                 onExportChoice,
+                exportPrefix,
+                onExportPrefixChange,
               }
             }
           />

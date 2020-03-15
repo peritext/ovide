@@ -5,7 +5,7 @@
 import { uniq, flatten } from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { renderToStaticMarkup } from 'react-dom/server';
+import { renderToString, renderToStaticMarkup } from 'react-dom/server';
 import TurndownService from 'turndown';
 import { ReferencesManager } from 'react-citeproc';
 import convert from 'xml-js';
@@ -24,6 +24,8 @@ import {
 } from 'peritext-utils';
 import { getResourceTitle } from './resourcesUtils';
 
+import { StaticRouter } from 'react-router-dom';
+
 import { templates, contextualizers as contextualizerModules } from '../peritextConfig.render';
 import defaultCitationStyle from 'raw-loader!../sharedAssets/bibAssets/apa.csl';
 import defaultCitationLocale from 'raw-loader!../sharedAssets/bibAssets/english-locale.xml';
@@ -41,6 +43,74 @@ const turn = new TurndownService();
  * PRIVATE UTILS
  * =====================
  */
+const loaderCss = `#static-loader-container{
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.1);
+  opacity: 0;
+  transition: .5s ease;
+}
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 33px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: black;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}`;
 
 /**
  * Gets a static summary of representable contents
@@ -58,10 +128,10 @@ const getStaticSummary = ( { production, edition } ) => {
 
         /**
          * Todo unhandled blocks:
-          * case 'customPage':
-          * case 'glossary':
-          * case 'references':
-          */
+         * case 'customPage':
+         * case 'glossary':
+         * case 'references':
+         */
         case 'sections':
         case 'resourceSections':
           const { customSummary = { active: false } } = data;
@@ -211,7 +281,10 @@ class SectionRenderer extends Component {
     } = this;
     const TitleTag = `h${level + 2}`;
     return (
-      <div id={ `section-${section.id}` } className={`section is-level-${level}`}>
+      <div
+        id={ `section-${section.id}` }
+        className={ `section is-level-${level}` }
+      >
         <TitleTag>
           {getResourceTitle( section )}
         </TitleTag>
@@ -571,7 +644,7 @@ export const bundleProjectAsHTML = ( { production, edition, requestAssetData } )
                 <SectionRenderer
                   production={ productionJSON }
                   section={ productionJSON.resources[resourceId] }
-                  level={level}
+                  level={ level }
                 />
               </ReferencesManager>
             );
@@ -590,6 +663,19 @@ export const bundleProjectAsHTML = ( { production, edition, requestAssetData } )
       } )
       .catch( reject );
   } );
+};
+
+/**
+ * converts base64 to binary
+ */
+const base64ToBinary = ( s ) => {
+  const byteChars = atob( s );
+  const l = byteChars.length;
+  const byteNumbers = new Array( l );
+  for ( let i = 0; i < l; i++ ) {
+    byteNumbers[i] = byteChars.charCodeAt( i );
+  }
+  return new Uint8Array( byteNumbers );
 };
 
 /*
@@ -773,13 +859,13 @@ export const bundleEditionAsPrintPack = ( {
           htmlContent = htmlContent.slice( 0, match.index ) + htmlContent.slice( match.index + match[0].length );
           match.index = -1;
       }
-      const finalHtml = `
+      const finalHtml = `<!DOCTYPE html>
 <html>
   <head>
     <title>${edition.metadata.title}</title>
-    <script src="https://unpkg.com/pagedjs@0.1.34/dist/paged.polyfill.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-    <script src="paged_js_addons.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/pagedjs@0.1.34/dist/paged.polyfill.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script type="text/javascript" src="paged_js_addons.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"></link>
     <link rel="stylesheet" href="preview_styles.css"></link>
@@ -801,5 +887,266 @@ export const bundleEditionAsPrintPack = ( {
       } );
     } )
     .catch( reject );
+  } );
+};
+
+const renderHTML = ( {
+  singlePage,
+  head,
+  htmlContent,
+  allowAnnotation,
+  editionId,
+  urlPrefix,
+} ) => `<!DOCTYPE html>
+<html>
+  <head>
+    ${head}
+    <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@1"></script>
+  </head>
+  <body>
+    
+    <div id="mount"></div>
+    <div id="static">
+      ${htmlContent}
+    </div>
+${allowAnnotation ? '<script src="https://hypothes.is/embed.js" async></script>' : ''}
+
+    <script src="${urlPrefix}/bundle.js" type="text/javascript"></script>
+    <style>
+${loaderCss}
+    </style>
+    <script>
+          var __useBrowserRouter = ${singlePage ? 'false' : 'true'};
+          var __editionId = "${editionId}";
+          /**
+           * LIB
+           */
+
+          function loadJSON(URL, callback) {   
+            var xobj = new XMLHttpRequest();
+                xobj.overrideMimeType("application/json");
+            xobj.open('GET', URL, true); // Replace 'my_data' with the path to your file
+            xobj.onreadystatechange = function () {
+                  if (xobj.readyState == 4 && xobj.status == "200") {
+                    // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
+                    var json = xobj.responseText;
+                    if (typeof json === 'string') {
+                      json = JSON.parse(json)
+                    }
+                    callback(json);
+                  }
+            };
+            xobj.send(null);  
+        }
+        function addLoader() {
+          var loader = document.createElement('div')
+          loader.id = 'static-loader-container';
+          loader.innerHTML = '<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>';
+          document.body.appendChild(loader);
+          loader.style.opacity = 1;
+        }
+        function hideLoader() {
+          var loader = document.getElementById('static-loader-container')
+          loader.style.opacity = 0;
+          loader.style.pointerEvents = 'none';
+        }
+        /**
+         * EXECUTION
+         */
+        addLoader();
+        loadJSON('${urlPrefix}/locale.json', locale => {
+          loadJSON('${urlPrefix}/preprocessedData.json', preprocessedData => {
+              loadJSON('${urlPrefix}/production.json', production => {
+                renderEdition(production, __editionId, preprocessedData, locale, __useBrowserRouter);
+                hideLoader();
+              }) 
+          })
+        })
+    </script>
+  </body>
+</html>
+    `.trim();
+
+export const downloadProjectAsWebsite = ( {
+  edition,
+  production: inputProduction,
+  locale = {},
+  bundleData,
+  requestAssetData,
+  urlPrefix = '',
+  singlePage = true,
+  onFeedback,
+} ) => {
+  const zip = new JSZip();
+  const template = templates.find( ( thatT ) => thatT.meta.id === edition.metadata.templateId );
+  const utils = template.utils;
+  const { routeItemToUrl } = utils;
+  const { data = {} } = edition;
+  const { allowAnnotation = false } = data;
+
+  return new Promise( ( resolve, reject ) => {
+    const production = { ...inputProduction };
+    // const HTMLMetadata = defaultBuildHTMLMetadata( production, edition );
+    const preprocessedData = preprocessEditionData( { production, edition } );
+    if ( typeof onFeedback === 'function' ) {
+      onFeedback( {
+        type: 'info',
+        message: 'packing assets'
+      } );
+    }
+    loadAssetsForEdition( {
+      production,
+      edition,
+      requestAssetData,
+    } )
+    .then( ( loadedAssets ) => {
+      Object.keys( loadedAssets ).forEach( ( assetId ) => {
+          const asset = loadedAssets[assetId];
+          const mimetype = asset.mimetype;
+          const url = `${urlPrefix}/assets/${asset.id}/${asset.filename}`;
+          switch ( mimetype ) {
+            case 'image/png':
+            case 'image/jpeg':
+            case 'image/jpg':
+            case 'image/gif':
+            case 'image/tiff':
+
+              const ext = asset.mimetype.split( '/' ).pop();
+              const regex = new RegExp( `^data:image\/${ext};base64,` );
+              zip.file( `assets/${asset.id}/${asset.filename}`, base64ToBinary( asset.data.replace( regex, '' ) ), { binary: true } );
+              production.assets[assetId].data = url;
+              break;
+
+            /**
+             * @todo externalize table files as well
+             */
+            // case 'text/csv':/* eslint no-fallthrough : 0 */
+            // case 'text/tsv':
+            // case 'text/comma-separated-values':
+            // case 'text/tab-separated-values':
+            //   return writeFile( address, JSON.stringify( asset.data ), 'utf8' );
+
+            default:
+              break;
+          }
+      } );
+    if ( typeof onFeedback === 'function' ) {
+      onFeedback( {
+        type: 'info',
+        message: 'building website'
+      } );
+    }
+
+    const nav = utils.buildNav( { production, edition, locale } ).concat( utils.getAdditionalRoutes() )
+      .map( ( navItem, navItemIndex ) => {
+        return {
+          ...navItem,
+          route: routeItemToUrl( navItem, navItemIndex ),
+        };
+      } );
+    if ( singlePage ) {
+      const { viewId, routeClass, routeParams } = nav[0];
+      const Comp = template.components.Edition;
+      let htmlContent = '';
+      try {
+        htmlContent = renderToString(
+          <Comp
+            viewId={ viewId }
+            viewClass={ routeClass }
+            viewParams={ routeParams }
+            production={ production }
+            edition={ edition }
+            locale={ locale }
+            contextualizers={ contextualizerModules }
+          />
+        );
+      }
+      catch ( e ) {
+        console.error( 'e', e );/* eslint no-console : 0 */
+      }
+
+      const head = renderToStaticMarkup(
+        utils.renderHeadFromRouteItem( { production, edition, item: nav[0] } )
+        );
+      const html = renderHTML( {
+        singlePage,
+        head,
+        htmlContent,
+        allowAnnotation,
+        editionId: edition.id,
+        urlPrefix,
+      } );
+      zip.file( 'index.html', html );
+    }
+    else {
+      nav.forEach( ( navItem ) => {
+        const { route, viewId, routeClass, routeParams } = navItem;
+          const Comp = template.components.Edition;
+          let htmlContent = '';
+          try {
+            htmlContent = renderToString(
+              <StaticRouter
+                context={ {} }
+                location={ navItem.route }
+              >
+                <Comp
+                  viewId={ viewId }
+                  viewClass={ routeClass }
+                  viewParams={ routeParams }
+                  production={ production }
+                  edition={ edition }
+                  locale={ locale }
+                  contextualizers={ contextualizerModules }
+                />
+              </StaticRouter>
+            );
+
+            /*
+             * if ( routeClass === 'sections' )
+             * console.log( 'html content', htmlContent );
+             */
+          }
+          catch ( e ) {
+            console.error( 'e', e );/* eslint no-console : 0 */
+          }
+
+          const head = renderToStaticMarkup(
+            utils.renderHeadFromRouteItem( { production, edition, item: navItem } )
+            );
+
+          const html = renderHTML( {
+            singlePage,
+            head,
+            htmlContent,
+            allowAnnotation,
+            editionId: edition.id,
+            urlPrefix,
+          } );
+          zip.file( `${route.split( '?' )[0]}/index.html`, html );
+      } );
+    }
+
+    zip.file( 'bundle.js', bundleData );
+    zip.file( 'production.json', JSON.stringify( production ) );
+    zip.file( 'preprocessedData.json', JSON.stringify( preprocessedData ) );
+    zip.file( 'locale.json', JSON.stringify( locale ) );
+    if ( typeof onFeedback === 'function' ) {
+      onFeedback( {
+        type: 'info',
+        message: 'creating archive'
+      } );
+    }
+    zip.generateAsync( { type: 'blob' } ).then( function( content ) {
+      // see FileSaver.js
+      saveAs( content, `${edition.metadata.title || 'peritext' }.zip` );
+      if ( typeof onFeedback === 'function' ) {
+        onFeedback( {
+          type: 'success',
+          message: 'archive created'
+        } );
+      }
+      resolve();
+    } );
+    } ).catch( reject );
   } );
 };

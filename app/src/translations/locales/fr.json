@@ -437,9 +437,9 @@
   "Features.EditionView.download this edition": "télécharger cette édition",
   "Features.EditionView.Citation locale": "Langue de citation bibliographique",
   "Features.EditionView.Citation style": "Style de citation bibliographique",
-  "Features.EditionView.download as single-page-html": "télécharger un fichier HTML unique",
+  "Features.EditionView.download as single-page-html": "télécharger comme un site à page unique",
   "Features.EditionView.explanation about single-page-html download": "approprié pour des éditions de petite taille",
-  "Features.EditionView.download as multi-page-html": "télécharger comme site statique",
+  "Features.EditionView.download as multi-page-html": "télécharger comme un site à pages multiples",
   "Features.EditionView.explanation about multi-page-html download": "approprié pour des éditions de taille moyenne à grande",
   "Features.EditionView.download as pdf": "télécharger en pdf",
   "Features.EditionView.explanation about pdf download": "Pour impression ou lecture à l'écran",
@@ -1168,5 +1168,7 @@
   "Features.EditionView.download contents as markdown": "télécharger l'édition comme un fichier markdown",
   "Features.EditionView.download contents as xml-tei": "télécharger l'édition comme un fichier XML-TEI",
   "Features.EditionView.explanation about xml-tei": "(travail en cours) seulement les blocs de contenus de notes et matériaux seront rendus",
-  "Features.EditionView.explanation about markdown": "(travail en cours) seulement les blocs de contenus de notes et matériaux seront rendus"
+  "Features.EditionView.explanation about markdown": "(travail en cours) seulement les blocs de contenus de notes et matériaux seront rendus",
+  "Features.EditionView.Website prefix": "URL de la publication",
+  "Features.EditionView.Explanation about website prefix": "Écrire ici l'URL du site de publication (ex. : 'https://user.github.io/project/') ou le laisser vide pour un test local"
 }

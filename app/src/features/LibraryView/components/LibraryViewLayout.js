@@ -774,7 +774,7 @@ class LibraryViewLayout extends Component {
                   createTag={ createTag }
                   updateTag={ updateTag }
                   deleteTag={ deleteTag }
-                  productionId={production.id}
+                  productionId={ production.id }
                 />
               </StretchedLayoutItem>
             </StretchedLayoutContainer>

@@ -201,7 +201,7 @@
     "peritext-contextualizer-video": "^0.2.1",
     "peritext-contextualizer-webpage": "^0.1.0",
     "peritext-core": "git+https://github.com/peritext/peritext-core.git",
-    "peritext-generator-html-multi": "^0.1.7",
+    "peritext-generator-html-multi": "^0.1.8",
     "peritext-generator-html-singlepage": "^0.1.2",
     "peritext-schemas": "^0.2.4",
     "peritext-template-callirhoe": "0.0.8",

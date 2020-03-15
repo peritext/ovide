@@ -34,7 +34,19 @@ const getHTMLBuild = ( { generatorId, templateId } ) => {
     } )
     .catch( reject );
   } );
+};
 
+const getJSBuild = ( { generatorId, templateId } ) => {
+  const htmlFolder = path.resolve( `${__dirname}/../app/htmlBuilds/${generatorId}/${templateId}` );
+  const htmlPath = path.resolve( `${htmlFolder}/bundle.js` );
+  return new Promise( ( resolve, reject ) => {
+    ensureDir( htmlFolder )
+    .then( () => readFile( htmlPath, 'utf8' ) )
+    .then( ( data ) => {
+      resolve( data );
+    } )
+    .catch( reject );
+  } );
 };
 
 module.exports = {
@@ -43,4 +55,5 @@ module.exports = {
   getCitationStyles,
   getCitationStyle,
   getHTMLBuild,
+  getJSBuild,
 };

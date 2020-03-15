@@ -11,6 +11,7 @@ import {
   Button,
   CodeEditor,
   Column,
+  Input,
   Control,
   Field,
   Label,
@@ -32,7 +33,7 @@ import {
   silentEvent,
 } from '../../../helpers/misc';
 import productionSchema from 'peritext-schemas/production';
-const editionSchema = productionSchema.definitions.edition;
+import { inElectron } from '../../../helpers/electronUtils';
 
 /**
  * Imports Components
@@ -43,6 +44,8 @@ import ExplainedLabel from '../../../components/ExplainedLabel';
 import DebouncedInput from '../../../components/DebouncedInput';
 import DebouncedTextarea from '../../../components/DebouncedTextarea';
 import HelpPin from '../../../components/HelpPin';
+
+const editionSchema = productionSchema.definitions.edition;
 
 class AsideEditionContents extends Component {
   constructor( props ) {
@@ -94,6 +97,9 @@ class AsideEditionContents extends Component {
          */
         template,
         // onEditionChange: handleEditionChange,
+
+        exportPrefix,
+        onExportPrefixChange,
       },
       state: {
         edition = {},
@@ -539,6 +545,71 @@ class AsideEditionContents extends Component {
             </Column>
           );
         case 'exports':
+          const exportsForAll = [
+            {
+              id: 'html',
+              title: translate( 'download contents as plain html' ),
+              explanation: translate( 'explanation about html' ),
+              icon: 'fa-download'
+            },
+            {
+              id: 'html',
+              title: translate( 'download contents as markdown' ),
+              explanation: translate( 'explanation about markdown' ),
+              icon: 'fa-download'
+            },
+            {
+              id: 'tei',
+              title: translate( 'download contents as xml-tei' ),
+              explanation: translate( 'explanation about xml-tei' ),
+              icon: 'fa-download'
+            }
+          ];
+          const printExports = [
+            {
+              id: 'print',
+              title: translate( 'print or save this view' ),
+              explanation: translate( 'explanation about print or save this view' ),
+              icon: 'fa-print'
+            },
+            {
+              id: 'printPack',
+              title: translate( 'download an designable paged website' ),
+              explanation: translate( 'explanation about printPack' ),
+              icon: 'fa-download'
+            },
+          ];
+          const generatorExports = availableGenerators
+          .map( ( generator ) => ( {
+            id: generator.id,
+            title: translate( `download as ${generator.id}` ),
+            explanation: translate( `explanation about ${generator.id} download` ),
+            icon: 'fa-download'
+          } ) );
+          const webExports = [
+            {
+              id: 'single-page-html',
+              title: translate( 'download as single-page-html' ),
+            explanation: translate( 'explanation about single-page-html download' ),
+            icon: 'fa-download'
+            },
+            {
+              id: 'multi-page-html',
+              title: translate( 'download as multi-page-html' ),
+            explanation: translate( 'explanation about multi-page-html download' ),
+            icon: 'fa-download'
+            }
+          ];
+          let specificExports;
+          if ( edition.metadata.type === 'paged' ) {
+            specificExports = printExports;
+          }
+ else if ( inElectron ) {
+            specificExports = generatorExports;
+          }
+          else {
+            specificExports = webExports;
+          }
           return (
             <Column>
               <StretchedLayoutContainer
@@ -546,49 +617,23 @@ class AsideEditionContents extends Component {
                 isDirection={ 'vertical' }
               >
                 {
-                    [
-                      ...availableGenerators
-                      .map( ( generator ) => ( {
-                        id: generator.id,
-                        title: translate( `download as ${generator.id}` ),
-                        explanation: translate( `explanation about ${generator.id} download` ),
-                        icon: 'fa-download'
-                      } ) ),
-                      edition.metadata.type === 'paged' ?
-                      {
-                        id: 'print',
-                        title: translate( 'print or save this view' ),
-                        explanation: translate( 'explanation about print or save this view' ),
-                        icon: 'fa-print'
-                      } : undefined,
-                      edition.metadata.type === 'paged' ?
-                      {
-                        id: 'printPack',
-                        title: translate( 'download an designable paged website' ),
-                        explanation: translate( 'explanation about printPack' ),
-                        icon: 'fa-download'
-                      } : undefined,
-                      {
-                        id: 'html',
-                        title: translate( 'download contents as plain html' ),
-                        explanation: translate( 'explanation about html' ),
-                        icon: 'fa-download'
-                      },
-                      {
-                        id: 'html',
-                        title: translate( 'download contents as markdown' ),
-                        explanation: translate( 'explanation about markdown' ),
-                        icon: 'fa-download'
-                      },
-                      {
-                        id: 'tei',
-                        title: translate( 'download contents as xml-tei' ),
-                        explanation: translate( 'explanation about xml-tei' ),
-                        icon: 'fa-download'
-                      }
-                    ]
-                    .filter( ( o ) => o )
-                    .map( ( option, index ) => {
+                  edition.metadata.type === 'screened' &&
+                  <Column>
+                    <ExplainedLabel
+                      title={ translate( 'Website prefix' ) }
+                      explanation={ translate( 'Explanation about website prefix' ) }
+                    />
+                    <Input
+                      placeholder={ translate( 'Website prefix' ) }
+                      value={ exportPrefix }
+                      onChange={ onExportPrefixChange }
+                    />
+                  </Column>
+                }
+                {[
+                  ...specificExports,
+                   ...exportsForAll,
+                  ].map( ( option, index ) => {
                       return (
                         <StretchedLayoutItem key={ index }>
                           <Column>

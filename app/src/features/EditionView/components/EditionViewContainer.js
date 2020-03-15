@@ -224,7 +224,8 @@ class EditionViewContainer extends Component {
       toastr[type]( translate( 'starting generation' ), { timeOut: 1000 } );
         break;
       case 'loading assets':
-      toastr[type]( translate( 'loading assets' ), { timeOut: 1000 } );
+      case 'packing assets':
+        toastr[type]( translate( 'loading assets' ), { timeOut: 1000 } );
         break;
       case 'loading template':
       toastr[type]( translate( 'loading template' ), { timeOut: 1000 } );
@@ -273,19 +274,18 @@ class EditionViewContainer extends Component {
             editionId
           },
         },
+        exportPrefix: initialUrlPrefix = '',
         editedProduction: production,
       },
       context: { t },
-      onFeedback,
+      displayGeneratorMessage: onFeedback,
     } = this;
+    const urlPrefix = initialUrlPrefix.replace( /\/$/, '' );
     const edition = production.editions[editionId];
     const { id: generatorId } = generator;
     const translate = translateNameSpacer( t, 'Features.EditionView' );
 
-    /**
-     * @todo use appropriate locale
-     */
-    if ( inElectron ) {
+    if ( inElectron && generatorId !== 'single-page-html' && generatorId !== 'multi-page-html' ) {
        electron.remote.dialog.showSaveDialog( {
          properties: [ 'createDirectory' ],
          title: 'Download edition',
@@ -300,6 +300,7 @@ class EditionViewContainer extends Component {
             outputPath,
             generatorId,
             onFeedback,
+            urlPrefix,
           } )
           .then( () => {
             toastr.success( translate( 'The edition was downloaded successfully' ) );
@@ -321,6 +322,7 @@ class EditionViewContainer extends Component {
           locale,
           generatorId,
           onFeedback,
+          urlPrefix,
         } );
     }
   }

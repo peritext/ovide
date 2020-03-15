@@ -15,6 +15,7 @@ const {
   getCitationLocales,
   getCitationLocale,
   getHTMLBuild,
+  getJSBuild,
 } = require( './staticResourcesTransactions' );
 
 const {
@@ -48,6 +49,7 @@ const routes = {
   'get-citation-locale': getCitationLocale,
 
   'get-html-build': getHTMLBuild,
+  'get-js-build': getJSBuild,
 
   'generate-edition': generateEdition
 };
