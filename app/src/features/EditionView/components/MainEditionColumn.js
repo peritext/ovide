@@ -19,7 +19,7 @@ import './MainEditionColumn.scss';
  * Imports Project utils
  */
 
-import { loadAssetsForEdition } from '../../../helpers/projectBundler';
+import { loadAssetsForEdition } from '../../../helpers/bundlersUtils';
 import { requestAssetData } from '../../../helpers/dataClient';
 import PagedPreviewer from '../../../components/PagedPreviewer';
 import SummaryEditor from '../../../components/SummaryEditor';
@@ -179,6 +179,10 @@ class PreviewWrapperInitial extends Component {
   componentWillUnmount = () => {
     this.editionPreprocessor.terminate();
     this.editionRenderer.terminate();
+  }
+
+  componentDidCatch = ( error, errorInfo ) => {
+    console.error( 'previewer catched an error', error, errorInfo );/* eslint no-console : 0  */
   }
 
   preprocessEditionData = ( props ) => {

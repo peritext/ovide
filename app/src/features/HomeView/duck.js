@@ -11,7 +11,7 @@ import { v4 as genId } from 'uuid';
 
 import { createDefaultProduction, validateProduction, convertQuinoaStoryToProduction } from '../../helpers/schemaUtils';
 
-import { parseImportedFile } from '../../helpers/projectBundler';
+import { parseImportedFile } from '../../helpers/bundlersUtils';
 import { getStatePropFromActionSet } from '../../helpers/reduxUtils';
 
 import {

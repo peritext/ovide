@@ -1,6 +1,6 @@
 /**
  * This module helps for processes related to the exports of a production
- * @module ovide/utils/projectBundler
+ * @module ovide/utils/bundlersUtils
  */
 import { uniq, flatten } from 'lodash';
 import React, { Component } from 'react';
@@ -16,11 +16,21 @@ import { saveAs } from 'file-saver';
 import Renderer from 'peritext-template-pyrrah/dist/components/Renderer';
 import { getRelatedAssetsIds } from './assetsUtils';
 import { getFileAsText, getFileAsBinary } from './fileLoader';
-import { contextualizers } from '../peritextConfig.render';
-import { buildCitations, getContextualizationsFromEdition } from 'peritext-utils';
+import {
+  buildCitations,
+  getContextualizationsFromEdition,
+  preprocessEditionData,
+} from 'peritext-utils';
 
+import { templates, contextualizers as contextualizerModules } from '../peritextConfig.render';
 import defaultCitationStyle from 'raw-loader!../sharedAssets/bibAssets/apa.csl';
 import defaultCitationLocale from 'raw-loader!../sharedAssets/bibAssets/english-locale.xml';
+
+/**
+ * @todo put in shared assets
+ */
+import pagedAddons from '!!raw-loader!../components/PagedPreviewer/addons.paged.js';
+import previewStyleData from '!!raw-loader!../components/PagedPreviewer/previewStyle.paged.csx';
 
 const turn = new TurndownService();
 
@@ -343,7 +353,7 @@ class SectionRenderer extends Component {
   getChildContext = () => ( {
     renderingMode: 'paged',
     productionAssets: this.props.production.assets,
-    contextualizers,
+    contextualizers: contextualizerModules,
     production: this.props.production,
     notes: this.props.section.data.contents.notes,
   } )
@@ -526,4 +536,177 @@ export const bundleProjectAsTEI = ( { production, requestAssetData } ) => {
       .catch( reject );
   } );
 
+};
+
+const getPreprocessedContextualizations = ( {
+  production,
+  // edition,
+  assets,
+  contextualizations
+} ) => {
+
+  return contextualizations.reduce( ( cur, { contextualization, contextualizer } ) =>
+  cur.then( ( result ) => {
+    return new Promise( ( resolve, reject ) => {
+
+      if ( contextualization && contextualizer ) {
+        const thatModule = contextualizerModules[contextualizer.type];
+        if ( thatModule && thatModule.meta && thatModule.meta.asyncPrerender ) {
+          const resource = production.resources[contextualization.sourceId];
+          thatModule.meta.asyncPrerender( {
+            resource,
+            contextualization,
+            contextualizer,
+            productionAssets: assets,
+          } )
+          .then( ( data ) => {
+            resolve( {
+              ...result,
+              [contextualization.id]: data
+            } );
+          } )
+          .catch( reject );
+        }
+        else resolve( result );
+      }
+      else resolve( result );
+    } );
+  } )
+  , Promise.resolve( {} ) );
+};
+
+class ContextProvider extends Component {
+
+  static childContextTypes = {
+    renderingMode: PropTypes.string,
+    preprocessedContextualizations: PropTypes.object,
+  }
+
+  getChildContext = () => ( {
+    renderingMode: this.props.renderingMode,
+    preprocessedContextualizations: this.props.preprocessedContextualizations,
+  } )
+  render = () => {
+    return this.props.children;
+  }
+}
+
+/**
+ * Cleans and serializes a production representation
+ * @param {object} production - the production to bundle
+ * @return {string} result - the resulting serialized production
+ */
+export const bundleEditionAsPrintPack = ( {
+  production,
+  requestAssetData,
+  edition,
+  lang,
+  locale,
+} ) => {
+  const zip = new JSZip();
+  console.info( 'bundleEditionAsPrintPack :: starting' );
+  return new Promise( ( resolve, reject ) => {
+    let assets;
+    let preprocessedData;
+    // load assets
+    console.info( 'bundleEditionAsPrintPack :: loading assets' );
+    loadAllAssets( {
+      production,
+      requestAssetData
+    } )
+    // preprocess edition data
+    .then( ( inputAssets ) => {
+      console.info( 'bundleEditionAsPrintPack :: preprocessing edition data' );
+      assets = inputAssets;
+      return preprocessEditionData( { production, edition } );
+    } )
+    .then( ( input ) => {
+      console.info( 'bundleEditionAsPrintPack :: building preprocessed contextualizations' );
+      preprocessedData = input;
+      const contextualizations = getContextualizationsFromEdition( production, edition );
+
+      return getPreprocessedContextualizations( {
+          production,
+          edition,
+          assets,
+          contextualizations
+        } );
+    } )
+    // render html
+    .then( ( preprocessedContextualizations = {} ) => {
+      console.info( 'bundleEditionAsPrintPack :: rendering html' );
+
+      const template = templates.find( ( thatTemplate ) => thatTemplate.meta.id === edition.metadata.templateId );
+
+      const Edition = template.components.Edition;
+
+      const renderingMode = edition.metadata.type;
+      const FinalComponent = () => (
+        <ContextProvider
+          renderingMode={ renderingMode }
+          preprocessedContextualizations={ preprocessedContextualizations }
+        >
+          <Edition
+            {
+              ...{
+                production,
+                edition,
+                lang,
+                contextualizers: contextualizerModules,
+                previewMode: true,
+                preprocessedData,
+                locale,
+              }
+            }
+          />
+        </ContextProvider>
+      );
+      let html = '';
+      try {
+        html = renderToStaticMarkup( <FinalComponent /> );
+        console.info( 'html', html );
+      }
+      catch ( e ) {
+        console.error( e );/* eslint no-console : 0 */
+      }
+      let htmlContent = html;
+      let additionalStyles = '';
+      // strip stypes
+      const stylesRegexp = /<style.*>([\w\W\n]*)<\/style>/gm;
+      let match;
+        while ( ( match = stylesRegexp.exec( htmlContent ) ) !== null ) {
+          additionalStyles += match[1];
+          htmlContent = htmlContent.slice( 0, match.index ) + htmlContent.slice( match.index + match[0].length );
+          match.index = -1;
+      }
+      console.log( { htmlContent, additionalStyles } );
+      const finalHtml = `
+<html>
+  <head>
+    <title>${edition.metadata.title}</title>
+    <script src="https://unpkg.com/pagedjs@0.1.34/dist/paged.polyfill.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <script src="paged_js_addons.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"></link>
+    <link rel="stylesheet" href="preview_styles.css"></link>
+    <link rel="stylesheet" href="main_styles.css"></link>
+  </head>
+  <body>
+    ${htmlContent}
+  </body>
+</html>
+      `.trim();
+
+      zip.file( 'index.html', finalHtml );
+      zip.file( 'main_styles.css', additionalStyles );
+      zip.file( 'preview_styles.css', previewStyleData );
+      zip.file( 'paged_js_addons.js', pagedAddons );
+      zip.generateAsync( { type: 'blob' } ).then( function( content ) {
+          // see FileSaver.js
+          saveAs( content, `${edition.metadata.title || 'peritext' }.zip` );
+      } );
+    } )
+    .catch( reject );
+  } );
 };

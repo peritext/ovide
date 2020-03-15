@@ -42,7 +42,7 @@ import {
   bundleProjectAsHTML,
   bundleProjectAsMarkdown,
   bundleProjectAsTEI,
-} from '../../../helpers/projectBundler';
+} from '../../../helpers/bundlersUtils';
 
 /**
  * Imports Components

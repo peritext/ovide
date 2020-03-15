@@ -15,8 +15,11 @@ import {
 /**
  * Imports Project utils
  */
+import { bundleEditionAsPrintPack } from '../../../helpers/bundlersUtils';
 import { translateNameSpacer } from '../../../helpers/translateUtils';
 import { inElectron } from '../../../helpers/electronUtils';
+import { requestAssetData } from '../../../helpers/dataClient';
+
 import { templates, contextualizers, generators } from '../../../peritextConfig.render';
 
 /**
@@ -166,10 +169,19 @@ const EditionViewLayout = ( {
       window.frames.preview.focus();
       window.frames.preview.print();
     }
- else {
-      downloadEdition( generators[id], renderingLocale );
+ else if ( id === 'printPack' ) {
+      bundleEditionAsPrintPack( {
+        production,
+        requestAssetData,
+        edition,
+        lang,
+        locale: renderingLocale,
+      } );
     }
-  };
+    else {
+          downloadEdition( generators[id], renderingLocale );
+        }
+      };
 
   return (
     <StretchedLayoutContainer

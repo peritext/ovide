@@ -1145,7 +1145,7 @@
   "Features.GlossaryView.Show entries with tags": "Montrer les entrées étiquettées",
   "Features.LibraryView.Tag selection with": "Étiquetter la sélection avec",
   "Features.LibraryView.Tag selection": "Étiquetter",
-  "Features.LibraryView.search for a tag": "chercher une étiquette",
+  "Features.LibraryView.search for a tag": "chercher ou créer une étiquette",
   "Features.LibraryView.Add tag {name}": "Créer l'étiquette {name}",
   "Features.SectionView.order in production default summary": "sommaire de la production",
   "Features.SectionView.find a section": "trouver une note",
@@ -1160,5 +1160,7 @@
   "Features.EditionUiWrapper.feedbacks": "feedbacks",
   "Features.EditionView.persons": "personnes",
   "Features.EditionView.notions": "notions",
-  "Features.EditionView.event": "événement"
+  "Features.EditionView.event": "événement",
+  "Features.EditionView.download an designable paged website": "télécharger un site web statique imprimable",
+  "Features.EditionView.explanation about printPack": "télécharger un site HTML+CSS entièrement éditable pour un design avancé"
 }

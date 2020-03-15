@@ -1089,7 +1089,7 @@
   "Components.TagsEditor.remove tag": "- remove tag",
   "Components.TagsEditor.No tags yet for this material": "No tags yet for this material",
   "Components.TagsEditor.Available tags": "Available tags",
-  "Components.TagsEditor.Search for a tag": "Search for a tag",
+  "Components.TagsEditor.Search for a tag": "Search or create a tag",
   "Components.TagsEditor.Add {searchTerm} tag": "Add {searchTerm} tag",
   "Components.TagsEditor.+ Add tag": "+ Add tag",
   "Components.TagsEditor.Other tags": "Other tags",
@@ -1160,5 +1160,7 @@
   "Features.EditionView.notion": "notion",
   "Features.EditionView.persons": "persons",
   "Features.EditionView.notions": "notions",
-  "Features.EditionView.event": "event"
+  "Features.EditionView.event": "event",
+  "Features.EditionView.download an designable paged website": "download a printable static website",
+  "Features.EditionView.explanation about printPack": "download an entirely editable HTML+CSS website for an advanced design"
 }

@@ -560,6 +560,13 @@ class AsideEditionContents extends Component {
                         title: translate( 'print or save this view' ),
                         explanation: translate( 'explanation about print or save this view' ),
                         icon: 'fa-print'
+                      } : undefined,
+                      edition.metadata.type === 'paged' ?
+                      {
+                        id: 'printPack',
+                        title: translate( 'download an designable paged website' ),
+                        explanation: translate( 'explanation about printPack' ),
+                        icon: 'fa-download'
                       } : undefined
                     ]
                     .filter( ( o ) => o )

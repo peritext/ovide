@@ -171,7 +171,7 @@ class ExamplesModal extends Component {
                     <Title isSize={ 3 }>{c.title[lang]}</Title>
                     <Title isSize={ 4 }>{c.author}</Title>
                     <div>
-                      <Tag isColor={ 'info' }>
+                      <Tag isColor={ lang === c.language.substr( 0, 2 ) ? 'info' : 'warning' }>
                         {translate( c.language )}
                       </Tag>
                     </div>
