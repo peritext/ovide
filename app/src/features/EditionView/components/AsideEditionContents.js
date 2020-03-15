@@ -567,7 +567,25 @@ class AsideEditionContents extends Component {
                         title: translate( 'download an designable paged website' ),
                         explanation: translate( 'explanation about printPack' ),
                         icon: 'fa-download'
-                      } : undefined
+                      } : undefined,
+                      {
+                        id: 'html',
+                        title: translate( 'download contents as plain html' ),
+                        explanation: translate( 'explanation about html' ),
+                        icon: 'fa-download'
+                      },
+                      {
+                        id: 'html',
+                        title: translate( 'download contents as markdown' ),
+                        explanation: translate( 'explanation about markdown' ),
+                        icon: 'fa-download'
+                      },
+                      {
+                        id: 'tei',
+                        title: translate( 'download contents as xml-tei' ),
+                        explanation: translate( 'explanation about xml-tei' ),
+                        icon: 'fa-download'
+                      }
                     ]
                     .filter( ( o ) => o )
                     .map( ( option, index ) => {

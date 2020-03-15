@@ -1162,5 +1162,11 @@
   "Features.EditionView.notions": "notions",
   "Features.EditionView.event": "event",
   "Features.EditionView.download an designable paged website": "download a printable static website",
-  "Features.EditionView.explanation about printPack": "download an entirely editable HTML+CSS website for an advanced design"
+  "Features.EditionView.explanation about printPack": "download an entirely editable HTML+CSS website for an advanced design",
+  "Features.EditionView.download contents as plain html": "download contents as plain html",
+  "Features.EditionView.explanation about html": "download this edition as a plain html file (work in progress: only materials and notes's contents blocks will be displayed)",
+  "Features.EditionView.download contents as markdown": "download contents as markdown",
+  "Features.EditionView.download contents as xml-tei": "download contents as xml-tei",
+  "Features.EditionView.explanation about xml-tei": "download this edition as an xml-tei file (work in progress: only materials and notes's contents blocks will be displayed)",
+  "Features.EditionView.explanation about markdown": "download this edition as a markdown file (work in progress: only materials and notes's contents blocks will be displayed)"
 }

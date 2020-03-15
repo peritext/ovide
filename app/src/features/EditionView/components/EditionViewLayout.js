@@ -15,10 +15,16 @@ import {
 /**
  * Imports Project utils
  */
-import { bundleEditionAsPrintPack } from '../../../helpers/bundlersUtils';
+import {
+  bundleEditionAsPrintPack,
+  bundleProjectAsHTML,
+  bundleProjectAsTEI,
+  bundleProjectAsMarkdown
+} from '../../../helpers/bundlersUtils';
 import { translateNameSpacer } from '../../../helpers/translateUtils';
 import { inElectron } from '../../../helpers/electronUtils';
 import { requestAssetData } from '../../../helpers/dataClient';
+import downloadFile from '../../../helpers/fileDownloader';
 
 import { templates, contextualizers, generators } from '../../../peritextConfig.render';
 
@@ -165,11 +171,14 @@ const EditionViewLayout = ( {
   };
 
   const handleExportChoice = ( id ) => {
+    const onRejection = ( error ) => {
+      console.error( error );/* eslint no-console: 0 */
+    };
     if ( id === 'print' ) {
       window.frames.preview.focus();
       window.frames.preview.print();
     }
- else if ( id === 'printPack' ) {
+    else if ( id === 'printPack' ) {
       bundleEditionAsPrintPack( {
         production,
         requestAssetData,
@@ -177,6 +186,39 @@ const EditionViewLayout = ( {
         lang,
         locale: renderingLocale,
       } );
+    }
+    else if ( id === 'html' ) {
+      bundleProjectAsHTML( {
+        production,
+        edition,
+        requestAssetData
+      } )
+      .then( ( bundle ) => {
+        downloadFile( bundle, 'html', edition.metadata.title );
+      } )
+      .catch( onRejection );
+    }
+    else if ( id === 'tei' ) {
+      bundleProjectAsTEI( {
+        production,
+        edition,
+        requestAssetData
+      } )
+      .then( ( bundle ) => {
+        downloadFile( bundle, 'xml', edition.metadata.title );
+      } )
+      .catch( onRejection );
+    }
+    else if ( id === 'markdown' ) {
+      bundleProjectAsMarkdown( {
+        production,
+        edition,
+        requestAssetData
+      } )
+      .then( ( bundle ) => {
+        downloadFile( bundle, 'md', edition.metadata.title );
+      } )
+      .catch( onRejection );
     }
     else {
           downloadEdition( generators[id], renderingLocale );

@@ -20,7 +20,9 @@ import {
   buildCitations,
   getContextualizationsFromEdition,
   preprocessEditionData,
+  buildResourceSectionsSummary,
 } from 'peritext-utils';
+import { getResourceTitle } from './resourcesUtils';
 
 import { templates, contextualizers as contextualizerModules } from '../peritextConfig.render';
 import defaultCitationStyle from 'raw-loader!../sharedAssets/bibAssets/apa.csl';
@@ -35,6 +37,229 @@ import previewStyleData from '!!raw-loader!../components/PagedPreviewer/previewS
 const turn = new TurndownService();
 
 /**
+ * =====================
+ * PRIVATE UTILS
+ * =====================
+ */
+
+/**
+ * Gets a static summary of representable contents
+ * from an edition or a production default summary
+ * @param {*} params
+ * @return {array} list of {resourceId, level}
+ */
+const getStaticSummary = ( { production, edition } ) => {
+  if ( edition && edition.data && edition.data.plan && edition.data.plan.summary ) {
+    return edition.data.plan.summary.reduce( ( res, element ) => {
+      const {
+        data = {}
+      } = element;
+      switch ( element.type ) {
+
+        /**
+         * Todo unhandled blocks:
+          * case 'customPage':
+          * case 'glossary':
+          * case 'references':
+          */
+        case 'sections':
+        case 'resourceSections':
+          const { customSummary = { active: false } } = data;
+          if ( customSummary.active ) {
+            const { summary: thatCustomSummary } = customSummary;
+            return [
+              ...res,
+              ...thatCustomSummary
+            ];
+          }
+          else if ( element.type === 'resourceSections' ) {
+            return [
+              ...res,
+              ...buildResourceSectionsSummary( { production, option: data } )
+            ];
+          }
+          return [
+            ...res,
+            ...production.sectionsOrder
+          ];
+
+        default:
+          return res;
+      }
+    }, [] );
+  }
+  return production.sectionsOrder;
+};
+
+const loadAllAssets = ( {
+  production = {},
+  requestAssetData,
+} ) => {
+  return new Promise( ( resolveGlobal, rejectGlobal ) => {
+      const finalAssets = {};
+
+      const {
+         assets = {},
+
+        /*
+         * contextualizations,
+         * resources,
+         */
+        id: productionId,
+      } = production;
+
+      // for each asset get asset data if necessary
+      Object.keys( assets ).map( ( assetId ) => assets[assetId] )
+      .reduce( ( cur, asset ) => {
+        return cur.then( () => {
+          return new Promise( ( resolve, reject ) => {
+            requestAssetData( { productionId, asset } )
+              .then( ( data ) => {
+                finalAssets[asset.id] = {
+                  ...asset,
+                  data
+                };
+                return resolve();
+              } )
+              .catch( reject );
+          } );
+        } );
+      }, Promise.resolve() )
+      .then( () => {
+        resolveGlobal( finalAssets );
+      } )
+      .catch( rejectGlobal );
+  } );
+};
+
+class ContextProvider extends Component {
+
+  static childContextTypes = {
+    renderingMode: PropTypes.string,
+    preprocessedContextualizations: PropTypes.object,
+  }
+
+  getChildContext = () => ( {
+    renderingMode: this.props.renderingMode,
+    preprocessedContextualizations: this.props.preprocessedContextualizations,
+  } )
+  render = () => {
+    return this.props.children;
+  }
+}
+
+const getPreprocessedContextualizations = ( {
+  production,
+  // edition,
+  assets,
+  contextualizations
+} ) => {
+
+  return contextualizations.reduce( ( cur, { contextualization, contextualizer } ) =>
+  cur.then( ( result ) => {
+    return new Promise( ( resolve, reject ) => {
+
+      if ( contextualization && contextualizer ) {
+        const thatModule = contextualizerModules[contextualizer.type];
+        if ( thatModule && thatModule.meta && thatModule.meta.asyncPrerender ) {
+          const resource = production.resources[contextualization.sourceId];
+          thatModule.meta.asyncPrerender( {
+            resource,
+            contextualization,
+            contextualizer,
+            productionAssets: assets,
+          } )
+          .then( ( data ) => {
+            resolve( {
+              ...result,
+              [contextualization.id]: data
+            } );
+          } )
+          .catch( reject );
+        }
+        else resolve( result );
+      }
+      else resolve( result );
+    } );
+  } )
+  , Promise.resolve( {} ) );
+};
+
+class SectionRenderer extends Component {
+  static childContextTypes = {
+    renderingMode: PropTypes.string,
+    productionAssets: PropTypes.object,
+    contextualizers: PropTypes.object,
+    production: PropTypes.object,
+    notes: PropTypes.object,
+  }
+  getChildContext = () => ( {
+    renderingMode: 'paged',
+    productionAssets: this.props.production.assets,
+    contextualizers: contextualizerModules,
+    production: this.props.production,
+    notes: this.props.section.data.contents.notes,
+  } )
+
+  render = () => {
+    const {
+      props: {
+        section,
+        level = 0
+        // production
+      }
+    } = this;
+    const TitleTag = `h${level + 2}`;
+    return (
+      <div id={ `section-${section.id}` } className={`section is-level-${level}`}>
+        <TitleTag>
+          {getResourceTitle( section )}
+        </TitleTag>
+        <div>
+          <Renderer
+            raw={ section.data.contents.contents }
+            notesPosition={ 'sidenotes' }
+            containerId={ '' }
+          />
+        </div>
+        {section.data.contents.notesOrder.length > 0 &&
+          <div>
+            <h3>
+              Notes
+            </h3>
+            <ol>
+              {
+                section.data.contents.notesOrder.map( ( id ) => {
+                  const note = section.data.contents.notes[id];
+                  return (
+                    <li
+                      id={ `note-content-${id}` }
+                      key={ id }
+                    >
+                      <Renderer
+                        raw={ note.contents }
+                        notesPosition={ 'footnotes' }
+                        containerId={ '' }
+                      />
+                    </li>
+                  );
+                } )
+              }
+            </ol>
+          </div>
+        }
+      </div>
+    );
+  }
+}
+
+/**
+ * ======================
+ * PUBLIC VARIOUS UTILS
+ * ======================
+ */
+
+/**
  * Prepares a production data for a clean version to export
  * @param {object} production - the input data to clean
  * @return {object} newProduction - the cleaned production
@@ -43,13 +268,18 @@ export const cleanProductionForExport = ( production ) => {
   return production;
 };
 
-export const buildTEIMetadata = ( production = { metadata: {} } ) => {
+export const buildTEIMetadata = ( production = { metadata: {} }, edition ) => {
   const { metadata } = production;
+  let editionMetadata;
+  if ( edition && edition.metadata ) {
+    editionMetadata = edition.metadata;
+  }
   return {
     fileDesc: {
       titleStmt: {
-        title: metadata.title,
-        author: metadata.authors.map( ( author ) => ( {
+        title: editionMetadata && editionMetadata.title.length ? editionMetadata.title : metadata.title,
+        author: ( editionMetadata && editionMetadata.authors.length ? editionMetadata : metadata )
+        .authors.map( ( author ) => ( {
           name: `${author.given } ${ author.family}`,
           affiliation: author.affiliation,
           roleName: {
@@ -64,22 +294,30 @@ export const buildTEIMetadata = ( production = { metadata: {} } ) => {
   };
 };
 
-export const buildHTMLMetadata = ( production = { metadata: {} } ) => {
-  const title = production.metadata.title ? `
-    <title>${production.metadata.title}</title>
-    <meta name="DC.Title" content="${production.metadata.title}"/>
-    <meta name="twitter:title" content="${production.metadata.title}" />
-    <meta name="og:title" content="${production.metadata.title}" />
+export const buildHTMLMetadata = ( production = { metadata: {} }, edition ) => {
+  let metadata = production.metadata;
+  if ( edition ) {
+    metadata = edition.metadata;
+  }
+  let authors = production.metadata.authors;
+  if ( edition && edition.metadata && edition.metadata.authors && edition.metadata.authors.length ) {
+    authors = edition.metadata.authors;
+  }
+  const title = metadata.title ? `
+    <title>${metadata.title}</title>
+    <meta name="DC.Title" content="${metadata.title}"/>
+    <meta name="twitter:title" content="${metadata.title}" />
+    <meta name="og:title" content="${metadata.title}" />
   ` : '<title>Quinoa production</title>';
-  const description = production.metadata.abstract ? `
-    <meta name="description" content="${production.metadata.abstract}"/>
-    <meta name="DC.Description" content="${production.metadata.abstract}"/>
-    <meta name="og:description" content="${production.metadata.abstract}" />
-    <meta name="twitter:description" content="${production.metadata.abstract}" />
+  const description = metadata.abstract ? `
+    <meta name="description" content="${metadata.abstract || metadata.description}"/>
+    <meta name="DC.Description" content="${metadata.abstract || metadata.description}"/>
+    <meta name="og:description" content="${metadata.abstract || metadata.description}" />
+    <meta name="twitter:description" content="${metadata.abstract}" />
   ` : '';
-  const authors = production.metadata.authors && production.metadata.authors.length
+  authors = authors && authors.length
                   ?
-                  production.metadata.authors.map( ( author ) => `
+                  authors.map( ( author ) => `
                     <meta name="DC.Creator" content="${`${author.given } ${ author.family}`}" />
                     <meta name="author" content="${`${author.given } ${ author.family}`}" />` )
                   : '';
@@ -157,106 +395,6 @@ export const loadAssetsForEdition = ( {
         resolveGlobal( finalAssets );
       } )
       .catch( rejectGlobal );
-  } );
-};
-
-const loadAllAssets = ( {
-  production = {},
-  requestAssetData,
-} ) => {
-  return new Promise( ( resolveGlobal, rejectGlobal ) => {
-      const finalAssets = {};
-
-      const {
-         assets = {},
-
-        /*
-         * contextualizations,
-         * resources,
-         */
-        id: productionId,
-      } = production;
-
-      // for each asset get asset data if necessary
-      Object.keys( assets ).map( ( assetId ) => assets[assetId] )
-      .reduce( ( cur, asset ) => {
-        return cur.then( () => {
-          return new Promise( ( resolve, reject ) => {
-            requestAssetData( { productionId, asset } )
-              .then( ( data ) => {
-                finalAssets[asset.id] = {
-                  ...asset,
-                  data
-                };
-                return resolve();
-              } )
-              .catch( reject );
-          } );
-        } );
-      }, Promise.resolve() )
-      .then( () => {
-        resolveGlobal( finalAssets );
-      } )
-      .catch( rejectGlobal );
-  } );
-};
-
-/**
- * Cleans and serializes a production representation
- * @param {object} production - the production to bundle
- * @return {string} result - the resulting serialized production
- */
-export const bundleProjectAsJSON = ( { production, requestAssetData } ) => {
-  return new Promise( ( resolve, reject ) => {
-    loadAllAssets( {
-      production,
-      requestAssetData
-    } )
-    .then( ( assets ) => {
-      const assetsProduction = {
-        ...production,
-        assets
-      };
-      resolve( assetsProduction );
-    } )
-    .catch( reject );
-  } );
-};
-
-/**
- * Cleans and serializes a production representation
- * @param {object} production - the production to bundle
- * @return {string} result - the resulting serialized production
- */
-export const bundleProjectAsZIP = ( { production, requestAssetData } ) => {
-  const zip = new JSZip();
-  return new Promise( ( resolve, reject ) => {
-    loadAllAssets( {
-      production,
-      requestAssetData
-    } )
-    .then( ( assets ) => {
-      zip.file( 'production.json', stringify( production, { space: '  ' } ) );
-      const assetsContainer = zip.folder( 'assets' );
-      Object.keys( assets ).forEach( ( assetId ) => {
-        const asset = assets[assetId];
-        const { data, mimetype, filename } = asset;
-        if ( [ 'image/jpeg', 'image/jpg', 'image/png' ].includes( mimetype ) ) {
-          const assetContainer = assetsContainer.folder( `${assetId}` );
-          assetContainer.file( filename, data.split( ',' )[1], { base64: true } );
-        }
-        // case table
-        else {
-          const assetContainer = assetsContainer.folder( `${assetId}` );
-          assetContainer.file( `${assetId}.json`, JSON.stringify( data ) );
-        }
-      } );
-      zip.generateAsync( { type: 'blob' } ).then( function( content ) {
-          // see FileSaver.js
-          saveAs( content, `${production.metadata.title || 'peritext' }.zip` );
-      } );
-    } )
-    .catch( reject );
   } );
 };
 
@@ -342,83 +480,86 @@ export const parseImportedFile = ( file ) => new Promise( ( resolve, reject ) =>
   }
 } );
 
-class SectionRenderer extends Component {
-  static childContextTypes = {
-    renderingMode: PropTypes.string,
-    productionAssets: PropTypes.object,
-    contextualizers: PropTypes.object,
-    production: PropTypes.object,
-    notes: PropTypes.object,
-  }
-  getChildContext = () => ( {
-    renderingMode: 'paged',
-    productionAssets: this.props.production.assets,
-    contextualizers: contextualizerModules,
-    production: this.props.production,
-    notes: this.props.section.data.contents.notes,
-  } )
-
-  render = () => {
-    const {
-      props: {
-        section,
-        // production
-      }
-    } = this;
-    return (
-      <div id={ `section-${section.id}` }>
-        <div>
-          <Renderer
-            raw={ section.data.contents.contents }
-            notesPosition={ 'sidenotes' }
-            containerId={ '' }
-          />
-        </div>
-        {section.data.contents.notesOrder.length > 0 &&
-          <div>
-            <h3>
-              Notes
-            </h3>
-            <ol>
-              {
-                section.data.contents.notesOrder.map( ( id ) => {
-                  const note = section.data.contents.notes[id];
-                  return (
-                    <li
-                      id={ `note-content-${id}` }
-                      key={ id }
-                    >
-                      <Renderer
-                        raw={ note.contents }
-                        notesPosition={ 'footnotes' }
-                        containerId={ '' }
-                      />
-                    </li>
-                  );
-                } )
-              }
-            </ol>
-          </div>
-        }
-      </div>
-    );
-  }
-}
+/**
+ * ======================
+ * PUBLIC BUNDLERS
+ * ======================
+ */
 
 /**
- * Cleans and serializes a production representation to HTML
+ * Cleans and serializes a production representation
+ * @param {object} production - the production to bundle
+ * @return {string} result - the resulting serialized production
+ */
+export const bundleProjectAsJSON = ( { production, requestAssetData } ) => {
+  return new Promise( ( resolve, reject ) => {
+    loadAllAssets( {
+      production,
+      requestAssetData
+    } )
+    .then( ( assets ) => {
+      const assetsProduction = {
+        ...production,
+        assets
+      };
+      resolve( assetsProduction );
+    } )
+    .catch( reject );
+  } );
+};
+
+/**
+ * Cleans and serializes a production representation
+ * @param {object} production - the production to bundle
+ * @return {string} result - the resulting serialized production
+ */
+export const bundleProjectAsZIP = ( { production, requestAssetData } ) => {
+  const zip = new JSZip();
+  return new Promise( ( resolve, reject ) => {
+    loadAllAssets( {
+      production,
+      requestAssetData
+    } )
+    .then( ( assets ) => {
+      zip.file( 'production.json', stringify( production, { space: '  ' } ) );
+      const assetsContainer = zip.folder( 'assets' );
+      Object.keys( assets ).forEach( ( assetId ) => {
+        const asset = assets[assetId];
+        const { data, mimetype, filename } = asset;
+        if ( [ 'image/jpeg', 'image/jpg', 'image/png' ].includes( mimetype ) ) {
+          const assetContainer = assetsContainer.folder( `${assetId}` );
+          assetContainer.file( filename, data.split( ',' )[1], { base64: true } );
+        }
+        // case table
+        else {
+          const assetContainer = assetsContainer.folder( `${assetId}` );
+          assetContainer.file( `${assetId}.json`, JSON.stringify( data ) );
+        }
+      } );
+      zip.generateAsync( { type: 'blob' } ).then( function( content ) {
+          // see FileSaver.js
+          saveAs( content, `${production.metadata.title || 'peritext' }.zip` );
+      } );
+    } )
+    .catch( reject );
+  } );
+};
+
+/**
+ * Cleans and serializes a production or edition representation to HTML
  * @param {object} production - the production to bundle
  * @return {string} result - the resulting HTML production
  */
-export const bundleProjectAsHTML = ( { production, requestAssetData } ) => {
+export const bundleProjectAsHTML = ( { production, edition, requestAssetData } ) => {
   return new Promise( ( resolve, reject ) => {
     bundleProjectAsJSON( { production, requestAssetData } )
       .then( ( productionJSON ) => {
-        const headContent = buildHTMLMetadata( productionJSON );
-        const citations = buildCitations( { production: productionJSON } );
+        const headContent = buildHTMLMetadata( productionJSON, edition );
+        const citations = buildCitations( { production: productionJSON, edition } );
 
         const contents = renderToStaticMarkup(
-          production.sectionsOrder.map( ( { resourceId } ) => {
+          getStaticSummary( { production, edition } )
+          .map( ( { resourceId, level } ) => {
             return (
               <ReferencesManager
                 key={ resourceId }
@@ -430,11 +571,13 @@ export const bundleProjectAsHTML = ( { production, requestAssetData } ) => {
                 <SectionRenderer
                   production={ productionJSON }
                   section={ productionJSON.resources[resourceId] }
+                  level={level}
                 />
               </ReferencesManager>
             );
          } )
         );
+
         resolve( `<!DOCTYPE html>
 <html>
   <head>
@@ -449,9 +592,12 @@ export const bundleProjectAsHTML = ( { production, requestAssetData } ) => {
   } );
 };
 
-export const bundleProjectAsMarkdown = ( { production, requestAssetData } ) => {
+/*
+ * Bundles a selection as a markdown file
+ */
+export const bundleProjectAsMarkdown = ( { production, requestAssetData }, edition ) => {
   return new Promise( ( resolve, reject ) => {
-    bundleProjectAsHTML( { production, requestAssetData } )
+    bundleProjectAsHTML( { production, requestAssetData }, edition )
       .then( ( productionHTML ) => {
         const markdown = turn.turndown( productionHTML );
         resolve( markdown );
@@ -469,9 +615,9 @@ export const bundleProjectAsMarkdown = ( { production, requestAssetData } ) => {
  * - check that contextualizations are rendered properly
  * - add feedback in UI (this one can be long)
  */
-export const bundleProjectAsTEI = ( { production, requestAssetData } ) => {
+export const bundleProjectAsTEI = ( { production, requestAssetData, edition } ) => {
   return new Promise( ( resolve, reject ) => {
-    bundleProjectAsJSON( { production, requestAssetData } )
+    bundleProjectAsJSON( { production, requestAssetData, edition } )
       .then( ( productionJSON ) => {
         const citations = buildCitations( { production: productionJSON } );
         const js = {
@@ -487,7 +633,7 @@ export const bundleProjectAsTEI = ( { production, requestAssetData } ) => {
                 'xmlns': 'http://www.tei-c.org/ns/1.0',
                 'xmlns:rng': 'http://relaxng.org/ns/structure/1.0'
               },
-              teiHeader: buildTEIMetadata( production ),
+              teiHeader: buildTEIMetadata( production, edition ),
               text: {
                 front: {
                   div: {
@@ -499,7 +645,8 @@ export const bundleProjectAsTEI = ( { production, requestAssetData } ) => {
                   }
                 },
                 body: {
-                  div: productionJSON.sectionsOrder.map( ( { resourceId } ) => {
+                  div: getStaticSummary( { production: productionJSON, edition } )
+                  .map( ( { resourceId } ) => {
                     const section = productionJSON.resources[resourceId];
                     const contents = renderToStaticMarkup(
                       <ReferencesManager
@@ -538,63 +685,10 @@ export const bundleProjectAsTEI = ( { production, requestAssetData } ) => {
 
 };
 
-const getPreprocessedContextualizations = ( {
-  production,
-  // edition,
-  assets,
-  contextualizations
-} ) => {
-
-  return contextualizations.reduce( ( cur, { contextualization, contextualizer } ) =>
-  cur.then( ( result ) => {
-    return new Promise( ( resolve, reject ) => {
-
-      if ( contextualization && contextualizer ) {
-        const thatModule = contextualizerModules[contextualizer.type];
-        if ( thatModule && thatModule.meta && thatModule.meta.asyncPrerender ) {
-          const resource = production.resources[contextualization.sourceId];
-          thatModule.meta.asyncPrerender( {
-            resource,
-            contextualization,
-            contextualizer,
-            productionAssets: assets,
-          } )
-          .then( ( data ) => {
-            resolve( {
-              ...result,
-              [contextualization.id]: data
-            } );
-          } )
-          .catch( reject );
-        }
-        else resolve( result );
-      }
-      else resolve( result );
-    } );
-  } )
-  , Promise.resolve( {} ) );
-};
-
-class ContextProvider extends Component {
-
-  static childContextTypes = {
-    renderingMode: PropTypes.string,
-    preprocessedContextualizations: PropTypes.object,
-  }
-
-  getChildContext = () => ( {
-    renderingMode: this.props.renderingMode,
-    preprocessedContextualizations: this.props.preprocessedContextualizations,
-  } )
-  render = () => {
-    return this.props.children;
-  }
-}
-
 /**
- * Cleans and serializes a production representation
- * @param {object} production - the production to bundle
- * @return {string} result - the resulting serialized production
+ * Exports a printable static website
+ * @param {object} params - necessary data for the export
+ * @return {null}n
  */
 export const bundleEditionAsPrintPack = ( {
   production,
@@ -679,7 +773,6 @@ export const bundleEditionAsPrintPack = ( {
           htmlContent = htmlContent.slice( 0, match.index ) + htmlContent.slice( match.index + match[0].length );
           match.index = -1;
       }
-      console.log( { htmlContent, additionalStyles } );
       const finalHtml = `
 <html>
   <head>

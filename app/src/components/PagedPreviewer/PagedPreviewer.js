@@ -43,6 +43,7 @@ class PreviewWrapper extends Component {
         this.setState( {
           pagedScript: data,
         } );
+        setTimeout( () => this.injectRenderer( this.frameDocument, this.props.additionalHTML ), 500 );
       } );
   }
 
