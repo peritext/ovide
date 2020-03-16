@@ -15,7 +15,14 @@ const templateId = "${templateId}";
  * Handles the rendering of a peritext single page html
  * @param {object} production - the production to render
  */
-const renderProduction = function (production, editionId, preprocessedData, locale, useBrowserRouter) {
+const renderProduction = function (
+  production, 
+  editionId, 
+  preprocessedData, 
+  locale, 
+  useBrowserRouter,
+  excludeCss
+) {
 
   // console.log('render', production, editionId, locale, useBrowserRouter);
   // console.log('config', peritextConfig);
@@ -38,6 +45,7 @@ const renderProduction = function (production, editionId, preprocessedData, loca
       usedDocument: document,
       useBrowserRouter: useBrowserRouter,
       preprocessedData: preprocessedData,
+      excludeCss: excludeCss
     }, null), mountNode, function(){
       console.log('done hydrating')
       setTimeout(() => {

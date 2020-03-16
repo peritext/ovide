@@ -285,7 +285,7 @@ class EditionViewContainer extends Component {
     const { id: generatorId } = generator;
     const translate = translateNameSpacer( t, 'Features.EditionView' );
 
-    if ( inElectron && generatorId !== 'single-page-html' && generatorId !== 'multi-page-html' ) {
+    if ( inElectron && generatorId !== 'single-page-html' ) {
        electron.remote.dialog.showSaveDialog( {
          properties: [ 'createDirectory' ],
          title: 'Download edition',
@@ -293,6 +293,7 @@ class EditionViewContainer extends Component {
        }, ( outputPath ) => {
          setTimeout( () => {
           toastr.info( translate( 'Bundling the edition for download' ), translate( 'You will be notified when your file is ready.' ) );
+          console.info( 'locale', locale );
           requestEditionDownload( {
             production,
             edition,

@@ -21,6 +21,7 @@ import {
   getContextualizationsFromEdition,
   preprocessEditionData,
   buildResourceSectionsSummary,
+  resolveEditionCss,
 } from 'peritext-utils';
 import { getResourceTitle } from './resourcesUtils';
 
@@ -897,11 +898,24 @@ const renderHTML = ( {
   allowAnnotation,
   editionId,
   urlPrefix,
-} ) => `<!DOCTYPE html>
+} ) => {
+  const additionalMeta = `
+      <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@1"></script>
+      <link rel="stylesheet" href="${urlPrefix}/styles.css"></link>
+      ${allowAnnotation ? '<script src="https://hypothes.is/embed.js" async></script>' : ''}
+  `;
+  const finalHead = head.replace( /<\/head>$/, `${additionalMeta.trim()}</head>` );
+  let baseName = '';
+  if ( urlPrefix && urlPrefix.length ) {
+    const withoutProtocol = urlPrefix.replace( /^https?:\/\//, '' );
+    const parts = withoutProtocol.split( '/' );
+    const withoutDomain = parts.length > 1 ? parts.slice( 1 ).join( '/' ) : parts[0];
+    baseName = `/${withoutDomain}${withoutDomain.charAt( withoutDomain.length - 1 ) === '/' ? '' : '/'}`;
+  }
+  return `<!DOCTYPE html>
 <html>
   <head>
-    ${head}
-    <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@1"></script>
+    ${finalHead}
   </head>
   <body>
     
@@ -909,7 +923,6 @@ const renderHTML = ( {
     <div id="static">
       ${htmlContent}
     </div>
-${allowAnnotation ? '<script src="https://hypothes.is/embed.js" async></script>' : ''}
 
     <script src="${urlPrefix}/bundle.js" type="text/javascript"></script>
     <style>
@@ -918,6 +931,9 @@ ${loaderCss}
     <script>
           var __useBrowserRouter = ${singlePage ? 'false' : 'true'};
           var __editionId = "${editionId}";
+          window.__urlBaseName = "${
+            baseName
+          }";
           /**
            * LIB
            */
@@ -957,7 +973,7 @@ ${loaderCss}
         loadJSON('${urlPrefix}/locale.json', locale => {
           loadJSON('${urlPrefix}/preprocessedData.json', preprocessedData => {
               loadJSON('${urlPrefix}/production.json', production => {
-                renderEdition(production, __editionId, preprocessedData, locale, __useBrowserRouter);
+                renderEdition(production, __editionId, preprocessedData, locale, __useBrowserRouter, true);
                 hideLoader();
               }) 
           })
@@ -966,6 +982,7 @@ ${loaderCss}
   </body>
 </html>
     `.trim();
+};
 
 export const downloadProjectAsWebsite = ( {
   edition,
@@ -1058,13 +1075,16 @@ export const downloadProjectAsWebsite = ( {
             edition={ edition }
             locale={ locale }
             contextualizers={ contextualizerModules }
+            preprocessedData={ preprocessedData }
+            previewMode
+            excludeCss
+            staticRender
           />
         );
       }
       catch ( e ) {
         console.error( 'e', e );/* eslint no-console : 0 */
       }
-
       const head = renderToStaticMarkup(
         utils.renderHeadFromRouteItem( { production, edition, item: nav[0] } )
         );
@@ -1097,6 +1117,10 @@ export const downloadProjectAsWebsite = ( {
                   edition={ edition }
                   locale={ locale }
                   contextualizers={ contextualizerModules }
+                  excludeCss
+                  preprocessedData={ preprocessedData }
+                  previewMode
+                  staticRender
                 />
               </StaticRouter>
             );
@@ -1125,7 +1149,14 @@ export const downloadProjectAsWebsite = ( {
           zip.file( `${route.split( '?' )[0]}/index.html`, html );
       } );
     }
+    const templateStyle = template.css;
+    const css = resolveEditionCss( {
+      edition,
+      templateStyle,
+      contextualizerModules
+    } );
 
+    zip.file( 'styles.css', css );
     zip.file( 'bundle.js', bundleData );
     zip.file( 'production.json', JSON.stringify( production ) );
     zip.file( 'preprocessedData.json', JSON.stringify( preprocessedData ) );

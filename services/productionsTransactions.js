@@ -41,9 +41,16 @@ const getProductions = () => {
                   return rejectThat( [] );
                 }
               } )
-              .then( ( str ) => {
+              .then( ( input ) => {
+                let thatData;
                 try {
-                  return resolveThat( [ dirName, JSON.parse( str ) ] );
+                  if ( typeof input === 'string' ) {
+                    thatData = JSON.parse( input.trim() );
+                  }
+ else {
+                    thatData = input;
+                  }
+                  return resolveThat( [ dirName, thatData ] );
                 }
                 catch ( error ) {
                   console.error( error );
