@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { setLanguage } from 'redux-i18n';
+import { translateNameSpacer } from '../../helpers/translateUtils';
 
 import {
   Button,
@@ -73,10 +74,14 @@ class LanguageToggler extends Component {
      */
     const {
       lang,
+      isExpanded,
       actions: {
         setLanguage: doSetLanguage
       }
     } = this.props;
+    const {
+      t
+    } = this.context;
 
     /**
      * Computed variables
@@ -90,13 +95,16 @@ class LanguageToggler extends Component {
       doSetLanguage( otherLang );
     };
 
+    const translate = translateNameSpacer( t, 'Components.LanguageToggler' );
+
     return (
       <Button
         onClick={ handleClick }
         className={ 'button' }
+        isFullwidth={ isExpanded }
       >
-        {lang}
-        <span style={ { opacity: 0.5 } }>/{otherLang}</span>
+        {isExpanded ? translate( lang ) : lang}
+        <span style={ { opacity: 0.5 } }>/{isExpanded ? translate( otherLang ) : otherLang}</span>
       </Button>
     );
   }

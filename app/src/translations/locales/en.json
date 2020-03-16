@@ -501,7 +501,7 @@
   "Features.EditionView.references": "references",
   "Features.EditionView.replace styles": "replace styles",
   "Components.SummaryEditor.resourcesMap": "mentions network",
-  "Components.SummaryEditor.sections": "notes",
+  "Components.SummaryEditor.sections": "chapters",
   "Features.EditionView.show edition settings pannels": "show edition settings pannels",
   "Features.EditionView.tableOfContents": "table of contents",
   "Components.SummaryEditor.tableOfContents": "table of contents",
@@ -1170,5 +1170,8 @@
   "Features.EditionView.explanation about xml-tei": "download this edition as an xml-tei file (work in progress: only materials and notes's contents blocks will be displayed)",
   "Features.EditionView.explanation about markdown": "download this edition as a markdown file (work in progress: only materials and notes's contents blocks will be displayed)",
   "Features.EditionView.Website prefix": "Published website URL",
-  "Features.EditionView.Explanation about website prefix": "Write here the URL of your target website URL (e.g. : 'https://user.github.io/project/') or keep it empty to test your publication locally"
+  "Components.LanguageToggler.fr": "français",
+  "Components.LanguageToggler.en": "english",
+  "Features.EditionView.Explanation about website prefix": "Write here the URL of your target website URL (e.g. : 'https://user.github.io/project/') or keep it empty to test your publication locally. It will be used to populate the website's metadata, correctly access resources (images, ...) and properly handle the addresses of the pages.",
+  "Features.HomeView.You can use this web version to get to know the tool (your data will be stored in the browser's local storage), but please use the desktop version for real/extended use, with better performance and more permanent file-based data storage.": "You can use this web version to get to know the tool (your data will be stored in the browser's local storage), but please use the desktop version for real/extended use, with better performance and more permanent file-based data storage."
 }

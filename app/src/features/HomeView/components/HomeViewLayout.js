@@ -337,12 +337,19 @@ class HomeViewLayout extends Component {
                     } )
                   } }
                 />
+                {
+                  !inElectron &&
+                  <p className={ 'content' }>
+                    {this.translate( 'You can use this web version to get to know the tool (your data will be stored in the browser\'s local storage), but please use the desktop version for real/extended use, with better performance and more permanent file-based data storage.' )}
+                  </p>
+                }
+
               </div>
               <div
                 style={ { paddingLeft: '4rem' } }
                 className={ 'column' }
               >
-                <LanguageToggler />
+                <LanguageToggler isExpanded />
               </div>
               <div
                 style={ { paddingLeft: '4rem' } }
