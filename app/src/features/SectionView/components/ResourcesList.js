@@ -37,7 +37,10 @@ class ResourceCardWrapper extends Component {
       tags
     } = this.props;
     return (
-      <Column key={ resource.id }>
+      <Column
+        key={ resource.id }
+        style={ { paddingBottom: 0, paddingTop: 0 } }
+      >
         <ResourceMiniCard
           resource={ resource }
           onDelete={ handleDelete }
@@ -117,7 +120,7 @@ export default @DragDropContext( HTML5Backend ) class ResourcesList extends Comp
           <List
             height={ height }
             rowCount={ resources.length }
-            rowHeight={ 170 }
+            rowHeight={ 135 }
             rowRenderer={ rowRenderer }
             width={ width }
             onRowsRendered={ handleRowsRendered }

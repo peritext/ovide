@@ -218,10 +218,12 @@ const SectionCard = ( {
               {
                 !showMoveUi &&
                 <Column isSize={ 6 }>
-                  <i>{computeSectionFirstWords( section )}</i>
+                  <p style={ { fontSize: '.8rem' } }>
+                    <i>{computeSectionFirstWords( section )}</i>
+                  </p>
                   {
                   section.lastUpdateAt &&
-                  <div style={ { paddingTop: '1rem', fontSize: '.6rem' } }>
+                  <div style={ { paddingTop: '.5rem', fontSize: '.6rem' } }>
                     <i>{translate( 'Last update:' )} {new Date( section.lastUpdateAt ).toLocaleString()}</i>
                   </div>
                 }
@@ -234,11 +236,18 @@ const SectionCard = ( {
               <Column
                 isOffset={ 1 }
                 isSize={ showMoveUi ? 7 : 6 }
+                style={ {
+
+                  /*
+                   * paddingTop: 0,
+                   * paddingBottom: 0
+                   */
+                } }
               >
                 <i>{computeSectionFirstWords( section )}</i>
                 {
                   section.lastUpdateAt &&
-                  <div style={ { paddingTop: '1rem', fontSize: '.6rem' } }>
+                  <div style={ { paddingTop: '.5rem', fontSize: '.6rem' } }>
                     <i>{translate( 'Last update:' )} {new Date( section.lastUpdateAt ).toLocaleString()}</i>
                   </div>
                 }
@@ -264,7 +273,10 @@ const SectionCard = ( {
                 </div>
               </Column>
               <Column
-                style={ { position: 'relative' } }
+                style={ {
+                  // paddingTop: 0,
+                  position: 'relative'
+                } }
                 isSize={ showMoveUi ? 2 : 6 }
               >
                 <MovePad

@@ -50,10 +50,11 @@ const SortableItem = SortableElement( ( {
     }
   };
   return (
-    <Level>
+    <Level style={ { paddingBottom: 0 } }>
       <Column
         isSize={ 12 - level }
         isOffset={ level }
+        style={ { paddingBottom: 0 } }
       >
         <SectionMiniCard
           section={ resource }
@@ -106,7 +107,7 @@ const SortableSectionsList = SortableContainer( ( {
         <List
           height={ height }
           rowCount={ items.length }
-          rowHeight={ 155 }
+          rowHeight={ 140 }
           rowRenderer={ rowRenderer }
           width={ width }
           onRowsRendered={ handleRowsRendered }

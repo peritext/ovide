@@ -234,7 +234,7 @@ class ResourceCard extends Component {
           bodyContent={
             <div onClick={ handleClick }>
               <Columns style={ {
-                minHeight: '4em',
+                minHeight: '2.5em',
                 maxHeight: '4em',
                 overflow: 'hidden',
                 marginBottom: 0,
@@ -242,6 +242,10 @@ class ResourceCard extends Component {
               >
                 <Column
                   isSize={ 2 }
+                  style={ {
+                    paddingTop: 0,
+                    paddingBottom: 0
+                  } }
                 >
                   <CenteredIcon
                     src={ icons[type] && icons[type].black.svg }
@@ -256,6 +260,16 @@ class ResourceCard extends Component {
                         className={ 'contents-indicator' }
                         data-for={ 'tooltip' }
                         data-tip={ translate( 'this resource is annotated with contents' ) }
+                        style={ {
+                          position: 'absolute',
+                          left: '1.5rem',
+                          top: '3rem',
+                          minWidth: '1rem',
+                          minHeight: '1rem',
+                          display: 'flex',
+                          flexFlow: 'column nowrap',
+                          alignItems: 'stretch'
+                        } }
                       >
                         ☰
                       </span>
@@ -265,15 +279,15 @@ class ResourceCard extends Component {
                     resourceTags && resourceTags.length ?
                       <div
                         style={ {
-                        position: 'absolute',
-                        left: '2rem',
-                        top: '6rem',
-                        minWidth: '1rem',
-                        minHeight: '1rem',
-                        display: 'flex',
-                        flexFlow: 'column nowrap',
-                        alignItems: 'stretch'
-                      } }
+                          position: 'absolute',
+                          left: '2rem',
+                          top: '6rem',
+                          minWidth: '1rem',
+                          minHeight: '1rem',
+                          display: 'flex',
+                          flexFlow: 'column nowrap',
+                          alignItems: 'stretch'
+                        } }
                       >
                         {
                         resourceTags.map( ( tag ) => (
@@ -304,6 +318,10 @@ class ResourceCard extends Component {
 
                 <Column
                   isSize={ 8 }
+                  style={ {
+                    paddingTop: '.2rem',
+                    paddingBottom: 0
+                  } }
                 >
                   <span
                     data-html
@@ -362,7 +380,7 @@ class ResourceCard extends Component {
                   <MovePad
                     style={ {
                       position: 'absolute',
-                      top: '-4rem',
+                      top: '-3rem',
                       right: '4rem',
                       pointerEvents: 'none'
                     } }

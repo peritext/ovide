@@ -171,6 +171,7 @@ const AsideEditionColumn = ( {
           isFlex={ 1 }
           isFlowing
           style={ {
+            overflowX: 'none'
             // paddingRight: '5rem',
           } }
         >

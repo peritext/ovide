@@ -75,7 +75,7 @@ const SectionMiniCard = ( {
       data-html
       data-tip={ `<div class="content"><h5 style="color: white">${title}</h5><p>${computeSectionFirstWords( section )}</p></div>` }
     >
-      {abbrevString( title || translate( 'Untitled section' ), 10 )}
+      {abbrevString( title || translate( 'Untitled section' ), 20 )}
     </span>
   );
   const sectionTags = ( section.metadata.tags || [] )
@@ -90,7 +90,13 @@ const SectionMiniCard = ( {
           onClick={ onSelect }
         >
           <Columns style={ { marginBottom: 0 } }>
-            <Column isSize={ 2 }>
+            <Column
+              isSize={ 2 }
+              style={ {
+                paddingTop: 0,
+                paddingBottom: 0
+              } }
+            >
               <CenteredIcon
                 src={ icons.section.black.svg }
                 isSize={ '32x32' }
@@ -128,8 +134,11 @@ const SectionMiniCard = ( {
               : null
             }
             <Column
-              style={ { paddingBottom: 0 } }
               isSize={ 8 }
+              style={ {
+                paddingTop: 0,
+                paddingBottom: 0
+              } }
             >
               {
                 history && !isActive ?
@@ -146,7 +155,7 @@ const SectionMiniCard = ( {
           </Columns>
           <Columns>
             <Column
-              style={ { paddingTop: 0 } }
+              style={ { marginTop: '.5rem' } }
               isOffset={ 2 }
               isSize={ 7 }
             >
@@ -183,7 +192,7 @@ const SectionMiniCard = ( {
                 <MovePad
                   style={ {
                     position: 'absolute',
-                        top: '-4rem',
+                        top: '-2.5rem',
                         right: '5rem',
                   } }
                   chevronsData={ {

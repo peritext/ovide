@@ -30,6 +30,7 @@ import {
   TabLink,
   Delete,
 } from 'quinoa-design-library/components';
+import icons from 'quinoa-design-library/src/themes/millet/icons';
 
 /**
  * Imports Project utils
@@ -57,6 +58,7 @@ import LibrarySectionsFilterBar from './LibrarySectionsFilterBar';
 import ConfirmToDeleteModal from '../../../components/ConfirmToDeleteModal';
 import ResourceForm from '../../../components/ResourceForm';
 import SectionForm from '../../../components/SectionForm';
+import CenteredIcon from '../../../components/CenteredIcon';
 import ResourceCard from './ResourceCard';
 import SortableSectionsList from './SortableSectionsList';
 
@@ -1072,7 +1074,7 @@ class LibraryViewLayout extends Component {
                   <StretchedLayoutItem
                     style={ { paddingRight: 0 } }
                   >
-                    <Column>
+                    <Column style={ { paddingTop: 0 } }>
                       <LibrarySectionsFilterBar
                         sectionsSortValue={ sectionsSortValue }
                         filterValues={ filterValues }
@@ -1156,7 +1158,7 @@ class LibraryViewLayout extends Component {
               return (
                 <StretchedLayoutContainer isAbsolute>
                   <StretchedLayoutItem style={ { paddingRight: 0 } }>
-                    <Column>
+                    <Column style={ { paddingTop: 0 } }>
                       <LibraryResourcesFilterBar
                         searchTagString={ searchTagString }
                         onCreateTagFromSearch={ handleCreateTagFromSearch }
@@ -1212,7 +1214,7 @@ class LibraryViewLayout extends Component {
         return (
           <StretchedLayoutContainer isAbsolute>
             <StretchedLayoutItem>
-              <Column style={ { paddingRight: 0, marginTop: '.5rem' } }>
+              <Column style={ { paddingRight: 0, marginTop: '.5rem', paddingBottom: 0 } }>
                 <Tabs
                   isBoxed
                   isFullWidth
@@ -1231,7 +1233,20 @@ class LibraryViewLayout extends Component {
                       isActive={ openTabId === 'sections' }
                     >
                       <TabLink>
-                        <Title isSize={ 5 }>{translate( 'Sections' )}</Title>
+                        <Title isSize={ 5 }>
+                          <span
+                            style={ {
+                              display: 'flex',
+                              alignItems: 'center'
+                            } }
+                          >
+                            <CenteredIcon
+                              src={ icons.section.black.svg }
+                              isSize={ '32x32' }
+                            />
+                            {translate( 'Sections' )}
+                          </span>
+                        </Title>
                       </TabLink>
                     </Tab>
                     <Tab
@@ -1246,7 +1261,29 @@ class LibraryViewLayout extends Component {
                       isActive={ openTabId === 'resources' }
                     >
                       <TabLink>
-                        <Title isSize={ 5 }>{translate( 'Other materials' )}</Title>
+                        <Title isSize={ 5 }>
+                          <span
+                            style={ {
+                                  display: 'flex',
+                                  alignItems: 'center'
+                                } }
+                          >
+                            {
+                            [/*'video', 'image', 'embed',*/ 'bib'/*, 'webpage', 'glossary'*/ ]
+                            .map( ( type ) => (
+
+                              <CenteredIcon
+                                src={ icons[type].black.svg }
+                                isSize={ '32x32' }
+                                key={ type }
+                              />
+
+                            ) )
+                          }
+                            {translate( 'Other materials' )}
+                          </span>
+
+                        </Title>
                       </TabLink>
                     </Tab>
                   </TabList>
@@ -1337,7 +1374,7 @@ class LibraryViewLayout extends Component {
             <Column>
               <Title
                 isSize={ 5 }
-                style={ { paddingTop: '.5rem' } }
+                style={ { paddingTop: '1.2rem' } }
               >
                 {translate( 'Production library' )}
               </Title>
@@ -1348,7 +1385,7 @@ class LibraryViewLayout extends Component {
                 </Content>
               </Level>
 
-              <Level>
+              <Level style={ { marginBottom: '.5rem' } }>
                 <Button
                   onClick={ handleOpenNewSection }
                   isFullWidth

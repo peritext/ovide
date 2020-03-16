@@ -176,7 +176,7 @@ class ResourceCard extends Component {
     return (
       <Column
         isSize={ cardSize }
-        style={ { cursor: 'pointer' } }
+        style={ { cursor: 'pointer', paddingBottom: 0 } }
       >
         <Card
           isSelectable={ isSelectable }

@@ -28,7 +28,8 @@ import { resourceHasContents } from 'peritext-utils';
  */
 import {
   abbrevString,
-  silentEvent
+  silentEvent,
+  computeSectionFirstWords,
 } from '../../../helpers/misc';
 import { translateNameSpacer } from '../../../helpers/translateUtils';
 import { requestAssetData } from '../../../helpers/dataClient';
@@ -175,6 +176,9 @@ class ResourceCard extends Component {
     return (
       <Column
         isSize={ cardSize }
+        style={ {
+          padding: '.5rem'
+        } }
       >
         <Card
           isSelectable={ isSelectable }
@@ -185,7 +189,13 @@ class ResourceCard extends Component {
               className={ 'ovide-ResourceCard' }
             >
               <Columns style={ { marginBottom: 0 } }>
-                <Column isSize={ 2 }>
+                <Column
+                  isSize={ 1 }
+                  style={ {
+                    paddingTop: 0,
+                    paddingBottom: 0,
+                  } }
+                >
                   <CenteredIcon
                     src={ icons[type] && icons[type].black.svg }
                     isSize={ '32x32' }
@@ -205,11 +215,16 @@ class ResourceCard extends Component {
                 </Column>
 
                 <Column
-                  style={ { transition: 'none' } }
-                  isSize={ 8 }
+                  isSize={ 9 }
+                  style={ {
+                    paddingTop: 0,
+                    paddingBottom: 0,
+                    position: 'relative',
+                    transition: 'none',
+                  } }
                 >
                   <Title
-                    style={ { paddingTop: '.5rem' } }
+                    style={ { paddingTop: '.5rem', marginBottom: 0 } }
                     isSize={ 6 }
                   >
                     <span>
@@ -251,8 +266,16 @@ class ResourceCard extends Component {
               </Columns>
               }
               {
+                resourceHasContents( resource ) ?
+                  <p style={ { fontSize: '.8rem', paddingLeft: '.5rem', marginBottom: 0 } }>
+                    <i>
+                      {computeSectionFirstWords( resource )}
+                    </i>
+                  </p> : null
+              }
+              {
                 resource.metadata.tags && resource.metadata.tags.length ?
-                  <div style={ { padding: '1rem', paddingBottom: '.5rem', paddingTop: '.5rem', paddingLeft: '4rem', fontSize: '.6rem' } }>
+                  <div style={ { padding: 0, fontSize: '.6rem' } }>
                     {
                     resource.metadata.tags.map( ( tagId ) => {
                       const tag = tags[tagId];
@@ -278,22 +301,35 @@ class ResourceCard extends Component {
                 null
               }
               {
-                numberOfMentions > 0 ?
-                  <div style={ { padding: '1rem', paddingBottom: '.5rem', paddingTop: '.5rem', paddingLeft: '4rem', fontSize: '.6rem' } }>
-                    <i>{translate( [ 'one mention in contents', '{n} mentions in contents', 'n' ], { n: numberOfMentions } )}</i>
-                  </div>
-                : null
-              }
-              {
-                resource.lastUpdateAt &&
-                <div style={ { padding: '1rem', paddingLeft: '4rem', fontSize: '.6rem' } }>
-                  <i>{translate( 'Last update:' )} {new Date( resource.lastUpdateAt ).toLocaleString()}</i>
+                ( numberOfMentions > 0 || resource.lastUpdateAt ) &&
+                <div
+                  style={ {
+                    padding: '.5rem',
+                    fontSize: '.6rem'
+                  } }
+                >
+                  {
+                    numberOfMentions > 0 ?
+                      <div>
+                        <i>{translate( [ 'one mention in contents', '{n} mentions in contents', 'n' ], { n: numberOfMentions } )}</i>
+                      </div>
+                    : null
+                  }
+                  {
+                    resource.lastUpdateAt &&
+                    <div>
+                      <i>{translate( 'Last update:' )} {new Date( resource.lastUpdateAt ).toLocaleString()}</i>
+                    </div>
+                  }
                 </div>
               }
+
               <Columns>
                 <Column
-                  isOffset={ 2 }
                   isSize={ 7 }
+                  style={ {
+                    paddingLeft: '1rem'
+                  } }
                 >
                   <Button
                     onClick={ onEdit }

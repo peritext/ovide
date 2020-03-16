@@ -8,6 +8,7 @@
  */
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Tooltip from 'react-tooltip';
 import { debounce } from 'lodash';
 import {
   Column,
@@ -192,6 +193,7 @@ class AsideSectionColumn extends Component {
       this.setResourceSearchString( '' );
       setResourceFilterValues( {} );
       setTagsFilterValues( {} );
+      setTimeout( () => Tooltip.rebuild() );
     };
     const handleSetAsideTabLibrary = () => {
       setAsideTabMode( 'library' );
@@ -199,6 +201,7 @@ class AsideSectionColumn extends Component {
       this.setResourceSearchString( '' );
       setResourceFilterValues( {} );
       setTagsFilterValues( {} );
+      setTimeout( () => Tooltip.rebuild() );
     };
     const handleToggleAsideTabCollapsed = () => setAsideTabCollapsed( !asideTabCollapsed );
 
