@@ -47,7 +47,7 @@ const getProductions = () => {
                   if ( typeof input === 'string' ) {
                     thatData = JSON.parse( input.trim() );
                   }
- else {
+                  else {
                     thatData = input;
                   }
                   return resolveThat( [ dirName, thatData ] );
