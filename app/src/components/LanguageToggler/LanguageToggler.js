@@ -100,8 +100,7 @@ class LanguageToggler extends Component {
     return (
       <Button
         onClick={ handleClick }
-        className={ 'button' }
-        isFullwidth={ isExpanded }
+        className={ `${isExpanded ? 'is-fullwidth' : ''}` }
       >
         {isExpanded ? translate( lang ) : lang}
         <span style={ { opacity: 0.5 } }>/{isExpanded ? translate( otherLang ) : otherLang}</span>

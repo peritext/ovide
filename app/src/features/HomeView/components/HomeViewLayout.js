@@ -325,6 +325,12 @@ class HomeViewLayout extends Component {
                 style={ { paddingLeft: '4rem' } }
                 className={ 'column' }
               >
+                <LanguageToggler isExpanded />
+              </div>
+              <div
+                style={ { paddingLeft: '4rem' } }
+                className={ 'column' }
+              >
                 <p className={ 'content' }>
                   {this.translate( 'Ovide is an experimental writing and publishing tool. It is made for context-intensive, distributed, scholarly publishing endeavours.' )}
                 </p>
@@ -345,18 +351,13 @@ class HomeViewLayout extends Component {
                 }
 
               </div>
-              <div
-                style={ { paddingLeft: '4rem' } }
-                className={ 'column' }
-              >
-                <LanguageToggler isExpanded />
-              </div>
+
               <div
                 style={ { paddingLeft: '4rem' } }
                 className={ 'column' }
               >
                 {( inElectron || !rgpdAgreementPrompted ) &&
-                  <Level>
+                  <Level style={ { marginBottom: '.5rem' } }>
                     <Button
                       isFullWidth
                       onClick={ handleToggleNewProductionOpened }
@@ -368,10 +369,11 @@ class HomeViewLayout extends Component {
                 }
 
                 {( inElectron || !rgpdAgreementPrompted ) &&
-                  <Level>
+                  <Level style={ { marginBottom: '.5rem' } }>
                     <Button
                       isFullWidth
                       onClick={ () => setExamplesOpen( true ) }
+                      isColor={ 'info' }
                     >
                       {this.translate( 'Load an example' )}
                     </Button>
@@ -499,26 +501,48 @@ class HomeViewLayout extends Component {
               {
               productionsList.length === 0 && !newProductionOpen &&
               <div style={ { marginTop: '2.5rem' } }>
-                <Title>
-                  <StretchedLayoutContainer isDirection={ 'horizontal' }>
-                    <StretchedLayoutItem isFlex={ 1 }>
+
+                <StretchedLayoutContainer isDirection={ 'vertical' }>
+                  <StretchedLayoutItem isFlex={ 1 }>
+                    <Title>
                       {this.translate( 'You have no productions yet' )}
-                    </StretchedLayoutItem>
-                    <StretchedLayoutItem>
-                      {( inElectron || !rgpdAgreementPrompted ) &&
-                      <Button
-                        isColor={ 'info' }
-                        onClick={ handleToggleNewProductionOpened }
+                    </Title>
+                  </StretchedLayoutItem>
+                  {( inElectron || !rgpdAgreementPrompted ) &&
+                  <StretchedLayoutItem style={ { marginTop: '1rem', padding: '1rem' } }>
+                    <StretchedLayoutContainer isDirection={ 'horizontal' }>
+                      <StretchedLayoutItem
+                        isFlex={ 1 }
                         style={ {
-                          marginLeft: '1rem'
+                          paddingRight: '1rem'
                         } }
                       >
-                        {this.translate( 'Create a first production' )}
-                      </Button>}
-                    </StretchedLayoutItem>
-                  </StretchedLayoutContainer>
-                </Title>
+                        <Button
+                          isColor={ 'primary' }
+                          onClick={ handleToggleNewProductionOpened }
+                          className={ 'is-fullwidth' }
 
+                        >
+                          {this.translate( 'Create a first production' )}
+                        </Button>
+                      </StretchedLayoutItem>
+                      <StretchedLayoutItem isFlex={ 1 }>
+                        <Button
+                          isColor={ 'info' }
+                          onClick={ () => setExamplesOpen( true ) }
+                          className={ 'is-fullwidth' }
+                          style={ {
+                              // marginLeft: '1rem'
+                            } }
+                        >
+                          {this.translate( 'Load an example' )}
+                        </Button>
+                      </StretchedLayoutItem>
+                    </StretchedLayoutContainer>
+
+                  </StretchedLayoutItem>
+                  }
+                </StretchedLayoutContainer>
               </div>
             }
 
@@ -552,7 +576,6 @@ class HomeViewLayout extends Component {
                           </Link>
                         </StretchedLayoutItem>
                       </StretchedLayoutContainer>
-
                     </Notification>
                   </Column>
                 }
