@@ -1103,15 +1103,6 @@ export const downloadProjectAsWebsite = ( {
         const { route, viewId, routeClass, routeParams } = navItem;
         const Comp = template.components.Edition;
         let htmlContent = '';
-        if ( typeof onFeedback === 'function' ) {
-          onFeedback( {
-            type: 'info',
-            message: 'render page',
-            payload: {
-              title: `${index + 1} / ${nav.length}`
-            }
-          } );
-        }
         try {
           htmlContent = renderToString(
             <StaticRouter
@@ -1159,7 +1150,17 @@ export const downloadProjectAsWebsite = ( {
           editionId: edition.id,
           urlPrefix,
         } );
-        zip.file( `${route.split( '?' )[0]}/index.html`, html );
+        const filePath = `${route.split( '?' )[0]}/index.html`.replace(/\/\//g, '/').replace(/^\//g, '');
+        if ( typeof onFeedback === 'function' ) {
+          onFeedback( {
+            type: 'info',
+            message: 'render page',
+            payload: {
+              title: `${index + 1} / ${nav.length}`
+            }
+          } );
+        }
+        zip.file( filePath, html );
       } );
     }
     const templateStyle = template.css;

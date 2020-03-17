@@ -213,10 +213,10 @@ class EditionViewContainer extends Component {
     const {
       message,
       type,
-      payload
+      payload = {},
     } = mes;
     const consoleType = type === 'success' ? 'info' : type;
-    console[consoleType]( message );
+    console[consoleType]( message, payload );/* eslint no-console : 0 */
     const translate = translateNameSpacer( this.context.t, 'Features.EditionView' );
 
     switch ( message.trim() ) {
@@ -227,9 +227,15 @@ class EditionViewContainer extends Component {
       case 'packing assets':
         toastr[type]( translate( 'loading assets' ), { timeOut: 1000 } );
         break;
-      case 'loading template':
-      toastr[type]( translate( 'loading template' ), { timeOut: 1000 } );
+      case 'render page':
+        toastr[type]( translate( 'render page {p}', { p: payload.title } ), { timeOut: 1000 } );
         break;
+      case 'loading template':
+        toastr[type]( translate( 'loading template' ), { timeOut: 1000 } );
+        break;
+        case 'error during html rendering':
+          toastr[type]( translate( 'error during html rendering' ), { timeOut: 1000 } );
+          break;
 
       /*
        * case 'packing assets':
@@ -285,47 +291,16 @@ class EditionViewContainer extends Component {
     const { id: generatorId } = generator;
     const translate = translateNameSpacer( t, 'Features.EditionView' );
 
-    if ( inElectron && generatorId !== 'single-page-html' ) {
-       electron.remote.dialog.showSaveDialog( {
-         properties: [ 'createDirectory' ],
-         title: 'Download edition',
-         defaultPath: `${production.metadata.title }.${ generator.outputFormat}`,
-       }, ( outputPath ) => {
-         setTimeout( () => {
-          toastr.info( translate( 'Bundling the edition for download' ), translate( 'You will be notified when your file is ready.' ) );
-          console.info( 'locale', locale );
-          requestEditionDownload( {
-            production,
-            edition,
-            locale,
-            outputPath,
-            generatorId,
-            onFeedback,
-            urlPrefix,
-          } )
-          .then( () => {
-            toastr.success( translate( 'The edition was downloaded successfully' ) );
-          } )
-          .catch( ( err ) => {
-            console.error( 'error during saving !', err );/* eslint no-console: 0 */
-            toastr.error( translate( 'An error occured during edition download' ) );
-          } );
-         } );
-
-      } );
-
-    }
-    else {
-        requestEditionDownload( {
-          production,
-          edition,
-          contextualizers,
-          locale,
-          generatorId,
-          onFeedback,
-          urlPrefix,
-        } );
-    }
+    toastr.info( translate( 'Bundling the edition for download' ), translate( 'You will be notified when your file is ready.' ) );
+    requestEditionDownload( {
+      production,
+      edition,
+      contextualizers,
+      locale,
+      generatorId,
+      onFeedback,
+      urlPrefix,
+    } );
   }
 
   render() {

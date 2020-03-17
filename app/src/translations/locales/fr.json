@@ -559,7 +559,7 @@
   "Features.HomeView.Do you allow Ovide to use your web browser local storage to store your work with this web version ?": "Autorisez-vous Ovide à utiliser le stockage local de votre navigateur pour sauvegarder votre travail pour cette version web ?",
   "Features.HomeView.Drop a ovide file": "Déposer un fichier .json ici (exporté précédemment depuis Ovide)",
   "Features.HomeView.Import an existing production": "Importer une production existante",
-  "Features.HomeView.It is built around the <a rel=\"noopener\" target=\"blank\" href=\"{peritextUrl}\">peritext ecosystem</a> and the <a rel=\"noopener\" target=\"blank\" href=\"{quinoaUrl}\">quinoa project</a>.": "Il est construit sur les épaules de <a rel=\"noopener\" target=\"blank\" href=\"{peritextUrl}\">l'écosystème peritext</a> et du <a rel=\"noopener\" target=\"blank\" href=\"{quinoaUrl}\">projet quinoa</a>.",
+  "Features.HomeView.It is built around the <a rel=\"noopener\" target=\"blank\" href=\"{peritextUrl}\">peritext ecosystem</a> and the <a rel=\"noopener\" target=\"blank\" href=\"{quinoaUrl}\">quinoa project</a>.": "Il fait partie du projet <a rel=\"noopener\" target=\"blank\" href=\"{peritextUrl}\">Peritext</a> et fonctionne en tandem avec <a rel=\"noopener\" target=\"blank\" href=\"{quinoaUrl}\">l'éditeur collaboratif Fonio</a>.",
   "Features.HomeView.New Production": "Nouvelle production",
   "Features.HomeView.New production": "Nouvelle production",
   "Features.HomeView.No": "Non, montrez-moi des alternatives",
@@ -1173,5 +1173,8 @@
   "Components.LanguageToggler.fr": "français",
   "Components.LanguageToggler.en": "english",
   "Features.EditionView.Explanation about website prefix": "Écrire ici l'URL du site de publication (ex. : 'https://user.github.io/project/') ou le laisser vide pour un test local. Elle sera utilisée pour peupler les métadonnées du site, correctement gérer l'accès aux ressources statiques (images ...) et gérer les adresses URL des pages de l'édition.",
-  "Features.HomeView.You can use this web version to get to know the tool (your data will be stored in the browser's local storage), but please use the desktop version for real/extended use, with better performance and more permanent file-based data storage.": "Vous pouvez utiliser cette version web pour faire connaissance avec l'outil (vos données seront stockées dans le navigateur), cependant veuillez utilisez la version bureau pour de meilleures performances et un stockage plus sûr sous "
+  "Features.HomeView.You can use this web version to get to know the tool (your data will be stored in the browser's local storage), but please use the desktop version for real/extended use, with better performance and more permanent file-based data storage.": "Vous pouvez utiliser cette version web pour faire connaissance avec l'outil (vos données seront stockées dans le navigateur), cependant veuillez utilisez la version bureau pour de meilleures performances et un stockage plus sûr sous forme de fichiers statiques.",
+  "Features.EditionView.render page {p}": "rendu de la page {p}",
+  "Features.EditionView.error during html rendering": "erreur durant le rendu d'une page HTML",
+  "Features.HomeView.You can use this web version to get to know the tool (your data will be stored in the browser\\": "You can use this web version to get to know the tool (your data will be stored in the browser\\"
 }
