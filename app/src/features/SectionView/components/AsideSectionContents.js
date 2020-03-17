@@ -54,6 +54,7 @@ const AsideSectionContents = ( {
   tagsFilterValues,
   resourceOptionsVisible,
   resourceSortValue,
+  sectionSortValue,
   resourceTypes,
   searchString,
   sections,
@@ -63,6 +64,7 @@ const AsideSectionContents = ( {
   setMainColumnMode,
   setResourceOptionsVisible,
   setResourceSortValue,
+  setSectionSortValue,
   setResourceSearchStringDebounce,
   handleSectionIndexChange,
   setSectionLevel,
@@ -78,7 +80,7 @@ const AsideSectionContents = ( {
   if ( asideTabCollapsed ) {
         return null;
       }
-      const setOption = ( option, optionDomain ) => {
+      const setOption = ( option, optionDomain, forSection ) => {
         if ( optionDomain === 'filter' ) {
           handleResourceFilterToggle( option );
         }
@@ -86,7 +88,12 @@ const AsideSectionContents = ( {
           handleTagsFilterToggle( option );
         }
         else if ( optionDomain === 'sort' ) {
-          setResourceSortValue( option );
+          if ( forSection ) {
+            setSectionSortValue( option );
+          }
+ else {
+            setResourceSortValue( option );
+          }
         }
       };
       const handleResourceSearchChange = ( e ) => setResourceSearchStringDebounce( e.target.value );
@@ -290,11 +297,11 @@ const AsideSectionContents = ( {
                             ? 'info' : ''
                           }
                           onToggle={ handleToggleResourcesOptionVisible }
-                          onChange={ setOption }
+                          onChange={ ( option, optionDomain ) => setOption( option, optionDomain, true ) }
                           isActive={ resourceOptionsVisible }
                           value={ {
                           sort: {
-                            value: resourceSortValue,
+                            value: sectionSortValue,
                           },
                           tags: {
                             value: Object.keys( tagsFilterValues ).filter( ( f ) => tagsFilterValues[f] ),
@@ -361,7 +368,7 @@ const AsideSectionContents = ( {
                     items={ visibleSections }
                     onSortEnd={ onSortEnd }
                     history={ history }
-                    allowMove={ !searchString.length && resourceSortValue === 'summary' && !tagsFilterValues.length }
+                    allowMove={ !searchString.length && sectionSortValue === 'summary' && !tagsFilterValues.length }
                     activeSectionId={ section.id }
                     setSectionIndex={ handleSectionIndexChange }
                     maxSectionIndex={ sections.length - 1 }

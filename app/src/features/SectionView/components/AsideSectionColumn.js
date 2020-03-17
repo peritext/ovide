@@ -67,6 +67,7 @@ class AsideSectionColumn extends Component {
       'resourceFilterValues',
       'tagsFilterValues',
       'resourceSortValue',
+      'sectionSortValue'
     ];
     const {
       production: {
@@ -142,7 +143,9 @@ class AsideSectionColumn extends Component {
       setResourceFilterValues,
       setTagsFilterValues,
       resourceSortValue,
+      sectionSortValue,
       setResourceSortValue,
+      setSectionSortValue,
 
       onResourceEditAttempt,
 
@@ -189,7 +192,6 @@ class AsideSectionColumn extends Component {
     };
     const handleSetAsideTabSummary = () => {
       setAsideTabMode( 'summary' );
-      setResourceSortValue( 'summary' );
       this.setResourceSearchString( '' );
       setResourceFilterValues( {} );
       setTagsFilterValues( {} );
@@ -197,7 +199,6 @@ class AsideSectionColumn extends Component {
     };
     const handleSetAsideTabLibrary = () => {
       setAsideTabMode( 'library' );
-      setResourceSortValue( 'edited recently' );
       this.setResourceSearchString( '' );
       setResourceFilterValues( {} );
       setTagsFilterValues( {} );
@@ -302,6 +303,8 @@ class AsideSectionColumn extends Component {
                     tagsFilterValues,
                     resourceOptionsVisible,
                     resourceSortValue,
+                    sectionSortValue,
+                    setSectionSortValue,
                     resourceTypes,
                     sections,
                     setEditorFocus,

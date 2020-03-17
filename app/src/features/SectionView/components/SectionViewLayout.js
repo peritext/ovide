@@ -53,6 +53,7 @@ const SectionViewLayout = ( {
   resourceFilterValues,
   tagsFilterValues,
   resourceSortValue,
+  sectionSortValue,
   resourceSearchString,
   linkModalFocusData,
   glossaryModalFocusData,
@@ -92,6 +93,7 @@ const SectionViewLayout = ( {
     setResourceFilterValues,
     setTagsFilterValues,
     setResourceSortValue,
+    setSectionSortValue,
     setResourceSearchString,
     setNewResourceMode,
     setLinkModalFocusData,
@@ -231,7 +233,7 @@ const SectionViewLayout = ( {
           return true;
         } )
         .sort( ( { resource: a }, { resource: b } ) => {
-            switch ( resourceSortValue ) {
+            switch ( sectionSortValue ) {
               case 'edited recently':
                 if ( !b.lastUpdateAt || a.lastUpdateAt > b.lastUpdateAt ) {
                   return -1;
@@ -647,6 +649,8 @@ const SectionViewLayout = ( {
                   resourceOptionsVisible,
                   resourceSearchString,
                   resourceSortValue,
+                  sectionSortValue,
+                  setSectionSortValue,
                   setAsideTabCollapsed,
                   setAsideTabMode,
                   setMainColumnMode,

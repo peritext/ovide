@@ -35,6 +35,7 @@ const SET_RESOURCE_FILTER_VALUES = 'SET_RESOURCE_FILTER_VALUES';
 const SET_TAGS_FILTER_VALUES = 'SET_TAGS_FILTER_VALUES';
 const SET_RESOURCE_OPTIONS_VISIBLE = 'SET_RESOURCE_OPTIONS_VISIBLE';
 const SET_RESOURCE_SORT_VALUE = 'SET_RESOURCE_SORT_VALUE';
+const SET_SECTION_SORT_VALUE = 'SET_SECTION_SORT_VALUE';
 const SET_RESOURCE_SEARCH_STRING = 'SET_RESOURCE_SEARCH_STRING';
 const SET_NEW_RESOURCE_MODE = 'SET_NEW_RESOURCE_MODE';
 // const SET_PENDING_CONTEXTUALIZATION = 'SET_PENDING_CONTEXTUALIZATION';
@@ -103,6 +104,10 @@ export const setResourceOptionsVisible = ( payload ) => ( {
 } );
 export const setResourceFilterValues = ( payload ) => ( {
   type: SET_RESOURCE_FILTER_VALUES,
+  payload
+} );
+export const setSectionSortValue = ( payload ) => ( {
+  type: SET_SECTION_SORT_VALUE,
   payload
 } );
 export const setTagsFilterValues = ( payload ) => ( {
@@ -299,13 +304,14 @@ export const setDraggedResourceId = ( payload ) => ( {
  */
 
 const UI_DEFAULT_STATE = {
-  asideTabMode: 'library',
+  asideTabMode: 'summary',
   asideTabCollapsed: false,
   mainColumnMode: 'edition',
   resourceOptionsVisible: false,
   resourceSearchString: '',
   resourceFilterValues: [],
-  resourceSortValue: 'edited recently',
+  resourceSortValue: 'title',
+  sectionSortValue: 'summary',
   newResourceMode: 'manually',
   editedSectionId: undefined,
   draggedResourceId: undefined,
@@ -341,6 +347,7 @@ function ui( state = UI_DEFAULT_STATE, action ) {
     case SET_RESOURCE_FILTER_VALUES:
     case SET_TAGS_FILTER_VALUES:
     case SET_RESOURCE_SORT_VALUE:
+    case SET_SECTION_SORT_VALUE:
     case SET_RESOURCE_SEARCH_STRING:
     case SET_NEW_RESOURCE_MODE:
     case SET_EDITED_SECTION_ID:
@@ -590,6 +597,7 @@ const resourceOptionsVisible = ( state ) => state.ui.resourceOptionsVisible;
 const resourceFilterValues = ( state ) => state.ui.resourceFilterValues;
 const tagsFilterValue = ( state ) => state.ui.tagsFilterValue;
 const resourceSortValue = ( state ) => state.ui.resourceSortValue;
+const sectionSortValue = ( state ) => state.ui.sectionSortValue;
 const resourceSearchString = ( state ) => state.ui.resourceSearchString;
 const newResourceMode = ( state ) => state.ui.newResourceMode;
 const editedSectionId = ( state ) => state.ui.editedSectionId;
@@ -642,6 +650,7 @@ export const selector = createStructuredSelector( {
   resourceOptionsVisible,
   resourceFilterValues,
   resourceSortValue,
+  sectionSortValue,
   resourceSearchString,
   newResourceMode,
   editedSectionId,

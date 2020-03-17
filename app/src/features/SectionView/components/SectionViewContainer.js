@@ -671,23 +671,13 @@ class SectionViewContainer extends Component {
     const {
       props: {
         history,
-        editedProduction,
         match: {
           params: {
             productionId
           }
-        },
-        actions: {
-          setResourceSortValue
         }
       }
     } = this;
-    if ( editedProduction.resources[resourceId] && editedProduction.resources[resourceId].metadata.type === 'section' ) {
-      setResourceSortValue( 'summary' );
-    }
- else {
-      setResourceSortValue( 'edited recently' );
-    }
     history.push( `/productions/${productionId}/resources/${resourceId}` );
   }
 
