@@ -131,7 +131,7 @@ const SectionCard = ( {
         onAction={ handleAction }
         isActive={ isActive }
         bodyContent={
-          <div>
+          <div style={ { userSelect: 'none' } }>
             <Columns style={ { marginBottom: 0 } }>
               <Column
                 style={ { paddingBottom: 0 } }

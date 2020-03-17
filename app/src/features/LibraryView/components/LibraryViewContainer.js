@@ -166,7 +166,7 @@ class LibraryViewContainer extends Component {
             if ( err ) {
               return reject( err );
             }
- else {
+            else {
               return resolve();
             }
           } );

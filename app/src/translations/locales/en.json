@@ -1176,5 +1176,7 @@
   "Features.HomeView.You can use this web version to get to know the tool (your data will be stored in the browser's local storage), but please use the desktop version for real/extended use, with better performance and more permanent file-based data storage.": "You can use this web version to get to know the tool (your data will be stored in the browser's local storage), but please use the desktop version for real/extended use, with better performance and more permanent file-based data storage.",
   "Features.EditionView.render page {p}": "render page {p}",
   "Features.EditionView.error during html rendering": "error during html rendering",
-  "Features.HomeView.You can use this web version to get to know the tool (your data will be stored in the browser\\": "You can use this web version to get to know the tool (your data will be stored in the browser\\"
+  "Features.HomeView.You can use this web version to get to know the tool (your data will be stored in the browser\\": "You can use this web version to get to know the tool (your data will be stored in the browser\\",
+  "Components.BlockContextualization.edit resource parameters": "edit material's parameters",
+  "Components.BlockContextualization.edit contents": "edit material's contents"
 }

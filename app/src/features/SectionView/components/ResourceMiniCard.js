@@ -281,7 +281,7 @@ class ResourceCard extends Component {
                         style={ {
                           position: 'absolute',
                           left: '2rem',
-                          top: '6rem',
+                          top: '4.5rem',
                           minWidth: '1rem',
                           minHeight: '1rem',
                           display: 'flex',
@@ -353,7 +353,6 @@ class ResourceCard extends Component {
 
                   <Button
                     onClick={ handleClick }
-                    isDisabled={ isActive }
                     data-place={ 'left' }
                     data-effect={ 'solid' }
                     data-for={ 'tooltip' }

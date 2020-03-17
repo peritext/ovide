@@ -114,6 +114,7 @@ export default @DragDropContext( HTML5Backend ) class ResourcesList extends Comp
     };
     const handleRowsRendered = () =>
               ReactTooltip.rebuild();
+    const activeSectionIndex = activeSectionId && resources.findIndex( ( r ) => r.id === activeSectionId );
     return (
       <AutoSizer>
         {( { width, height } ) => (
@@ -121,6 +122,7 @@ export default @DragDropContext( HTML5Backend ) class ResourcesList extends Comp
             height={ height }
             rowCount={ resources.length }
             rowHeight={ 135 }
+            scrollToIndex={ activeSectionIndex }
             rowRenderer={ rowRenderer }
             width={ width }
             onRowsRendered={ handleRowsRendered }

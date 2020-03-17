@@ -135,6 +135,7 @@ class BlockContainer extends Component {
       setSelectedContextualizationId,
       setEditedContextualizationId,
       setEditedContextualizationType,
+      onGoToResource,
       production = {},
       t,
       // selectedContextualizationId,
@@ -188,6 +189,13 @@ class BlockContainer extends Component {
         setEditedContextualizationType( 'block' );
       }
     };
+    const handleGoToRequest = ( event ) => {
+      silentEvent( event );
+
+      if ( typeof onGoToResource === 'function' ) {
+        onGoToResource( resource.id );
+      }
+    };
 
     const handleDeleteRequest = ( event ) => {
       silentEvent( event );
@@ -237,7 +245,7 @@ class BlockContainer extends Component {
             data-effect={ 'float' }
             data-tip={ translate( 'edit mention parameters' ) }
           >
-            <Icon className={ 'fa fa-pencil-alt' } />
+            <CenteredIcon src={ icons.settings.white.svg } />
           </Button>
           <Button
             isRounded
@@ -246,9 +254,20 @@ class BlockContainer extends Component {
             data-for={ 'tooltip' }
             data-place={ 'right' }
             data-effect={ 'float' }
-            data-tip={ translate( `edit ${resource.metadata.type}` ) }
+            data-tip={ translate( 'edit resource parameters' ) }
           >
             <CenteredIcon src={ icons.settings.white.svg } />
+          </Button>
+          <Button
+            isRounded
+            isColor={ 'primary' }
+            onClick={ handleGoToRequest }
+            data-for={ 'tooltip' }
+            data-place={ 'right' }
+            data-effect={ 'float' }
+            data-tip={ translate( 'edit contents' ) }
+          >
+            <Icon className={ 'fa fa-pencil-alt' } />
           </Button>
         </div>,
         <AssetPreview
@@ -302,6 +321,7 @@ BlockContainer.contextTypes = {
   setEditedContextualizationId: PropTypes.func,
   selectedContextualizationId: PropTypes.string,
   setEditedContextualizationType: PropTypes.func,
+  onGoToResource: PropTypes.func,
   production: PropTypes.object,
   t: PropTypes.func,
 };

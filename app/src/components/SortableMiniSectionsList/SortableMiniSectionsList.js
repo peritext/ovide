@@ -78,6 +78,7 @@ const SortableItem = SortableElement( ( {
 
 const SortableSectionsList = SortableContainer( ( {
   items,
+  activeSectionId,
   ...props
 } ) => {
   const rowRenderer = ( {
@@ -92,6 +93,7 @@ const SortableSectionsList = SortableContainer( ( {
       >
         <SortableItem
           { ...props }
+          activeSectionId={ activeSectionId }
           index={ index }
           sectionIndex={ index }
           value={ items[index] }
@@ -101,6 +103,7 @@ const SortableSectionsList = SortableContainer( ( {
   };
   const handleRowsRendered = () =>
             ReactTooltip.rebuild();
+  const activeSectionIndex = activeSectionId && items.findIndex( ( r ) => r.id === activeSectionId );
   return (
     <AutoSizer>
       {( { width, height } ) => (
@@ -108,6 +111,7 @@ const SortableSectionsList = SortableContainer( ( {
           height={ height }
           rowCount={ items.length }
           rowHeight={ 140 }
+          scrollToIndex={ activeSectionIndex }
           rowRenderer={ rowRenderer }
           width={ width }
           onRowsRendered={ handleRowsRendered }

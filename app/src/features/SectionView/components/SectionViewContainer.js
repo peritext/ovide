@@ -93,6 +93,7 @@ class SectionViewContainer extends Component {
     setGlossaryModalFocusData: PropTypes.func,
     setInternalLinkModalFocusData: PropTypes.func,
     setEditedContextualizationId: PropTypes.func,
+    onGoToResource: PropTypes.func,
     editorFocus: PropTypes.string,
   }
 
@@ -111,6 +112,7 @@ class SectionViewContainer extends Component {
     setGlossaryModalFocusData: this.setGlossaryModalFocusData,
     setInternalLinkModalFocusData: this.setInternalLinkModalFocusData,
     setEditedContextualizationId: this.setEditedContextualizationId,
+    onGoToResource: this.onGoToResource,
     editorFocus: this.props.editorFocus,
   } )
 
@@ -120,13 +122,6 @@ class SectionViewContainer extends Component {
     const productionId = this.props.match.params.productionId;
     if ( !( this.props.editedProduction && this.props.editedProduction.id === productionId ) ) {
       this.props.actions.activateProduction( { productionId } );
-    }
-    if ( this.props.editedProduction ) {
-      const activeResourceId = this.props.match.params.sectionId;
-      if ( this.props.editedProduction.resources && this.props.editedProduction.resources[activeResourceId] ) {
-        const nextSection = this.props.editedProduction.resources[activeResourceId];
-        this.props.actions.setAsideTabMode( nextSection.metadata.type === 'section' ? 'summary' : 'library' );
-      }
     }
 
     this.props.actions.resetDraftEditorsStates();
@@ -157,6 +152,16 @@ class SectionViewContainer extends Component {
       pendingContextualization,
       editedProduction,
     } = nextProps;
+
+    // booting
+    if ( !this.props.editedProduction && editedProduction ) {
+      const activeResourceId = nextSectionId;
+
+      if ( editedProduction.resources && editedProduction.resources[activeResourceId] ) {
+        const nextSection = editedProduction.resources[activeResourceId];
+        this.props.actions.setAsideTabMode( nextSection.metadata.type === 'section' ? 'summary' : 'library' );
+      }
+    }
 
     // changing section
     if ( prevSectionId !== nextSectionId || prevProductionId !== nextProductionId ) {
@@ -196,6 +201,12 @@ class SectionViewContainer extends Component {
       this.props.actions.setEmbedResourceAfterCreation( false );
       this.props.actions.setNewResourceType( undefined );
       this.props.actions.setEditedSectionId( undefined );
+      if ( nextSection.metadata.type === 'section' ) {
+        this.props.actions.setAsideTabMode( 'summary' );
+      }
+ else {
+        this.props.actions.setAsideTabMode( 'library' );
+      }
     }
 
     if ( pendingContextualization ) {
@@ -267,15 +278,6 @@ class SectionViewContainer extends Component {
     if ( this.props.editedProduction.contextualizations[contextualizationId] ) {
       this.props.actions.setEditedContextualizationId( contextualizationId );
     }
-  }
-
-  goToSection = ( sectionId ) => {
-    const {
-      editedProduction: {
-        id
-      }
-    } = this.props;
-    this.props.history.push( `/productions/${id}/sections/${sectionId}` );
   }
 
   submitMultiResources = ( files ) => {
@@ -667,9 +669,11 @@ class SectionViewContainer extends Component {
 
     else deleteResourceAction( payload, callback );
   }
+
   onGoToResource = ( resourceId ) => {
     const {
       props: {
+        editedProduction,
         history,
         match: {
           params: {
@@ -678,6 +682,16 @@ class SectionViewContainer extends Component {
         }
       }
     } = this;
+    const resource = editedProduction.resources[resourceId];
+    setTimeout( () => {
+      if ( resource.metadata.type === 'section' ) {
+        this.props.actions.setAsideTabMode( 'summary' );
+      }
+ else {
+        this.props.actions.setAsideTabMode( 'library' );
+      }
+    } );
+
     history.push( `/productions/${productionId}/resources/${resourceId}` );
   }
 

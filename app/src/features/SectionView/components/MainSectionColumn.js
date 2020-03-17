@@ -453,7 +453,7 @@ const MainSectionColumn = ( {
                         </StretchedLayoutContainer>
                       </StretchedLayoutItem>
                       <StretchedLayoutItem style={ { textAlign: 'right' } }>
-                        <i>{productionIsSaved ? translate( 'All changes saved' ) : translate( 'Saving...' )}</i>
+                        <i style={ { paddingRight: '1rem' } }>{productionIsSaved ? translate( 'All changes saved' ) : translate( 'Saving...' )}</i>
                       </StretchedLayoutItem>
                     </StretchedLayoutContainer>
                   </Column>
