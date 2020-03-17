@@ -282,7 +282,7 @@ const SectionCard = ( {
                 <MovePad
                   style={ {
                         position: 'absolute',
-                        top: '-3rem',
+                        top: 0,
                         right: '1rem'
                       } }
                   chevronsData={ {

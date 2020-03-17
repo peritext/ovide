@@ -312,7 +312,7 @@ class HomeViewLayout extends Component {
                         borderRadius: '.5rem',
                         fontSize: '.7rem',
                         padding: '.4rem',
-                        background: 'lightgrey',
+                        background: '#56d6cd',
                         color: 'white',
                         fontWeight: 400
                       } }
@@ -338,7 +338,7 @@ class HomeViewLayout extends Component {
                   className={ 'content' }
                   dangerouslySetInnerHTML={ {/* eslint react/no-danger:0*/
                     __html: this.translate( 'It is built around the <a rel="noopener" target="blank" href="{peritextUrl}">peritext ecosystem</a> and the <a rel="noopener" target="blank" href="{quinoaUrl}">quinoa project</a>.', {
-                      quinoaUrl: 'https://github.com/medialab/fonio',
+                      quinoaUrl: 'https://fonio.medialab.sciences-po.fr/demo',
                       peritextUrl: 'https://peritext.github.io',
                     } )
                   } }

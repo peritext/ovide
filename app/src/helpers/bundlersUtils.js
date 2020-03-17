@@ -1150,7 +1150,7 @@ export const downloadProjectAsWebsite = ( {
           editionId: edition.id,
           urlPrefix,
         } );
-        const filePath = `${route.split( '?' )[0]}/index.html`.replace(/\/\//g, '/').replace(/^\//g, '');
+        const filePath = `${route.split( '?' )[0]}/index.html`.replace( /\/\//g, '/' ).replace( /^\//g, '' );
         if ( typeof onFeedback === 'function' ) {
           onFeedback( {
             type: 'info',
