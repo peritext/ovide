@@ -25,9 +25,11 @@ const {
   getAssetData,
 } = require( './assetsTransactions' );
 
-const {
-  generateEdition
-} = require( './generatorsTransactions' );
+/*
+ * const {
+ *   generateEdition
+ * } = require( './generatorsTransactions' );
+ */
 
 const routes = {
   'get-productions': getProductions,
@@ -51,7 +53,7 @@ const routes = {
   'get-html-build': getHTMLBuild,
   'get-js-build': getJSBuild,
 
-  'generate-edition': generateEdition
+  // 'generate-edition': generateEdition
 };
 
 module.exports = routes;

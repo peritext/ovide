@@ -1099,54 +1099,67 @@ export const downloadProjectAsWebsite = ( {
       zip.file( 'index.html', html );
     }
     else {
-      nav.forEach( ( navItem ) => {
+      nav.forEach( ( navItem, index ) => {
         const { route, viewId, routeClass, routeParams } = navItem;
-          const Comp = template.components.Edition;
-          let htmlContent = '';
-          try {
-            htmlContent = renderToString(
-              <StaticRouter
-                context={ {} }
-                location={ navItem.route }
-              >
-                <Comp
-                  viewId={ viewId }
-                  viewClass={ routeClass }
-                  viewParams={ routeParams }
-                  production={ production }
-                  edition={ edition }
-                  locale={ locale }
-                  contextualizers={ contextualizerModules }
-                  excludeCss
-                  preprocessedData={ preprocessedData }
-                  previewMode
-                  staticRender
-                />
-              </StaticRouter>
-            );
-
-            /*
-             * if ( routeClass === 'sections' )
-             * console.log( 'html content', htmlContent );
-             */
-          }
-          catch ( e ) {
-            console.error( 'e', e );/* eslint no-console : 0 */
-          }
-
-          const head = renderToStaticMarkup(
-            utils.renderHeadFromRouteItem( { production, edition, item: navItem } )
-            );
-
-          const html = renderHTML( {
-            singlePage,
-            head,
-            htmlContent,
-            allowAnnotation,
-            editionId: edition.id,
-            urlPrefix,
+        const Comp = template.components.Edition;
+        let htmlContent = '';
+        if ( typeof onFeedback === 'function' ) {
+          onFeedback( {
+            type: 'info',
+            message: 'render page',
+            payload: {
+              title: `${index + 1} / ${nav.length}`
+            }
           } );
-          zip.file( `${route.split( '?' )[0]}/index.html`, html );
+        }
+        try {
+          htmlContent = renderToString(
+            <StaticRouter
+              context={ {} }
+              location={ navItem.route }
+            >
+              <Comp
+                viewId={ viewId }
+                viewClass={ routeClass }
+                viewParams={ routeParams }
+                production={ production }
+                edition={ edition }
+                locale={ locale }
+                contextualizers={ contextualizerModules }
+                excludeCss
+                preprocessedData={ preprocessedData }
+                previewMode
+                staticRender
+              />
+            </StaticRouter>
+          );
+        }
+        catch ( e ) {
+          console.error( 'e', e );/* eslint no-console : 0 */
+          if ( typeof onFeedback === 'function' ) {
+            onFeedback( {
+              type: 'info',
+              message: 'error during html rendering',
+              payload: {
+                error: e
+              }
+            } );
+          }
+        }
+
+        const head = renderToStaticMarkup(
+          utils.renderHeadFromRouteItem( { production, edition, item: navItem } )
+          );
+
+        const html = renderHTML( {
+          singlePage,
+          head,
+          htmlContent,
+          allowAnnotation,
+          editionId: edition.id,
+          urlPrefix,
+        } );
+        zip.file( `${route.split( '?' )[0]}/index.html`, html );
       } );
     }
     const templateStyle = template.css;

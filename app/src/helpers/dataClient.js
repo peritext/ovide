@@ -2,7 +2,6 @@ import get from 'axios';
 import { inElectron, default as requestToMain } from './electronUtils';
 import { b64toBlob, convertBlobAssetToPreviewData } from './assetsUtils';
 import { downloadProjectAsWebsite } from './bundlersUtils';
-import peritextConfig from '../peritextConfig.render';
 import PQueue from 'p-queue';
 import { v4 as genId } from 'uuid';
 
@@ -687,17 +686,15 @@ export const requestJSBuild = ( { generatorId, templateId } ) => {
  * ========================
  */
 export const requestEditionDownload = ( {
-  ...props
+  edition,
+  production,
+  generatorId,
+  locale = {},
+  urlPrefix,
+  onFeedback,
 } ) => {
-  const {
-    edition,
-    production,
-    generatorId,
-    locale = {},
-    urlPrefix,
-  } = props;
   const templateId = edition && edition.metadata && edition.metadata.templateId;
-  if ( generatorId === 'single-page-html' && peritextConfig.htmlBuilds && peritextConfig.htmlBuilds[generatorId] && peritextConfig.htmlBuilds[generatorId][templateId] ) {
+  if ( generatorId === 'single-page-html' ) {
     return requestJSBuild( { generatorId, templateId } )
     .then( ( { data: bundleData } ) => {
       return downloadProjectAsWebsite( {
@@ -708,11 +705,11 @@ export const requestEditionDownload = ( {
         locale,
         singlePage: true,
         urlPrefix,
-        onFeedback: props.onFeedback,
+        onFeedback,
       } );
     } );
   }
-  else if ( !inElectron && generatorId === 'multi-page-html' && peritextConfig.htmlBuilds && peritextConfig.htmlBuilds['single-page-html'] && peritextConfig.htmlBuilds['single-page-html'][templateId] ) {
+  else if ( generatorId === 'multi-page-html' ) {
     return requestJSBuild( { generatorId: 'single-page-html', templateId } )
     .then( ( { data: bundleData } ) => {
       return downloadProjectAsWebsite( {
@@ -723,15 +720,18 @@ export const requestEditionDownload = ( {
         locale,
         singlePage: false,
         urlPrefix,
-        onFeedback: props.onFeedback,
+        onFeedback,
       } );
     } );
   }
-  else if ( inElectron ) {
-    return requestToMain( 'generate-edition', {
-      ...props
-    } );
-  }
+
+  /*
+   * else if ( inElectron ) {
+   *   return requestToMain( 'generate-edition', {
+   *     ...props
+   *   } );
+   * }
+   */
   else {
     console.warn( 'no download available for %s', generatorId );/* eslint no-console: 0 */
     return Promise.reject();
