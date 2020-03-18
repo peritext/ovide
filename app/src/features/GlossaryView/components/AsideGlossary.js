@@ -9,9 +9,15 @@ import {
     Title,
     StretchedLayoutContainer,
     StretchedLayoutItem,
+    Tabs,
+    TabList,
+    Tab,
+    TabLink
   } from 'quinoa-design-library/components';
+import icons from 'quinoa-design-library/src/themes/millet/icons';
 
-  import LoadingScreen from '../../../components/LoadingScreen';
+import LoadingScreen from '../../../components/LoadingScreen';
+import CenteredIcon from '../../../components/CenteredIcon';
 
 // import { ReferencesManager } from 'react-citeproc';
 
@@ -317,16 +323,58 @@ class AsideGlossary extends Component {
                 <Title
                   style={ { paddingTop: '.5rem' } }
                   isSize={ 5 }
-                >{
-                            resource &&
-                            resource.data &&
-                            resource.data.name &&
-                            resource.data.name.trim().length ?
-                            resource.data.name
-                            :
-                            translate( 'Unnamed glossary entry' )
-                        } - <i>{mentionMode === 'add' ? translate( 'add new mentions' ) : translate( 'existing mentions' )}</i>
+                >
+                  <span style={ { display: 'flex', flexFlow: 'row nowrap', alignItems: 'center' } }>
+                    <CenteredIcon
+                      src={ icons.glossary.black.svg }
+                      isSize={ '32x32' }
+                    />
+                    {
+                          resource &&
+                          resource.data &&
+                          resource.data.name &&
+                          resource.data.name.trim().length ?
+                          resource.data.name
+                          :
+                          translate( 'Unnamed glossary entry' )
+                      }
+                  </span>
                 </Title>
+
+              </Column>
+            </StretchedLayoutItem>
+            <StretchedLayoutItem>
+              <Column>
+                <Tabs
+                  isBoxed
+                  isFullWidth
+                  style={ { overflow: 'hidden' } }
+                >
+                  <TabList>
+                    <Tab
+                      onClick={ handleSetMentionModeToAdd }
+                      isActive={ mentionMode === 'add' }
+                    >
+                      <TabLink>
+                        {translate( 'Add new mentions' )}
+                      </TabLink>
+                    </Tab>
+                    <Tab
+                      onClick={ handleSetMentionModeToReview }
+                      isActive={ mentionMode === 'review' }
+                    >
+                      <TabLink>
+                        {translate( 'Review existing mentions' )} ({mentions.length})
+                      </TabLink>
+                    </Tab>
+                  </TabList>
+                </Tabs>
+              </Column>
+            </StretchedLayoutItem>
+
+            <StretchedLayoutItem>
+              <Column>
+
                 {
                     renderHeader( {
                         mentionMode,
@@ -341,6 +389,7 @@ class AsideGlossary extends Component {
                 }
               </Column>
             </StretchedLayoutItem>
+
             <StretchedLayoutItem isFlex={ 1 }>
               {
                   loading ? <LoadingScreen /> :
@@ -368,32 +417,6 @@ class AsideGlossary extends Component {
                       }
                   </StretchedLayoutContainer>
                 }
-
-            </StretchedLayoutItem>
-            <StretchedLayoutItem>
-              <Column>
-                <StretchedLayoutContainer isDirection={ 'horizontal' }>
-                  <StretchedLayoutItem isFlex={ 1 }>
-                    <Button
-                      onClick={ handleSetMentionModeToAdd }
-                      isColor={ mentionMode === 'add' ? 'primary' : 'info' }
-                      isFullWidth
-                    >
-                      {translate( 'Add new mentions' )}
-                    </Button>
-                  </StretchedLayoutItem>
-                  <StretchedLayoutItem isFlex={ 1 }>
-                    <Button
-                      onClick={ handleSetMentionModeToReview }
-                      isColor={ mentionMode === 'review' ? 'primary' : 'info' }
-                      isFullWidth
-                    >
-                      {translate( 'Review existing mentions' )} ({mentions.length})
-                    </Button>
-                  </StretchedLayoutItem>
-
-                </StretchedLayoutContainer>
-              </Column>
             </StretchedLayoutItem>
           </StretchedLayoutContainer>
 
