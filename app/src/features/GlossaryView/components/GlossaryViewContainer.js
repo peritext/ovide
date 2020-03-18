@@ -86,6 +86,10 @@ class GlossaryViewContainer extends Component {
     this.props.actions.resetViewsUi();
   }
 
+  componentDidCatch = ( error ) => {
+    console.error( error );/* eslint no-console : 0 */
+  }
+
   deleteResource = ( payload, callback ) => {
     const { actions: { deleteResource: deleteResourceAction, deleteAsset } } = this.props;
     const relatedAssetsIds = getRelatedAssetsIds( payload.resource );

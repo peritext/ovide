@@ -131,6 +131,10 @@ class EditionViewContainer extends Component {
     this.props.actions.resetViewsUi();
   }
 
+  componentDidCatch = ( error ) => {
+    console.error( error );/* eslint no-console : 0 */
+  }
+
   updateAssetsData = ( props, edition = {} ) => {
     const {
       editedProduction: production = {},

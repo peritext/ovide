@@ -75,7 +75,7 @@ const SectionMiniCard = ( {
       data-html
       data-tip={ `<div class="content"><h5 style="color: white">${title}</h5><p>${computeSectionFirstWords( section )}</p></div>` }
     >
-      {abbrevString( title || translate( 'Untitled section' ), 20 )}
+      {abbrevString( title || translate( 'Untitled section' ), 25 )}
     </span>
   );
   const sectionTags = ( section.metadata.tags || [] )

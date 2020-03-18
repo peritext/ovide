@@ -5,6 +5,10 @@
  */
 @import './parameters.scss';
 
+html{
+  overflow: hidden;
+}
+
 #mount{
   position: fixed;
   width: 100%;
@@ -241,4 +245,39 @@ input[type="checkbox"]
 .tag{
   margin-right: .5rem;
   margin-bottom: .5rem;
+}
+
+
+a.navbar-item.is-active, 
+.navbar-link.is-active,
+a.navbar-item.is-active:hover, 
+.navbar-link.is-active:hover
+{
+ background: #00a99d!important;
+ color: #fff; 
+}
+
+::-webkit-scrollbar {
+  width: .5rem;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0);
+  transition: all .5s ease;
+}
+::-webkit-scrollbar-track:hover {
+  background: rgba(0,0,0,.1);
+}
+::-webkit-scrollbar-thumb {
+  background-color: lightgrey;
+  border-radius: 0;
+  border: none;
+  cursor: pointer;
+}
+
+.navbar-start{
+  flex: 1;
+}
+.navbar .breadcrumb{
+  flex: 1;
 }

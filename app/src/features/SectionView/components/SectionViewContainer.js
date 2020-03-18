@@ -232,6 +232,10 @@ class SectionViewContainer extends Component {
     this.props.actions.resetViewsUi();
   }
 
+  componentDidCatch = ( error ) => {
+    console.error( error );/* eslint no-console : 0 */
+  }
+
   confirmExit( e ) {
     const { productionIsSaved } = this.props;
     if ( !productionIsSaved ) {

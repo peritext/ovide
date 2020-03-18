@@ -413,7 +413,10 @@ class PreviewWrapperInitial extends Component {
       <Frame
         name={ 'preview' }
         id={ 'preview' }
-        style={ { width: '100%', height: '100%' } }
+        style={ {
+          width: '100%',
+          height: '100%'
+        } }
       >
         <FrameContextConsumer>
           {( { document/*, window*/ } ) => (
@@ -498,7 +501,7 @@ const MainEditionColumn = ( {
   return (
     <Column
       isSize={ 'fullwidth' }
-      style={ { position: 'relative' } }
+      style={ { position: 'relative', margin: '1rem' } }
     >
       <PreviewWrapper
         {

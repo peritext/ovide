@@ -89,6 +89,10 @@ class LibraryViewContainer extends Component {
     this.props.actions.resetViewsUi();
   }
 
+  componentDidCatch = ( error ) => {
+    console.error( error );/* eslint no-console : 0 */
+  }
+
   /**
    * @todo refactor this redundant cont with SectionViewContainer
    */

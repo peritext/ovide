@@ -19,6 +19,7 @@ import {
   StretchedLayoutContainer,
   StretchedLayoutItem,
 } from 'quinoa-design-library/components/';
+import icons from 'quinoa-design-library/src/themes/millet/icons';
 
 /**
  * Imports Project utils
@@ -30,6 +31,7 @@ import { resourcesSchemas } from '../../../peritextConfig.render';
  * Imports Components
  */
 import AsideSectionContents from './AsideSectionContents';
+import CenteredIcon from '../../../components/CenteredIcon';
 
 /**
  * Shared variables
@@ -235,6 +237,10 @@ class AsideSectionColumn extends Component {
                       isActive={ asideTabMode === 'summary' }
                     >
                       <TabLink>
+                        <CenteredIcon
+                          src={ icons.section.black.svg }
+                          isSize={ '32x32' }
+                        />
                         {translate( 'Sections' )}
                       </TabLink>
                     </Tab>
@@ -245,7 +251,13 @@ class AsideSectionColumn extends Component {
                       onClick={ handleSetAsideTabLibrary }
                       isActive={ asideTabMode === 'library' }
                     >
-                      <TabLink>{translate( 'Library' )}</TabLink>
+                      <TabLink>
+                        <CenteredIcon
+                          src={ icons.bib.black.svg }
+                          isSize={ '32x32' }
+                        />
+                        {translate( 'Library' )}
+                      </TabLink>
                     </Tab>
                     }
                     <Tab

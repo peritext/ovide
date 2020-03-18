@@ -77,9 +77,10 @@
             height: 100%;
 
             .custom-scrollbars {
+                > div,
                 > div > div {
+                    // overflow-x: visible!important;
                     overflow-x: visible!important;
-                    // overflow-x: hidden!important;
                 }
             }
 

@@ -32,6 +32,7 @@ class PreviewWrapper extends Component {
   constructor( props ) {
     super( props );
     this.state = {
+      isInjecting: false,
     };
     this.frameRef = React.createRef();
   }
@@ -63,6 +64,10 @@ class PreviewWrapper extends Component {
   }
 
   injectRenderer = ( thatDocument, additionalHTML ) => {
+    if ( this.state.injecting ) {
+      return;
+    }
+    this.setState( { injecting: true } );
 
     /*
      * const translate = translateNameSpacer( this.context.t, 'Components.PagedPreviewer' );
@@ -127,6 +132,8 @@ class PreviewWrapper extends Component {
     thatDocument.getElementsByTagName( 'head' )[0].appendChild( previewStyle );
 
     thatDocument.head.innerHTML = thatDocument.head.innerHTML + additionalHTML;
+    setTimeout( () => this.setState( { injecting: false } ) );
+
   };
 
   render = () => {

@@ -97,6 +97,10 @@ class HomeViewContainer extends Component {
     return true;
   }
 
+  componentDidCatch = ( error ) => {
+    console.error( error );/* eslint no-console : 0 */
+  }
+
   /**
    * Renders the component
    * @return {ReactElement} component - the component

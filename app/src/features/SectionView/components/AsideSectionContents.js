@@ -246,6 +246,7 @@ const AsideSectionContents = ( {
                       onClick={ handleClickAddItemsToLibrary }
                       isColor={ mainColumnMode === 'newresource' ? 'primary' : 'info' }
                     >
+
                       <span style={ { paddingRight: '1rem' } }>{translate( 'Add items to library' )}</span>
                     </Button>
                   </Column>

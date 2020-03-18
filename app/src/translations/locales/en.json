@@ -1184,5 +1184,7 @@
   "Features.GlossaryView.none": "none",
   "Features.GlossaryView.manage mentions": "manage glossary entry's mentions",
   "Features.GlossaryView.glossary entry settings": "glossary entry parameters",
-  "Features.GlossaryView.edit glossary entry's contents": "edit glossary entry's contents"
+  "Features.GlossaryView.edit glossary entry's contents": "edit glossary entry's contents",
+  "Features.GlossaryView.edit glossary entry\\": "edit glossary entry\\",
+  "Features.EditionUiWrapper.previous view": "previous view"
 }

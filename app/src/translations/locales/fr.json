@@ -631,7 +631,7 @@
   "Features.SectionView.Begining of a paragraph": "Début d'un paragraphe",
   "Features.SectionView.Drag this item to the editor": "Déposer ce matériau dans l'éditeur",
   "Features.SectionView.Drop files here to include in your library": "Déposer ici des fichiers à inclure dans la production",
-  "Features.SectionView.Edit section metadata": "Éditer les métadonnées de la note",
+  "Features.SectionView.Edit section metadata": "Éditer les paramètres de la note",
   "Features.SectionView.Effect": "Effets",
   "Features.SectionView.Filters": "Filtres",
   "Features.SectionView.Library": "Autres matériaux",
@@ -1184,5 +1184,7 @@
   "Features.GlossaryView.none": "none",
   "Features.GlossaryView.manage mentions": "gérer les mentions de l'entrée de glossaire",
   "Features.GlossaryView.glossary entry settings": "paramètres de l'entrée de glossaire",
-  "Features.GlossaryView.edit glossary entry's contents": "éditer les contenus de l'entrée de glossaire"
+  "Features.GlossaryView.edit glossary entry's contents": "éditer les contenus de l'entrée de glossaire",
+  "Features.GlossaryView.edit glossary entry\\": "edit glossary entry\\",
+  "Features.EditionUiWrapper.previous view": "previous view"
 }

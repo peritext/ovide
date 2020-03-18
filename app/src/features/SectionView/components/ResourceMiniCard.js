@@ -172,7 +172,7 @@ class ResourceCard extends Component {
     else {
        resourceTitle = getTitle( resource ) || translate( 'untitled resource' );
     }
-    resourceTitle = abbrevString( resourceTitle, 10 );
+    resourceTitle = abbrevString( resourceTitle, 30 );
 
     const resourceTags = ( resource.metadata.tags || [] )
     .map( ( tagId ) => tags[tagId] ).filter( ( tag ) => tag );

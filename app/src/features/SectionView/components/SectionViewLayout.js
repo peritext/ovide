@@ -150,7 +150,6 @@ const SectionViewLayout = ( {
     setEditedContextualizationId,
     setEditedContextualizationType,
   },
-  goToSection,
   summonAsset,
   submitMultiResources,
   embedLastResource,
@@ -317,13 +316,12 @@ const SectionViewLayout = ( {
       productionId,
     }, ( err ) => {
       if ( !err ) {
-
         updateSectionsOrder( {
           productionId,
           sectionsOrder: newSectionsOrder
         }, ( err2 ) => {
           if ( !err2 ) {
-            goToSection( newSection.id );
+            onGoToResource( newSection.id );
           }
         } );
       }

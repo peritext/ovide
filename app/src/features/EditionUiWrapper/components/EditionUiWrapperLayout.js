@@ -10,14 +10,14 @@ import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import {
   Button,
-  NavbarItem,
+  // NavbarItem,
   Navbar,
   StretchedLayoutContainer,
   StretchedLayoutItem,
 } from 'quinoa-design-library/components/';
 import Helmet from 'react-helmet';
 import ReduxToastr from 'react-redux-toastr';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
 
@@ -25,6 +25,7 @@ import 'react-redux-toastr/lib/css/react-redux-toastr.min.css';
  * Imports Project utils
  */
 import { translateNameSpacer } from '../../../helpers/translateUtils';
+import { inElectron } from '../../../helpers/electronUtils';
 import {
   abbrevString
 } from '../../../helpers/misc';
@@ -76,7 +77,7 @@ const EditionUiWrapperLayout = ( {
 
   let realActiveSectionTitle;
   if ( activeSectionTitle.length ) {
-    realActiveSectionTitle = activeSectionTitle.length > 10 ? `${activeSectionTitle.substr( 0, 10 ) }...` : activeSectionTitle;
+    realActiveSectionTitle = activeSectionTitle.length > 30 ? `${activeSectionTitle.substr( 0, 30 ) }...` : activeSectionTitle;
   }
   else {
     realActiveSectionTitle = translate( 'Untitled section' );
@@ -84,7 +85,7 @@ const EditionUiWrapperLayout = ( {
 
   let realActiveEditionTitle;
   if ( activeEditionTitle.length ) {
-    realActiveEditionTitle = activeEditionTitle.length > 10 ? `${activeEditionTitle.substr( 0, 10 ) }...` : activeEditionTitle;
+    realActiveEditionTitle = activeEditionTitle.length > 30 ? `${activeEditionTitle.substr( 0, 30 ) }...` : activeEditionTitle;
   }
   else {
     realActiveEditionTitle = translate( 'Untitled edition' );
@@ -93,6 +94,12 @@ const EditionUiWrapperLayout = ( {
   /**
    * Callbacks handlers
    */
+  const handleClickPrevious = () => {
+    history.back();
+  };
+  const handleClickNext = () => {
+    history.forward();
+  };
   return (
     <StretchedLayoutContainer isAbsolute>
       <Helmet>
@@ -118,24 +125,92 @@ const EditionUiWrapperLayout = ( {
               href: `/productions/${productionId}`,
               content: computedTitle
               || translate( 'Unnamed production' ),
-              isActive: navLocation === 'parameters'
+              isActive: navLocation === 'materials'
             },
-          ] }
-
-        menuOptions={ [
-            // link to materials view
+            /* navLocation === 'materials' || */navLocation === 'editor-section' || navLocation === 'editor-resource' ?
             {
               href: `/productions/${productionId}`,
               isActive: navLocation === 'materials',
               content: translate( 'Materials' ),
-            },
+            } : undefined,
             navLocation === 'editor-section' ?
             {
               isActive: true,
-              content: `/ ${realActiveSectionTitle}`,
+              content: `${realActiveSectionTitle}`,
               href: `/productions/${productionId}/sections/${sectionId}`,
             }
             : undefined,
+
+            navLocation === 'editor-resource' ?
+            {
+              isActive: true,
+              content: `${realActiveSectionTitle}`,
+              href: `/productions/${productionId}/resources/${sectionId}`,
+            }
+            : undefined,
+            navLocation === 'glossary' ?
+            {
+              href: `/productions/${productionId}/glossary`,
+              isActive: true,
+              content: translate( 'Glossary' ),
+            } : undefined,
+            // link to design view
+            navLocation === 'editions' || navLocation === 'edition' ?
+            {
+              href: `/productions/${productionId}/editions`,
+              isActive: navLocation === 'editions',
+              content: translate( 'Editions' ),
+            } : undefined,
+            navLocation === 'edition' ?
+            {
+              isActive: true,
+              content: `${realActiveEditionTitle}`,
+              href: `/productions/${productionId}/editions/${editionId}`,
+            } : undefined
+
+          ].filter( ( v ) => v ) }
+
+        menuOptions={ [
+          inElectron ?
+          {
+              href: '',
+              content: (
+                <div onClick={ ( e ) => {
+                  e.silentEvent();
+                  e.preventPropagation();
+                } }
+                >
+                  <Button
+                    data-for={ 'tooltip' }
+                    data-tip={ translate( 'previous view' ) }
+                    data-place={ 'bottom' }
+                    data-effect={ 'solid' }
+                    onClick={ handleClickPrevious }
+                    style={ { marginRight: '.5rem' } }
+                    isRounded
+                  >
+                    <i className={ 'fa fa-chevron-left' } />
+                  </Button>
+                  <Button
+                    data-for={ 'tooltip' }
+                    data-tip={ translate( 'previous view' ) }
+                    data-place={ 'bottom' }
+                    data-effect={ 'solid' }
+                    onClick={ handleClickNext }
+                    isRounded
+                  >
+                    <i className={ 'fa fa-chevron-right' } />
+                  </Button>
+                </div>
+
+              )
+          } : undefined,
+            // link to materials view
+            {
+              href: `/productions/${productionId}`,
+              isActive: navLocation === 'materials' || navLocation === 'editor-section' || navLocation === 'editor-resource',
+              content: translate( 'Materials' ),
+            },
 
             navLocation === 'editor-resource' ?
             {
@@ -152,29 +227,11 @@ const EditionUiWrapperLayout = ( {
             // link to design view
             {
               href: `/productions/${productionId}/editions`,
-              isActive: navLocation === 'editions',
+              isActive: navLocation === 'editions' || navLocation === 'edition',
               content: translate( 'Editions' ),
             },
-            navLocation === 'edition' ?
-            {
-              isActive: true,
-              content: `/ ${realActiveEditionTitle}`,
-              href: `/productions/${productionId}/editions/${editionId}`,
-            }
-            : undefined,
           ].filter( ( d ) => d ) }
         actionOptions={ [
-          {
-              content: (
-                <NavbarItem
-                  isActive={ navLocation === 'parameters' }
-                  to={ `/productions/${productionId}/parameters` }
-                  tag={ Link }
-                >
-                  {translate( 'Parameters' )}
-                </NavbarItem>
-              )
-          },
           {
             content: (
               <Button
@@ -193,7 +250,7 @@ const EditionUiWrapperLayout = ( {
           {
             content: <LanguageToggler />
           }
-        ] }
+        ].filter( ( i ) => i ) }
       />
       <StretchedLayoutItem
         isFlex={ 1 }
