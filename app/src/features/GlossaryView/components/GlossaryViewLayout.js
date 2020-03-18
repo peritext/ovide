@@ -50,6 +50,21 @@ import AsideGlossary from './AsideGlossary';
  * Shared variables
  */
 
+const getIcon = ( entryType ) => {
+  switch ( entryType ) {
+    case 'person':
+      return 'user';
+    case 'event':
+      return 'calendar';
+    case 'place':
+      return 'compass';
+    case 'notion':
+      return 'lightbulb';
+    default:
+      return 'random';
+  }
+};
+
 class GlossaryViewLayout extends Component {
 
   constructor( props ) {
@@ -756,6 +771,7 @@ class GlossaryViewLayout extends Component {
               assets={ relatedAssets }
               productionId={ productionId }
               getTitle={ getResourceTitle }
+              getIcon={ getIcon }
             />
           );
         };
@@ -794,6 +810,7 @@ class GlossaryViewLayout extends Component {
                   statusFilterValues={ statusFilterValues }
                   translate={ translate }
                   visibleResources={ visibleResources }
+                  getIcon={ getIcon }
                 />
               </Column>
             </StretchedLayoutItem>
@@ -1216,6 +1233,7 @@ class GlossaryViewLayout extends Component {
                     production={ production }
                     onSearchStringChange={ setMentionsSearchString }
                     searchString={ mentionsSearchString }
+                    getIcon={ getIcon }
                   />
               }
               </Column>

@@ -108,6 +108,7 @@ class ResourceCard extends Component {
         isSelectable,
         productionId,
         tags = {},
+        getIcon,
       },
       context: {
         t,
@@ -187,22 +188,34 @@ class ResourceCard extends Component {
               className={ 'ovide-ResourceCard' }
             >
               <Columns style={ { marginBottom: 0 } }>
-                <Column isSize={ 2 }>
-                  <CenteredIcon
-                    src={ icons[type].black.svg }
-                    isSize={ '32x32' }
-                  />
-                  {
-                    resourceHasContents( resource ) ?
-                      <span
-                        className={ 'contents-indicator' }
-                        data-for={ 'tooltip' }
-                        data-tip={ translate( 'this resource is annotated with contents' ) }
-                      >
-                        ☰
-                      </span>
-                    : null
-                  }
+                <Column
+                  isSize={ 2 }
+                  style={ { position: 'relative' } }
+                >
+                  <div style={ { position: 'absolute', top: '1rem', left: '1rem' } }>
+                    <CenteredIcon
+                      src={ icons[type].black.svg }
+                      isSize={ '32x32' }
+                    />
+                    {
+                      resourceHasContents( resource ) ?
+                        <span
+                          className={ 'contents-indicator' }
+                          data-for={ 'tooltip' }
+                          data-tip={ translate( 'this resource is annotated with contents' ) }
+                        >
+                          ☰
+                        </span>
+                      : null
+                    }
+                    <span
+                      className={ 'contents-indicator' }
+                      data-for={ 'tooltip' }
+                      data-tip={ translate( resource.data.entryType ) }
+                    >
+                      <i className={ `fa fa-${getIcon( resource.data.entryType )}` } />
+                    </span>
+                  </div>
 
                 </Column>
 
@@ -299,11 +312,21 @@ class ResourceCard extends Component {
                   isSize={ 7 }
                 >
                   <Button
+                    onClick={ onClick }
+                    isDisabled={ isActive }
+                    data-place={ 'left' }
+                    data-effect={ 'solid' }
+                    data-for={ 'tooltip' }
+                    data-tip={ translate( 'manage mentions' ) }
+                  >
+                    <i className={ 'fa fa-tags' } />
+                  </Button>
+                  <Button
                     onClick={ onEdit }
                     data-place={ 'left' }
                     data-effect={ 'solid' }
                     data-for={ 'tooltip' }
-                    data-tip={ translate( 'settings' ) }
+                    data-tip={ translate( 'glossary entry settings' ) }
                   >
                     <CenteredIcon src={ icons.settings.black.svg } />
                   </Button>
@@ -313,7 +336,7 @@ class ResourceCard extends Component {
                     data-place={ 'left' }
                     data-effect={ 'solid' }
                     data-for={ 'tooltip' }
-                    data-tip={ translate( 'edit contents' ) }
+                    data-tip={ translate( 'edit glossary entry\'s contents' ) }
                   >
                     <CenteredIcon src={ icons.edit.black.svg } />
                   </Button>

@@ -884,7 +884,7 @@
   "Features.GlossaryView.title": "titre",
   "Features.GlossaryView.most mentioned": "plus mentionné",
   "Features.GlossaryView.Show ...": "Montrer ...",
-  "Features.GlossaryView.Filters": "Filtres",
+  "Features.GlossaryView.Filters": "Options",
   "Features.GlossaryView.all items": "tous les items",
   "Components.ResourceForm.Add glossary to the library": "Ajouter une entrée de glossaire",
   "Features.GlossaryView.only unused items (not mentionned anywhere in the production)": "items inutilisés seulement",
@@ -1178,5 +1178,11 @@
   "Features.EditionView.error during html rendering": "erreur durant le rendu d'une page HTML",
   "Features.HomeView.You can use this web version to get to know the tool (your data will be stored in the browser\\": "You can use this web version to get to know the tool (your data will be stored in the browser\\",
   "Components.BlockContextualization.edit resource parameters": "éditer les paramètres du matériau",
-  "Components.BlockContextualization.edit contents": "éditer les contenus du matériau"
+  "Components.BlockContextualization.edit contents": "éditer les contenus du matériau",
+  "Features.GlossaryView.You are editing mentions for \"{title}\" entry": "Vous éditez les mentions de l'entrée \"{title}\"",
+  "Features.GlossaryView.hidden": "hidden",
+  "Features.GlossaryView.none": "none",
+  "Features.GlossaryView.manage mentions": "gérer les mentions de l'entrée de glossaire",
+  "Features.GlossaryView.glossary entry settings": "paramètres de l'entrée de glossaire",
+  "Features.GlossaryView.edit glossary entry's contents": "éditer les contenus de l'entrée de glossaire"
 }

@@ -37,6 +37,7 @@ const GlossaryFiltersBar = ( {
   tagsFilterValues,
   glossaryFilterValues,
   statusFilterValues,
+  getIcon,
   tags = {},
 }, { t } ) => {
   const translate = translateNameSpacer( t, 'Features.GlossaryView' );
@@ -119,7 +120,15 @@ const GlossaryFiltersBar = ( {
                id: 'glossaryType',
                options: glossaryTypes.map( ( type ) => ( {
                  id: type,
-                 label: translate( type )
+                 label: (
+                   <span>
+                     <i
+                       style={ { marginRight: '.5rem' } }
+                       className={ `fa fa-${getIcon( type )}` }
+                     />
+                     { translate( type ) }
+                   </span>
+                 )
                } ) ),
             },
             Object.keys( tags ).length ?

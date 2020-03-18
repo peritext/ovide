@@ -878,8 +878,8 @@
   "Features.GlossaryView.edited recently": "edited recently",
   "Features.GlossaryView.title": "title",
   "Features.GlossaryView.most mentioned": "most mentioned",
-  "Features.GlossaryView.Show ...": "",
-  "Features.GlossaryView.Filters": "Filters",
+  "Features.GlossaryView.Show ...": "Show...",
+  "Features.GlossaryView.Filters": "Options",
   "Features.GlossaryView.all resources": "all materials",
   "Features.GlossaryView.only unused resources (not mentionned anywhere in the production)": "only unused materials (not mentionned by any other material in the production)",
   "Features.GlossaryView.No resource in your glossary yet": "No material in your glossary yet",
@@ -1178,5 +1178,11 @@
   "Features.EditionView.error during html rendering": "error during html rendering",
   "Features.HomeView.You can use this web version to get to know the tool (your data will be stored in the browser\\": "You can use this web version to get to know the tool (your data will be stored in the browser\\",
   "Components.BlockContextualization.edit resource parameters": "edit material's parameters",
-  "Components.BlockContextualization.edit contents": "edit material's contents"
+  "Components.BlockContextualization.edit contents": "edit material's contents",
+  "Features.GlossaryView.You are editing mentions for \"{title}\" entry": "You are editing mentions for \"{title}\" entry",
+  "Features.GlossaryView.hidden": "hidden",
+  "Features.GlossaryView.none": "none",
+  "Features.GlossaryView.manage mentions": "manage glossary entry's mentions",
+  "Features.GlossaryView.glossary entry settings": "glossary entry parameters",
+  "Features.GlossaryView.edit glossary entry's contents": "edit glossary entry's contents"
 }

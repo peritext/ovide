@@ -180,7 +180,7 @@ const UI_DEFAULT_STATE = {
   filterValues: [],
   glossaryFilterValues: [],
   tagsFilterValues: [],
-  sortValue: 'edited recently',
+  sortValue: 'title',
   promptedToDeleteResourceId: undefined,
   selectedResourcesIds: [],
   statusFilterValue: 'all',

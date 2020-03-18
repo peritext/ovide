@@ -229,6 +229,7 @@ class AsideGlossary extends Component {
                 mentionDeleteStep,
                 isBatchCreating,
                 mentionCreationStep,
+                getIcon,
             },
             state: {
                 prospections = [],
@@ -315,6 +316,13 @@ class AsideGlossary extends Component {
         const removeAllMentions = () => {
           removeMentions( mentions );
         };
+      const title = resource &&
+        resource.data &&
+        resource.data.name &&
+        resource.data.name.trim().length ?
+        resource.data.name
+        :
+        translate( 'Unnamed glossary entry' );
       return (
         <div>
           <StretchedLayoutContainer isAbsolute>
@@ -329,16 +337,16 @@ class AsideGlossary extends Component {
                       src={ icons.glossary.black.svg }
                       isSize={ '32x32' }
                     />
-                    {
-                          resource &&
-                          resource.data &&
-                          resource.data.name &&
-                          resource.data.name.trim().length ?
-                          resource.data.name
-                          :
-                          translate( 'Unnamed glossary entry' )
-                      }
+                    {translate( 'You are editing mentions for "{title}" entry', { title } )}
+                    <span
+                      data-for={ 'tooltip' }
+                      className={ 'contents-indicator' }
+                      data-tip={ translate( resource.data.entryType ) }
+                    >
+                      <i className={ `fa fa-${getIcon( resource.data.entryType )}` } />
+                    </span>
                   </span>
+
                 </Title>
 
               </Column>
@@ -384,6 +392,7 @@ class AsideGlossary extends Component {
                         prospections,
                         mentions,
                         removeAllMentions,
+                        getIcon,
                         translate,
                     } )
                 }
