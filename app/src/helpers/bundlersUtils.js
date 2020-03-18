@@ -595,7 +595,16 @@ export const bundleProjectAsZIP = ( { production, requestAssetData } ) => {
       requestAssetData
     } )
     .then( ( assets ) => {
-      zip.file( 'production.json', stringify( production, { space: '  ' } ) );
+      zip.file( 'production.json', stringify( {
+        ...production,
+        assets: Object.entries( production.assets ).reduce( ( res, [ id, asset ] ) => ( {
+          ...res,
+          [id]: {
+            ...asset,
+            data: undefined
+          }
+        } ), {} )
+      }, { space: '  ' } ) );
       const assetsContainer = zip.folder( 'assets' );
       Object.keys( assets ).forEach( ( assetId ) => {
         const asset = assets[assetId];
@@ -822,6 +831,7 @@ export const bundleEditionAsPrintPack = ( {
       const Edition = template.components.Edition;
 
       const renderingMode = edition.metadata.type;
+      production.assets = assets;
       const FinalComponent = () => (
         <ContextProvider
           renderingMode={ renderingMode }
