@@ -245,7 +245,7 @@ class BlockContainer extends Component {
             data-effect={ 'float' }
             data-tip={ translate( 'edit mention parameters' ) }
           >
-            <CenteredIcon src={ icons.settings.white.svg } />
+            <i className={ 'fa fa-comment' } />
           </Button>
           <Button
             isRounded

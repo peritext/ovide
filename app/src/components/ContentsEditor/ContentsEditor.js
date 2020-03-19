@@ -611,13 +611,6 @@ class ContentsEditor extends Component {
                 anchorOffset: entity.start,
                 focusOffset: entity.end,
             } );
-
-            /*
-             * const newEditorState = EditorState.acceptSelection(editorState, newSelection);
-             * this.props.updateDraftEditorState(editorFocus, newEditorState);
-             * this.props.editorFocus(undefined);
-             * setTimeout(() => this.props.setEditorFocus(focus));
-             */
             this.props.setInternalLinkModalFocusData( { focusId: focus, selection: newSelection, selectedSectionId: entity.data.sectionId } );
           }
           // open modal

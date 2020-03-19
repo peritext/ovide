@@ -37,8 +37,8 @@
         &:before
         {
             position: absolute;
-            top: $gutter-small;
-            left: $gutter-small;
+            top: $gutter-small/2;
+            left: $gutter-small/2;
 
             content: open-quote;
         }
