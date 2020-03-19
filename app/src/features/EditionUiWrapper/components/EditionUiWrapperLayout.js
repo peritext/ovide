@@ -46,6 +46,7 @@ const EditionUiWrapperLayout = ( {
   navLocation,
   navbarOpen,
   withLargeHeader,
+  history,
   actions: {
     toggleNavbarOpen,
   },
@@ -95,11 +96,12 @@ const EditionUiWrapperLayout = ( {
    * Callbacks handlers
    */
   const handleClickPrevious = () => {
-    history.back();
+    history.goBack();
   };
   const handleClickNext = () => {
-    history.forward();
+    history.goForward();
   };
+
   return (
     <StretchedLayoutContainer isAbsolute>
       <Helmet>
@@ -166,6 +168,12 @@ const EditionUiWrapperLayout = ( {
               isActive: true,
               content: `${realActiveEditionTitle}`,
               href: `/productions/${productionId}/editions/${editionId}`,
+            } : undefined,
+            navLocation === 'parameters' ?
+            {
+              isActive: true,
+              content: `${translate( 'Parameters' )}`,
+              href: `/productions/${productionId}/parameters`,
             } : undefined
 
           ].filter( ( v ) => v ) }
@@ -176,27 +184,29 @@ const EditionUiWrapperLayout = ( {
               href: '',
               content: (
                 <div onClick={ ( e ) => {
-                  e.silentEvent();
-                  e.preventPropagation();
+                  e.preventDefault();
+                  e.stopPropagation();
                 } }
                 >
                   <Button
                     data-for={ 'tooltip' }
-                    data-tip={ translate( 'previous view' ) }
+                    data-tip={ history.length ? translate( 'previous view' ) : undefined }
                     data-place={ 'bottom' }
                     data-effect={ 'solid' }
                     onClick={ handleClickPrevious }
                     style={ { marginRight: '.5rem' } }
+                    isDisabled={ !history.length }
                     isRounded
                   >
                     <i className={ 'fa fa-chevron-left' } />
                   </Button>
                   <Button
                     data-for={ 'tooltip' }
-                    data-tip={ translate( 'previous view' ) }
+                    data-tip={ !( history.index === history.length - 1 ) ? translate( 'next view' ) : undefined }
                     data-place={ 'bottom' }
                     data-effect={ 'solid' }
                     onClick={ handleClickNext }
+                    isDisabled={ history.index === history.length - 1 }
                     isRounded
                   >
                     <i className={ 'fa fa-chevron-right' } />
@@ -211,14 +221,6 @@ const EditionUiWrapperLayout = ( {
               isActive: navLocation === 'materials' || navLocation === 'editor-section' || navLocation === 'editor-resource',
               content: translate( 'Materials' ),
             },
-
-            navLocation === 'editor-resource' ?
-            {
-              isActive: true,
-              content: `/ ${realActiveSectionTitle}`,
-              href: `/productions/${productionId}/resources/${sectionId}`,
-            }
-            : undefined,
             {
               href: `/productions/${productionId}/glossary`,
               isActive: navLocation === 'glossary',
@@ -229,6 +231,11 @@ const EditionUiWrapperLayout = ( {
               href: `/productions/${productionId}/editions`,
               isActive: navLocation === 'editions' || navLocation === 'edition',
               content: translate( 'Editions' ),
+            },
+            {
+              href: `/productions/${productionId}/parameters`,
+              isActive: navLocation === 'parameters',
+              content: translate( 'Parameters' ),
             },
           ].filter( ( d ) => d ) }
         actionOptions={ [

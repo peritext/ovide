@@ -199,7 +199,7 @@ const MainSectionColumn = ( {
           }
         };
       }
- else {
+      else {
         newSection = {
           ...section,
           metadata: {

@@ -121,7 +121,7 @@ export default @DragDropContext( HTML5Backend ) class ResourcesList extends Comp
           <List
             height={ height }
             rowCount={ resources.length }
-            rowHeight={ 135 }
+            rowHeight={ 140 }
             scrollToIndex={ activeSectionIndex }
             rowRenderer={ rowRenderer }
             width={ width }

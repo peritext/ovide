@@ -51,7 +51,7 @@
   "Components.ContextualizationEditor.Mention visibility": "Mention visibility",
   "Components.ContextualizationEditor.bib": "bibliographic reference",
   "Components.ContextualizationEditor.defaultPageSize": "default page size",
-  "Components.ContextualizationEditor.displayControls": "display controls",
+  "Components.ContextualizationEditor.controls": "display controls",
   "Components.ContextualizationEditor.embed": "embed code",
   "Components.ContextualizationEditor.filterable": "filterable",
   "Components.ContextualizationEditor.glossary": "glossary",
@@ -75,7 +75,7 @@
   "Components.ContextualizationEditor.webpage": "webpage",
   "Components.ContextualizationEditor.yes": "yes",
   "Components.ContextualizationEditor.Explanation about defaultPageSize parameter for contextualizer table": "define the default number of lines to display in one screen-rendered table page",
-  "Components.ContextualizationEditor.Explanation about displayControls parameter for contextualizer table": "define wether to allow reader to seek in the video",
+  "Components.ContextualizationEditor.Explanation about controls parameter for contextualizer table": "define wether to allow reader to seek in the video",
   "Components.ContextualizationEditor.Explanation about filterable parameter for contextualizer table": "define whether to allow reader to perform complex filtering operations in the screen version of the table",
   "Components.ContextualizationEditor.Explanation about heavyPlayer parameter for contextualizer video": "disable this if you plan to show a lot of videos to allow the page to load faster",
   "Components.ContextualizationEditor.Explanation about loop parameter for contextualizer video": "define whether the video should be played in loop",
@@ -1186,5 +1186,6 @@
   "Features.GlossaryView.glossary entry settings": "glossary entry parameters",
   "Features.GlossaryView.edit glossary entry's contents": "edit glossary entry's contents",
   "Features.GlossaryView.edit glossary entry\\": "edit glossary entry\\",
-  "Features.EditionUiWrapper.previous view": "previous view"
+  "Features.EditionUiWrapper.previous view": "previous view",
+  "Features.EditionUiWrapper.next view": "next view"
 }

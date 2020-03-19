@@ -118,7 +118,7 @@
   "add": "ajouter",
   "Components.ContextualizationEditor.vegaLiteSpecificationCode": "Spécification Vega",
   "Components.ContextualizationEditor.Explanation about defaultPageSize parameter for contextualizer table": "définir le nombre de lignes par défaut à afficher dans une seule page du tableau interactif",
-  "Components.ContextualizationEditor.Explanation about displayControls parameter for contextualizer table": "définir si les lecteurs peuvent se déplacer dans la vidéo",
+  "Components.ContextualizationEditor.Explanation about controls parameter for contextualizer table": "définir si les lecteurs peuvent se déplacer dans la vidéo",
   "Components.ContextualizationEditor.Explanation about filterable parameter for contextualizer table": "définir si les lecteurs peuvent effectuer des opérations de filtrage complexe dans la version interactive du tableau",
   "Components.ContextualizationEditor.Explanation about heavyPlayer parameter for contextualizer video": "désactiver ceci si vous prévoyez d'afficher un nombre important de vidéos/contenus riche dans les contenus, afin d'améliorer les performances",
   "Components.ContextualizationEditor.Explanation about loop parameter for contextualizer video": "définir si la vidéo doit être jouée en boucle",
@@ -151,7 +151,7 @@
   "Components.ContextualizationEditor.Mention visibility": "Visibilité de la mention",
   "Components.ContextualizationEditor.bib": "référence bibliographique",
   "Components.ContextualizationEditor.defaultPageSize": "taille des pages par défaut",
-  "Components.ContextualizationEditor.displayControls": "montrer les contrôles",
+  "Components.ContextualizationEditor.controls": "montrer les contrôles",
   "Components.ContextualizationEditor.embed": "code embarqué",
   "Components.ContextualizationEditor.filterable": "filtrable",
   "Explanation about useAbstract": "utiliser le résumé de la production pour ce bloc",
@@ -1186,5 +1186,6 @@
   "Features.GlossaryView.glossary entry settings": "paramètres de l'entrée de glossaire",
   "Features.GlossaryView.edit glossary entry's contents": "éditer les contenus de l'entrée de glossaire",
   "Features.GlossaryView.edit glossary entry\\": "edit glossary entry\\",
-  "Features.EditionUiWrapper.previous view": "previous view"
+  "Features.EditionUiWrapper.previous view": "vue précédente",
+  "Features.EditionUiWrapper.next view": "vue suivante"
 }

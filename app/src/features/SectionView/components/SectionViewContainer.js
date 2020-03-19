@@ -408,9 +408,9 @@ class SectionViewContainer extends Component {
       this.props.actions.updateDraftEditorState( editorStateId, editorState );
     }
     // setTimeout( () => {
-      this.onSummonAsset( contentId, resourceId );
-      this.props.actions.setLinkModalFocusData( undefined );
-      this.props.actions.setGlossaryModalFocusData( undefined );
+    this.onSummonAsset( contentId, resourceId );
+    this.props.actions.setLinkModalFocusData( undefined );
+    this.props.actions.setGlossaryModalFocusData( undefined );
     // } );
   }
 
