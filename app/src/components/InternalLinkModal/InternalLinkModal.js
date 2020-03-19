@@ -47,6 +47,12 @@ class InternalLinkModal extends Component {
     if ( this.props.focusData && nextProps.focusData ) {
       this.updateSelection( nextProps );
     }
+    if ( this.props.isActive && nextProps.isActive ) {
+      this.setState( {
+        selectedSectionId: undefined,
+        dropdownOpen: false
+      } );
+    }
   }
 
   updateSelection = ( props ) => {
