@@ -162,6 +162,43 @@ const getStaticSummary = ( { production, edition } ) => {
   return production.sectionsOrder;
 };
 
+const getPreprocessedContextualizations = ( {
+  production,
+  // edition,
+  assets,
+  contextualizations
+} ) => {
+
+  return contextualizations.reduce( ( cur, { contextualization, contextualizer } ) =>
+  cur.then( ( result ) => {
+    return new Promise( ( resolve, reject ) => {
+
+      if ( contextualization && contextualizer ) {
+        const thatModule = contextualizerModules[contextualizer.type];
+        if ( thatModule && thatModule.meta && thatModule.meta.asyncPrerender ) {
+          const resource = production.resources[contextualization.sourceId];
+          thatModule.meta.asyncPrerender( {
+            resource,
+            contextualization,
+            contextualizer,
+            productionAssets: assets,
+          } )
+          .then( ( data ) => {
+            resolve( {
+              ...result,
+              [contextualization.id]: data
+            } );
+          } )
+          .catch( reject );
+        }
+        else resolve( result );
+      }
+      else resolve( result );
+    } );
+  } )
+  , Promise.resolve( {} ) );
+}
+
 const loadAllAssets = ( {
   production = {},
   requestAssetData,
@@ -218,43 +255,6 @@ class ContextProvider extends Component {
     return this.props.children;
   }
 }
-
-const getPreprocessedContextualizations = ( {
-  production,
-  // edition,
-  assets,
-  contextualizations
-} ) => {
-
-  return contextualizations.reduce( ( cur, { contextualization, contextualizer } ) =>
-  cur.then( ( result ) => {
-    return new Promise( ( resolve, reject ) => {
-
-      if ( contextualization && contextualizer ) {
-        const thatModule = contextualizerModules[contextualizer.type];
-        if ( thatModule && thatModule.meta && thatModule.meta.asyncPrerender ) {
-          const resource = production.resources[contextualization.sourceId];
-          thatModule.meta.asyncPrerender( {
-            resource,
-            contextualization,
-            contextualizer,
-            productionAssets: assets,
-          } )
-          .then( ( data ) => {
-            resolve( {
-              ...result,
-              [contextualization.id]: data
-            } );
-          } )
-          .catch( reject );
-        }
-        else resolve( result );
-      }
-      else resolve( result );
-    } );
-  } )
-  , Promise.resolve( {} ) );
-};
 
 class SectionRenderer extends Component {
   static childContextTypes = {
@@ -841,6 +841,7 @@ export const bundleEditionAsPrintPack = ( {
             {
               ...{
                 production,
+                assets,
                 edition,
                 lang,
                 contextualizers: contextualizerModules,
@@ -854,8 +855,8 @@ export const bundleEditionAsPrintPack = ( {
       );
       let html = '';
       try {
-        html = renderToStaticMarkup( <FinalComponent /> );
-        console.info( 'html', html );
+        html = renderToString( <FinalComponent /> );
+        // console.info( 'html', html );
       }
       catch ( e ) {
         console.error( e );/* eslint no-console : 0 */
@@ -1047,11 +1048,12 @@ export const downloadProjectAsWebsite = ( {
             /**
              * @todo externalize table files as well
              */
-            // case 'text/csv':/* eslint no-fallthrough : 0 */
-            // case 'text/tsv':
-            // case 'text/comma-separated-values':
-            // case 'text/tab-separated-values':
-            //   return writeFile( address, JSON.stringify( asset.data ), 'utf8' );
+            case 'text/csv':/* eslint no-fallthrough : 0 */
+            case 'text/tsv':
+            case 'text/comma-separated-values':
+            case 'text/tab-separated-values':
+              production.assets[assetId].data = asset.data;
+              // return writeFile( address, JSON.stringify( asset.data ), 'utf8' );
 
             default:
               break;
