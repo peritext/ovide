@@ -1187,5 +1187,7 @@
   "Features.GlossaryView.edit glossary entry's contents": "edit glossary entry's contents",
   "Features.GlossaryView.edit glossary entry\\": "edit glossary entry\\",
   "Features.EditionUiWrapper.previous view": "previous view",
-  "Features.EditionUiWrapper.next view": "next view"
+  "Features.EditionUiWrapper.next view": "next view",
+  "Components.LinkModal.search for a link": "search for a link",
+  "Components.GlossaryModal.search for a glossary entry": "search for a glossary entry"
 }
