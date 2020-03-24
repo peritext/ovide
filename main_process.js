@@ -93,7 +93,7 @@ app.on( 'ready', async () => {
     if ( isDevelopment ) {
       mainWindow.loadURL( `file://${__dirname}/app/electronIndex.dev.html` );
     }
- else {
+    else {
       mainWindow.loadURL( `file://${__dirname}/app/electronIndex.html` );
     }
     // console.log('done:load index');
@@ -111,7 +111,7 @@ app.on( 'ready', async () => {
       if ( !loaded ) {
         loaded = true;
       }
- else return;
+      else return;
 
       /*
        * Handle window logic properly on macOS:
@@ -141,12 +141,22 @@ app.on( 'ready', async () => {
           forceQuit = true;
         } );
       }
- else {
+      else {
         mainWindow.on( 'closed', () => {
           mainWindow = null;
         } );
       }
     } );
+
+    mainWindow.webContents.on( 'context-menu', ( e, props ) => {
+      // console.log('on context menu');
+        Menu.buildFromTemplate( [ {
+          label: 'Inspect element',
+          click() {
+            mainWindow.inspectElement( props.x, props.y );
+          }
+        } ] ).popup( mainWindow );
+      } );
 
     if ( isDevelopment ) {
 
@@ -158,18 +168,17 @@ app.on( 'ready', async () => {
       mainWindow.webContents.openDevTools();
 
       // add inspect element on right click menu
-      mainWindow.webContents.on( 'context-menu', ( e, props ) => {
-      // console.log('on context menu');
-
-        Menu.buildFromTemplate( [ {
-          label: 'Inspect element',
-          click() {
-            mainWindow.inspectElement( props.x, props.y );
-          }
-        } ] ).popup( mainWindow );
-      } );
+      // mainWindow.webContents.on( 'context-menu', ( e, props ) => {
+      // // console.log('on context menu');
+      //   Menu.buildFromTemplate( [ {
+      //     label: 'Inspect element',
+      //     click() {
+      //       mainWindow.inspectElement( props.x, props.y );
+      //     }
+      //   } ] ).popup( mainWindow );
+      // } );
     }
- else {
+  else {
       Menu.setApplicationMenu(
         Menu.buildFromTemplate(
           [
