@@ -15,6 +15,7 @@ import {
   Title,
   Field,
   Control,
+  Input,
   Image,
   Dropdown,
   FlexContainer,
@@ -45,6 +46,7 @@ class GlossaryModal extends Component {
       name: '',
       description: '',
       entryType: 'person',
+      searchInput: ''
     };
   }
 
@@ -55,7 +57,8 @@ class GlossaryModal extends Component {
         choosenResource: undefined,
         name: '',
         description: '',
-        entryType: 'person'
+        entryType: 'person',
+        searchInput: '',
       } );
     }
   }
@@ -80,6 +83,7 @@ class GlossaryModal extends Component {
         name,
         description,
         entryType,
+        searchInput,
       },
       context: {
         t
@@ -125,6 +129,7 @@ class GlossaryModal extends Component {
      * const handleNewEntryTypeChange = ( val ) => this.setState( { entryType: val } );
      */
     const handleNewItemChange = ( vals ) => this.setState( vals );
+    const handleSearchInputChange = ( e ) => this.setState( { searchInput: e.target.value } );
 
     return (
       <ModalCard
@@ -151,31 +156,67 @@ class GlossaryModal extends Component {
                   closeOnChange
                   onChange={ handleChooseResource }
                   value={ { id: choosenResource } }
-                  options={ glossaries
-                                  .sort( ( a, b ) => {
-                                    if ( a.metadata.title > b.metadata.title ) {
-                                      return 1;
-                                    }
-                                    return -1;
-                                  } )
-                                  .map( ( resource ) => ( {
-                                  id: resource.id,
-                                  label: (
-                                    <FlexContainer
-                                      alignItems={ 'center' }
-                                      flexDirection={ 'row' }
-                                    >
-                                      <Image
-                                        style={ { display: 'inline-block', marginRight: '1em' } }
-                                        isSize={ '16x16' }
-                                        src={ icons.glossary.black.svg }
-                                      />
-                                      <span >
-                                        {`${abbrevString( resource.data.name, 30 )} (${abbrevString( resource.data.entryType, 30 )})`}
-                                      </span>
-                                    </FlexContainer>
-                                    )
-                                } ) ) }
+                  options={ [
+                    {
+                      id: 'search',
+                      label: (
+                        <div
+                          style={ {
+                            display: 'flex',
+                            alignItems: 'center',
+                            flexDirection: 'row'
+                          } }
+                          onClick={ ( e ) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                          } }
+                        >
+                          <i
+                            className={ 'fa fa-search' }
+                            style={ { marginRight: '1rem' } }
+                          />
+                          <Input
+                            value={ searchInput }
+                            onChange={ handleSearchInputChange }
+                            placeholder={ translate( 'search for a glossary entry' ) }
+                            style={ { flex: 1 } }
+                          />
+                        </div>
+                      )
+                    },
+                    ...glossaries
+                      .sort( ( a, b ) => {
+                        if ( a.data.name > b.data.name ) {
+                          return 1;
+                        }
+                        return -1;
+                      } )
+                      .filter( ( resource ) => {
+                        if ( searchInput.length > 1 ) {
+                          return resource.metadata.title.toLowerCase().includes( searchInput.toLowerCase() )
+                          || resource.data.name.toLowerCase().includes( searchInput.toLowerCase() );
+                        }
+                        return true;
+                      } )
+                      .map( ( resource ) => ( {
+                      id: resource.id,
+                      label: (
+                        <FlexContainer
+                          alignItems={ 'center' }
+                          flexDirection={ 'row' }
+                        >
+                          <Image
+                            style={ { display: 'inline-block', marginRight: '1em' } }
+                            isSize={ '16x16' }
+                            src={ icons.glossary.black.svg }
+                          />
+                          <span >
+                            {`${abbrevString( resource.data.name, 30 )} (${abbrevString( resource.data.entryType, 30 )})`}
+                          </span>
+                        </FlexContainer>
+                        )
+                    } ) )
+                  ] }
                 >
                   {choosenResource && activeResource ? abbrevString( `${activeResource.data.name} (${activeResource.data.entryType})`, 60 ) : translate( 'Choose an existing glossary item' )}
                 </Dropdown>

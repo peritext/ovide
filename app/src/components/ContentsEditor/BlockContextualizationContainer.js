@@ -238,6 +238,16 @@ class BlockContainer extends Component {
           </Button>
           <Button
             isRounded
+            onClick={ handleEditRequest }
+            data-for={ 'tooltip' }
+            data-place={ 'right' }
+            data-effect={ 'float' }
+            data-tip={ translate( 'edit resource parameters' ) }
+          >
+            <CenteredIcon src={ icons.settings.black.svg } />
+          </Button>
+          <Button
+            isRounded
             isColor={ 'info' }
             onClick={ handleEditContextualizationRequest }
             data-for={ 'tooltip' }
@@ -247,17 +257,7 @@ class BlockContainer extends Component {
           >
             <i className={ 'fa fa-comment' } />
           </Button>
-          <Button
-            isRounded
-            onClick={ handleEditRequest }
-            isColor={ 'primary' }
-            data-for={ 'tooltip' }
-            data-place={ 'right' }
-            data-effect={ 'float' }
-            data-tip={ translate( 'edit resource parameters' ) }
-          >
-            <CenteredIcon src={ icons.settings.white.svg } />
-          </Button>
+          
           <Button
             isRounded
             isColor={ 'primary' }

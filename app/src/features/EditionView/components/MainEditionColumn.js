@@ -501,7 +501,7 @@ const MainEditionColumn = ( {
   return (
     <Column
       isSize={ 'fullwidth' }
-      style={ { position: 'relative', margin: '1rem' } }
+      style={ { position: 'relative', margin: '.5rem' } }
     >
       <PreviewWrapper
         {

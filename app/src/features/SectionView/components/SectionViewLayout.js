@@ -246,7 +246,7 @@ const SectionViewLayout = ( {
                 }
                 return -1;
               default:
-                return -1;
+                return 0;
              }
           } );
   const hyperlinks = linkModalFocusData ? Object.keys( production.resources )

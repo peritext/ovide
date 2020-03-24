@@ -971,7 +971,7 @@ class LibraryViewLayout extends Component {
                     return resource1.metadata.title > resource2.metadata.title ? 1 : -1;
                   case 'summary':
                   default:
-                    return -1;
+                    return 0;
                 }
               } );
               const handleDeleteSection = ( thatSectionId ) => {

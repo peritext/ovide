@@ -14,6 +14,7 @@ import {
   Button,
   Title,
   Field,
+  Input,
   Label,
   Control,
   Image,
@@ -39,7 +40,8 @@ class LinkModal extends Component {
       dropdownOpen: false,
       choosenResource: undefined,
       title: '',
-      url: ''
+      url: '',
+      searchInput: ''
     };
   }
 
@@ -49,7 +51,8 @@ class LinkModal extends Component {
         dropdownOpen: false,
         choosenResource: undefined,
         title: '',
-        url: ''
+        url: '',
+        searchInput: ''
       } );
     }
   }
@@ -72,7 +75,8 @@ class LinkModal extends Component {
         dropdownOpen,
         choosenResource,
         title,
-        url
+        url,
+        searchInput
       },
       context: {
         t
@@ -104,6 +108,7 @@ class LinkModal extends Component {
     const handleChooseResource = ( thatId ) => this.setState( { choosenResource: choosenResource === thatId ? undefined : thatId } );
     const handleNewURLChange = ( e ) => this.setState( { url: e.target.value } );
     const handleNewTitleChange = ( e ) => this.setState( { title: e.target.value } );
+    const handleSearchInputChange = ( e ) => this.setState( { searchInput: e.target.value } );
 
     return (
       <ModalCard
@@ -129,13 +134,48 @@ class LinkModal extends Component {
                   closeOnChange
                   onChange={ handleChooseResource }
                   value={ { id: choosenResource } }
-                  options={ hyperlinks
+                  options={ [
+                    {
+                      id: 'search',
+                      label: (
+                        <div
+                          style={ {
+                            display: 'flex',
+                            alignItems: 'center',
+                            flexDirection: 'row'
+                          } }
+                          onClick={ ( e ) => {
+                            e.stopPropagation();
+                            e.preventDefault();
+                          } }
+                        >
+                          <i
+                            className={ 'fa fa-search' }
+                            style={ { marginRight: '1rem' } }
+                          />
+                          <Input
+                            value={ searchInput }
+                            onChange={ handleSearchInputChange }
+                            placeholder={ translate( 'search for a link' ) }
+                            style={ { flex: 1 } }
+                          />
+                        </div>
+                      )
+                    },
+                    ...hyperlinks
                                   .sort( ( a, b ) => {
                                     if ( a.metadata.title > b.metadata.title ) {
                                       return 1;
                                     }
                                     return -1;
                                   } )
+                                  .filter(resource => {
+                                    if( searchInput.length > 1 ) {
+                                      return resource.metadata.title.toLowerCase().includes(searchInput.toLowerCase())
+                                      || resource.data.url.toLowerCase().includes(searchInput.toLowerCase())
+                                    }
+                                    return true;
+                                  })
                                   .map( ( resource ) => ( {
                                   id: resource.id,
                                   label: (
@@ -148,12 +188,16 @@ class LinkModal extends Component {
                                         isSize={ '16x16' }
                                         src={ icons.webpage.black.svg }
                                       />
-                                      <span >
+                                      <span
+                                        data-for={ 'tooltip' }
+                                        data-tip={ `${ resource.metadata.title } (${ resource.data.url })` }
+                                      >
                                         {`${abbrevString( resource.metadata.title, 30 )} (${abbrevString( resource.data.url, 30 )})`}
                                       </span>
                                     </FlexContainer>
                                     )
-                                } ) ) }
+                                } ) )
+                   ] }
                 >
                   {choosenResource && activeResource ? abbrevString( `${activeResource.metadata.title} (${activeResource.data.url})`, 60 ) : translate( 'Choose an existing hyperlink' )}
                 </Dropdown>
@@ -178,8 +222,7 @@ class LinkModal extends Component {
               <Field>
                 <Label>{translate( 'Title of the webpage' )}</Label>
                 <Control>
-                  <input
-                    className={ 'input' }
+                  <Input
                     placeholder={ translate( 'Hyperlink title' ) }
                     value={ title }
                     onChange={ handleNewTitleChange }

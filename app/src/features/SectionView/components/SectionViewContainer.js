@@ -344,7 +344,7 @@ class SectionViewContainer extends Component {
 
   onSummonAsset = ( contentId, resourceId ) => summonAsset( contentId, resourceId, this.props, peritextConfig );
 
-  onCreateHyperlink = ( { title, url }, contentId, selection ) => {
+  onCreateHyperlink = ( { title, url }, contentId, inputSelection ) => {
     const {
       match: {
         params: {
@@ -357,7 +357,19 @@ class SectionViewContainer extends Component {
       }
     } = this.props;
     const editorStateId = contentId === 'main' ? sectionId : contentId;
-    if ( selection ) {
+    let selection;
+    if ( inputSelection ) {
+      selection = inputSelection;
+      const inJs = selection.toJS();
+      if ( inJs.isBackward ) {
+        selection = selection.merge( {
+          isBackward: false,
+          anchorOffset: inJs.focusOffset,
+          focusOffset: inJs.anchorOffset,
+          anchorKey: inJs.focusKey,
+          focusKey: inJs.anchorKey,
+        } );
+      }
       let editorState = this.props.editorStates[editorStateId];
       editorState = EditorState.acceptSelection( editorState, selection );
       this.props.actions.updateDraftEditorState( editorStateId, editorState );
@@ -389,7 +401,7 @@ class SectionViewContainer extends Component {
       } );
     } )
     .then( () => {
-      this.onContextualizeGlossary( id, contentId, selection );
+      this.onContextualizeHyperlink( id, contentId, selection );
     } );
   }
 
