@@ -23,6 +23,11 @@ const peritextConfig = {
       deucalion: true,
       callirhoe: true,
       chrysaor: true
+    },
+    'multi-page-html': {
+      deucalion: true,
+      callirhoe: true,
+      chrysaor: true
     }
   },
   generators: {
@@ -36,7 +41,7 @@ const peritextConfig = {
       outputFormat: 'zip',
       generatorType: 'multi-page-html',
       id: 'multi-page-html',
-      interfaceCoverage: [ 'desktop' ]
+      interfaceCoverage: [ 'desktop', 'web' ]
     },
   },
   resourcesSchemas: {
