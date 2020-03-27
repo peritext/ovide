@@ -509,40 +509,7 @@ class HomeViewLayout extends Component {
                       {this.translate( 'You have no productions yet' )}
                     </Title>
                   </StretchedLayoutItem>
-                  {( inElectron || !rgpdAgreementPrompted ) &&
-                  <StretchedLayoutItem style={ { marginTop: '1rem', padding: '1rem' } }>
-                    <StretchedLayoutContainer isDirection={ 'horizontal' }>
-                      <StretchedLayoutItem
-                        isFlex={ 1 }
-                        style={ {
-                          paddingRight: '1rem'
-                        } }
-                      >
-                        <Button
-                          isColor={ 'primary' }
-                          onClick={ handleToggleNewProductionOpened }
-                          className={ 'is-fullwidth' }
-
-                        >
-                          {this.translate( 'Create a first production' )}
-                        </Button>
-                      </StretchedLayoutItem>
-                      <StretchedLayoutItem isFlex={ 1 }>
-                        <Button
-                          isColor={ 'info' }
-                          onClick={ () => setExamplesOpen( true ) }
-                          className={ 'is-fullwidth' }
-                          style={ {
-                              // marginLeft: '1rem'
-                            } }
-                        >
-                          {this.translate( 'Load an example' )}
-                        </Button>
-                      </StretchedLayoutItem>
-                    </StretchedLayoutContainer>
-
-                  </StretchedLayoutItem>
-                  }
+                  
                 </StretchedLayoutContainer>
               </div>
             }
