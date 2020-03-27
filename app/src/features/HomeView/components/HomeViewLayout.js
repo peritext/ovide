@@ -331,31 +331,6 @@ class HomeViewLayout extends Component {
                 style={ { paddingLeft: '4rem' } }
                 className={ 'column' }
               >
-                <p className={ 'content' }>
-                  {this.translate( 'Ovide is an experimental writing and publishing tool. It is made for context-intensive, distributed, scholarly publishing endeavours.' )}
-                </p>
-                <p
-                  className={ 'content' }
-                  dangerouslySetInnerHTML={ {/* eslint react/no-danger:0*/
-                    __html: this.translate( 'It is built around the <a rel="noopener" target="blank" href="{peritextUrl}">peritext ecosystem</a> and the <a rel="noopener" target="blank" href="{quinoaUrl}">quinoa project</a>.', {
-                      quinoaUrl: 'https://fonio.medialab.sciences-po.fr/demo',
-                      peritextUrl: 'https://peritext.github.io',
-                    } )
-                  } }
-                />
-                {
-                  !inElectron &&
-                  <p className={ 'content' }>
-                    {this.translate( 'You can use this web version to get to know the tool (your data will be stored in the browser\'s local storage), but please use the desktop version for real/extended use, with better performance and more permanent file-based data storage.' )}
-                  </p>
-                }
-
-              </div>
-
-              <div
-                style={ { paddingLeft: '4rem' } }
-                className={ 'column' }
-              >
                 {( inElectron || !rgpdAgreementPrompted ) &&
                   <Level style={ { marginBottom: '.5rem' } }>
                     <Button
@@ -381,6 +356,32 @@ class HomeViewLayout extends Component {
                 }
 
               </div>
+              <div
+                style={ { paddingLeft: '4rem' } }
+                className={ 'column' }
+              >
+                <p className={ 'content' }>
+                  {this.translate( 'Ovide is an experimental writing and publishing tool. It is made for context-intensive, distributed, scholarly publishing endeavours.' )}
+                </p>
+                <p
+                  className={ 'content' }
+                  dangerouslySetInnerHTML={ {/* eslint react/no-danger:0*/
+                    __html: this.translate( 'It is built around the <a rel="noopener" target="blank" href="{peritextUrl}">peritext ecosystem</a> and the <a rel="noopener" target="blank" href="{quinoaUrl}">quinoa project</a>.', {
+                      quinoaUrl: 'https://fonio.medialab.sciences-po.fr/demo',
+                      peritextUrl: 'https://peritext.github.io',
+                    } )
+                  } }
+                />
+                {
+                  !inElectron &&
+                  <p className={ 'content' }>
+                    {this.translate( 'You can use this web version to get to know the tool (your data will be stored in the browser\'s local storage), but please use the desktop version for real/extended use, with better performance and more permanent file-based data storage.' )}
+                  </p>
+                }
+
+              </div>
+
+              
 
               <Level />
               <Level />
