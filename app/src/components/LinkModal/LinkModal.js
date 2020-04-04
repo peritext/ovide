@@ -169,13 +169,13 @@ class LinkModal extends Component {
                                     }
                                     return -1;
                                   } )
-                                  .filter(resource => {
-                                    if( searchInput.length > 1 ) {
-                                      return resource.metadata.title.toLowerCase().includes(searchInput.toLowerCase())
-                                      || resource.data.url.toLowerCase().includes(searchInput.toLowerCase())
+                                  .filter( ( resource ) => {
+                                    if ( searchInput.length > 1 ) {
+                                      return resource.metadata.title.toLowerCase().includes( searchInput.toLowerCase() )
+                                      || resource.data.url.toLowerCase().includes( searchInput.toLowerCase() );
                                     }
                                     return true;
-                                  })
+                                  } )
                                   .map( ( resource ) => ( {
                                   id: resource.id,
                                   label: (

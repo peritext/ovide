@@ -197,7 +197,7 @@ const getPreprocessedContextualizations = ( {
     } );
   } )
   , Promise.resolve( {} ) );
-}
+};
 
 const loadAllAssets = ( {
   production = {},

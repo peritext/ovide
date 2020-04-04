@@ -1172,7 +1172,7 @@
   "Features.EditionView.Website prefix": "Published website URL",
   "Components.LanguageToggler.fr": "français",
   "Components.LanguageToggler.en": "english",
-  "Features.EditionView.Explanation about website prefix": "Write here the URL of your target website URL (e.g. : 'https://user.github.io/project/') or keep it empty to test your publication locally. It will be used to populate the website's metadata, correctly access resources (images, ...) and properly handle the addresses of the pages.",
+  "Features.EditionView.Explanation about website prefix": "Write here the URL of your publication website (e.g. : 'https://user.github.io/project') or keep it empty to test your publication locally. It will be used to populate the website's metadata, correctly access resources (images, ...) and properly handle the addresses of the pages.",
   "Features.HomeView.You can use this web version to get to know the tool (your data will be stored in the browser's local storage), but please use the desktop version for real/extended use, with better performance and more permanent file-based data storage.": "You can use this web version to get to know the tool (your data will be stored in the browser's local storage), but please use the desktop version for real/extended use, with better performance and more permanent file-based data storage.",
   "Features.EditionView.render page {p}": "render page {p}",
   "Features.EditionView.error during html rendering": "error during html rendering",

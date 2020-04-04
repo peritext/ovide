@@ -381,8 +381,6 @@ class HomeViewLayout extends Component {
 
               </div>
 
-              
-
               <Level />
               <Level />
 
@@ -509,7 +507,7 @@ class HomeViewLayout extends Component {
                       {this.translate( 'You have no productions yet' )}
                     </Title>
                   </StretchedLayoutItem>
-                  
+
                 </StretchedLayoutContainer>
               </div>
             }

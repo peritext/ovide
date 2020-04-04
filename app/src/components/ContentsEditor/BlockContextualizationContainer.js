@@ -257,7 +257,7 @@ class BlockContainer extends Component {
           >
             <i className={ 'fa fa-comment' } />
           </Button>
-          
+
           <Button
             isRounded
             isColor={ 'primary' }
