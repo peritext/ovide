@@ -212,6 +212,21 @@ export const convertQuinoaStoryToProduction = ( story ) => {
       }
     };
   }, {} );
+  const contextualizers = Object.keys( story.contextualizers ).reduce( ( res, contextualizerId ) => {
+    const contextualizer = story.contextualizers[contextualizerId];
+    let insertionType = 'BLOCK_ASSET';
+    const inlineTypes = [ 'webpage', 'bib', 'glossary' ];
+    if ( inlineTypes.includes( contextualizer.type ) ) {
+      insertionType = 'INLINE_ASSET';
+    }
+    return {
+      ...res,
+      [contextualizerId]: {
+        ...contextualizer,
+        insertionType
+      }
+    };
+  }, {} );
   return {
     ...production,
     id: genId(),
@@ -220,7 +235,7 @@ export const convertQuinoaStoryToProduction = ( story ) => {
     sections,
     resources,
     contextualizations,
-    contextualizers: story.contextualizers,
+    contextualizers,
     assets,
   };
 };
