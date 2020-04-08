@@ -30,7 +30,7 @@ export const findProspectionMatches = ( {
       .reduce( ( result, block, blockIndex ) => {
           const matches = [];
           let match = null;
-          const text = block.text;
+          const { text, key: blockKey } = block;
           do {
               match = regexp.exec( text );
               if ( match ) {
@@ -72,6 +72,7 @@ export const findProspectionMatches = ( {
                           id: counter,
                           endIndex,
                           length: searchTerm.length,
+                          blockKey
                       } );
                   }
               }

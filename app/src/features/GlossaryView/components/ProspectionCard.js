@@ -43,7 +43,10 @@ const buildProspectRawContent = ( {
   }
   const matchEntityKey = `${+( Object.keys( contents.entityMap ).pop() || 0 ) + 1}`;
   const entitiesDedupMap = {};
-  const block = contents.blocks[prospect.blockIndex];
+  const block = contents.blocks.find( ( b ) => b.key === prospect.blockKey );
+  if ( !block ) {
+    return contents;
+  }
   const finalContents = {
     ...contents,
     blocks: [ {

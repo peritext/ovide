@@ -47,7 +47,10 @@ const buildMentionRawContent = ( {
   const entitiesDedupMap = {};
   const contextualizationEntityKey = Object.keys( contents.entityMap || {} )
     .find( ( entityKey ) => contents.entityMap[entityKey].type === 'INLINE_ASSET' && contents.entityMap[entityKey].data.asset.id === mention.contextualizationId );
-  const block = contents.blocks[mention.blockIndex];
+  const block = contents.blocks.find( ( b ) => b.key === mention.blockKey );
+  if ( !block ) {
+    return contents;
+  }
   const finalContents = {
     ...contents,
     blocks: [ {
@@ -125,7 +128,7 @@ class MentionCard extends Component {
      */
     const cardSize = 12;
     let raw;
-    if ( mention.contentId && mention.blockIndex !== undefined ) {
+    if ( mention.contentId && mention.blockKey !== undefined ) {
       raw = buildMentionRawContent( { mention, production } );
     }
 

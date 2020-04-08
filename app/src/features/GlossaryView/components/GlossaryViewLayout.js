@@ -908,8 +908,8 @@ class GlossaryViewLayout extends Component {
           }
         }
       },
-      blocks: contents.blocks.map( ( block, index ) => {
-        if ( index === prospect.blockIndex ) {
+      blocks: contents.blocks.map( ( block ) => {
+        if ( block.key === prospect.blockKey ) {
           return {
             ...block,
             entityRanges: [

@@ -265,18 +265,20 @@ class AsideGlossary extends Component {
             else {
                 contents = section.data.contents.notes[editorId].contents;
             }
+            if ( !contents ) {
+              contents = { entityMap: {}, blocks: [] };
+            }
             return Object.keys( contents.entityMap ).find( ( entityKey ) => {
                 const entity = contents.entityMap[entityKey];
                 if ( entity.type === 'INLINE_ASSET' && entity.data.asset.id === contextualizationId ) {
-                    // console.log('found with entity', entity, entityKey);
                     contents.blocks.find( ( block, blockIndex ) => {
                         const match = block.entityRanges.find( ( range ) => +range.key === +entityKey );
-                        // console.log('match', match);
                         if ( match ) {
                             mention = {
                                 offset: match.offset,
                                 length: match.length,
                                 blockIndex,
+                                blockKey: block.key,
                                 sectionId,
                                 contentId: editorId,
                                 contextualizationId
