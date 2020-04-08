@@ -188,7 +188,10 @@ export const convertQuinoaStoryToProduction = ( story ) => {
       };
     }
     newResource.data.contents = {
-      contents: {},
+      contents: {
+        blocks: [],
+        entityMap: {}
+      },
       notes: {},
       notesOrder: []
     };
