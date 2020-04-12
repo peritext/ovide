@@ -13,23 +13,13 @@ const config = {
   module: sharedConfig.module,
   node: sharedConfig.node,
   plugins: sharedConfig.plugins
-    .concat(
-      new BundleAnalyzerPlugin({
-        openAnalyzer: true,
-        generateStatsFile: true,
-        analyzerMode: 'enabled'
-      })
-    ),
-  // optimization: {
-  //   minimizer: [
-  //     new UglifyJsPlugin({
-  //       uglifyOptions: {
-  //         ie8: false
-  //       },
-  //       parallel: true
-  //     })
-  //   ]
-  // },
+    // .concat(
+    //   new BundleAnalyzerPlugin({
+    //     openAnalyzer: true,
+    //     generateStatsFile: true,
+    //     analyzerMode: 'enabled'
+    //   })
+    // ),
   output: {
     path: '/build',
     publicPath: homepage + '/build/'

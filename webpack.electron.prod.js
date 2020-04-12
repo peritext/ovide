@@ -28,10 +28,6 @@ module.exports = {
                 },
                 exclude: [/node_modules/]
             },
-            // {
-            //     test: /\.(eot|svg|ttf|woff(2)?)(\?v=\d+\.\d+\.\d+)?/,
-            //     loader: 'url-loader'
-            // },
             {
                 test: /\.s?css$/,
                 loader: ExtractTextPlugin.extract({
@@ -39,13 +35,6 @@ module.exports = {
                     use: ['css-loader', 'sass-loader'],
                   }),
             },
-            // {
-            //     test: /\.(png|jpg|gif|svg)$/,
-            //     loader: 'file-loader',
-            //     query: {
-            //         name: '[name].[ext]?[hash]'
-            //     }
-            // },
             {
                 test: /\.(woff|ttf|otf|eot|woff2)$/i,
                  use: [
