@@ -72,13 +72,13 @@ const EditionUiWrapperLayout = ( {
 
   let computedTitle;
   if ( editedProduction && editedProduction.metadata && editedProduction.metadata.title ) {
-    computedTitle = abbrevString( editedProduction.metadata.title, 25 );
+    computedTitle = abbrevString( editedProduction.metadata.title, 20 );
   }
   else computedTitle = translate( 'Unnamed production' );
 
   let realActiveSectionTitle;
   if ( activeSectionTitle.length ) {
-    realActiveSectionTitle = activeSectionTitle.length > 30 ? `${activeSectionTitle.substr( 0, 30 ) }...` : activeSectionTitle;
+    realActiveSectionTitle = activeSectionTitle.length > 20 ? `${activeSectionTitle.substr( 0, 20 ) }...` : activeSectionTitle;
   }
   else {
     realActiveSectionTitle = translate( 'Untitled section' );
@@ -86,7 +86,7 @@ const EditionUiWrapperLayout = ( {
 
   let realActiveEditionTitle;
   if ( activeEditionTitle.length ) {
-    realActiveEditionTitle = activeEditionTitle.length > 30 ? `${activeEditionTitle.substr( 0, 30 ) }...` : activeEditionTitle;
+    realActiveEditionTitle = activeEditionTitle.length > 20 ? `${activeEditionTitle.substr( 0, 20 ) }...` : activeEditionTitle;
   }
   else {
     realActiveEditionTitle = translate( 'Untitled edition' );

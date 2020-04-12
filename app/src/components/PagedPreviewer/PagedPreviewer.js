@@ -64,7 +64,7 @@ class PreviewWrapper extends Component {
   }
 
   injectRenderer = ( thatDocument, additionalHTML ) => {
-    if ( this.state.injecting ) {
+    if ( this.state.injecting || !thatDocument ) {
       return;
     }
     this.setState( { injecting: true } );
