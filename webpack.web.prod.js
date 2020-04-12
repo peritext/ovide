@@ -12,7 +12,7 @@ const config = {
   mode: 'production',
   module: sharedConfig.module,
   node: sharedConfig.node,
-  plugins: sharedConfig.plugins
+  plugins: sharedConfig.plugins,
     // .concat(
     //   new BundleAnalyzerPlugin({
     //     openAnalyzer: true,
