@@ -679,13 +679,19 @@ export const bundleProjectAsHTML = ( { production, edition, requestAssetData } )
  * converts base64 to binary
  */
 const base64ToBinary = ( s ) => {
-  const byteChars = atob( s );
-  const l = byteChars.length;
-  const byteNumbers = new Array( l );
-  for ( let i = 0; i < l; i++ ) {
-    byteNumbers[i] = byteChars.charCodeAt( i );
+  try {
+    const byteChars = atob( s );
+    const l = byteChars.length;
+    const byteNumbers = new Array( l );
+    for ( let i = 0; i < l; i++ ) {
+      byteNumbers[i] = byteChars.charCodeAt( i );
+    }
+    return new Uint8Array( byteNumbers );
   }
-  return new Uint8Array( byteNumbers );
+ catch ( e ) {
+    return new Uint8Array( [] );
+  }
+
 };
 
 /*
@@ -792,6 +798,7 @@ export const bundleEditionAsPrintPack = ( {
   edition,
   lang,
   locale,
+  urlPrefix = '',
 } ) => {
   const zip = new JSZip();
   console.info( 'bundleEditionAsPrintPack :: starting' );
@@ -800,14 +807,69 @@ export const bundleEditionAsPrintPack = ( {
     let preprocessedData;
     // load assets
     console.info( 'bundleEditionAsPrintPack :: loading assets' );
-    loadAllAssets( {
+
+    /*
+     * loadAllAssets( {
+     *   production,
+     *   requestAssetData
+     * } )
+     */
+    loadAssetsForEdition( {
       production,
-      requestAssetData
+      edition,
+      requestAssetData,
+    } )
+    .then( ( loadedAssets ) => {
+      console.info( 'bundleEditionAsPrintPack :: assets loaded', loadedAssets );
+
+      return new Promise( ( thisResolve, thatReject ) => {
+        assets = loadedAssets;
+        Object.keys( loadedAssets ).forEach( ( assetId ) => {
+          const asset = loadedAssets[assetId];
+          const mimetype = asset.mimetype;
+          const url = `${urlPrefix}/assets/${asset.id}/${asset.filename}`;
+          console.log( 'process', url );
+          try {
+            switch ( mimetype ) {
+              case 'image/png':
+              case 'image/jpeg':
+              case 'image/jpg':
+              case 'image/gif':
+              case 'image/tiff':
+
+                const ext = asset.mimetype.split( '/' ).pop();
+                const regex = new RegExp( `^data:image\/${ext};base64,` );
+                zip.file( `assets/${asset.id}/${asset.filename}`, base64ToBinary( asset.data.replace( regex, '' ) ), { binary: true } );
+                assets[assetId].data = url;
+                break;
+
+              /**
+               * @todo externalize table files as well
+               */
+              case 'text/csv':/* eslint no-fallthrough : 0 */
+              case 'text/tsv':
+              case 'text/comma-separated-values':
+              case 'text/tab-separated-values':
+                production.assets[assetId].data = asset.data;
+                // return writeFile( address, JSON.stringify( asset.data ), 'utf8' );
+
+              default:
+                break;
+            }
+          }
+ catch ( e ) {
+            console.log( e );
+            thatReject( e );
+          }
+
+        } );
+        thisResolve();
+
+      } );
     } )
     // preprocess edition data
-    .then( ( inputAssets ) => {
+    .then( ( ) => {
       console.info( 'bundleEditionAsPrintPack :: preprocessing edition data' );
-      assets = inputAssets;
       return preprocessEditionData( { production, edition } );
     } )
     .then( ( input ) => {
@@ -888,6 +950,7 @@ export const bundleEditionAsPrintPack = ( {
   </body>
 </html>
       `.trim();
+      console.info( 'bundleEditionAsPrintPack :: saving now' );
 
       zip.file( 'index.html', finalHtml );
       zip.file( 'main_styles.css', additionalStyles );

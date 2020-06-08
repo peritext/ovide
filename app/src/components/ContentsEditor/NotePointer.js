@@ -115,7 +115,7 @@ class NotePointer extends Component {
         onClick={ handleMouseClick }
       >
         <Tag
-          style={ { transform: 'scale(.7)' } }
+          style={ { marginRight: 0, fontSize: '.5em', position: 'relative', bottom: '.7em' } }
           className={ 'is-clickable is-rounded' }
           isColor={ 'info' }
         >{( note && note.order ) || '*'}{children}

@@ -1189,5 +1189,6 @@
   "Features.EditionUiWrapper.previous view": "previous view",
   "Features.EditionUiWrapper.next view": "next view",
   "Components.LinkModal.search for a link": "search for a link",
-  "Components.GlossaryModal.search for a glossary entry": "search for a glossary entry"
+  "Components.GlossaryModal.search for a glossary entry": "search for a glossary entry",
+  "Features.EditionView.Authors": "Authors"
 }

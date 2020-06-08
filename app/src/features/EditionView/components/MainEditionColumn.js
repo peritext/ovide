@@ -86,6 +86,7 @@ class PreviewWrapperInitial extends Component {
         this.preprocessEditionData( nextProps );
       }
       if ( nextProps.edition.metadata.type === 'paged' ) {
+
         const {
           production,
           edition,

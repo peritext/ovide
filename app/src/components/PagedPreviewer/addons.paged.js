@@ -48,19 +48,76 @@ if ( window.Paged ) {
             const parentElement = footnote.parentElement;
             const footnoteCall = document.createElement( 'a' );
             const footnoteNumber = footnote.dataset.notenumber;
+            const before = footnote.previousSibling;
+            let beforeText ='';
+            if (before) {
+              beforeText = before.textContent;
+            }
+            const after = footnote.nextSibling;
+            let afterText = '';
+            if (after) {
+              afterText = after.textContent;
+            }
+            /**
+             * getting 3 words before and after the note to make sure they are displayed together
+             * */
+            let charIndex = beforeText.length;
+            let wordIndex = 0;
+            const DISPLACEMENT = 3;
+            const MIN_CHARS = 3;
+            // get some text before
+            while (charIndex > 0 && wordIndex < DISPLACEMENT) {
+              if (charIndex < beforeText.length - MIN_CHARS && `${beforeText.charAt(charIndex)}`.match(/\W/)) {
+                wordIndex ++;
+              }
+              if (wordIndex < DISPLACEMENT) {
+                charIndex --;
+              }
+            }
+            const appendBefore = beforeText.substr(charIndex);
+            const newBeforeText = beforeText.substr(0, charIndex);
+            // get some text after
+            charIndex = 0;
+            wordIndex = 0;
+            while(charIndex < afterText.length && wordIndex < DISPLACEMENT) {
+              if (charIndex > MIN_CHARS && `${afterText.charAt(charIndex)}`.match(/\W/)) {
+                wordIndex ++;
+              }
+              if (wordIndex < DISPLACEMENT) {
+                charIndex ++;
+              }
+            }
+            
+            const appendAfter = afterText.substr(0, charIndex);
+            const newAfterText = afterText.substr(charIndex);
+            // shorten siblings texts
+            if (before) {
+              before.textContent = newBeforeText;
+            }
+            if (after) {
+              after.textContent = newAfterText;
+            }
+
 
             footnoteCall.className = 'footnote-ref'; // same class as Pandoc
             footnoteCall.setAttribute( 'id', `fnref${ footnoteNumber}` ); // same notation as Pandoc
             footnoteCall.setAttribute( 'href', `#${ footnote.id}` );
             footnoteCall.innerHTML = `<sup id="note-content-pointer-${ footnote.id }">${ footnoteNumber }</sup>`;
-            parentElement.insertBefore( footnoteCall, footnote );
+            // wrapping the call with previous element
+            // to avoid orphan footnote call
+            const callWrapper = document.createElement('span');
+            callWrapper.className= "footnote-call-wrapper";
+            callWrapper.style = 'page-break-inside:avoid;break-inside:avoid;';
+            callWrapper.innerHTML = `${appendBefore}${footnoteCall.outerHTML}${appendAfter}`
+            parentElement.insertBefore( callWrapper, footnote );
+            // parentElement.insertBefore( footnoteCall, footnote );
 
             // Here comes a hack. Fortunately, it works with Chrome and FF.
             const handler = document.createElement( 'div' );
             handler.className = 'footnoteHandler';
             parentElement.insertBefore( handler, footnote );
             handler.appendChild( footnote );
-            handler.style.display = 'inline-block';
+            handler.style.display = 'inline';
             handler.style.width = '100%';
             handler.style.float = 'right';
             handler.style.margin = '0';
@@ -71,13 +128,13 @@ if ( window.Paged ) {
         afterParsed() {
           console.info( 'parsing finished, rendering the pages' );
           console.group( 'rendering pages' );
+
           if (window.Toastify) {
             Toastify( {
               text: 'Rendering pages',
               duration: 2000
             } ).showToast();
           }
-          
         }
 
         afterPageLayout( pageFragment, page, breakToken ) {
@@ -125,6 +182,7 @@ if ( window.Paged ) {
           console.info( 'rendering done, attaching footnotes to %s pages', pages.length );
           let footnoteIndex = 0;
           for ( const page of pages ) {
+            
             // reset note number when changing section
             if (page.element.className.includes('pagedjs_section_first_page')) {
               console.log('reset footnote number');
@@ -136,6 +194,8 @@ if ( window.Paged ) {
             }
 
             const pageContent = page.element.querySelector( '.pagedjs_page_content' );
+            // const last = pageContent.querySelector('.rendered-content > *:last-of-type');
+            // console.log('last', last)
             const hr = document.createElement( 'hr' );
             const footnoteArea = document.createElement( 'div' );
 
@@ -192,30 +252,37 @@ if ( window.Paged ) {
           /**
            * If overflow adjustments handle them
            */
-          const noOverflow = document.querySelectorAll('.pagedjs_no-page-overflow-y');
-          // hacky : retrieving pages transform to apply it to overflow adjustments
-          let pageScale = 1;
-          const pagesContainer = document.querySelector( '.pagedjs_pages' )
-          if (pagesContainer && pagesContainer.style.transform && pagesContainer.style.transform.match(/scale\((.+)\)/)) {
-            pageScale = +pagesContainer.style.transform.match(/scale\((.+)\)/)[1];
-          }
-          [].forEach.call(noOverflow, (before, index1) => {
-            [].forEach.call(noOverflow, (after, index2) => {
-              if (index1 < index2) {
-                if (before.parentNode.parentNode === after.parentNode.parentNode) {
-                  const {top: yBefore, height: hBefore} = before.getBoundingClientRect();
-                  const {top: yAfter, height: hAfter} = after.getBoundingClientRect();
-                  if (yAfter >= yBefore && yAfter <= (yBefore + hBefore)) {
-                    const absY = ((yAfter - yBefore) + hBefore) / pageScale;
-                    before.parentNode.style.position = 'relative';
-                    after.parentNode.style.position = 'relative';
-                    after.style.top = absY + 'px';
-                    console.log({yBefore, yAfter, hBefore})
+          setTimeout(() => {
+            const noOverflow = document.querySelectorAll('.pagedjs_no-page-overflow-y');
+            // // trick for lateral items
+            // // @todo find a cleaner way to do this 2
+            [].forEach.call(noOverflow, item => {
+              item.style.display = 'block';          
+            })
+            // hacky : retrieving pages transform to apply it to overflow adjustments
+            let pageScale = 1;
+            const pagesContainer = document.querySelector( '.pagedjs_pages' )
+            if (pagesContainer && pagesContainer.style.transform && pagesContainer.style.transform.match(/scale\((.+)\)/)) {
+              pageScale = +pagesContainer.style.transform.match(/scale\((.+)\)/)[1];
+            }
+            [].forEach.call(noOverflow, (before, index1) => {
+              [].forEach.call(noOverflow, (after, index2) => {
+                if (index1 < index2) {
+                  if (before.parentNode.parentNode === after.parentNode.parentNode) {
+                    const {top: yBefore, height: hBefore} = before.getBoundingClientRect();
+                    const {top: yAfter, height: hAfter} = after.getBoundingClientRect();
+                    if (yAfter >= yBefore && yAfter <= (yBefore + hBefore)) {
+                      const absY = ((yAfter - yBefore) + hBefore) / pageScale;
+                      before.parentNode.style.position = 'relative';
+                      after.parentNode.style.position = 'relative';
+                      after.style.top = absY + 10 + 'px';
+                      // console.log({yBefore, yAfter, hBefore})
+                    }
                   }
                 }
-              }
+              })
             })
-          })
+          }, 500)
           if(Toastify) {
             Toastify( {
               text: 'Rendering finished !',
@@ -223,7 +290,6 @@ if ( window.Paged ) {
             } ).showToast();
           }
           
-
         }
         } );/* end register handlers */
     // resize logic

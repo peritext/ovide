@@ -130,6 +130,7 @@ const EditionViewLayout = ( {
     'mention': translate( 'mention' ),
     'Glossary': translate( 'Glossary' ),
     'References': translate( 'References' ),
+    'Authors': translate( 'Authors' ),
     'Source': translate( 'Source' ),
     'More informations': translate( 'More informations' ),
     'Mention context': translate( 'Mention context' ),

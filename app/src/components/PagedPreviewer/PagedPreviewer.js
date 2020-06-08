@@ -38,8 +38,12 @@ class PreviewWrapper extends Component {
   }
 
   componentDidMount = () => {
-    // fetch( 'https://unpkg.com/pagedjs@0.1.30/dist/paged.polyfill.js' )
-    fetch( 'https://unpkg.com/pagedjs@0.1.34/dist/paged.polyfill.js' )
+
+    /*
+     * fetch( 'https://unpkg.com/pagedjs@0.1.30/dist/paged.polyfill.js' )
+     * fetch( 'https://unpkg.com/pagedjs@0.1.34/dist/paged.polyfill.js' )
+     */
+    fetch( 'https://unpkg.com/pagedjs/dist/paged.polyfill.js' )
       .then( ( { data } ) => {
         this.setState( {
           pagedScript: data,
@@ -84,7 +88,8 @@ class PreviewWrapper extends Component {
     console.info( 'inject renderer' );/* eslint no-console: 0 */
     // 1. swap body content to have sections as direct children (paged js requirement)
     const container = thatDocument.body.children[0].querySelector( '.frame-content > div' );
-    let additionalStyles = '';
+    // @todo this is a temporary hotfix to clean later for layout with items on aside
+    let additionalStyles = '.pagedjs_no-page-overflow-y{display: none;}';
     if ( container ) {
       let htmlContent = container.innerHTML;
       // thatDocument.body.innerHTML = htmlContent;
