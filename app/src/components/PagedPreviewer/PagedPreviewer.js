@@ -73,6 +73,9 @@ class PreviewWrapper extends Component {
     }
     this.setState( { injecting: true } );
 
+    const lang = this.props.lang || 'fr';
+    thatDocument.body.setAttribute('lang', lang);
+
     /*
      * const translate = translateNameSpacer( this.context.t, 'Components.PagedPreviewer' );
      * const translations = {
@@ -137,7 +140,10 @@ class PreviewWrapper extends Component {
     thatDocument.getElementsByTagName( 'head' )[0].appendChild( previewStyle );
 
     thatDocument.head.innerHTML = thatDocument.head.innerHTML + additionalHTML;
-    setTimeout( () => this.setState( { injecting: false } ) );
+    setTimeout( () => {
+      thatDocument.body.setAttribute('lang', lang);
+      this.setState( { injecting: false } )
+    } );
 
   };
 
