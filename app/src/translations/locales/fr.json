@@ -1190,5 +1190,15 @@
   "Features.EditionUiWrapper.next view": "vue suivante",
   "Components.LinkModal.search for a link": "chercher un lien",
   "Components.GlossaryModal.search for a glossary entry": "chercher une entrée de glossaire",
-  "Features.EditionView.Authors": "Auteur"
+  "Features.EditionView.Authors": "Auteurs",
+  "Features.EditionView.Author": "Auteur",
+  "Features.EditionView.Books": "Ouvrages",
+  "Features.EditionView.PhD thesis": "Thèses",
+  "Features.EditionView.Book chapters, journal articles and conferences papers": "Chapitres d'ouvrages, articles de revues et articles tirés d'actes de colloques",
+  "Features.EditionView.Laws and norms": "Lois, normes et rapports",
+  "Features.EditionView.Software": "Logiciels",
+  "Features.EditionView.Webpages and blogposts": "Pages web et billets de blog",
+  "Features.EditionView.Dictionaries and encyclopedias entries": "Entrées de dictionnaires et d'encyclopédies",
+  "Features.EditionView.Videos and other non-textual references": "Documents vidéo et autres références non-textuelles",
+  "Features.EditionView.Other": "Autres documents"
 }
