@@ -131,6 +131,7 @@ const EditionViewLayout = ( {
     'Glossary': translate( 'Glossary' ),
     'References': translate( 'References' ),
     'Authors': translate( 'Authors' ),
+    'Author': translate( 'Author' ),
     'Source': translate( 'Source' ),
     'More informations': translate( 'More informations' ),
     'Mention context': translate( 'Mention context' ),
@@ -171,6 +172,16 @@ const EditionViewLayout = ( {
     'Nothing to see here!': translate( 'Nothing to see here!' ),
     'There is not content to display for this URL.': translate( 'There is not content to display for this URL.' ),
     'Glossary list': translate( 'Glossary list' ),
+
+    'books': translate('Books'),
+    thesis: translate('PhD thesis'),
+    chapters_papers: translate('Book chapters, journal articles and conferences papers'),
+    laws_and_norms: translate('Laws and norms'),
+    software: translate('Software'),
+    webpages_and_blogposts: translate('Webpages and blogposts'),
+    dictionaries_encyclopedias_entries: translate('Dictionaries and encyclopedias entries'),
+    multimodal: translate('Videos and other non-textual references'),
+    other: translate('Other'),
   };
 
   const handleExportChoice = ( id ) => {

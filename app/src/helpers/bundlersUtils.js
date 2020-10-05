@@ -51,11 +51,31 @@ const loaderCss = `#static-loader-container{
   width: 100%;
   height: 100%;
   display: flex;
+  flex-flow: column nowrap;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.1);
+  background: rgba(0,0,0,0.8);
   opacity: 0;
   transition: .5s ease;
+}
+.progress-wrapper {
+
+}
+.progress-container {
+  width: 70vh;
+  height: 1rem;
+  background: white;
+}
+.loading-message{
+  font-family: 'Source serif pro', sans-serif;
+  font-size: 2rem;
+}
+
+.progress-bar {
+  width: 0%;
+  height: 100%;
+  background: black;
+  display: inline-block;
 }
 .lds-ellipsis {
   display: inline-block;
@@ -937,13 +957,15 @@ export const bundleEditionAsPrintPack = ( {
 <html>
   <head>
     <title>${edition.metadata.title}</title>
-    <script type="text/javascript" src="https://unpkg.com/pagedjs@0.1.34/dist/paged.polyfill.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script type="text/javascript" src="paged_js_addons.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"></link>
     <link rel="stylesheet" href="preview_styles.css"></link>
     <link rel="stylesheet" href="main_styles.css"></link>
+    ${edition.data.additionalHTML || ''}
+
   </head>
   <body>
     ${htmlContent}
@@ -970,12 +992,14 @@ const renderHTML = ( {
   head,
   htmlContent,
   allowAnnotation,
+  additionalHTML = '',
   editionId,
   urlPrefix,
 } ) => {
   const additionalMeta = `
       <script src="https://cdn.jsdelivr.net/npm/css-vars-ponyfill@1"></script>
       <link rel="stylesheet" href="${urlPrefix}/styles.css"></link>
+      ${additionalHTML}
       ${allowAnnotation ? '<script src="https://hypothes.is/embed.js" async></script>' : ''}
   `;
   const finalHead = head.replace( /<\/head>$/, `${additionalMeta.trim()}</head>` );
@@ -984,7 +1008,7 @@ const renderHTML = ( {
     const withoutProtocol = urlPrefix.replace( /^https?:\/\//, '' );
     const parts = withoutProtocol.split( '/' );
     const withoutDomain = parts.length > 1 ? parts.slice( 1 ).join( '/' ) : parts[0];
-    baseName = `/${withoutDomain}${withoutDomain.charAt( withoutDomain.length - 1 ) === '/' ? '' : '/'}`;
+    baseName = `//${withoutDomain}${withoutDomain.charAt( withoutDomain.length - 1 ) === '/' ? '' : '/'}`;
   }
   return `<!DOCTYPE html>
 <html>
@@ -1011,11 +1035,16 @@ ${loaderCss}
           /**
            * LIB
            */
-
+          function updateProgress(progressEvt) {
+            const fraction = progressEvt.loaded / progressEvt.total;
+            var target = document.getElementById('static-progress-bar');
+            target.style.width = fraction * 100 + '%';
+          }
           function loadJSON(URL, callback) {   
             var xobj = new XMLHttpRequest();
                 xobj.overrideMimeType("application/json");
-            xobj.open('GET', URL, true); // Replace 'my_data' with the path to your file
+            xobj.open('GET', URL, true);
+            xobj.addEventListener('progress', updateProgress);
             xobj.onreadystatechange = function () {
                   if (xobj.readyState == 4 && xobj.status == "200") {
                     // Required use of an anonymous callback as .open will NOT return a value but simply returns undefined in asynchronous mode
@@ -1031,7 +1060,16 @@ ${loaderCss}
         function addLoader() {
           var loader = document.createElement('div')
           loader.id = 'static-loader-container';
-          loader.innerHTML = '<div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>';
+          loader.innerHTML = \`
+          <!--<div class="ellipsis-container">
+              <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div><div></div>
+            </div>-->
+            <div class="progress-wrapper">
+              <div class="progress-container">
+                <div class="progress-bar" id="static-progress-bar"></div>
+              </div>
+            </div>
+            \`;
           document.body.appendChild(loader);
           loader.style.opacity = 1;
         }
@@ -1073,7 +1111,7 @@ export const downloadProjectAsWebsite = ( {
   const utils = template.utils;
   const { routeItemToUrl } = utils;
   const { data = {} } = edition;
-  const { allowAnnotation = false } = data;
+  const { allowAnnotation = false, additionalHTML = '' } = data;
 
   return new Promise( ( resolve, reject ) => {
     const production = { ...inputProduction };
@@ -1223,6 +1261,8 @@ export const downloadProjectAsWebsite = ( {
           htmlContent,
           allowAnnotation,
           editionId: edition.id,
+          additionalHTML,
+          
           urlPrefix,
         } );
         const filePath = `${route.split( '?' )[0]}/index.html`.replace( /\/\//g, '/' ).replace( /^\//g, '' );
@@ -1247,8 +1287,19 @@ export const downloadProjectAsWebsite = ( {
 
     zip.file( 'styles.css', css );
     zip.file( 'bundle.js', bundleData );
+    console.log('1');
     zip.file( 'production.json', JSON.stringify( production ) );
-    zip.file( 'preprocessedData.json', JSON.stringify( preprocessedData ) );
+    console.log('2', {preprocessedData});
+    // zip.file( 'preprocessedData.json', JSON.stringify( preprocessedData ) );
+    // note : marche quand que global
+    // zip.file( 'preprocessedData.json', stringify(preprocessedData) );
+    if (edition.metadata.templateId === 'deucalion') {
+      zip.file( 'preprocessedData.json', stringify({global: preprocessedData.global}) );
+    }
+    else {
+      zip.file( 'preprocessedData.json', stringify(preprocessedData) );
+    }
+    console.log('3');
     zip.file( 'locale.json', JSON.stringify( locale ) );
     if ( typeof onFeedback === 'function' ) {
       onFeedback( {

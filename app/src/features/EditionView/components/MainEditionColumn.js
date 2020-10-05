@@ -355,6 +355,7 @@ class PreviewWrapperInitial extends Component {
         <PagedPreviewer
           style={ { width: '100%', height: '100%', position: 'absolute', left: 0,
           top: 0, } }
+          lang={lang}
           html={ editionHTML }
           additionalHTML={ edition.data.additionalHTML }
           updateTrigger={ JSON.stringify( edition ) }
@@ -405,6 +406,7 @@ class PreviewWrapperInitial extends Component {
           style={ { width: '100%', height: '100%', position: 'absolute', left: 0,
               top: 0, } }
           Component={ FinalComponent }
+          lang={lang}
           additionalHTML={ edition.data.additionalHTML }
           updateTrigger={ JSON.stringify( edition ) }
         />

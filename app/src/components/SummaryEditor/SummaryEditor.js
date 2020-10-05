@@ -209,7 +209,8 @@ class SummaryEditor extends Component {
         } );
       };
       const blockData = summary[editedCustomSummaryIndex].data;
-      const handleChange = ( newValue ) => {
+      const handleSummaryChange = ( newValue ) => {
+        // console.log('new value', newValue)
         const newSummary = [
           ...summary.map( ( s, index ) => {
             if ( index === editedCustomSummaryIndex ) {
@@ -231,7 +232,7 @@ class SummaryEditor extends Component {
           onCancel={ handleCancelCustomSummary }
           summaryType={ editedCustomSummaryData.summaryType }
           value={ summary[editedCustomSummaryIndex].data.customSummary }
-          onChange={ handleChange }
+          onChange={ handleSummaryChange }
           blockSettings={ blockData }
         />
       );
